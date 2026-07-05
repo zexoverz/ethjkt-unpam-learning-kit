@@ -2,7 +2,7 @@
 
 Short Course "AI & Blockchain" | Universitas Pamulang (UNPAM)
 Pengajar: Faisal "Zexo" — Founder ETHJKT (Ethereum Jakarta)
-5 hari | 22-26 Juni 2026
+Mulai 6 Juli 2026 | Hari 1-4 sesi live (2 jam), Hari 5 proyek take-home
 
 ---
 
@@ -284,21 +284,26 @@ pas hari-H. Kita beresin 5 menit di awal kelas.
 ## SEKILAS: 5 HARI KE DEPAN
 
 ```
-+------+--------------------------------+
-| Hari | Yang kita lakuin               |
-+------+--------------------------------+
-| 1    | Kenalan AI + ngoding pertama   |
-|      | dibantu AI                     |
-| 2    | Review & bongkar kode AI       |
-|      | (nyari bug + celah keamanan)   |
-| 3    | Deploy smart contract pertama  |
-|      | (papan Menfess) di browser     |
-| 4    | Menfess lengkap + AI Moderator |
-|      | + ringkasan "vibe kampus"      |
-| 5    | Poles jadi karya utuh -> demo  |
-|      | -> GitHub -> ngobrol karier    |
-+------+--------------------------------+
++------+--------------------------------+---------------+
+| Hari | Yang kita lakuin               | Format        |
++------+--------------------------------+---------------+
+| 1    | Kenalan AI + ngoding pertama   | Live (2 jam)  |
+|      | dibantu AI                     |               |
+| 2    | Review & bongkar kode AI       | Live (2 jam)  |
+|      | (nyari bug + celah keamanan)   |               |
+| 3    | Deploy smart contract pertama  | Live (2 jam)  |
+|      | (papan Menfess) di browser     |               |
+| 4    | Menfess lengkap + AI Moderator | Live (2 jam)  |
+|      | + ringkasan "vibe kampus"      |               |
+| 5    | Mini proyek = PR TERAKHIR.     | Take-home     |
+|      | Poles karya -> push GitHub     | (TANPA sesi   |
+|      | -> demo. Dikerjain mandiri.    | live)         |
++------+--------------------------------+---------------+
 ```
+
+CATATAN HARI 5: nggak ada kelas live di hari terakhir. Hari 5 =
+mini proyek yang jadi PR (tugas) TERAKHIR kalian, dikerjain mandiri
+dari rumah, lalu di-push ke GitHub. Sesi live cuma Hari 1-4.
 
 Capstone kita: "OnChain Menfess" papan menfess kampus yang tersimpan
 permanen di blockchain, dijaga AI moderator biar aman. Seru. Sampai
