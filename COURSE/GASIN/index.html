@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gacha ETHJKT</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
+        color: #eaeaf0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .app {
+        width: 100%;
+        max-width: 460px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 24px 22px 28px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+      h1 {
+        font-size: 26px;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+        background: linear-gradient(90deg, #ffd86b, #ff7eb3, #7ee8ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .subtitle {
+        font-size: 12px;
+        color: #8b90b0;
+        margin-bottom: 18px;
+      }
+
+      .stats {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .stat {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 10px 6px;
+      }
+      .stat .num {
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .stat .lbl {
+        font-size: 11px;
+        color: #8b90b0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .pity {
+        margin-bottom: 18px;
+        text-align: left;
+      }
+      .pity-top {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #b9bdd8;
+        margin-bottom: 6px;
+      }
+      .pity-track {
+        height: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .pity-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #ffd86b, #ffb347);
+        transition: width 0.35s ease;
+      }
+
+      .stage {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .card {
+        width: 210px;
+        height: 340px;
+        border-radius: 18px;
+        background: #171b30;
+        border: 3px solid #2a2f4a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 6px;
+        position: relative;
+        padding-top: 14px;
+        padding-bottom: 12px;
+      }
+      .card .emoji {
+        font-size: 74px;
+        line-height: 1;
+        width: 150px;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .card .name {
+        font-size: 17px;
+        font-weight: 700;
+        padding: 0 8px;
+      }
+      .card .rar {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        opacity: 0.9;
+      }
+
+      /* warna per rarity */
+      .card.common {
+        border-color: #6b7280;
+      }
+      .card.common .rar {
+        color: #9aa3b2;
+      }
+      .card.rare {
+        border-color: #4da6ff;
+        box-shadow: 0 0 22px rgba(77, 166, 255, 0.45);
+      }
+      .card.rare .rar {
+        color: #4da6ff;
+      }
+      .card.epic {
+        border-color: #b06bff;
+        box-shadow: 0 0 26px rgba(176, 107, 255, 0.55);
+      }
+      .card.epic .rar {
+        color: #c88bff;
+      }
+      .card.ssr {
+        border-color: #ffd24a;
+        box-shadow: 0 0 40px rgba(255, 210, 74, 0.8);
+      }
+      .card.ssr .rar {
+        color: #ffd24a;
+      }
+      .card.ssr .name {
+        color: #ffe89a;
+      }
+
+      /* animasi reveal */
+      @keyframes pop {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.08);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-6px);
+        }
+        40% {
+          transform: translateX(6px);
+        }
+        60% {
+          transform: translateX(-4px);
+        }
+        80% {
+          transform: translateX(4px);
+        }
+      }
+      @keyframes glowpulse {
+        0%,
+        100% {
+          box-shadow: 0 0 30px rgba(255, 210, 74, 0.7);
+        }
+        50% {
+          box-shadow: 0 0 55px rgba(255, 210, 74, 1);
+        }
+      }
+      .card.reveal {
+        animation: pop 0.4s ease;
+      }
+      .card.ssr.reveal {
+        animation:
+          pop 0.4s ease,
+          shake 0.5s ease 0.4s,
+          glowpulse 1.2s ease-in-out 0.4s 2;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+      .btn {
+        flex: 1;
+        padding: 15px 0;
+        border: none;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        cursor: pointer;
+        color: #0a0d1c;
+        background: linear-gradient(180deg, #8fd3ff, #4da6ff);
+        transition:
+          transform 0.08s ease,
+          filter 0.15s ease;
+      }
+      .btn:hover {
+        filter: brightness(1.08);
+      }
+      .btn:active {
+        transform: scale(0.95);
+      }
+      .btn.gold {
+        background: linear-gradient(180deg, #ffe58a, #ffb347);
+      }
+
+      .hist-lbl {
+        font-size: 11px;
+        color: #8b90b0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: left;
+        margin-bottom: 8px;
+      }
+      .history {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-height: 34px;
+      }
+      .chip {
+        font-size: 20px;
+        width: 40px;
+        height: 40px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #171b30;
+        border: 2px solid #2a2f4a;
+        overflow: hidden;
+        cursor: default;
+        transition: transform 0.15s ease;
+      }
+      .chip:hover { transform: scale(1.15); }
+      .chip img {
+        width: 38px;
+        height: 38px;
+        image-rendering: auto;
+        object-fit: contain;
+        display: block;
+      }
+      .chip.rare {
+        border-color: #4da6ff;
+      }
+      .chip.epic {
+        border-color: #b06bff;
+      }
+      .chip.ssr {
+        border-color: #ffd24a;
+        box-shadow: 0 0 10px rgba(255, 210, 74, 0.6);
+      }
+
+      /* card sprite image — HD official artwork */
+      .card .emoji img {
+        width: 150px;
+        height: 150px;
+        image-rendering: auto;
+        object-fit: contain;
+        filter: drop-shadow(0 6px 18px rgba(0,0,0,0.7));
+        transition: transform 0.2s ease;
+      }
+      .card .emoji img:hover { transform: scale(1.06); }
+
+      /* stat bars di dalam kartu */
+      .card-stats {
+        width: 100%;
+        padding: 2px 14px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .card-stats.hidden { display: none; }
+      .stat-row {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .stat-lbl {
+        width: 28px;
+        font-size: 8px;
+        font-weight: 700;
+        color: #8b90b0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .stat-bar-wrap {
+        flex: 1;
+        height: 5px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .stat-bar {
+        height: 100%;
+        border-radius: 3px;
+        width: 0%;
+        transition: width 0.55s cubic-bezier(0.34,1.56,0.64,1) 0.25s;
+      }
+      .stat-val {
+        width: 24px;
+        font-size: 9px;
+        font-weight: 700;
+        color: #eaeaf0;
+        text-align: left;
+        flex-shrink: 0;
+      }
+      /* divider antara rarity label dan stat bars */
+      .card-divider {
+        width: calc(100% - 28px);
+        height: 1px;
+        background: rgba(255,255,255,0.07);
+        margin: 2px 0 0;
+        flex-shrink: 0;
+      }
+      /* total power badge */
+      .power-badge {
+        font-size: 9.5px;
+        font-weight: 700;
+        color: #ffd24a;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-top: 1px;
+      }
+
+      /* loading & disabled state */
+      .btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        filter: grayscale(0.5);
+      }
+      .loading-badge {
+        font-size: 11px;
+        color: #8b90b0;
+        margin-bottom: 4px;
+        animation: blink 1s ease-in-out infinite;
+      }
+      .loading-badge.done {
+        animation: none;
+        color: #6bffb8;
+      }
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50%       { opacity: 0.3; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <h1>GACHA ETHJKT</h1>
+      <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
+      <div class="loading-badge" id="loadingBadge">⏳ Fetching data Pokémon...</div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="num" id="total">0</div>
+          <div class="lbl">Total Tarik</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="ssrCount">0</div>
+          <div class="lbl">SSR Didapat</div>
+        </div>
+      </div>
+
+      <div class="pity">
+        <div class="pity-top">
+          <span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span>
+        </div>
+        <div class="pity-track">
+          <div class="pity-fill" id="pityFill"></div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="card" id="card">
+          <div class="emoji" id="cardEmoji">?</div>
+          <div class="name" id="cardName">Tekan TARIK</div>
+          <div class="rar" id="cardRarity"></div>
+          <div class="card-divider" id="cardDivider" style="display:none"></div>
+          <div class="card-stats hidden" id="cardStats"></div>
+          <div class="power-badge" id="powerBadge" style="display:none"></div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn" id="tarik1">TARIK 1x</button>
+        <button class="btn gold" id="tarik10">TARIK 10x</button>
+      </div>
+
+      <div class="hist-lbl">Riwayat Terakhir</div>
+      <div class="history" id="history"></div>
+    </div>
+
+    <script>
+      // ==========================================================
+      // CHECKPOINT 1 — Data & acak  (sumber: PokeAPI)
+      // ==========================================================
+
+      // Pokemon ID per rarity
+      const pokemonIds = {
+        ssr:    [150, 249, 250, 382, 383, 384, 483, 484, 487, 493], // Legendary
+        epic:   [149, 248, 373, 376, 445, 635, 706, 330, 282, 373], // Pseudo-legendary
+        rare:   [6,   9,   3,   94,  130, 131, 65,  143, 196, 197], // Stage-2 keren
+        common: [25,  133, 4,   7,   1,   39,  52,  54,  58,  60 ]  // Basics
+      };
+
+      // hadiah akan diisi setelah fetch
+      let hadiah = { ssr: [], epic: [], rare: [], common: [] };
+
+      // State gacha
+      let pity = 0, total = 0, ssrCount = 0;
+
+      // Pilih item acak dari array
+      function pilihAcak(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
+
+      // ==========================================================
+      // CHECKPOINT 2 — Logika tarikan
+      // ==========================================================
+
+      function rollSatu() {
+        total++;
+        pity++;
+
+        const r = Math.random();
+        let kelas;
+
+        if (pity >= 10 || r < 0.03) {
+          kelas    = 'ssr';
+          pity     = 0;
+          ssrCount++;
+        } else if (r < 0.10) {
+          kelas = 'epic';
+        } else if (r < 0.30) {
+          kelas = 'rare';
+        } else {
+          kelas = 'common';
+        }
+
+        const item = pilihAcak(hadiah[kelas]);
+        return { kelas, nama: item.n, sprite: item.sprite, stats: item.stats };
+      }
+
+      // ==========================================================
+      // CHECKPOINT 3 — Tampilkan + animasi
+      // ==========================================================
+
+      const rarLabel = {
+        ssr:    '⭐ SSR — LEGENDARY',
+        epic:   '💜 EPIC',
+        rare:   '💙 RARE',
+        common: '⬜ COMMON'
+      };
+
+      // Konfigurasi stat bars
+      const statConfig = [
+        { key: 'hp',      lbl: 'HP',  color: '#ff6b6b' },
+        { key: 'attack',  lbl: 'ATK', color: '#ff9f43' },
+        { key: 'defense', lbl: 'DEF', color: '#48dbfb' },
+        { key: 'speed',   lbl: 'SPD', color: '#a29bfe' }
+      ];
+      const MAX_STAT = 200; // base stat tertinggi (Deoxys speed = 180)
+
+      function tampilkan(hasil) {
+        const card       = document.getElementById('card');
+        const cardEmoji  = document.getElementById('cardEmoji');
+        const cardName   = document.getElementById('cardName');
+        const cardRarity = document.getElementById('cardRarity');
+        const cardStats  = document.getElementById('cardStats');
+        const cardDivider = document.getElementById('cardDivider');
+        const powerBadge = document.getElementById('powerBadge');
+
+        // Reset animasi (reflow trick)
+        card.className = 'card';
+        void card.offsetWidth;
+
+        // Isi konten kartu dengan sprite HD Pokémon
+        cardEmoji.innerHTML = `<img src="${hasil.sprite}" alt="${hasil.nama}">`;
+        cardName.textContent   = hasil.nama;
+        cardRarity.textContent = rarLabel[hasil.kelas];
+
+        // Render stat bars
+        if (hasil.stats) {
+          cardStats.innerHTML = '';
+          let totalPower = 0;
+
+          statConfig.forEach(({ key, lbl, color }) => {
+            const val = hasil.stats[key] ?? 0;
+            totalPower += val;
+            const pct = Math.min((val / MAX_STAT) * 100, 100).toFixed(1);
+
+            const row = document.createElement('div');
+            row.className = 'stat-row';
+            row.innerHTML = `
+              <span class="stat-lbl">${lbl}</span>
+              <div class="stat-bar-wrap">
+                <div class="stat-bar" style="background:${color};width:0%" data-pct="${pct}"></div>
+              </div>
+              <span class="stat-val">${val}</span>`;
+            cardStats.appendChild(row);
+          });
+
+          // Animasi bar (requestAnimationFrame agar transisi jalan setelah DOM update)
+          requestAnimationFrame(() => {
+            cardStats.querySelectorAll('.stat-bar').forEach(bar => {
+              bar.style.width = bar.dataset.pct + '%';
+            });
+          });
+
+          cardStats.classList.remove('hidden');
+          cardDivider.style.display = '';
+          powerBadge.textContent = `⚡ Power: ${totalPower}`;
+          powerBadge.style.display = '';
+        } else {
+          cardStats.classList.add('hidden');
+          cardDivider.style.display = 'none';
+          powerBadge.style.display = 'none';
+        }
+
+        // Terapkan kelas rarity + animasi reveal
+        card.className = `card ${hasil.kelas} reveal`;
+
+        // Update stats & pity bar
+        document.getElementById('total').textContent    = total;
+        document.getElementById('ssrCount').textContent = ssrCount;
+        document.getElementById('pityText').textContent = `${pity} / 10`;
+        document.getElementById('pityFill').style.width = `${(pity / 10) * 100}%`;
+      }
+
+      // ==========================================================
+      // CHECKPOINT 4 — Riwayat + tombol
+      // ==========================================================
+
+      function tambahRiwayat(hasil) {
+        const history = document.getElementById('history');
+
+        const chip = document.createElement('div');
+        chip.className   = `chip ${hasil.kelas}`;
+        chip.title       = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
+        chip.innerHTML   = `<img src="${hasil.sprite}" alt="${hasil.nama}">`;
+
+        // Sisipkan di depan
+        history.insertBefore(chip, history.firstChild);
+
+        // Batasi maks 12 chip
+        while (history.children.length > 12) {
+          history.removeChild(history.lastChild);
+        }
+      }
+
+      // Event tombol TARIK 1x
+      document.getElementById('tarik1').addEventListener('click', () => {
+        const hasil = rollSatu();
+        tampilkan(hasil);
+        tambahRiwayat(hasil);
+      });
+
+      // Event tombol TARIK 10x  (tampilkan pull terbaik di kartu utama)
+      document.getElementById('tarik10').addEventListener('click', () => {
+        const rarityRank = { ssr: 4, epic: 3, rare: 2, common: 1 };
+        let hasil10 = [];
+        for (let i = 0; i < 10; i++) {
+          const h = rollSatu();
+          hasil10.push(h);
+          tambahRiwayat(h);
+        }
+        // Tampilkan yang rarity-nya paling tinggi
+        const best = hasil10.reduce((a, b) =>
+          rarityRank[a.kelas] >= rarityRank[b.kelas] ? a : b
+        );
+        tampilkan(best);
+      });
+
+      // ==========================================================
+      // INIT — Fetch semua data Pokémon dari PokeAPI
+      // ==========================================================
+
+      async function init() {
+        const btn1   = document.getElementById('tarik1');
+        const btn10  = document.getElementById('tarik10');
+        const badge  = document.getElementById('loadingBadge');
+        btn1.disabled  = true;
+        btn10.disabled = true;
+
+        // Kumpulin semua fetch sekaligus (Promise.all = paralel)
+        const entries = [];
+        for (const [rarity, ids] of Object.entries(pokemonIds)) {
+          for (const id of ids) {
+            entries.push({ rarity, id });
+          }
+        }
+
+        // STEP 1: Fetch nama + stats dari PokeAPI secara paralel
+        let loaded = 0;
+        const total_entries = entries.length;
+
+        const results = await Promise.all(
+          entries.map(({ id }) =>
+            fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+              .then(r => r.json())
+              .then(data => {
+                loaded++;
+                badge.textContent = `⏳ Fetching data... ${loaded}/${total_entries}`;
+                return data;
+              })
+              .catch(() => { loaded++; return null; })
+          )
+        );
+
+        results.forEach((data, i) => {
+          if (!data) return;
+          const { rarity, id } = entries[i];
+
+          // Nama: capitalize tiap segmen
+          const name = data.name
+            .split('-')
+            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+            .join('-');
+
+          // Sprite: pakai Pokemon.com CDN (HD, no rate limits, official art)
+          const sprite = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${String(id).padStart(3, '0')}.png`;
+
+          // Stats: ambil hp, attack, defense, speed
+          const statsRaw = {};
+          (data.stats || []).forEach(s => {
+            statsRaw[s.stat.name] = s.base_stat;
+          });
+
+          hadiah[rarity].push({ n: name, sprite, stats: statsRaw });
+        });
+
+        // STEP 2: Preload semua gambar HD agar display instan saat ditarik
+        badge.textContent = '🖼️ Preloading gambar HD...';
+        const allPokemon = Object.values(hadiah).flat();
+        let imgLoaded = 0;
+
+        await Promise.all(
+          allPokemon.map(p => new Promise(resolve => {
+            const img = new Image();
+            img.onload = img.onerror = () => {
+              imgLoaded++;
+              badge.textContent = `🖼️ Preloading... ${imgLoaded}/${allPokemon.length}`;
+              resolve();
+            };
+            img.src = p.sprite;
+          }))
+        );
+
+        // Semua siap!
+        badge.textContent = '✅ Siap! Selamat menarik!';
+        badge.classList.add('done');
+        setTimeout(() => {
+          badge.style.transition = 'opacity 0.6s';
+          badge.style.opacity = '0';
+        }, 2000);
+
+        btn1.disabled  = false;
+        btn10.disabled = false;
+      }
+
+      init();
+    </script>
+  </body>
+</html>
