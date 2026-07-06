@@ -10,3 +10,12 @@
 - Hasil terakhir muncul di kartu utama.
 - Riwayat 12 pull terakhir muncul di bawah tombol.
 - Total pull, jumlah SSR, dan progress pity ikut diperbarui setiap kali pull.
+
+## Pokemon gacha pakai PokeAPI
+
+- Simulator sekarang mengambil data Pokemon asli dari `https://pokeapi.co/api/v2/pokemon/{id}`.
+- Setiap rarity punya kumpulan ID Pokemon sendiri: `COMMON`, `RARE`, `EPIC`, dan `SSR`.
+- Hasil pull menampilkan nama Pokemon, gambar resmi, tipe, tinggi, dan berat.
+- Data Pokemon disimpan di `localStorage` setelah pertama kali dimuat supaya tidak sering request ke PokeAPI.
+- Tombol pull masuk mode `LOADING` saat sedang mengambil data dari API.
+- Kalau request API gagal, kartu utama menampilkan pesan error sederhana supaya mudah dipahami.
