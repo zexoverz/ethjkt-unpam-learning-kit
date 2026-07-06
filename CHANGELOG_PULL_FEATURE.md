@@ -25,3 +25,24 @@ Catatan kode:
 - Data hadiah disimpan di object `hadiah` supaya mudah ditambah.
 - Fungsi dibuat kecil-kecil supaya mudah dibaca: `rollSatu`, `tampilkan`, `tambahRiwayat`, dan `tarik`.
 - Komentar hanya ditambahkan di bagian pity karena itu aturan penting di game.
+
+## 2026-07-06 - Pokemon + PokeAPI
+
+Saya mengubah simulator menjadi **Pokemon gacha simulator** yang mengambil data dari PokeAPI.
+
+Endpoint yang dipakai:
+
+- `GET /pokemon/{id}/` untuk mengambil nama dasar, sprite official artwork, types, stats, dan link species.
+- `GET /pokemon-species/{id}/` untuk mengambil nama bahasa Inggris, capture rate, status legendary/mythical, dan flavor text.
+
+Cara data digabung:
+
+- Simulator memilih rarity dulu: SSR, Epic, Rare, atau Common.
+- Setiap rarity punya pool ID Pokemon yang sesuai.
+- Setelah ID dipilih, kode fetch detail Pokemon dan species dari PokeAPI.
+- Hasil gabungan ditampilkan sebagai kartu: gambar, nama, rarity, nomor Pokedex, type, total stat, capture rate, dan status legendary/mythical.
+
+Catatan penting:
+
+- Data PokeAPI disimpan di cache memory lewat `Map`, jadi request yang sama tidak dipanggil berulang-ulang selama halaman masih terbuka.
+- Tombol dibuat loading saat fetch berjalan supaya user tidak spam klik saat data belum selesai.
