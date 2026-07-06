@@ -8,3 +8,12 @@
 - Menambahkan riwayat 12 pull terakhir supaya hasil sebelumnya mudah dilihat.
 
 Bahasa mudahnya: sekarang tombol TARIK sudah benar-benar mengacak hadiah. Kalau belum dapat SSR, angka pity naik. Saat pity sampai 10, pull berikutnya otomatis menjadi SSR dan pity kembali ke 0.
+
+## 2026-07-06 - Pokemon gacha dari PokeAPI
+
+- Mengganti desain gacha menjadi tema Pokemon card.
+- Mengambil Pokemon random langsung dari PokeAPI saat tombol Pull ditekan.
+- Menampilkan gambar official artwork, nama, ID, tipe, HP, Attack, dan Base EXP.
+- Mengubah SSR menjadi Shiny SSR dengan pity 10 pull.
+
+Bahasa mudahnya: sekarang aplikasi tidak pakai daftar hadiah manual lagi. Setiap pull akan minta data Pokemon ke PokeAPI, lalu menampilkan Pokemon yang didapat sebagai kartu gacha.
