@@ -115,7 +115,7 @@
     min-height: 100px; padding: 8px; border: 1px solid var(--line); border-radius: 8px;
     background: #fbfcff; display: grid; place-items: center; text-align: center;
   }
-  .chip img { width: 62px; height: 62px; object-fit: contain; }
+  .chip-dex { font-size: 20px; font-weight: 900; color: var(--blue); }
   .chip-name { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 800; }
   .chip-rarity { font-size: 10px; color: var(--muted); text-transform: uppercase; }
   @keyframes reveal { from { transform: translateY(8px) scale(.97); opacity: .45; } to { transform: translateY(0) scale(1); opacity: 1; } }
@@ -286,6 +286,10 @@
 
     const response = await fetch(url);
     if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error("PokeAPI/CDN rate limit reached. Wait a moment before pulling again.");
+      }
+
       throw new Error(`PokeAPI request failed: ${response.status}`);
     }
 
@@ -294,28 +298,35 @@
     return data;
   }
 
-  function rollRarity() {
+  function rollPokemon() {
     total += 1;
     pity += 1;
 
     const chance = Math.random();
+    let rarity = "common";
+
     if (pity >= pityTarget || chance < rarityConfig.ssr.chance) {
       pity = 0;
       pityTarget = randomPityTarget();
       ssrCount += 1;
-      return "ssr";
+      rarity = "ssr";
+    } else if (chance < rarityConfig.epic.chance) {
+      rarity = "epic";
+    } else if (chance < rarityConfig.rare.chance) {
+      rarity = "rare";
     }
 
-    if (chance < rarityConfig.epic.chance) return "epic";
-    if (chance < rarityConfig.rare.chance) return "rare";
-    return "common";
+    return {
+      id: pickRandom(rarityConfig[rarity].ids),
+      rarity,
+      rarityLabel: rarityConfig[rarity].label
+    };
   }
 
-  async function buildPokemonCard(rarity) {
-    const id = pickRandom(rarityConfig[rarity].ids);
+  async function buildPokemonCard(roll) {
     const [pokemon, species] = await Promise.all([
-      cachedFetch(`${API_BASE}/pokemon/${id}/`),
-      cachedFetch(`${API_BASE}/pokemon-species/${id}/`)
+      cachedFetch(`${API_BASE}/pokemon/${roll.id}/`),
+      cachedFetch(`${API_BASE}/pokemon-species/${roll.id}/`)
     ]);
 
     const name = species.names.find((entry) => entry.language.name === "en")?.name || titleCase(pokemon.name);
@@ -323,18 +334,19 @@
     const flavor = species.flavor_text_entries.find((entry) => entry.language.name === "en")?.flavor_text || "No Pokedex text available.";
     const ability = pokemon.abilities.find((entry) => !entry.is_hidden)?.ability.name || pokemon.abilities[0]?.ability.name || "-";
     const officialArt = pokemon.sprites.other?.["official-artwork"]?.front_default;
-    const sprite = officialArt || pokemon.sprites.front_default;
+    const fallbackSprite = pokemon.sprites.front_default;
     const statTotal = pokemon.stats.reduce((sum, stat) => sum + stat.base_stat, 0);
 
     return {
-      id,
-      rarity,
-      rarityLabel: rarityConfig[rarity].label,
+      id: roll.id,
+      rarity: roll.rarity,
+      rarityLabel: roll.rarityLabel,
       name,
       genus: genus.replace(" Pokemon", ""),
       flavor: flavor.replace(/[\n\f]/g, " "),
       ability: titleCase(ability),
-      sprite,
+      sprite: officialArt || fallbackSprite,
+      fallbackSprite,
       statTotal,
       types: pokemon.types.sort((a, b) => a.slot - b.slot).map((entry) => entry.type.name),
       isLegendary: species.is_legendary || species.is_mythical
@@ -349,6 +361,17 @@
       const artwork = document.createElement("img");
       artwork.src = cardData.sprite;
       artwork.alt = `${cardData.name} artwork`;
+      artwork.onerror = () => {
+        if (cardData.fallbackSprite && artwork.src !== cardData.fallbackSprite) {
+          artwork.src = cardData.fallbackSprite;
+          return;
+        }
+
+        const placeholder = document.createElement("div");
+        placeholder.className = "placeholder";
+        placeholder.textContent = "?";
+        replaceChildren(els.artWrap, [placeholder]);
+      };
       replaceChildren(els.artWrap, [artwork]);
     } else {
       const placeholder = document.createElement("div");
@@ -386,26 +409,24 @@
     els.pityFill.style.width = `${(pity / pityTarget) * 100}%`;
   }
 
-  function addHistory(cardData) {
+  function addHistory(roll, cardData = null) {
     const chip = document.createElement("div");
-    chip.className = `chip ${cardData.rarity}`;
-    chip.title = `${cardData.name} (${cardData.rarityLabel})`;
+    chip.className = `chip ${roll.rarity}`;
+    chip.title = cardData ? `${cardData.name} (${roll.rarityLabel})` : `Pokemon #${roll.id} (${roll.rarityLabel})`;
 
-    if (cardData.sprite) {
-      const image = document.createElement("img");
-      image.src = cardData.sprite;
-      image.alt = "";
-      chip.appendChild(image);
-    }
+    const dex = document.createElement("div");
+    dex.className = "chip-dex";
+    dex.textContent = `#${String(roll.id).padStart(3, "0")}`;
+    chip.appendChild(dex);
 
     const name = document.createElement("div");
     name.className = "chip-name";
-    name.textContent = cardData.name;
+    name.textContent = cardData?.name || "Pokemon";
     chip.appendChild(name);
 
     const rarity = document.createElement("div");
     rarity.className = "chip-rarity";
-    rarity.textContent = cardData.rarityLabel;
+    rarity.textContent = roll.rarityLabel;
     chip.appendChild(rarity);
 
     els.history.prepend(chip);
@@ -427,22 +448,24 @@
     els.resultText.textContent = `Mengambil ${count} Pokemon dari PokeAPI...`;
 
     try {
-      const results = [];
+      const rolls = [];
       for (let index = 0; index < count; index += 1) {
-        const rarity = rollRarity();
-        const cardData = await buildPokemonCard(rarity);
-        results.push(cardData);
-        addHistory(cardData);
+        const roll = rollPokemon();
+        rolls.push(roll);
+        addHistory(roll);
       }
 
-      const last = results[results.length - 1];
-      const ssrPulled = results.filter((item) => item.rarity === "ssr").length;
+      const lastRoll = rolls[rolls.length - 1];
+      const last = await buildPokemonCard(lastRoll);
+      const ssrPulled = rolls.filter((item) => item.rarity === "ssr").length;
 
       renderPokemon(last);
       els.resultText.textContent = `${last.name} joined your box. `
         + `${count}x pull produced ${ssrPulled} SSR. Pity: ${pity}/${pityTarget}.`;
     } catch (error) {
-      els.resultText.textContent = "Gagal mengambil data Pokemon. Cek koneksi internet lalu coba lagi.";
+      els.resultText.textContent = error.message.includes("rate limit")
+        ? "Kena 429 rate limit. Tunggu sebentar, lalu coba Pull 1x dulu."
+        : "Gagal mengambil data Pokemon. Cek koneksi internet lalu coba lagi.";
       console.error(error);
     } finally {
       setLoading(false);

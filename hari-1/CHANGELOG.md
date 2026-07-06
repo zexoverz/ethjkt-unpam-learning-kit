@@ -14,3 +14,10 @@
 - Menambahkan cache di browser memakai `localStorage`, mengikuti saran PokeAPI supaya aplikasi tidak terlalu sering request data yang sama.
 - Merapikan tampilan agar terasa seperti kartu Pokemon, bukan daftar hadiah placeholder.
 - Commit berikutnya memakai format Conventional Commits, contoh: `feat(hari-1): add pokemon gacha simulator`.
+
+## 429 rate-limit fix
+
+- `PULL 10x` sekarang hanya mengambil detail lengkap untuk kartu terakhir, bukan 10 Pokemon sekaligus.
+- Riwayat tetap mencatat 10 hasil, tapi memakai nomor Pokedex dan rarity agar tidak membebani API/CDN.
+- Kartu utama punya fallback ke sprite kecil. Jika gambar tetap ditolak CDN, aplikasi menampilkan placeholder `?`.
+- Jika API mengembalikan `429`, aplikasi menampilkan pesan yang lebih jelas: tunggu sebentar lalu coba `PULL 1x`.
