@@ -104,7 +104,8 @@
 <body>
   <div class="app">
     <h1>POKEGACHA</h1>
-    <div class="subtitle">tangkap Pokémon impianmu dengan PokeAPI!</div>
+    <div class="subtitle" id="subtitleText">tangkap Pokémon impianmu dengan PokeAPI!</div>
+    <div id="loadingStatus" style="font-size: 13px; color: #ffd86b; font-weight: bold; margin-bottom: 12px; transition: opacity 0.3s;">Menghubungkan ke PokeAPI...</div>
 
     <div class="stats">
       <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
@@ -118,7 +119,8 @@
 
     <div class="stage">
       <div class="card" id="card">
-        <div class="emoji" id="cardEmoji">?</div>
+        <img class="pokemon-img" id="cardImg" src="" alt="Pokemon" style="display: none;">
+        <div class="emoji" id="cardEmoji">🔴</div>
         <div class="name" id="cardName">Tekan TARIK</div>
         <div class="rar" id="cardRarity"></div>
       </div>
