@@ -27,7 +27,7 @@ Setelah SSR keluar, pity balik ke `0` dan target pity baru akan diacak lagi.
 ## Cara pakai PokeAPI
 
 - `TARIK 10x` mengambil daftar Pokemon dari endpoint `/pokemon?limit=10&offset=...` dalam satu request REST.
-- Riwayat memakai thumbnail sprite Pokemon berdasarkan ID dari response PokeAPI.
+- Riwayat memakai thumbnail sprite Pokemon dari package `pokeapi-sprites` di jsDelivr.
 - `TARIK 10x` tidak request detail satu per satu.
 - `TARIK 1x` mengambil detail Pokemon dari `/pokemon-species/{id}`.
 - Dari species, app memilih default variety lalu mengambil detail Pokemon dari URL `/pokemon/{id atau name}` yang diberikan PokeAPI.

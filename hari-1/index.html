@@ -459,6 +459,10 @@
     }
 
     function spriteUrlPokemon(id) {
+      return `https://cdn.jsdelivr.net/npm/pokeapi-sprites@2.0.4/sprites/pokemon/${id}.png`;
+    }
+
+    function fallbackSpriteUrlPokemon(id) {
       return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
     }
 
@@ -612,7 +616,10 @@
       img.src = hasil.sprite;
       img.alt = hasil.nama;
       img.onerror = () => {
-        chip.textContent = `#${hasil.id}`;
+        img.onerror = () => {
+          chip.textContent = `#${hasil.id}`;
+        };
+        img.src = fallbackSpriteUrlPokemon(hasil.id);
       };
       chip.appendChild(img);
 
