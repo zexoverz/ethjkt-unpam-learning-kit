@@ -2,6 +2,12 @@
 
 ## 2026-07-06
 
+- Memperbaiki sumber gambar utama Pokemon agar memakai official Pokédex image dari `assets.pokemon.com`.
+- PokeAPI sprite tetap dipakai sebagai backup, karena URL `raw.githubusercontent.com` kadang bisa terkena limit dan gagal muncul.
+- Menambahkan fallback gambar lokal berbentuk Poké Ball supaya kartu tidak berhenti di simbol `?`.
+
+## 2026-07-06 - Render Fix
+
 - Memperbaiki render kartu agar tidak berhenti di simbol `?` saat gambar pertama gagal dimuat.
 - Gambar sekarang dicoba satu per satu: front sprite, official artwork, home, showdown, dream world, lalu shiny.
 - Data `pokemon-species` sekarang optional. Jika gagal, kartu tetap tampil memakai data utama dari `pokemon/{id}`.
