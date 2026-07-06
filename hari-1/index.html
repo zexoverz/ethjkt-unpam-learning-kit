@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gacha ETHJKT</title>
+<title>Pokemon Gacha Simulator</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
+    background: radial-gradient(circle at 50% 0%, #253d7a 0%, #101827 70%);
     color: #eaeaf0; min-height: 100vh;
     display: flex; align-items: center; justify-content: center; padding: 20px;
   }
   .app {
-    width: 100%; max-width: 460px; text-align: center;
+    width: 100%; max-width: 500px; text-align: center;
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 20px; padding: 24px 22px 28px;
@@ -21,7 +21,7 @@
   }
   h1 {
     font-size: 26px; letter-spacing: 1px; margin-bottom: 4px;
-    background: linear-gradient(90deg,#ffd86b,#ff7eb3,#7ee8ff);
+    background: linear-gradient(90deg,#ffcb05,#f04f45,#3d7dca);
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
   .subtitle { font-size: 12px; color: #8b90b0; margin-bottom: 18px; }
@@ -102,32 +102,32 @@
 </head>
 <body>
   <div class="app">
-    <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
+    <h1>POKEMON GACHA</h1>
+    <div class="subtitle">data Pokemon asli dari PokeAPI</div>
 
     <div class="stats">
-      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
+      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Pull</div></div>
+      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
     </div>
 
     <div class="pity">
-      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
+      <div class="pity-top"><span>Pity ke Legendary</span><span id="pityText">0 / 10</span></div>
       <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
     </div>
 
     <div class="stage">
       <div class="card" id="card">
         <div class="emoji" id="cardEmoji">?</div>
-        <div class="name" id="cardName">Tekan TARIK</div>
+        <div class="name" id="cardName">Tekan PULL</div>
         <div class="rar" id="cardRarity"></div>
       </div>
     </div>
 
-    <div class="result" id="resultText">Belum ada tarikan.</div>
+    <div class="result" id="resultText">Belum ada pull.</div>
 
     <div class="buttons">
-      <button class="btn" id="tarik1">TARIK 1x</button>
-      <button class="btn gold" id="tarik10">TARIK 10x</button>
+      <button class="btn" id="tarik1">PULL 1x</button>
+      <button class="btn gold" id="tarik10">PULL 10x</button>
     </div>
 
     <div class="hist-lbl">Riwayat Terakhir</div>
