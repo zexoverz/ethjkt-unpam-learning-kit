@@ -194,10 +194,10 @@
         const pokemonItem = {
           id: id,
           n: poke.name,
-          // Gambar resolusi tinggi (Official Artwork)
-          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`,
-          // Sprite kecil untuk history chip
-          sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+          // Gambar resolusi tinggi (Official Artwork) via jsDelivr CDN
+          image: `https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/other/official-artwork/${id}.png`,
+          // Sprite kecil untuk history chip via jsDelivr CDN
+          sprite: `https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/${id}.png`
         };
 
         // Klasifikasi Kelangkaan berdasarkan ID Pokédex:
