@@ -48,11 +48,17 @@
     width: 180px; height: 230px; border-radius: 18px;
     background: #171b30; border: 3px solid #2a2f4a;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative;
+    gap: 8px; position: relative; overflow: hidden;
+  }
+  .card .pokemon-img {
+    width: 110px; height: 110px; object-fit: contain;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,.5));
+    margin-bottom: 2px;
   }
   .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
-  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
+  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; text-transform: capitalize; }
   .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
+  .chip img { width: 28px; height: 28px; object-fit: contain; }
 
   /* warna per rarity */
   .card.common { border-color: #6b7280; }
