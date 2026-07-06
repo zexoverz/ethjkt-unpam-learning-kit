@@ -6,6 +6,7 @@
 <title>Pokemon Gacha Simulator</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
   body {
     font-family: "Segoe UI", system-ui, sans-serif;
     background: radial-gradient(circle at 50% 0%, #253d7a 0%, #101827 70%);
@@ -46,12 +47,22 @@
   .stage { display: flex; justify-content: center; margin-bottom: 20px; }
   .card {
     width: 220px; min-height: 280px; border-radius: 18px;
-    background: #171b30; border: 3px solid #2a2f4a;
+    background:
+      radial-gradient(circle at 50% 26%, rgba(255,255,255,.16), transparent 34%),
+      linear-gradient(180deg, #1d2543, #12182b);
+    border: 3px solid #2a2f4a;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative; padding: 16px 12px;
+    gap: 8px; position: relative; padding: 18px 12px;
+    overflow: hidden;
+  }
+  .card::before {
+    content: ""; position: absolute; inset: 18px 30px auto; height: 132px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(255,255,255,.20), rgba(255,255,255,.04) 58%, transparent 62%);
+    transform: translateY(4px);
   }
   .sprite {
-    width: 132px; height: 132px; object-fit: contain;
+    width: 150px; height: 150px; object-fit: contain; position: relative; z-index: 1;
     image-rendering: auto; filter: drop-shadow(0 8px 14px rgba(0,0,0,.45));
   }
   .sprite.placeholder {
@@ -59,9 +70,9 @@
     border-radius: 999px; background: rgba(255,255,255,.06);
     color: #8b90b0; font-size: 56px; font-weight: 800;
   }
-  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
-  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
-  .meta { color: #aeb4d6; font-size: 12px; text-transform: capitalize; }
+  .card .name { font-size: 18px; font-weight: 800; padding: 0 8px; position: relative; z-index: 1; }
+  .card .rar { font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; opacity: .95; position: relative; z-index: 1; }
+  .meta { color: #aeb4d6; font-size: 12px; text-transform: capitalize; position: relative; z-index: 1; }
 
   .card.common { border-color: #6b7280; }
   .card.common .rar { color: #9aa3b2; }
@@ -104,6 +115,7 @@
     background: #171b30; border: 2px solid #2a2f4a;
   }
   .chip img { width: 34px; height: 34px; object-fit: contain; }
+  .chip .mini-placeholder { color: #8b90b0; font-size: 18px; font-weight: 800; }
   .chip.rare { border-color: #4da6ff; }
   .chip.epic { border-color: #b06bff; }
   .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
@@ -225,8 +237,7 @@
   }
 
   function gabungDataPokemon(pokemon, species) {
-    const officialArt = pokemon.sprites.other["official-artwork"].front_default;
-    const sprite = officialArt || pokemon.sprites.front_default || "";
+    const sprite = pilihSprite(pokemon);
     const types = pokemon.types.map((typeInfo) => typeInfo.type.name);
     const baseStatTotal = pokemon.stats.reduce((sum, statInfo) => sum + statInfo.base_stat, 0);
     const rarity = tentukanRarity(species, pokemon, baseStatTotal);
@@ -241,6 +252,19 @@
       baseStatTotal,
       captureRate: species.capture_rate
     };
+  }
+
+  function pilihSprite(pokemon) {
+    const sprites = pokemon.sprites;
+
+    return (
+      sprites.other["official-artwork"].front_default ||
+      sprites.other.home.front_default ||
+      sprites.other.dream_world.front_default ||
+      sprites.front_default ||
+      sprites.front_shiny ||
+      ""
+    );
   }
 
   function tentukanRarity(species, pokemon, baseStatTotal) {
@@ -278,9 +302,7 @@
   }
 
   function tampilkan(hasil) {
-    cardPlaceholder.hidden = Boolean(hasil.sprite);
-    cardImage.hidden = !hasil.sprite;
-    cardImage.src = hasil.sprite;
+    tampilkanGambarUtama(hasil);
     cardImage.alt = hasil.nama;
     cardName.textContent = hasil.nama;
     cardMeta.textContent = `#${hasil.id} | ${hasil.types.join(" / ")} | BST ${hasil.baseStatTotal}`;
@@ -297,6 +319,24 @@
     resultText.textContent = `Hasil terakhir: ${hasil.nama} (${hasil.rarity})`;
   }
 
+  function tampilkanGambarUtama(hasil) {
+    cardImage.onerror = () => {
+      cardImage.hidden = true;
+      cardPlaceholder.hidden = false;
+    };
+
+    if (!hasil.sprite) {
+      cardImage.removeAttribute("src");
+      cardImage.hidden = true;
+      cardPlaceholder.hidden = false;
+      return;
+    }
+
+    cardPlaceholder.hidden = true;
+    cardImage.hidden = false;
+    cardImage.src = hasil.sprite;
+  }
+
   function tambahRiwayat(hasil) {
     const chip = document.createElement("div");
     chip.className = `chip ${hasil.kelas}`;
@@ -306,9 +346,13 @@
       const image = document.createElement("img");
       image.src = hasil.sprite;
       image.alt = hasil.nama;
+      image.onerror = () => {
+        image.remove();
+        chip.appendChild(buatPlaceholderKecil());
+      };
       chip.append(image);
     } else {
-      chip.textContent = "?";
+      chip.appendChild(buatPlaceholderKecil());
     }
 
     history.prepend(chip);
@@ -316,6 +360,13 @@
     while (history.children.length > 12) {
       history.lastElementChild.remove();
     }
+  }
+
+  function buatPlaceholderKecil() {
+    const placeholder = document.createElement("span");
+    placeholder.className = "mini-placeholder";
+    placeholder.textContent = "?";
+    return placeholder;
   }
 
   function setLoading(isLoading) {
