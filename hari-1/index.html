@@ -249,12 +249,47 @@
   });
 
   // CHECKPOINT 4 - Riwayat + tombol
-  //   TODO: fungsi tambahRiwayat(hasil) -> bikin div .chip <kelas>, isi emoji,
-  //         taruh paling depan di #history, batasi maks 12 chip.
-  //   TODO: tombol #tarik1 -> tarik 1x. tombol #tarik10 -> ulang 10x.
+  // Fungsi untuk menambahkan hasil gacha ke riwayat (history)
+  function tambahRiwayat(hasil) {
+    const historyContainer = document.getElementById("history");
 
-  // >> Buka Codex, kerjain checkpoint SATU PER SATU. Baca hasilnya.
-  // >> Kamu PILOT-nya, bukan penonton.
+    // Membuat elemen chip baru
+    const chip = document.createElement("div");
+    chip.className = `chip ${hasil.kelas}`;
+    chip.textContent = hasil.emoji;
+
+    // Masukkan ke posisi paling depan (paling kiri/atas di riwayat)
+    historyContainer.insertBefore(chip, historyContainer.firstChild);
+
+    // Batasi riwayat maksimal hanya menampilkan 12 item terakhir
+    if (historyContainer.children.length > 12) {
+      historyContainer.removeChild(historyContainer.lastChild);
+    }
+  }
+
+  // Event listener tombol TARIK 1x
+  document.getElementById("tarik1").addEventListener("click", () => {
+    const hasil = rollSatu();
+    tampilkan(hasil);
+    tambahRiwayat(hasil);
+  });
+
+  // Event listener tombol TARIK 10x
+  document.getElementById("tarik10").addEventListener("click", () => {
+    let hasilTerakhir;
+    
+    // Melakukan perulangan gacha sebanyak 10 kali
+    for (let i = 0; i < 10; i++) {
+      const hasil = rollSatu();
+      tambahRiwayat(hasil);
+      hasilTerakhir = hasil;
+    }
+    
+    // Tampilkan hasil tarikan yang ke-10 di kartu utama
+    if (hasilTerakhir) {
+      tampilkan(hasilTerakhir);
+    }
+  });
 </script>
 </body>
 </html>
