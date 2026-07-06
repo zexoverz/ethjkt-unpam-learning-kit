@@ -114,6 +114,10 @@
     min-height: 100px; padding: 8px; border: 1px solid var(--line); border-radius: 8px;
     background: #fbfcff; display: grid; place-items: center; text-align: center;
   }
+  .chip-art {
+    width: 46px; height: 46px; object-fit: contain;
+    filter: drop-shadow(0 8px 10px rgba(23,32,42,.16));
+  }
   .chip-dex { font-size: 20px; font-weight: 900; color: var(--blue); }
   .chip-name { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 800; }
   .chip-rarity { font-size: 10px; color: var(--muted); text-transform: uppercase; }
@@ -309,6 +313,27 @@
     return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg.trim())}`;
   }
 
+  function createHistoryFallbackDataUrl(roll) {
+    const rarityLabel = rarityConfig[roll.rarity].label;
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Pokemon ${roll.id}">
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="${roll.rarity === "ssr" ? "#bd7b00" : "#2f6fd6"}" />
+            <stop offset="100%" stop-color="${roll.rarity === "common" ? "#667085" : "#e43d30"}" />
+          </linearGradient>
+        </defs>
+        <rect width="120" height="120" rx="18" fill="url(#bg)" />
+        <circle cx="60" cy="52" r="22" fill="rgba(255,255,255,.92)" />
+        <circle cx="60" cy="52" r="12" fill="#17202a" />
+        <text x="60" y="96" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="900" fill="white">#${String(roll.id).padStart(3, "0")}</text>
+        <text x="60" y="20" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="10" font-weight="800" fill="rgba(255,255,255,.92)">${rarityLabel}</text>
+      </svg>
+    `;
+
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg.trim())}`;
+  }
+
   async function cachedFetch(url) {
     const key = CACHE_PREFIX + url;
     const cached = readCache(key);
@@ -430,6 +455,16 @@
     const chip = document.createElement("div");
     chip.className = `chip ${roll.rarity}`;
     chip.title = cardData ? `${cardData.name} (${roll.rarityLabel})` : `Pokemon #${roll.id} (${roll.rarityLabel})`;
+
+    const thumb = document.createElement("img");
+    thumb.className = "chip-art";
+    thumb.alt = "";
+    thumb.loading = "lazy";
+    thumb.src = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${String(roll.id).padStart(3, "0")}.png`;
+    thumb.onerror = () => {
+      thumb.src = createHistoryFallbackDataUrl(roll);
+    };
+    chip.appendChild(thumb);
 
     const dex = document.createElement("div");
     dex.className = "chip-dex";

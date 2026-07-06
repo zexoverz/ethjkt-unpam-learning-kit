@@ -36,3 +36,8 @@
 
 - Gambar utama sekarang mengambil artwork resmi dari host Pokemon, bukan dari sprite CDN GitHub.
 - Kalau host itu gagal, kartu tetap menampilkan fallback lokal supaya layout tidak kosong.
+
+## Recent pull thumbnails
+
+- Riwayat pull sekarang menampilkan gambar Pokemon kecil di setiap chip.
+- Thumbnail memakai host artwork resmi juga, lalu jatuh ke gambar fallback kecil kalau request gambar gagal.
