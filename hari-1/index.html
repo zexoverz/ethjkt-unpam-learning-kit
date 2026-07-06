@@ -181,10 +181,39 @@
   }
 
   // CHECKPOINT 2 - Logika tarikan
-  //   TODO: fungsi rollSatu() -> total & pity nambah 1, pakai Math.random():
-  //         pity>=10 ATAU acak<0.03 -> SSR (pity balik 0, ssrCount nambah)
-  //         acak<0.10 -> EPIC, acak<0.30 -> RARE, selain itu -> COMMON.
-  //         balikin { kelas, nama, emoji }.
+  // Fungsi untuk melakukan satu kali tarikan (roll) gacha
+  function rollSatu() {
+    total++;
+    pity++;
+    
+    let kelas = "common";
+    let item;
+    const acak = Math.random();
+
+    // Cek apakah mencapai limit pity yang dirandomisasi atau hoki mendapatkan SSR (3%)
+    if (pity >= pityLimit || acak < 0.03) {
+      kelas = "ssr";
+      item = pilihAcak(hadiah.ssr);
+      pity = 0; // reset pity ke 0
+      ssrCount++;
+      pityLimit = getRandomPityLimit(); // acak limit pity baru untuk siklus gacha berikutnya
+    } else if (acak < 0.10) { // Peluang EPIC (7%) -> acak dari 0.03 sampai 0.10
+      kelas = "epic";
+      item = pilihAcak(hadiah.epic);
+    } else if (acak < 0.30) { // Peluang RARE (20%) -> acak dari 0.10 sampai 0.30
+      kelas = "rare";
+      item = pilihAcak(hadiah.rare);
+    } else { // Peluang COMMON (70%)
+      kelas = "common";
+      item = pilihAcak(hadiah.common);
+    }
+
+    return {
+      kelas: kelas,
+      nama: item.n,
+      emoji: item.e
+    };
+  }
 
   // CHECKPOINT 3 - Tampilkan + animasi
   //   TODO: fungsi tampilkan(hasil) -> isi #cardEmoji, #cardName, #cardRarity,
