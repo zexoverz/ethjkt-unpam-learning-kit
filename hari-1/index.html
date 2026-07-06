@@ -151,29 +151,12 @@
   // ==========================================================
 
   // CHECKPOINT 1 - Data & acak
-  // Data hadiah gacha berdasarkan tingkat kelangkaan (rarity)
+  // Data hadiah gacha berdasarkan tingkat kelangkaan (rarity), akan diisi dari PokeAPI
   const hadiah = {
-    ssr: [
-      { n: "1 ETH", e: "🪙" },
-      { n: "Laptop RTX", e: "💻" },
-      { n: "Devcon Ticket", e: "✈️" }
-    ],
-    epic: [
-      { n: "Jaket Hoodie ETH", e: "🧥" },
-      { n: "Hardware Wallet", e: "🔒" },
-      { n: "Tiket VIP ETHJKT", e: "🎟️" }
-    ],
-    rare: [
-      { n: "Kaos ETHJKT", e: "👕" },
-      { n: "Stiker Ethereum", e: "🏷️" },
-      { n: "Buku Solidity", e: "📘" }
-    ],
-    common: [
-      { n: "Garam", e: "🧂" },
-      { n: "Teh Obeng", e: "🍹" },
-      { n: "Indomie", e: "🍜" },
-      { n: "Kopi Saset", e: "☕" }
-    ]
+    ssr: [],
+    epic: [],
+    rare: [],
+    common: []
   };
 
   // Variabel state untuk gacha
@@ -189,8 +172,70 @@
 
   // Fungsi helper untuk mengambil satu item secara acak dari array
   function pilihAcak(arr) {
+    if (!arr || arr.length === 0) return { id: 0, n: "Unknown", image: "", sprite: "" };
     return arr[Math.floor(Math.random() * arr.length)];
   }
+
+  // Fungsi untuk mengambil data Pokémon dari PokeAPI dan mengelompokkan ke kategori rarity
+  async function loadPokeData() {
+    const loadingStatus = document.getElementById("loadingStatus");
+    try {
+      loadingStatus.textContent = "Mengambil data Pokémon...";
+      // Mengambil 250 pokemon pertama (Gen 1 & awal Gen 2)
+      const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=250");
+      if (!res.ok) throw new Error("Gagal mengambil data dari PokeAPI");
+      const data = await res.json();
+      
+      data.results.forEach(poke => {
+        // Ekstrak ID dari URL detail Pokémon
+        const urlParts = poke.url.split('/').filter(Boolean);
+        const id = parseInt(urlParts[urlParts.length - 1]);
+        
+        const pokemonItem = {
+          id: id,
+          n: poke.name,
+          // Gambar resolusi tinggi (Official Artwork)
+          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`,
+          // Sprite kecil untuk history chip
+          sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+        };
+
+        // Klasifikasi Kelangkaan berdasarkan ID Pokédex:
+        // SSR (Legendary & Mythical / Pseudo-legendary): Mewtwo, Mew, Lugia, Ho-Oh, Dragonite, dll.
+        const ssrIds = [144, 145, 146, 149, 150, 151, 243, 244, 245, 248, 249, 250, 251];
+        // Epic (Final evolution starter + Pokémon kuat): Charizard, Blastoise, Gengar, Gyarados, dll.
+        const epicIds = [3, 6, 9, 59, 65, 68, 94, 130, 131, 143, 154, 157, 160, 181, 196, 197, 212, 214];
+        // Rare (Middle stage starter + Pokémon menarik): Pikachu, Eevee, Togepi, Dragonair, dll.
+        const rareIds = [2, 5, 8, 25, 26, 35, 37, 38, 39, 63, 64, 92, 93, 123, 133, 134, 135, 136, 147, 148, 153, 156, 159, 175, 183, 185];
+
+        if (ssrIds.includes(id)) {
+          hadiah.ssr.push(pokemonItem);
+        } else if (epicIds.includes(id)) {
+          hadiah.epic.push(pokemonItem);
+        } else if (rareIds.includes(id)) {
+          hadiah.rare.push(pokemonItem);
+        } else {
+          hadiah.common.push(pokemonItem);
+        }
+      });
+
+      loadingStatus.style.opacity = "0";
+      setTimeout(() => {
+        loadingStatus.style.display = "none";
+      }, 300);
+      
+      // Mengaktifkan tombol-tombol setelah data siap
+      document.getElementById("tarik1").disabled = false;
+      document.getElementById("tarik10").disabled = false;
+    } catch (err) {
+      console.error(err);
+      loadingStatus.textContent = "Gagal memuat Pokémon. Silakan refresh halaman!";
+      loadingStatus.style.color = "#ff7eb3";
+    }
+  }
+
+  // Jalankan pemuatan data PokeAPI
+  loadPokeData();
 
   // CHECKPOINT 2 - Logika tarikan
   // Fungsi untuk melakukan satu kali tarikan (roll) gacha
