@@ -43,16 +43,29 @@
     transition: width 0.35s ease;
   }
 
-  .stage { display: flex; justify-content: center; margin-bottom: 20px; }
+  .stage { display: flex; justify-content: center; margin-bottom: 20px; position: relative; }
   .card {
-    width: 180px; height: 230px; border-radius: 18px;
+    width: 260px; min-height: 420px; border-radius: 18px;
     background: #171b30; border: 3px solid #2a2f4a;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    gap: 7px; position: relative; padding: 12px 12px 14px; overflow: visible;
   }
-  .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
-  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
-  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
+  .card .rar { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; align-self: flex-start; }
+  .card .sprite-wrap { width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; }
+  .card .sprite { width: 140px; height: 140px; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(0,0,0,.5)); image-rendering: auto; }
+  .card .name { font-size: 19px; font-weight: 700; padding: 0 8px; text-align: center; text-transform: capitalize; }
+  .card .dex { font-size: 11px; color: #8b90b0; margin-top: -3px; }
+  .card .types { display: flex; gap: 6px; margin: 2px 0; }
+  .type-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 999px; color: #0a0d1c;
+  }
+  .card .stats { width: 100%; display: flex; flex-direction: column; gap: 4px; padding: 0 6px; margin-top: 2px; }
+  .stat-row { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+  .stat-row .sn { width: 56px; color: #b9bdd8; text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
+  .stat-row .sbar { flex: 1; height: 7px; background: rgba(255,255,255,.08); border-radius: 4px; overflow: hidden; }
+  .stat-row .sfill { height: 100%; background: linear-gradient(90deg,#4da6ff,#7ee8ff); border-radius: 4px; transition: width .4s ease; }
+  .stat-row .sv { width: 26px; text-align: right; font-weight: 700; color: #eaeaf0; }
 
   /* warna per rarity */
   .card.common { border-color: #6b7280; }
@@ -71,6 +84,47 @@
   @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,210,74,.7)} 50%{box-shadow:0 0 55px rgba(255,210,74,1)} }
   .card.reveal { animation: pop .4s ease; }
   .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
+
+  /* === type colors === */
+  .type-normal{background:#a8a878}.type-fire{background:#f08030}.type-water{background:#6890f0}
+  .type-electric{background:#f8d030}.type-grass{background:#78c850}.type-ice{background:#98d8d8}
+  .type-fighting{background:#c03028}.type-poison{background:#a040a0}.type-ground{background:#e0c068}
+  .type-flying{background:#a890f0}.type-psychic{background:#f85888}.type-bug{background:#a8b820}
+  .type-rock{background:#b8a038}.type-ghost{background:#705898}.type-dragon{background:#7038f8}
+  .type-dark{background:#705848}.type-steel{background:#b8b8d0}.type-fairy{background:#ee99ac}
+
+  /* === cry + flavor === */
+  .cry-btn {
+    position: absolute; top: 10px; right: 10px; width: 30px; height: 30px;
+    border: none; border-radius: 50%; cursor: pointer; font-size: 14px;
+    background: rgba(255,255,255,.1); color: #eaeaf0; display: flex; align-items: center; justify-content: center;
+  }
+  .cry-btn:hover { background: rgba(255,255,255,.2); }
+  .card .flavor { font-size: 11px; color: #b9bdd8; font-style: italic; line-height: 1.45; margin: 4px 4px 2px; padding: 6px 8px; background: rgba(255,255,255,.03); border-radius: 8px; text-align: center; }
+
+  /* === 10x grid === */
+  .grid10 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 18px; }
+  .mini {
+    aspect-ratio: 3/4; border-radius: 10px; background: #171b30; border: 2px solid #2a2f4a;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px;
+    position: relative; animation: pop .35s ease backwards;
+  }
+  .mini img { width: 100%; max-width: 48px; height: 48px; object-fit: contain; }
+  .mini .mn { font-size: 8px; text-transform: capitalize; color: #b9bdd8; text-align: center; line-height: 1; }
+  .mini.common { border-color: #6b7280; }
+  .mini.rare { border-color: #4da6ff; box-shadow: 0 0 8px rgba(77,166,255,.4); }
+  .mini.epic { border-color: #b06bff; box-shadow: 0 0 10px rgba(176,107,255,.5); }
+  .mini.ssr  { border-color: #ffd24a; box-shadow: 0 0 14px rgba(255,210,74,.7); }
+
+  /* === loading + disabled === */
+  .loading {
+    position: absolute; inset: 0; background: rgba(10,13,28,.7); border-radius: 18px;
+    display: none; align-items: center; justify-content: center; z-index: 5;
+  }
+  .loading.show { display: flex; }
+  .spinner { width: 38px; height: 38px; border: 4px solid rgba(255,255,255,.15); border-top-color: #4da6ff; border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .btn:disabled { opacity: .5; cursor: wait; }
 
   .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
   .btn {
@@ -112,9 +166,15 @@
 
     <div class="stage">
       <div class="card" id="card">
-        <div class="emoji" id="cardEmoji">?</div>
-        <div class="name" id="cardName">Tekan TARIK</div>
         <div class="rar" id="cardRarity"></div>
+        <button class="cry-btn" id="cryBtn" title="Putar suara">🔊</button>
+        <div class="sprite-wrap"><img class="sprite" id="cardSprite" alt="" src=""></div>
+        <div class="name" id="cardName">Tekan TARIK</div>
+        <div class="dex" id="cardDex"></div>
+        <div class="types" id="cardTypes"></div>
+        <div class="stats" id="cardStats"></div>
+        <div class="flavor" id="flavor">Tekan TARIK untuk memanggil Pokémon pertamamu dari PokeAPI!</div>
+        <div class="loading" id="loading"><div class="spinner"></div></div>
       </div>
     </div>
 
@@ -122,6 +182,8 @@
       <button class="btn" id="tarik1">TARIK 1x</button>
       <button class="btn gold" id="tarik10">TARIK 10x</button>
     </div>
+
+    <div class="grid10" id="grid10"></div>
 
     <div class="hist-lbl">Riwayat Terakhir</div>
     <div class="history" id="history"></div>
@@ -138,65 +200,161 @@
   // Ikutin urutan checkpoint di README.md. Contoh prompt ada di sana.
   // ==========================================================
 
-  // ----- CHECKPOINT 1 - Data & acak -----
-  const hadiah = {
-    ssr:     [ { n: "Drago Emas",    e: "🐉" }, { n: "Kristal Kematian", e: "💎" }, { n: "Mahkota Dewa", e: "👑" } ],
-    epic:    [ { n: "Pedang Bunga",  e: "🌸" }, { n: "Buku Sihir",      e: "📕" }, { n: "Kalung Bulan", e: "🌙" } ],
-    rare:    [ { n: "Ramuan Biru",   e: "🧪" }, { n: "Batu Apung",      e: "🪨" }, { n: "Lilin Ajaib",  e: "🕯️" } ],
-    common:  [ { n: "Kayu Bekas",    e: "🪵" }, { n: "Daun Kering",     e: "🍂" }, { n: "Kerang Tua",   e: "🐚" } ]
-  };
+  // ==========================================================
+  // GACHA ETHJKT × PokeAPI
+  // Sekarang tiap roll ngambil Pokémon asli dari https://pokeapi.co
+  // Rarity dipetakan dari sifat Pokémon (legendary/base_experience),
+  // bukan angka random lagi. Lihat LOG.md buat penjelasan lengkap.
+  // ==========================================================
 
-  let pity = 0;        // penghitung tarikan sejak SSR terakhir
-  let total = 0;       // total tarikan
-  let ssrCount = 0;    // jumlah SSR yang didapat
+  const MAX_DEX = 1025;     // jumlah Pokémon di PokeAPI (id 1–1025)
+  const API = "https://pokeapi.co/api/v2";
 
-  // ambil 1 item acak dari sebuah array
-  function pilihAcak(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
+  // state gacha
+  let pity = 0;
+  let total = 0;
+  let ssrCount = 0;
+  let busy = false;         // true saat ada fetch berjalan (blok tombol)
+
+  // cache in-memory biar gak fetch ulang di sesi yang sama
+  const memCache = new Map();
+
+  // ----- CP-A: Fetch dasar (dengan localStorage cache) -----
+  function cacheGet(id) {
+    const raw = localStorage.getItem("pokeapi:" + id);
+    return raw ? JSON.parse(raw) : null;
+  }
+  function cacheSet(id, data) {
+    try { localStorage.setItem("pokeapi:" + id, JSON.stringify(data)); } catch (e) {}
   }
 
-  // ----- CHECKPOINT 2 - Logika tarikan -----
-  function rollSatu() {
+  // ambil 1 Pokémon: data inti + species (flavor text + legendary).
+  // Balikin object bersih { id, name, types, stats, sprite, spriteMini, cry, flavor, isLegend, isMythical, baseExp }
+  async function ambilPokemon(id) {
+    if (memCache.has(id)) return memCache.get(id);
+    const cached = cacheGet(id);
+    if (cached) { memCache.set(id, cached); return cached; }
+
+    const [p, s] = await Promise.all([
+      fetch(API + "/pokemon/" + id).then(r => { if (!r.ok) throw new Error("pokemon " + id); return r.json(); }),
+      fetch(API + "/pokemon-species/" + id).then(r => { if (!r.ok) throw new Error("species " + id); return r.json(); })
+    ]);
+
+    const flavorEntry = s.flavor_text_entries.find(f => f.language.name === "en")
+                   || s.flavor_text_entries[0];
+    const flavor = flavorEntry
+      ? flavorEntry.flavor_text.replace(/[\n\f\r]/g, " ").replace(/\s+/g, " ").trim()
+      : "";
+
+    const data = {
+      id: p.id,
+      name: p.name,
+      types: p.types.map(t => t.type.name),
+      stats: p.stats.map(st => ({ name: st.stat.name, base: st.base_stat })),
+      sprite:        p.sprites.other["official-artwork"].front_default || p.sprites.front_default,
+      spriteMini:    p.sprites.front_default,
+      cry:           p.cries.latest,
+      flavor:        flavor,
+      isLegend:      s.is_legendary,
+      isMythical:    s.is_mythical,
+      baseExp:       p.base_experience || 0
+    };
+
+    memCache.set(id, data);
+    cacheSet(id, data);
+    return data;
+  }
+
+  // ----- CP-B: Rarity dari data Pokémon asli -----
+  function hitungRarity(poke) {
+    if (poke.isLegend || poke.isMythical) return "ssr";
+    if (poke.baseExp >= 200)               return "epic";
+    if (poke.baseExp >= 100)               return "rare";
+    return "common";
+  }
+
+  // ----- CP-B + pity: logika tarikan -----
+  // SSR paksa tiap 10 tarikan (pity). Selain itu, rarity mengikuti data Pokémon.
+  // Karena Pokémon langka itu langka, kita pakai base rate kecil + pity guarantee.
+  async function rollSatu() {
     total++;
     pity++;
+    const forcedSSR = pity >= 10;
 
-    const acak = Math.random();
-    let kelas;
+    // cari Pokémon yang rarity-nya cocok dengan pity/rate
+    let poke, kelas, attempts = 0;
+    do {
+      poke = await ambilPokemon(1 + Math.floor(Math.random() * MAX_DEX));
+      kelas = hitungRarity(poke);
+      attempts++;
+      // forcedSSR -> butuh legendary/mythical; kalau gak dapet dalam 8 percobaan,
+      // ambil apa adanya (rarity tertinggi yang kepegang) biar gak loop selamanya.
+      if (forcedSSR && kelas !== "ssr" && attempts < 8) continue;
+      break;
+    } while (true);
 
-    // SSR: dijamin tiap 10 tarikan (pity) ATAU peluang 3% tiap tarik
-    if (pity >= 10 || acak < 0.03) {
-      kelas = "ssr";
-      pity = 0;
-      ssrCount++;
-    } else if (acak < 0.10) {       // 0.03 - 0.10 -> EPIC
-      kelas = "epic";
-    } else if (acak < 0.30) {       // 0.10 - 0.30 -> RARE
-      kelas = "rare";
-    } else {                        // selainnya -> COMMON
-      kelas = "common";
-    }
-
-    const item = pilihAcak(hadiah[kelas]);
-    return { kelas, nama: item.n, emoji: item.e };
+    if (kelas === "ssr") { pity = 0; ssrCount++; }
+    return { kelas, poke };
   }
 
-  // ----- CHECKPOINT 3 - Tampilkan + animasi -----
+  // ----- CP-C/D: Tampilkan kartu -----
   const cardEl     = document.getElementById("card");
-  const cardEmoji  = document.getElementById("cardEmoji");
+  const cardSprite = document.getElementById("cardSprite");
   const cardName   = document.getElementById("cardName");
+  const cardDex    = document.getElementById("cardDex");
   const cardRarity = document.getElementById("cardRarity");
+  const cardTypes  = document.getElementById("cardTypes");
+  const cardStats  = document.getElementById("cardStats");
+  const flavorEl   = document.getElementById("flavor");
   const totalEl    = document.getElementById("total");
   const ssrCountEl = document.getElementById("ssrCount");
   const pityTextEl = document.getElementById("pityText");
   const pityFillEl = document.getElementById("pityFill");
+  const loadingEl  = document.getElementById("loading");
+  const cryBtn     = document.getElementById("cryBtn");
+  const grid10El   = document.getElementById("grid10");
+  let lastCry = null;
 
   function tampilkan(hasil) {
-    // isi kartu
-    cardEmoji.textContent  = hasil.emoji;
-    cardName.textContent   = hasil.nama;
+    const p = hasil.poke;
+    cardSprite.src = p.sprite;
+    cardSprite.alt = p.name;
+    cardName.textContent = p.name;
+    cardDex.textContent  = "#" + String(p.id).padStart(4, "0");
     cardRarity.textContent = hasil.kelas.toUpperCase();
 
-    // trik reset animasi: balikin ke "card", paksa reflow, baru pasang kelas+reveal
+    // tipe
+    cardTypes.innerHTML = "";
+    p.types.forEach(t => {
+      const b = document.createElement("span");
+      b.className = "type-badge type-" + t;
+      b.textContent = t;
+      cardTypes.appendChild(b);
+    });
+
+    // stats bar (base stat maks ~255)
+    cardStats.innerHTML = "";
+    p.stats.forEach(st => {
+      const row = document.createElement("div");
+      row.className = "stat-row";
+      row.innerHTML =
+        '<span class="sn">' + st.name.replace("special-", "sp-") + '</span>' +
+        '<span class="sbar"><span class="sfill" style="width:0%"></span></span>' +
+        '<span class="sv">' + st.base + '</span>';
+      cardStats.appendChild(row);
+      // trigger animasi bar di frame berikutnya
+      requestAnimationFrame(() => {
+        row.querySelector(".sfill").style.width = Math.min(100, st.base / 255 * 100) + "%";
+      });
+    });
+
+    // flavor text
+    flavorEl.textContent = p.flavor || "—";
+
+    // cry
+    lastCry = p.cry;
+
+    // reset + pasang animasi reveal
     cardEl.className = "card";
     void cardEl.offsetWidth;
     cardEl.className = "card " + hasil.kelas + " reveal";
@@ -206,36 +364,85 @@
     ssrCountEl.textContent = ssrCount;
     pityTextEl.textContent = pity + " / 10";
     pityFillEl.style.width = (pity / 10 * 100) + "%";
+
+    // SSR -> bunyikan cry otomatis
+    if (hasil.kelas === "ssr") mainkanCry();
   }
 
-  // ----- CHECKPOINT 4 - Riwayat + tombol -----
-  const historyEl = document.getElementById("history");
+  // ----- CP-E: Suara -----
+  function mainkanCry() {
+    if (!lastCry) return;
+    const audio = new Audio(lastCry);
+    audio.volume = 0.5;
+    audio.play().catch(() => {});  // abaikan kalau browser block autoplay
+  }
+  cryBtn.addEventListener("click", mainkanCry);
 
+  // ----- CP-F: grid 10x -----
+  function tampilkanGrid(hasilList) {
+    grid10El.innerHTML = "";
+    hasilList.forEach((h, i) => {
+      const m = document.createElement("div");
+      m.className = "mini " + h.kelas;
+      m.style.animationDelay = (i * 60) + "ms";
+      m.innerHTML =
+        '<img src="' + h.poke.spriteMini + '" alt="' + h.poke.name + '">' +
+        '<div class="mn">' + h.poke.name + '</div>';
+      grid10El.appendChild(m);
+    });
+  }
+
+  // ----- CP-G: tombol + loading state -----
+  function setBusy(state) {
+    busy = state;
+    document.getElementById("tarik1").disabled  = state;
+    document.getElementById("tarik10").disabled = state;
+    loadingEl.classList.toggle("show", state);
+  }
+
+  async function tarik1x() {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const hasil = await rollSatu();
+      tampilkan(hasil);
+      tambahRiwayat(hasil);
+    } catch (e) {
+      flavorEl.textContent = "Gagal ambil data Pokémon. Coba lagi. (" + e.message + ")";
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function tarik10x() {
+    if (busy) return;
+    setBusy(true);
+    grid10El.innerHTML = "";
+    try {
+      const hasilList = [];
+      for (let i = 0; i < 10; i++) {
+        const h = await rollSatu();
+        hasilList.push(h);
+        tambahRiwayat(h);
+      }
+      tampilkanGrid(hasilList);
+      tampilkan(hasilList[hasilList.length - 1]); // kartu besar = hasil terakhir
+    } catch (e) {
+      flavorEl.textContent = "Gagal ambil data Pokémon. Coba lagi. (" + e.message + ")";
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // ----- Riwayat (chip pake sprite mini, bukan emoji) -----
+  const historyEl = document.getElementById("history");
   function tambahRiwayat(hasil) {
     const chip = document.createElement("div");
     chip.className = "chip " + hasil.kelas;
-    chip.textContent = hasil.emoji;
-    historyEl.insertBefore(chip, historyEl.firstChild); // paling depan
-    while (historyEl.children.length > 12) {
-      historyEl.removeChild(historyEl.lastChild);       // batasi maks 12 chip
-    }
-  }
-
-  // satu kali tarik
-  function tarik1x() {
-    const hasil = rollSatu();
-    tampilkan(hasil);
-    tambahRiwayat(hasil);
-  }
-
-  // sepuluh kali tarik: jalankan rollSatu() 10x, kartu terakhir yang ditampilkan
-  function tarik10x() {
-    let hasil;
-    for (let i = 0; i < 10; i++) {
-      hasil = rollSatu();
-      tambahRiwayat(hasil);
-    }
-    tampilkan(hasil);
+    chip.title = hasil.poke.name + " (#" + hasil.poke.id + ")";
+    chip.innerHTML = '<img src="' + hasil.poke.spriteMini + '" alt="' + hasil.poke.name + '" style="width:24px;height:24px;object-fit:contain;">';
+    historyEl.insertBefore(chip, historyEl.firstChild);
+    while (historyEl.children.length > 12) historyEl.removeChild(historyEl.lastChild);
   }
 
   document.getElementById("tarik1").addEventListener("click", tarik1x);
