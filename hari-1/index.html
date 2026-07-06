@@ -279,11 +279,21 @@
   function tampilkan(hasil) {
     const card = document.getElementById("card");
     const cardEmoji = document.getElementById("cardEmoji");
+    const cardImg = document.getElementById("cardImg");
     const cardName = document.getElementById("cardName");
     const cardRarity = document.getElementById("cardRarity");
 
-    // Isi konten kartu
-    cardEmoji.textContent = hasil.emoji;
+    // Tampilkan gambar dan sembunyikan emoji default jika ada gambar
+    if (hasil.image) {
+      cardImg.src = hasil.image;
+      cardImg.style.display = "block";
+      cardEmoji.style.display = "none";
+    } else {
+      cardImg.style.display = "none";
+      cardEmoji.style.display = "block";
+      cardEmoji.textContent = "🔴";
+    }
+
     cardName.textContent = hasil.nama;
     cardRarity.textContent = hasil.kelas.toUpperCase();
 
