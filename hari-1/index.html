@@ -88,6 +88,10 @@
   .btn:hover { filter: brightness(1.08); }
   .btn:active { transform: scale(.95); }
   .btn.gold { background: linear-gradient(180deg,#ffe58a,#ffb347); }
+  .btn:disabled {
+    background: #2a2f4a !important; color: #8b90b0 !important;
+    cursor: not-allowed; filter: none !important; transform: none !important;
+  }
 
   .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
   .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
