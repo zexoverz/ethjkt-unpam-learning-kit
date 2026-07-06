@@ -143,23 +143,128 @@
   //         tiap item { n: "nama", e: "emoji" }.
   //   TODO: bikin variabel pity=0, total=0, ssrCount=0.
   //   TODO: fungsi pilihAcak(arr) -> balikin 1 item acak dari array.
+  const hadiah = {
+    ssr: [
+      { n: "ETHJKT Genesis", e: "💎" },
+      { n: "Smart Contract Master", e: "🧠" },
+      { n: "OnChain Legend", e: "👑" }
+    ],
+    epic: [
+      { n: "AI Prompt Pro", e: "⚡" },
+      { n: "Solidity Wizard", e: "🪄" },
+      { n: "Gas Optimizer", e: "🔥" }
+    ],
+    rare: [
+      { n: "Wallet Baru", e: "👛" },
+      { n: "Testnet Hunter", e: "🧪" },
+      { n: "Git Commit Rapi", e: "📝" }
+    ],
+    common: [
+      { n: "Bug Kecil", e: "🐞" },
+      { n: "Kopi Dingin", e: "☕" },
+      { n: "Console Log", e: "🖥️" },
+      { n: "README Dibaca", e: "📘" }
+    ]
+  };
+
+  let pity = 0;
+  let total = 0;
+  let ssrCount = 0;
+
+  function pilihAcak(arr) {
+    const index = Math.floor(Math.random() * arr.length);
+    return arr[index];
+  }
 
   // CHECKPOINT 2 - Logika tarikan
   //   TODO: fungsi rollSatu() -> total & pity nambah 1, pakai Math.random():
   //         pity>=10 ATAU acak<0.03 -> SSR (pity balik 0, ssrCount nambah)
   //         acak<0.10 -> EPIC, acak<0.30 -> RARE, selain itu -> COMMON.
   //         balikin { kelas, nama, emoji }.
+  function rollSatu() {
+    total += 1;
+    pity += 1;
+
+    const angkaAcak = Math.random();
+    let kelas = "common";
+
+    if (pity >= 10 || angkaAcak < 0.03) {
+      kelas = "ssr";
+      pity = 0;
+      ssrCount += 1;
+    } else if (angkaAcak < 0.10) {
+      kelas = "epic";
+    } else if (angkaAcak < 0.30) {
+      kelas = "rare";
+    }
+
+    const item = pilihAcak(hadiah[kelas]);
+    return { kelas, nama: item.n, emoji: item.e };
+  }
 
   // CHECKPOINT 3 - Tampilkan + animasi
   //   TODO: fungsi tampilkan(hasil) -> isi #cardEmoji, #cardName, #cardRarity,
   //         set className kartu jadi "card <kelas> reveal" (trik reset animasi:
   //         set "card", baca card.offsetWidth, baru set kelas+reveal).
   //         Update #total, #ssrCount, #pityText, dan lebar #pityFill.
+  const card = document.querySelector("#card");
+  const cardEmoji = document.querySelector("#cardEmoji");
+  const cardName = document.querySelector("#cardName");
+  const cardRarity = document.querySelector("#cardRarity");
+  const totalEl = document.querySelector("#total");
+  const ssrCountEl = document.querySelector("#ssrCount");
+  const pityText = document.querySelector("#pityText");
+  const pityFill = document.querySelector("#pityFill");
+  const history = document.querySelector("#history");
+  const tarik1 = document.querySelector("#tarik1");
+  const tarik10 = document.querySelector("#tarik10");
+
+  function tampilkan(hasil) {
+    cardEmoji.textContent = hasil.emoji;
+    cardName.textContent = hasil.nama;
+    cardRarity.textContent = hasil.kelas.toUpperCase();
+
+    // Reset class lebih dulu supaya animasi reveal selalu jalan lagi.
+    card.className = "card";
+    card.offsetWidth;
+    card.className = `card ${hasil.kelas} reveal`;
+
+    totalEl.textContent = total;
+    ssrCountEl.textContent = ssrCount;
+    pityText.textContent = `${pity} / 10`;
+    pityFill.style.width = `${(pity / 10) * 100}%`;
+  }
 
   // CHECKPOINT 4 - Riwayat + tombol
   //   TODO: fungsi tambahRiwayat(hasil) -> bikin div .chip <kelas>, isi emoji,
   //         taruh paling depan di #history, batasi maks 12 chip.
   //   TODO: tombol #tarik1 -> tarik 1x. tombol #tarik10 -> ulang 10x.
+  function tambahRiwayat(hasil) {
+    const chip = document.createElement("div");
+    chip.className = `chip ${hasil.kelas}`;
+    chip.textContent = hasil.emoji;
+    chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
+
+    history.prepend(chip);
+
+    while (history.children.length > 12) {
+      history.lastElementChild.remove();
+    }
+  }
+
+  function jalankanPull(jumlahPull) {
+    let hasilTerakhir;
+
+    for (let i = 0; i < jumlahPull; i += 1) {
+      hasilTerakhir = rollSatu();
+      tambahRiwayat(hasilTerakhir);
+    }
+
+    tampilkan(hasilTerakhir);
+  }
+
+  tarik1.addEventListener("click", () => jalankanPull(1));
+  tarik10.addEventListener("click", () => jalankanPull(10));
 
   // >> Buka Codex, kerjain checkpoint SATU PER SATU. Baca hasilnya.
   // >> Kamu PILOT-nya, bukan penonton.
