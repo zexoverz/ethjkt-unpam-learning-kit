@@ -1,31 +1,31 @@
-# Pull Feature Log
+# Pokemon Gacha Log
 
-## Apa yang dibuat
+## Apa yang berubah
 
-Saya menambahkan fitur pull/tarik gacha di `hari-1/index.html`.
+Simulator sekarang memakai data Pokemon asli dari PokeAPI di `hari-1/index.html`.
 
-Sekarang tombol `TARIK 1x` dan `TARIK 10x` sudah berjalan. Setiap tarikan akan memilih hadiah secara acak dari rarity `COMMON`, `RARE`, `EPIC`, atau `SSR`.
+Saat user menekan `PULL 1x` atau `PULL 10x`, browser mengambil data dari:
+
+- `/pokemon-species/{id}` untuk nama species, status legendary/mythical, capture rate, dan default variety.
+- `/pokemon/{name-or-id}` dari default variety untuk sprite, tipe, base experience, dan stats.
+- `/pokemon-species?limit=1` untuk membaca jumlah species terbaru.
+
+## Aturan rarity
+
+- `Legendary`: species punya `is_legendary` atau `is_mythical`.
+- `Epic`: capture rate kecil atau total base stat tinggi.
+- `Rare`: capture rate sedang atau base experience cukup tinggi.
+- `Common`: sisanya.
 
 ## Aturan pity
 
-- Setiap tarikan menambah angka pity.
-- SSR punya peluang acak 3%.
-- Kalau belum dapat SSR sampai pity ke-10, tarikan itu pasti menjadi SSR.
-- Setelah dapat SSR, pity kembali ke 0.
+- Setiap pull menaikkan pity.
+- Kalau pull biasa dapat Legendary/Mythical, pity kembali ke 0.
+- Kalau pity mencapai 10, pull berikutnya dipaksa mengambil species Legendary/Mythical dari daftar ID.
 
-## Tampilan hasil
+## Catatan teknis
 
-- Kartu utama menampilkan emoji, nama hadiah, dan rarity.
-- Total tarikan dan jumlah SSR ikut berubah.
-- Bar pity ikut terisi sesuai jumlah pity sekarang.
-- Riwayat 12 tarikan terakhir muncul di bawah tombol.
-
-## Catatan kode
-
-Kode dibuat dalam fungsi kecil agar mudah dibaca:
-
-- `pilihAcak()` memilih item random dari daftar.
-- `rollSatu()` menjalankan aturan gacha dan pity.
-- `tampilkan()` memperbarui kartu, angka statistik, dan bar pity.
-- `tambahRiwayat()` menambahkan hasil ke riwayat.
-- `tarik()` menjalankan tarikan 1x atau 10x.
+- Response API disimpan di cache memory agar Pokemon yang sama tidak diminta berkali-kali.
+- Tombol dinonaktifkan saat fetch berjalan supaya user tidak menumpuk request.
+- Kalau PokeAPI gagal diakses, UI menampilkan pesan gagal dan user bisa mencoba lagi.
+- Dokumentasi API: https://pokeapi.co/docs/v2
