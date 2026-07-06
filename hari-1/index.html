@@ -67,6 +67,17 @@
   .stat-row .sfill { height: 100%; background: linear-gradient(90deg,#4da6ff,#7ee8ff); border-radius: 4px; transition: width .4s ease; }
   .stat-row .sv { width: 26px; text-align: right; font-weight: 700; color: #eaeaf0; }
 
+  /* state kosong (sebelum tarik pertama): sembunyikan semua kecuali flavor */
+  .card.empty { min-height: 200px; justify-content: center; }
+  .card.empty .rar,
+  .card.empty .cry-btn,
+  .card.empty .sprite-wrap,
+  .card.empty .name,
+  .card.empty .dex,
+  .card.empty .types,
+  .card.empty .stats { display: none !important; }
+  .card.empty .flavor { font-size: 13px; margin: 8px; }
+
   /* warna per rarity */
   .card.common { border-color: #6b7280; }
   .card.common .rar { color: #9aa3b2; }
@@ -152,7 +163,7 @@
 <body>
   <div class="app">
     <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
+    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah - Tegar Andriyansyah</div>
 
     <div class="stats">
       <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
@@ -165,7 +176,7 @@
     </div>
 
     <div class="stage">
-      <div class="card" id="card">
+      <div class="card empty" id="card">
         <div class="rar" id="cardRarity"></div>
         <button class="cry-btn" id="cryBtn" title="Putar suara">🔊</button>
         <div class="sprite-wrap"><img class="sprite" id="cardSprite" alt="" src=""></div>
