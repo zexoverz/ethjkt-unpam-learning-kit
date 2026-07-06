@@ -2,6 +2,12 @@
 
 ## 2026-07-06
 
+- Memperbaiki render kartu agar tidak berhenti di simbol `?` saat gambar pertama gagal dimuat.
+- Gambar sekarang dicoba satu per satu: front sprite, official artwork, home, showdown, dream world, lalu shiny.
+- Data `pokemon-species` sekarang optional. Jika gagal, kartu tetap tampil memakai data utama dari `pokemon/{id}`.
+
+## 2026-07-06 - Sprite Fix
+
 - Memperbaiki bug gambar Pokemon yang bisa gagal tampil jika `official-artwork` kosong atau struktur sprite tidak lengkap.
 - Sekarang gambar punya beberapa fallback: official artwork, home artwork, dream world, front default, lalu front shiny.
 - Jika semua gambar gagal, kartu menampilkan placeholder `?` agar tampilan tidak terlihat rusak.

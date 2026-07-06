@@ -218,27 +218,41 @@
   }
 
   function ambilFlavorText(species) {
+    if (!species) return "";
+
     const flavor = species.flavor_text_entries.find(entry => entry.language.name === "en");
     return flavor ? bersihkanTeks(flavor.flavor_text) : "";
   }
 
   function ambilNamaInggris(species, fallback) {
+    if (!species) return formatNama(fallback);
+
     const nama = species.names.find(entry => entry.language.name === "en");
     return nama ? nama.name : formatNama(fallback);
   }
 
   function ambilGenusInggris(species) {
+    if (!species) return "Pokemon";
+
     const genus = species.genera.find(entry => entry.language.name === "en");
     return genus ? genus.genus : "Pokemon";
   }
 
-  function ambilSprite(pokemon) {
-    return pokemon.sprites.other?.["official-artwork"]?.front_default
-      || pokemon.sprites.other?.home?.front_default
-      || pokemon.sprites.other?.dream_world?.front_default
-      || pokemon.sprites.front_default
-      || pokemon.sprites.front_shiny
-      || "";
+  function daftarSprites(pokemon) {
+    return [
+      pokemon.sprites.front_default,
+      pokemon.sprites.other?.["official-artwork"]?.front_default,
+      pokemon.sprites.other?.home?.front_default,
+      pokemon.sprites.other?.showdown?.front_default,
+      pokemon.sprites.other?.dream_world?.front_default,
+      pokemon.sprites.front_shiny
+    ].filter(Boolean);
+  }
+
+  function buatInfoKartu(hasil) {
+    if (hasil.flavor) return hasil.flavor;
+    if (hasil.captureRate) return `Base stat ${hasil.statTotal}, capture rate ${hasil.captureRate}.`;
+    return `Base stat ${hasil.statTotal}.`;
   }
 
   function buatUrl(path) {
@@ -255,25 +269,32 @@
     return response.json();
   }
 
+  async function fetchOptionalJson(url) {
+    try {
+      return await fetchJson(url);
+    } catch (error) {
+      console.warn(error.message);
+      return null;
+    }
+  }
+
   async function ambilPokemon(id) {
     if (cachePokemon.has(id)) return cachePokemon.get(id);
 
-    const [pokemon, species] = await Promise.all([
-      fetchJson(buatUrl(`pokemon/${id}`)),
-      fetchJson(buatUrl(`pokemon-species/${id}`))
-    ]);
+    const pokemon = await fetchJson(buatUrl(`pokemon/${id}`));
+    const species = await fetchOptionalJson(buatUrl(`pokemon-species/${id}`));
 
     const data = {
       id: pokemon.id,
       nama: ambilNamaInggris(species, pokemon.name),
       genus: ambilGenusInggris(species),
       flavor: ambilFlavorText(species),
-      sprite: ambilSprite(pokemon),
+      sprites: daftarSprites(pokemon),
       types: pokemon.types.map(slot => slot.type.name),
       statTotal: pokemon.stats.reduce((jumlah, stat) => jumlah + stat.base_stat, 0),
-      captureRate: species.capture_rate,
-      legendary: species.is_legendary,
-      mythical: species.is_mythical
+      captureRate: species?.capture_rate,
+      legendary: Boolean(species?.is_legendary),
+      mythical: Boolean(species?.is_mythical)
     };
 
     cachePokemon.set(id, data);
@@ -297,13 +318,12 @@
   }
 
   function tampilkan(hasil) {
-    cardSprite.onerror = () => tampilkanSprite("");
-    tampilkanSprite(hasil.sprite);
+    tampilkanSprite(hasil.sprites, hasil.nama);
     cardSprite.alt = hasil.nama;
     cardDex.textContent = `#${String(hasil.id).padStart(4, "0")} - ${hasil.genus}`;
     cardName.textContent = hasil.nama;
     cardRarity.textContent = hasil.kelas.toUpperCase();
-    cardMeta.textContent = hasil.flavor || `Base stat ${hasil.statTotal}, capture rate ${hasil.captureRate}.`;
+    cardMeta.textContent = buatInfoKartu(hasil);
     cardTypes.innerHTML = "";
 
     hasil.types.forEach(type => {
@@ -323,14 +343,18 @@
     pityFill.style.width = `${(pity / pityLimit) * 100}%`;
   }
 
-  function tampilkanSprite(spriteUrl) {
+  function tampilkanSprite(spriteUrls, altText, index = 0) {
+    const spriteUrl = spriteUrls[index];
     const adaSprite = Boolean(spriteUrl);
 
     if (adaSprite) {
+      cardSprite.onerror = () => tampilkanSprite(spriteUrls, altText, index + 1);
+      cardSprite.alt = altText;
       cardSprite.src = spriteUrl;
     } else {
       cardSprite.onerror = null;
       cardSprite.removeAttribute("src");
+      cardSprite.alt = "";
     }
 
     cardSprite.classList.toggle("hidden", !adaSprite);
@@ -343,11 +367,9 @@
     chip.className = `chip ${hasil.kelas}`;
     chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
 
-    if (hasil.sprite) {
+    if (hasil.sprites.length > 0) {
       const img = document.createElement("img");
-      img.src = hasil.sprite;
-      img.alt = hasil.nama;
-      img.onerror = () => img.remove();
+      pasangGambarRiwayat(img, hasil.sprites, hasil.nama);
       chip.append(img);
     } else {
       chip.textContent = "?";
@@ -358,6 +380,19 @@
     if (history.children.length > 12) {
       history.lastElementChild.remove();
     }
+  }
+
+  function pasangGambarRiwayat(img, spriteUrls, altText, index = 0) {
+    const spriteUrl = spriteUrls[index];
+
+    if (!spriteUrl) {
+      img.remove();
+      return;
+    }
+
+    img.onerror = () => pasangGambarRiwayat(img, spriteUrls, altText, index + 1);
+    img.alt = altText;
+    img.src = spriteUrl;
   }
 
   function aturLoading(aktif, pesan = "") {
