@@ -3,266 +3,456 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gacha ETHJKT</title>
+<title>Pokemon Gacha</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #17202a;
+    --muted: #667085;
+    --line: #d6dce8;
+    --paper: #f7f4e8;
+    --panel: #ffffff;
+    --red: #e43d30;
+    --blue: #2f6fd6;
+    --yellow: #f6c84c;
+    --green: #33a474;
+  }
   body {
-    font-family: "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
-    color: #eaeaf0; min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
+    min-height: 100vh; padding: 24px;
+    font-family: Inter, "Segoe UI", system-ui, sans-serif;
+    color: var(--ink);
+    background:
+      linear-gradient(90deg, rgba(23,32,42,.06) 1px, transparent 1px),
+      linear-gradient(rgba(23,32,42,.06) 1px, transparent 1px),
+      #eef3f8;
+    background-size: 28px 28px;
   }
   .app {
-    width: 100%; max-width: 460px; text-align: center;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px; padding: 24px 22px 28px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    width: min(1100px, 100%); margin: 0 auto;
+    display: grid; grid-template-columns: minmax(320px, 430px) 1fr;
+    gap: 18px; align-items: start;
   }
-  h1 {
-    font-size: 26px; letter-spacing: 1px; margin-bottom: 4px;
-    background: linear-gradient(90deg,#ffd86b,#ff7eb3,#7ee8ff);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
+  .panel {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; box-shadow: 0 14px 40px rgba(23,32,42,.12);
   }
-  .subtitle { font-size: 12px; color: #8b90b0; margin-bottom: 18px; }
-
-  .stats { display: flex; gap: 10px; margin-bottom: 12px; }
-  .stat {
-    flex: 1; background: rgba(255,255,255,0.05); border-radius: 12px;
-    padding: 10px 6px;
+  .machine { overflow: hidden; }
+  .machine-head {
+    padding: 18px; color: white;
+    background: linear-gradient(135deg, #d72f28 0 52%, #1f2937 52% 58%, #f7f4e8 58% 100%);
   }
-  .stat .num { font-size: 22px; font-weight: 700; }
-  .stat .lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; }
-
-  .pity { margin-bottom: 18px; text-align: left; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #b9bdd8; margin-bottom: 6px; }
-  .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
-  .pity-fill {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg,#ffd86b,#ffb347);
-    transition: width 0.35s ease;
+  h1 { font-size: 30px; line-height: 1; letter-spacing: 0; }
+  .subtitle { margin-top: 6px; max-width: 280px; font-size: 13px; color: rgba(255,255,255,.82); }
+  .stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--line); border-block: 1px solid var(--line);
   }
-
-  .stage { display: flex; justify-content: center; margin-bottom: 20px; }
+  .stat { padding: 14px 10px; background: #fbfcff; text-align: center; }
+  .stat .num { font-size: 24px; font-weight: 800; }
+  .stat .lbl { margin-top: 2px; font-size: 11px; color: var(--muted); text-transform: uppercase; }
+  .pity { padding: 16px 18px 0; }
+  .pity-top { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 7px; }
+  .pity-track { height: 9px; background: #edf0f5; border-radius: 999px; overflow: hidden; }
+  .pity-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--yellow), var(--red)); transition: width .25s ease; }
+  .stage { padding: 18px; }
   .card {
-    width: 180px; height: 230px; border-radius: 18px;
-    background: #171b30; border: 3px solid #2a2f4a;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative;
+    min-height: 560px; border: 2px solid #c9a33d; border-radius: 8px;
+    background: linear-gradient(#fff8d7, #f1deb0);
+    display: grid; grid-template-rows: auto 250px auto 1fr auto;
+    gap: 12px; padding: 14px; position: relative; overflow: hidden;
   }
-  .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
-  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
-  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
-
-  /* warna per rarity */
-  .card.common { border-color: #6b7280; }
-  .card.common .rar { color: #9aa3b2; }
-  .card.rare   { border-color: #4da6ff; box-shadow: 0 0 22px rgba(77,166,255,.45); }
-  .card.rare   .rar { color: #4da6ff; }
-  .card.epic   { border-color: #b06bff; box-shadow: 0 0 26px rgba(176,107,255,.55); }
-  .card.epic   .rar { color: #c88bff; }
-  .card.ssr    { border-color: #ffd24a; box-shadow: 0 0 40px rgba(255,210,74,.8); }
-  .card.ssr    .rar { color: #ffd24a; }
-  .card.ssr    .name { color: #ffe89a; }
-
-  /* animasi reveal */
-  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-  @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,210,74,.7)} 50%{box-shadow:0 0 55px rgba(255,210,74,1)} }
-  .card.reveal { animation: pop .4s ease; }
-  .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
-
-  .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
+  .card::before {
+    content: ""; position: absolute; inset: 42px 18px auto; height: 250px;
+    border-radius: 8px; background: linear-gradient(145deg, rgba(47,111,214,.16), rgba(51,164,116,.18));
+  }
+  .card-head, .art, .types, .bio, .meta { position: relative; }
+  .card-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .pokemon-name { font-size: 25px; line-height: 1.1; font-weight: 900; }
+  .dex { font-size: 14px; font-weight: 800; color: var(--muted); }
+  .art { display: flex; align-items: center; justify-content: center; }
+  .art img { width: min(240px, 82%); max-height: 240px; object-fit: contain; filter: drop-shadow(0 20px 18px rgba(23,32,42,.22)); }
+  .placeholder { font-size: 72px; color: rgba(23,32,42,.25); }
+  .types { display: flex; gap: 8px; flex-wrap: wrap; }
+  .type {
+    padding: 5px 10px; border-radius: 999px; color: white;
+    font-size: 12px; font-weight: 800; text-transform: uppercase;
+  }
+  .bio { color: #3a4656; font-size: 14px; line-height: 1.45; }
+  .meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .meta-item { padding: 9px; background: rgba(255,255,255,.55); border: 1px solid rgba(23,32,42,.12); border-radius: 8px; }
+  .meta-label { display: block; color: var(--muted); font-size: 11px; text-transform: uppercase; }
+  .meta-value { display: block; margin-top: 2px; font-size: 14px; font-weight: 800; }
+  .rarity {
+    justify-self: start; padding: 6px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 900; letter-spacing: .04em; color: white;
+    background: #667085;
+  }
+  .card.common { border-color: #9aa4b2; }
+  .card.rare { border-color: var(--blue); box-shadow: inset 0 0 0 2px rgba(47,111,214,.2); }
+  .card.epic { border-color: #7d4fd3; box-shadow: inset 0 0 0 2px rgba(125,79,211,.22); }
+  .card.ssr { border-color: #d89b16; box-shadow: 0 0 0 3px rgba(246,200,76,.35), 0 20px 60px rgba(216,155,22,.28); }
+  .card.common .rarity { background: #667085; }
+  .card.rare .rarity { background: var(--blue); }
+  .card.epic .rarity { background: #7d4fd3; }
+  .card.ssr .rarity { background: linear-gradient(90deg, #bd7b00, #e43d30); }
+  .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 18px 18px; }
   .btn {
-    flex: 1; padding: 15px 0; border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer;
-    color: #0a0d1c; background: linear-gradient(180deg,#8fd3ff,#4da6ff);
-    transition: transform .08s ease, filter .15s ease;
+    min-height: 48px; border: 0; border-radius: 8px;
+    font-size: 15px; font-weight: 900; cursor: pointer;
+    color: white; background: var(--blue); transition: transform .08s ease, opacity .16s ease;
   }
-  .btn:hover { filter: brightness(1.08); }
-  .btn:active { transform: scale(.95); }
-  .btn.gold { background: linear-gradient(180deg,#ffe58a,#ffb347); }
-
-  .result {
-    min-height: 42px; margin-bottom: 18px; padding: 10px 12px;
-    border-radius: 12px; background: rgba(255,255,255,0.05);
-    color: #c7cbdf; font-size: 13px; line-height: 1.35;
-  }
-  .result strong { color: #ffe58a; }
-
-  .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
-  .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
+  .btn.gold { color: #17202a; background: var(--yellow); }
+  .btn:active { transform: translateY(1px); }
+  .btn:disabled { cursor: wait; opacity: .65; }
+  .result { padding: 0 18px 18px; min-height: 42px; color: var(--muted); font-size: 14px; line-height: 1.4; }
+  .result strong { color: var(--ink); }
+  .side { padding: 18px; }
+  .side-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+  h2 { font-size: 18px; }
+  .rule { color: var(--muted); font-size: 13px; }
+  .history { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 10px; }
   .chip {
-    font-size: 20px; width: 34px; height: 34px; border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    background: #171b30; border: 2px solid #2a2f4a;
+    min-height: 100px; padding: 8px; border: 1px solid var(--line); border-radius: 8px;
+    background: #fbfcff; display: grid; place-items: center; text-align: center;
   }
-  .chip.rare { border-color: #4da6ff; }
-  .chip.epic { border-color: #b06bff; }
-  .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
+  .chip img { width: 62px; height: 62px; object-fit: contain; }
+  .chip-name { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 800; }
+  .chip-rarity { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+  @keyframes reveal { from { transform: translateY(8px) scale(.97); opacity: .45; } to { transform: translateY(0) scale(1); opacity: 1; } }
+  .card.reveal { animation: reveal .28s ease; }
+  @media (max-width: 840px) {
+    body { padding: 14px; }
+    .app { grid-template-columns: 1fr; }
+    .card { min-height: 520px; }
+  }
 </style>
 </head>
 <body>
-  <div class="app">
-    <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
-
-    <div class="stats">
-      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
-    </div>
-
-    <div class="pity">
-      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
-      <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-    </div>
-
-    <div class="stage">
-      <div class="card" id="card">
-        <div class="emoji" id="cardEmoji">?</div>
-        <div class="name" id="cardName">Tekan TARIK</div>
-        <div class="rar" id="cardRarity"></div>
+  <main class="app">
+    <section class="panel machine">
+      <div class="machine-head">
+        <h1>Pokemon Gacha</h1>
+        <p class="subtitle">Pull Pokemon dari PokeAPI, lengkap dengan rarity, type, artwork, stats, dan pity.</p>
       </div>
-    </div>
 
-    <div class="buttons">
-      <button class="btn" id="tarik1">TARIK 1x</button>
-      <button class="btn gold" id="tarik10">TARIK 10x</button>
-    </div>
+      <div class="stats">
+        <div class="stat"><div class="num" id="total">0</div><div class="lbl">Pulls</div></div>
+        <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR</div></div>
+        <div class="stat"><div class="num" id="ownedCount">0</div><div class="lbl">History</div></div>
+      </div>
 
-    <div class="result" id="resultText">Pity target akan diacak setiap kali SSR keluar.</div>
+      <div class="pity">
+        <div class="pity-top"><span>Legendary pity</span><span id="pityText">0 / 10</span></div>
+        <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
+      </div>
 
-    <div class="hist-lbl">Riwayat Terakhir</div>
-    <div class="history" id="history"></div>
-  </div>
+      <div class="stage">
+        <article class="card common" id="card">
+          <div class="card-head">
+            <div class="pokemon-name" id="pokemonName">Ready</div>
+            <div class="dex" id="dexNumber">#---</div>
+          </div>
+          <div class="art" id="artWrap"><div class="placeholder">?</div></div>
+          <div class="types" id="types"></div>
+          <p class="bio" id="bio">Tekan pull untuk membuka kartu Pokemon pertama.</p>
+          <div class="meta">
+            <div class="meta-item"><span class="meta-label">Genus</span><span class="meta-value" id="genus">-</span></div>
+            <div class="meta-item"><span class="meta-label">BST</span><span class="meta-value" id="bst">-</span></div>
+            <div class="meta-item"><span class="meta-label">Ability</span><span class="meta-value" id="ability">-</span></div>
+          </div>
+          <div class="rarity" id="rarity">COMMON</div>
+        </article>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="pull1">PULL 1x</button>
+        <button class="btn gold" id="pull10">PULL 10x</button>
+      </div>
+      <div class="result" id="resultText">Data Pokemon akan dicache di browser agar tidak spam request ke PokeAPI.</div>
+    </section>
+
+    <aside class="panel side">
+      <div class="side-head">
+        <h2>Recent Pulls</h2>
+        <div class="rule">SSR 3%, Epic 9%, Rare 28%</div>
+      </div>
+      <div class="history" id="history"></div>
+    </aside>
+  </main>
 
 <script>
-  const hadiah = {
-    ssr: [
-      { n: "ETHJKT Crown", e: "👑" },
-      { n: "Diamond Wallet", e: "💎" },
-      { n: "Golden Ticket", e: "🎟️" }
-    ],
-    epic: [
-      { n: "Gas Booster", e: "🚀" },
-      { n: "Rare Hoodie", e: "🧥" },
-      { n: "Lucky Laptop", e: "💻" }
-    ],
-    rare: [
-      { n: "Sticker Pack", e: "✨" },
-      { n: "Coffee Voucher", e: "☕" },
-      { n: "Workshop Badge", e: "🏅" }
-    ],
-    common: [
-      { n: "Mint Candy", e: "🍬" },
-      { n: "Notebook", e: "📓" },
-      { n: "Ballpoint", e: "🖊️" },
-      { n: "Keychain", e: "🔑" }
-    ]
+  const API_BASE = "https://pokeapi.co/api/v2";
+  const CACHE_PREFIX = "pokemon-gacha:v1:";
+  const HISTORY_LIMIT = 18;
+
+  const rarityConfig = {
+    ssr: {
+      label: "SSR",
+      chance: 0.03,
+      ids: [144,145,146,150,151,249,250,251,382,383,384,385,483,484,487,493,643,644,646,716,717,718,719,720,721,789,790,791,792,800,888,889,890,891,892,893,894,895,896,897,898,905]
+    },
+    epic: {
+      label: "EPIC",
+      chance: 0.12,
+      ids: [3,6,9,59,65,94,130,131,143,149,154,157,160,181,196,197,230,248,254,257,260,282,289,306,330,350,373,376,445,448,460,468,470,471,475,477,479,571,612,635,637,658,700,706,745,778,812,815,818,887,908,911,914]
+    },
+    rare: {
+      label: "RARE",
+      chance: 0.40,
+      ids: [1,4,7,25,26,37,38,39,40,52,53,54,55,58,64,66,67,77,78,92,93,95,111,112,123,125,126,127,133,134,135,136,147,148,152,155,158,172,175,176,179,180,190,200,207,215,216,220,228,246,252,255,258,280,281,302,303,304,315,333,345,349,355,361,371,397,403,404,443,447,495,498,501,529,551,559,570,574,607,610,633,650,653,656,722,725,728,810,813,816,906,909,912]
+    },
+    common: {
+      label: "COMMON",
+      chance: 1,
+      ids: [10,13,16,19,21,23,27,29,32,41,43,46,48,50,60,69,72,74,79,81,84,86,88,90,96,98,100,102,104,109,116,118,120,129,161,163,165,167,177,183,187,191,194,198,204,206,209,218,223,231,263,265,270,273,276,278,283,285,287,293,296,299,300,316,318,320,322,325,327,331,339,343,347,353,363,396,399,401,412,415,418,420,425,427,431,434,436,449,451,453,459,504,506,509,519,522,524,527,532,535,540,543,546,548,554,557,562,580,582,588,590,592,595,599,605,613,616,622,627,659,661,664,667,669,672,674,677,682,684,686,688,690,692,704,708,710,714,731,734,736,742,744,747,751,759,761,767,769,771,819,821,824,827,829,831,833,835,837,840,843,846,848,850,852,854,856,859,868,872,878,917,919,921,924,926,928,931,932,935,938,940,942,944,946,948]
+    }
   };
 
-  const card = document.getElementById("card");
-  const cardEmoji = document.getElementById("cardEmoji");
-  const cardName = document.getElementById("cardName");
-  const cardRarity = document.getElementById("cardRarity");
-  const totalText = document.getElementById("total");
-  const ssrCountText = document.getElementById("ssrCount");
-  const pityText = document.getElementById("pityText");
-  const pityFill = document.getElementById("pityFill");
-  const history = document.getElementById("history");
-  const resultText = document.getElementById("resultText");
-  const tarik1 = document.getElementById("tarik1");
-  const tarik10 = document.getElementById("tarik10");
+  const typeColors = {
+    normal: "#7f8792", fire: "#e4572e", water: "#2f6fd6", electric: "#d69f00",
+    grass: "#33a474", ice: "#36a7a7", fighting: "#b23a48", poison: "#7d4fd3",
+    ground: "#a36a32", flying: "#6d8bd6", psychic: "#d94f8c", bug: "#6c9b2f",
+    rock: "#8f7d4f", ghost: "#66549b", dragon: "#4866c8", dark: "#4b3f3a",
+    steel: "#68798a", fairy: "#d967a9"
+  };
+
+  const els = {
+    card: document.getElementById("card"),
+    pokemonName: document.getElementById("pokemonName"),
+    dexNumber: document.getElementById("dexNumber"),
+    artWrap: document.getElementById("artWrap"),
+    types: document.getElementById("types"),
+    bio: document.getElementById("bio"),
+    genus: document.getElementById("genus"),
+    bst: document.getElementById("bst"),
+    ability: document.getElementById("ability"),
+    rarity: document.getElementById("rarity"),
+    total: document.getElementById("total"),
+    ssrCount: document.getElementById("ssrCount"),
+    ownedCount: document.getElementById("ownedCount"),
+    pityText: document.getElementById("pityText"),
+    pityFill: document.getElementById("pityFill"),
+    resultText: document.getElementById("resultText"),
+    history: document.getElementById("history"),
+    pull1: document.getElementById("pull1"),
+    pull10: document.getElementById("pull10")
+  };
 
   let pity = 0;
   let total = 0;
   let ssrCount = 0;
-  let pityTarget = acakPityTarget();
+  let pityTarget = randomPityTarget();
 
-  function pilihAcak(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
-
-  // Pity dibuat random supaya setiap ronde punya batas jaminan SSR yang beda.
-  function acakPityTarget() {
+  function randomPityTarget() {
     return Math.floor(Math.random() * 5) + 8;
   }
 
-  function rollSatu() {
+  function pickRandom(items) {
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  function titleCase(text) {
+    return text.split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+  }
+
+  function readCache(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function writeCache(key, data) {
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch {
+      // The simulator still works when browser storage is blocked.
+    }
+  }
+
+  function replaceChildren(parent, children) {
+    parent.textContent = "";
+    children.forEach((child) => parent.appendChild(child));
+  }
+
+  async function cachedFetch(url) {
+    const key = CACHE_PREFIX + url;
+    const cached = readCache(key);
+
+    if (cached) {
+      return JSON.parse(cached);
+    }
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`PokeAPI request failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    writeCache(key, data);
+    return data;
+  }
+
+  function rollRarity() {
     total += 1;
     pity += 1;
 
-    const peluang = Math.random();
-    let kelas = "common";
-
-    if (pity >= pityTarget || peluang < 0.03) {
-      kelas = "ssr";
+    const chance = Math.random();
+    if (pity >= pityTarget || chance < rarityConfig.ssr.chance) {
       pity = 0;
+      pityTarget = randomPityTarget();
       ssrCount += 1;
-      pityTarget = acakPityTarget();
-    } else if (peluang < 0.10) {
-      kelas = "epic";
-    } else if (peluang < 0.30) {
-      kelas = "rare";
+      return "ssr";
     }
 
-    const item = pilihAcak(hadiah[kelas]);
-    return { kelas, nama: item.n, emoji: item.e };
+    if (chance < rarityConfig.epic.chance) return "epic";
+    if (chance < rarityConfig.rare.chance) return "rare";
+    return "common";
   }
 
-  function tampilkan(hasil) {
-    cardEmoji.textContent = hasil.emoji;
-    cardName.textContent = hasil.nama;
-    cardRarity.textContent = hasil.kelas.toUpperCase();
+  async function buildPokemonCard(rarity) {
+    const id = pickRandom(rarityConfig[rarity].ids);
+    const [pokemon, species] = await Promise.all([
+      cachedFetch(`${API_BASE}/pokemon/${id}/`),
+      cachedFetch(`${API_BASE}/pokemon-species/${id}/`)
+    ]);
 
-    card.className = "card";
-    card.offsetWidth; // Reset animasi agar setiap pull tetap terasa muncul.
-    card.className = `card ${hasil.kelas} reveal`;
+    const name = species.names.find((entry) => entry.language.name === "en")?.name || titleCase(pokemon.name);
+    const genus = species.genera.find((entry) => entry.language.name === "en")?.genus || "Unknown";
+    const flavor = species.flavor_text_entries.find((entry) => entry.language.name === "en")?.flavor_text || "No Pokedex text available.";
+    const ability = pokemon.abilities.find((entry) => !entry.is_hidden)?.ability.name || pokemon.abilities[0]?.ability.name || "-";
+    const officialArt = pokemon.sprites.other?.["official-artwork"]?.front_default;
+    const sprite = officialArt || pokemon.sprites.front_default;
+    const statTotal = pokemon.stats.reduce((sum, stat) => sum + stat.base_stat, 0);
 
-    totalText.textContent = total;
-    ssrCountText.textContent = ssrCount;
-    pityText.textContent = `${pity} / ${pityTarget}`;
-    pityFill.style.width = `${(pity / pityTarget) * 100}%`;
+    return {
+      id,
+      rarity,
+      rarityLabel: rarityConfig[rarity].label,
+      name,
+      genus: genus.replace(" Pokemon", ""),
+      flavor: flavor.replace(/[\n\f]/g, " "),
+      ability: titleCase(ability),
+      sprite,
+      statTotal,
+      types: pokemon.types.sort((a, b) => a.slot - b.slot).map((entry) => entry.type.name),
+      isLegendary: species.is_legendary || species.is_mythical
+    };
   }
 
-  function tambahRiwayat(hasil) {
+  function renderPokemon(cardData) {
+    els.pokemonName.textContent = cardData.name;
+    els.dexNumber.textContent = `#${String(cardData.id).padStart(3, "0")}`;
+
+    if (cardData.sprite) {
+      const artwork = document.createElement("img");
+      artwork.src = cardData.sprite;
+      artwork.alt = `${cardData.name} artwork`;
+      replaceChildren(els.artWrap, [artwork]);
+    } else {
+      const placeholder = document.createElement("div");
+      placeholder.className = "placeholder";
+      placeholder.textContent = "?";
+      replaceChildren(els.artWrap, [placeholder]);
+    }
+
+    const typeChips = cardData.types.map((type) => {
+      const chip = document.createElement("span");
+      chip.className = "type";
+      chip.style.background = typeColors[type] || "#667085";
+      chip.textContent = type;
+      return chip;
+    });
+    replaceChildren(els.types, typeChips);
+
+    els.bio.textContent = cardData.flavor;
+    els.genus.textContent = cardData.genus;
+    els.bst.textContent = cardData.statTotal;
+    els.ability.textContent = cardData.ability;
+    els.rarity.textContent = cardData.isLegendary ? "SSR LEGENDARY" : cardData.rarityLabel;
+
+    els.card.className = "card";
+    els.card.offsetWidth;
+    els.card.className = `card ${cardData.rarity} reveal`;
+    renderStats();
+  }
+
+  function renderStats() {
+    els.total.textContent = total;
+    els.ssrCount.textContent = ssrCount;
+    els.ownedCount.textContent = els.history.children.length;
+    els.pityText.textContent = `${pity} / ${pityTarget}`;
+    els.pityFill.style.width = `${(pity / pityTarget) * 100}%`;
+  }
+
+  function addHistory(cardData) {
     const chip = document.createElement("div");
-    chip.className = `chip ${hasil.kelas}`;
-    chip.textContent = hasil.emoji;
-    chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
+    chip.className = `chip ${cardData.rarity}`;
+    chip.title = `${cardData.name} (${cardData.rarityLabel})`;
 
-    history.prepend(chip);
+    if (cardData.sprite) {
+      const image = document.createElement("img");
+      image.src = cardData.sprite;
+      image.alt = "";
+      chip.appendChild(image);
+    }
 
-    while (history.children.length > 12) {
-      history.lastElementChild.remove();
+    const name = document.createElement("div");
+    name.className = "chip-name";
+    name.textContent = cardData.name;
+    chip.appendChild(name);
+
+    const rarity = document.createElement("div");
+    rarity.className = "chip-rarity";
+    rarity.textContent = cardData.rarityLabel;
+    chip.appendChild(rarity);
+
+    els.history.prepend(chip);
+
+    while (els.history.children.length > HISTORY_LIMIT) {
+      els.history.lastElementChild.remove();
     }
   }
 
-  function tulisRingkasan(hasilTarikan) {
-    const ssrBaru = hasilTarikan.filter((hasil) => hasil.kelas === "ssr").length;
-    const terakhir = hasilTarikan[hasilTarikan.length - 1];
-    const mode = hasilTarikan.length === 1 ? "1 pull" : "10 pull";
-
-    resultText.innerHTML = `${mode}: terakhir dapat <strong>${terakhir.nama}</strong> (${terakhir.kelas.toUpperCase()}). `
-      + `SSR di sesi ini: <strong>${ssrBaru}</strong>. Pity sekarang ${pity}/${pityTarget}.`;
+  function setLoading(isLoading) {
+    els.pull1.disabled = isLoading;
+    els.pull10.disabled = isLoading;
+    els.pull1.textContent = isLoading ? "LOADING..." : "PULL 1x";
+    els.pull10.textContent = isLoading ? "LOADING..." : "PULL 10x";
   }
 
-  function tarik(jumlah) {
-    const hasilTarikan = [];
+  async function pull(count) {
+    setLoading(true);
+    els.resultText.textContent = `Mengambil ${count} Pokemon dari PokeAPI...`;
 
-    for (let i = 0; i < jumlah; i += 1) {
-      const hasil = rollSatu();
-      hasilTarikan.push(hasil);
-      tambahRiwayat(hasil);
+    try {
+      const results = [];
+      for (let index = 0; index < count; index += 1) {
+        const rarity = rollRarity();
+        const cardData = await buildPokemonCard(rarity);
+        results.push(cardData);
+        addHistory(cardData);
+      }
+
+      const last = results[results.length - 1];
+      const ssrPulled = results.filter((item) => item.rarity === "ssr").length;
+
+      renderPokemon(last);
+      els.resultText.textContent = `${last.name} joined your box. `
+        + `${count}x pull produced ${ssrPulled} SSR. Pity: ${pity}/${pityTarget}.`;
+    } catch (error) {
+      els.resultText.textContent = "Gagal mengambil data Pokemon. Cek koneksi internet lalu coba lagi.";
+      console.error(error);
+    } finally {
+      setLoading(false);
+      renderStats();
     }
-
-    tampilkan(hasilTarikan[hasilTarikan.length - 1]);
-    tulisRingkasan(hasilTarikan);
   }
 
-  pityText.textContent = `${pity} / ${pityTarget}`;
-  tarik1.addEventListener("click", () => tarik(1));
-  tarik10.addEventListener("click", () => tarik(10));
+  renderStats();
+  els.pull1.addEventListener("click", () => pull(1));
+  els.pull10.addEventListener("click", () => pull(10));
 </script>
 </body>
 </html>
