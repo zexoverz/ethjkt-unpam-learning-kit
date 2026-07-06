@@ -325,7 +325,17 @@
     // Membuat elemen chip baru
     const chip = document.createElement("div");
     chip.className = `chip ${hasil.kelas}`;
-    chip.textContent = hasil.emoji;
+
+    // Menampilkan gambar sprite kecil Pokémon dalam chip riwayat
+    if (hasil.sprite) {
+      const img = document.createElement("img");
+      img.src = hasil.sprite;
+      img.alt = hasil.nama;
+      img.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
+      chip.appendChild(img);
+    } else {
+      chip.textContent = "🔴";
+    }
 
     // Masukkan ke posisi paling depan (paling kiri/atas di riwayat)
     historyContainer.insertBefore(chip, historyContainer.firstChild);
