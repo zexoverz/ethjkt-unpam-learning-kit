@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gacha ETHJKT</title>
+<title>Pokemon Gacha Simulator</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -13,7 +13,7 @@
     display: flex; align-items: center; justify-content: center; padding: 20px;
   }
   .app {
-    width: 100%; max-width: 460px; text-align: center;
+    width: 100%; max-width: 520px; text-align: center;
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 20px; padding: 24px 22px 28px;
@@ -45,14 +45,27 @@
 
   .stage { display: flex; justify-content: center; margin-bottom: 20px; }
   .card {
-    width: 180px; height: 230px; border-radius: 18px;
+    width: 220px; min-height: 300px; border-radius: 18px;
     background: #171b30; border: 3px solid #2a2f4a;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative;
+    gap: 8px; position: relative; padding: 14px;
   }
   .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
+  .card .sprite {
+    width: 150px; height: 150px; object-fit: contain;
+    filter: drop-shadow(0 12px 18px rgba(0,0,0,.45));
+  }
   .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
   .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
+  .types { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; min-height: 24px; }
+  .type {
+    font-size: 11px; font-weight: 800; text-transform: uppercase;
+    background: rgba(255,255,255,.1); border-radius: 999px; padding: 5px 8px;
+  }
+  .meta {
+    min-height: 34px; font-size: 12px; line-height: 1.35;
+    color: #b9bdd8; padding: 0 4px;
+  }
 
   /* warna per rarity */
   .card.common { border-color: #6b7280; }
@@ -86,10 +99,11 @@
   .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
   .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
   .chip {
-    font-size: 20px; width: 34px; height: 34px; border-radius: 9px;
+    font-size: 20px; width: 38px; height: 38px; border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
     background: #171b30; border: 2px solid #2a2f4a;
   }
+  .chip img { width: 32px; height: 32px; object-fit: contain; }
   .chip.rare { border-color: #4da6ff; }
   .chip.epic { border-color: #b06bff; }
   .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
@@ -97,8 +111,8 @@
 </head>
 <body>
   <div class="app">
-    <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
+    <h1>POKEMON GACHA</h1>
+    <div class="subtitle">tarik Pokemon dari data live PokeAPI</div>
 
     <div class="stats">
       <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
@@ -112,9 +126,12 @@
 
     <div class="stage">
       <div class="card" id="card">
+        <img class="sprite" id="cardImage" alt="" hidden>
         <div class="emoji" id="cardEmoji">?</div>
         <div class="name" id="cardName">Tekan TARIK</div>
         <div class="rar" id="cardRarity"></div>
+        <div class="types" id="cardTypes"></div>
+        <div class="meta" id="cardMeta"></div>
       </div>
     </div>
 
