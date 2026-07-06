@@ -216,10 +216,37 @@
   }
 
   // CHECKPOINT 3 - Tampilkan + animasi
-  //   TODO: fungsi tampilkan(hasil) -> isi #cardEmoji, #cardName, #cardRarity,
-  //         set className kartu jadi "card <kelas> reveal" (trik reset animasi:
-  //         set "card", baca card.offsetWidth, baru set kelas+reveal).
-  //         Update #total, #ssrCount, #pityText, dan lebar #pityFill.
+  // Fungsi untuk menampilkan hasil gacha ke elemen kartu dan mengupdate info statistik
+  function tampilkan(hasil) {
+    const card = document.getElementById("card");
+    const cardEmoji = document.getElementById("cardEmoji");
+    const cardName = document.getElementById("cardName");
+    const cardRarity = document.getElementById("cardRarity");
+
+    // Isi konten kartu
+    cardEmoji.textContent = hasil.emoji;
+    cardName.textContent = hasil.nama;
+    cardRarity.textContent = hasil.kelas.toUpperCase();
+
+    // Reset class kartu dan trigger animasi ulang dengan force reflow (offsetWidth)
+    card.className = "card";
+    void card.offsetWidth; // Memaksa browser me-render ulang layout
+    card.className = `card ${hasil.kelas} reveal`;
+
+    // Update statistik total tarikan dan SSR didapat
+    document.getElementById("total").textContent = total;
+    document.getElementById("ssrCount").textContent = ssrCount;
+
+    // Update teks pity dan progress bar berdasarkan pityLimit yang dirandomisasi
+    document.getElementById("pityText").textContent = `${pity} / ${pityLimit}`;
+    const persentasePity = (pity / pityLimit) * 100;
+    document.getElementById("pityFill").style.width = `${persentasePity}%`;
+  }
+
+  // Tampilkan kondisi awal pity limit saat halaman di-load
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("pityText").textContent = `0 / ${pityLimit}`;
+  });
 
   // CHECKPOINT 4 - Riwayat + tombol
   //   TODO: fungsi tambahRiwayat(hasil) -> bikin div .chip <kelas>, isi emoji,
