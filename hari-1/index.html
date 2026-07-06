@@ -7,20 +7,23 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #10131f;
-    --panel: rgba(255, 255, 255, 0.06);
-    --line: rgba(255, 255, 255, 0.12);
-    --muted: #9aa3b2;
-    --text: #f4f7fb;
+    --bg: #090b14;
+    --panel: rgba(255, 255, 255, 0.075);
+    --line: rgba(255, 255, 255, 0.15);
+    --muted: #a6b0c3;
+    --text: #f8fafc;
     --red: #ef4444;
-    --blue: #3b82f6;
+    --blue: #38bdf8;
     --gold: #facc15;
+    --violet: #a855f7;
   }
   body {
     font-family: "Segoe UI", system-ui, sans-serif;
     background:
-      radial-gradient(circle at 20% 10%, rgba(239, 68, 68, 0.24), transparent 32%),
-      radial-gradient(circle at 80% 0%, rgba(59, 130, 246, 0.24), transparent 30%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 80px),
+      radial-gradient(circle at 18% 12%, rgba(239, 68, 68, 0.3), transparent 30%),
+      radial-gradient(circle at 82% 3%, rgba(56, 189, 248, 0.24), transparent 28%),
+      radial-gradient(circle at 50% 100%, rgba(250, 204, 21, 0.13), transparent 34%),
       var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -33,16 +36,33 @@
     width: 100%;
     max-width: 520px;
     text-align: center;
-    background: rgba(16, 19, 31, 0.86);
+    background: linear-gradient(180deg, rgba(22, 26, 43, 0.92), rgba(9, 11, 20, 0.9));
     border: 1px solid var(--line);
-    border-radius: 18px;
+    border-radius: 16px;
     padding: 24px 22px 28px;
-    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.48);
+    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .app::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 0 38%, rgba(255, 255, 255, 0.08) 48%, transparent 58% 100%);
+    pointer-events: none;
+    transform: translateX(-55%);
+    animation: bannerSweep 8s ease-in-out infinite;
+  }
+  .app > * {
+    position: relative;
+    z-index: 1;
   }
   h1 {
-    font-size: 26px;
+    font-size: 28px;
+    line-height: 1.05;
     letter-spacing: 0;
     margin-bottom: 6px;
+    text-shadow: 0 0 22px rgba(56, 189, 248, 0.28);
   }
   .subtitle {
     color: var(--muted);
@@ -60,6 +80,7 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;
     padding: 10px 6px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
   .stat .num {
     font-size: 21px;
@@ -84,26 +105,34 @@
     margin-bottom: 6px;
   }
   .pity-track {
-    height: 10px;
+    height: 12px;
     background: rgba(255, 255, 255, 0.09);
     border-radius: 999px;
     overflow: hidden;
+    box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.36);
   }
   .pity-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, var(--blue), var(--gold));
-    transition: width 0.3s ease;
+    background: linear-gradient(90deg, var(--blue), var(--violet), var(--gold));
+    box-shadow: 0 0 18px rgba(250, 204, 21, 0.45);
+    transition: width 0.65s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .stage {
     display: flex;
     justify-content: center;
     margin-bottom: 18px;
+    min-height: 330px;
+    perspective: 1000px;
+    position: relative;
   }
   .card {
     width: min(100%, 240px);
     min-height: 310px;
-    background: #171b2c;
+    background:
+      linear-gradient(160deg, rgba(255, 255, 255, 0.08), transparent 34%),
+      radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.12), transparent 28%),
+      #171b2c;
     border: 3px solid #2f374f;
     border-radius: 16px;
     display: flex;
@@ -112,6 +141,8 @@
     padding: 16px;
     position: relative;
     overflow: hidden;
+    transform-style: preserve-3d;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
   }
   .card::before {
     content: "";
@@ -121,6 +152,15 @@
     height: 52px;
     border: 8px solid rgba(255, 255, 255, 0.08);
     border-radius: 50%;
+  }
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: -40% -80%;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.22), transparent 65%);
+    opacity: 0;
+    transform: translateX(-45%) rotate(12deg);
+    pointer-events: none;
   }
   .sprite-wrap {
     width: 164px;
@@ -136,6 +176,7 @@
     object-fit: contain;
     image-rendering: pixelated;
     filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.42));
+    transform: translateZ(28px);
   }
   .placeholder {
     color: var(--muted);
@@ -172,22 +213,41 @@
   }
   .card.common { border-color: #6b7280; }
   .card.common .rarity { color: #cbd5e1; }
-  .card.rare { border-color: #38bdf8; box-shadow: 0 0 24px rgba(56, 189, 248, 0.35); }
+  .card.rare { border-color: var(--blue); box-shadow: 0 0 26px rgba(56, 189, 248, 0.38); }
   .card.rare .rarity { color: #67e8f9; }
-  .card.epic { border-color: #a855f7; box-shadow: 0 0 28px rgba(168, 85, 247, 0.44); }
+  .card.epic { border-color: var(--violet); box-shadow: 0 0 34px rgba(168, 85, 247, 0.5); }
   .card.epic .rarity { color: #d8b4fe; }
-  .card.ssr { border-color: var(--gold); box-shadow: 0 0 44px rgba(250, 204, 21, 0.64); }
+  .card.ssr {
+    border-color: var(--gold);
+    box-shadow: 0 0 54px rgba(250, 204, 21, 0.74), inset 0 0 38px rgba(250, 204, 21, 0.12);
+  }
   .card.ssr .rarity, .card.ssr .card-name { color: #fde68a; }
-  @keyframes pop {
-    0% { transform: scale(0.72); opacity: 0; }
-    65% { transform: scale(1.04); }
-    100% { transform: scale(1); opacity: 1; }
+  @keyframes bannerSweep {
+    0%, 72%, 100% { transform: translateX(-65%); }
+    86% { transform: translateX(65%); }
+  }
+  @keyframes cardReveal {
+    0% { transform: rotateY(92deg) scale(0.86); opacity: 0; filter: blur(8px); }
+    55% { transform: rotateY(-10deg) scale(1.04); opacity: 1; filter: blur(0); }
+    100% { transform: rotateY(0) scale(1); opacity: 1; filter: blur(0); }
   }
   @keyframes flash {
     50% { filter: brightness(1.45); }
   }
-  .card.reveal { animation: pop 0.35s ease; }
-  .card.ssr.reveal { animation: pop 0.35s ease, flash 0.75s ease 0.28s 2; }
+  @keyframes ssrAura {
+    0%, 100% { box-shadow: 0 0 46px rgba(250, 204, 21, 0.62), inset 0 0 28px rgba(250, 204, 21, 0.1); }
+    50% { box-shadow: 0 0 76px rgba(250, 204, 21, 0.98), inset 0 0 44px rgba(250, 204, 21, 0.18); }
+  }
+  .card.reveal::after {
+    animation: cardShine 0.9s ease 0.2s;
+  }
+  .card.reveal { animation: cardReveal 0.62s cubic-bezier(0.22, 1, 0.36, 1); }
+  .card.ssr.reveal { animation: cardReveal 0.62s cubic-bezier(0.22, 1, 0.36, 1), flash 0.75s ease 0.3s 2, ssrAura 1.4s ease-in-out 0.25s 2; }
+  @keyframes cardShine {
+    0% { opacity: 0; transform: translateX(-48%) rotate(12deg); }
+    45% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(48%) rotate(12deg); }
+  }
   .buttons {
     display: flex;
     gap: 12px;
@@ -204,13 +264,20 @@
     font-size: 15px;
     font-weight: 900;
     letter-spacing: 0.7px;
-    transition: transform 0.08s ease, filter 0.15s ease;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.24);
+    transition: transform 0.16s ease, filter 0.15s ease, box-shadow 0.16s ease;
   }
   .btn.gold {
     background: linear-gradient(180deg, #fde047, #f59e0b);
     color: #201a05;
+    box-shadow: 0 10px 26px rgba(245, 158, 11, 0.28);
   }
-  .btn:hover { filter: brightness(1.06); }
+  .btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 14px 32px rgba(56, 189, 248, 0.26);
+  }
+  .btn.gold:hover { box-shadow: 0 14px 34px rgba(250, 204, 21, 0.34); }
   .btn:active { transform: scale(0.96); }
   .btn:disabled {
     cursor: wait;
@@ -244,6 +311,12 @@
     display: grid;
     place-items: center;
     overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .chip:hover {
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.32);
+    z-index: 2;
   }
   .chip img {
     width: 100%;
@@ -257,6 +330,37 @@
   .chip.rare { border-color: #38bdf8; }
   .chip.epic { border-color: #a855f7; }
   .chip.ssr { border-color: var(--gold); box-shadow: 0 0 12px rgba(250, 204, 21, 0.55); }
+  .effects {
+    position: absolute;
+    inset: -20px;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .particle {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--particle-color, var(--gold));
+    box-shadow: 0 0 14px var(--particle-color, var(--gold));
+    animation: particleBurst 900ms ease-out forwards;
+  }
+  @keyframes particleBurst {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.4); }
+    100% {
+      opacity: 0;
+      transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
   @media (max-width: 420px) {
     .app { padding: 20px 16px 24px; }
     .buttons { flex-direction: column; }
@@ -281,6 +385,7 @@
     </section>
 
     <section class="stage" aria-live="polite">
+      <div class="effects" id="effects"></div>
       <article class="card" id="card">
         <div class="sprite-wrap" id="spriteWrap"><span class="placeholder">?</span></div>
         <div>
@@ -320,7 +425,9 @@
     ssrCount: 0,
     pity: 0,
     pityTarget: randomPityTarget(),
-    isPulling: false
+    isPulling: false,
+    hasShownFirstSsrBurst: false,
+    audioContext: null
   };
 
   const el = {
@@ -334,6 +441,7 @@
     cardName: document.querySelector("#cardName"),
     cardRarity: document.querySelector("#cardRarity"),
     cardTypes: document.querySelector("#cardTypes"),
+    effects: document.querySelector("#effects"),
     status: document.querySelector("#status"),
     history: document.querySelector("#history"),
     pull1: document.querySelector("#pull1"),
@@ -346,6 +454,10 @@
 
   function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function wait(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   function capitalize(text) {
@@ -462,6 +574,55 @@
     return placeholder;
   }
 
+  function playSsrSound() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+
+    state.audioContext ??= new AudioContext();
+    if (state.audioContext.state === "suspended") {
+      state.audioContext.resume();
+    }
+
+    const now = state.audioContext.currentTime;
+    const notes = [523.25, 659.25, 783.99];
+
+    notes.forEach((frequency, index) => {
+      const oscillator = state.audioContext.createOscillator();
+      const gain = state.audioContext.createGain();
+
+      oscillator.type = "triangle";
+      oscillator.frequency.setValueAtTime(frequency, now + index * 0.08);
+      gain.gain.setValueAtTime(0.0001, now + index * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.08, now + index * 0.08 + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.08 + 0.28);
+
+      oscillator.connect(gain);
+      gain.connect(state.audioContext.destination);
+      oscillator.start(now + index * 0.08);
+      oscillator.stop(now + index * 0.08 + 0.3);
+    });
+  }
+
+  function createParticleBurst(isFirstSsr) {
+    const particleCount = isFirstSsr ? 46 : 26;
+    const colors = ["#facc15", "#fde68a", "#38bdf8", "#ffffff"];
+
+    for (let i = 0; i < particleCount; i += 1) {
+      const particle = document.createElement("span");
+      const angle = Math.random() * Math.PI * 2;
+      const distance = randomInt(isFirstSsr ? 90 : 58, isFirstSsr ? 180 : 120);
+
+      particle.className = "particle";
+      particle.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
+      particle.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
+      particle.style.setProperty("--particle-color", colors[i % colors.length]);
+      particle.style.animationDelay = `${Math.random() * 120}ms`;
+
+      el.effects.append(particle);
+      particle.addEventListener("animationend", () => particle.remove());
+    }
+  }
+
   function renderPokemon(result) {
     el.card.className = "card";
     void el.card.offsetWidth;
@@ -473,6 +634,13 @@
     el.cardName.textContent = result.name;
     el.cardRarity.textContent = rarityRules[result.rarity].label;
     el.cardTypes.innerHTML = result.types.map((type) => `<span class="type">${type}</span>`).join("");
+
+    if (result.rarity === "ssr") {
+      const isFirstSsr = !state.hasShownFirstSsrBurst;
+      state.hasShownFirstSsrBurst = true;
+      playSsrSound();
+      createParticleBurst(isFirstSsr);
+    }
 
     updateStats();
   }
@@ -515,6 +683,10 @@
         lastResult = await rollPokemon();
         renderPokemon(lastResult);
         addHistory(lastResult);
+
+        if (i < count - 1) {
+          await wait(170);
+        }
       }
       el.status.textContent = `${count} pull selesai. Terakhir dapat ${lastResult.name}.`;
     } catch (error) {
