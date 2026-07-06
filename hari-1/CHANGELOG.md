@@ -26,3 +26,8 @@
 
 - Jika artwork dan sprite dari CDN tidak bisa dimuat, kartu sekarang menampilkan badge lokal berbasis nama dan type Pokemon.
 - Ini membuat area gambar tetap terlihat rapi walaupun CDN sedang rate limit.
+
+## Image always visible
+
+- Kartu sekarang mulai dari gambar SVG lokal, jadi area art selalu punya image yang tampil.
+- Kalau remote artwork berhasil dimuat, browser bisa menukarnya ke gambar asli.
