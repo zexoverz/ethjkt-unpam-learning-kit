@@ -21,15 +21,16 @@ Sesuai aturan batas pity yang dirandomisasi:
 - Setiap kali Anda mendapatkan Pokémon SSR (baik dari keberuntungan 3% atau menabrak batas pity), counter `pity` akan kembali ke `0` dan target pity limit baru akan diacak kembali antara 5 hingga 15.
 
 ### 3. Logika Tarikan Gacha (`rollSatu`) (Checkpoint 2)
-- Mengembalikan detail Pokémon lengkap yang terdiri dari: `kelas` (rarity), `nama` (nama Pokémon), `id` (Pokédex ID), `image` (URL Artwork Resmi resolusi tinggi), dan `sprite` (URL Sprite Mini untuk riwayat).
+- Mengembalikan detail Pokémon lengkap yang terdiri dari: `kelas` (rarity), `nama` (nama Pokémon), `id` (Pokédex ID), `image` (URL Artwork Resmi), dan `sprite` (URL Sprite Mini untuk riwayat).
 
-### 4. Tampilan & Gambar Resmi (`tampilkan`) (Checkpoint 3)
-- Kartu utama kini menampilkan **gambar artwork resmi (Official Artwork)** resolusi tinggi dari PokeAPI alih-alih teks emoji statis.
+### 4. Tampilan & Gambar Resmi via jsDelivr CDN (Checkpoint 3)
+- Kartu utama kini menampilkan **gambar artwork resmi (Official Artwork)** resolusi tinggi.
+- **Perbaikan Masalah Limit 429**: Kami memindahkan alamat unduhan gambar dari GitHub Raw (`raw.githubusercontent.com`) ke **jsDelivr CDN** (`cdn.jsdelivr.net/gh`). Hal ini dilakukan karena GitHub Raw membatasi jumlah permintaan beruntun dari alamat lokal (menyebabkan status error 429 Too Many Requests), sedangkan jsDelivr CDN melakukan caching secara global sehingga aset gambar termuat instan tanpa hambatan rate limit.
 - Jika gambar belum termuat atau error, aplikasi akan menampilkan emoji Pokéball (`🔴`) sebagai fallback.
 - Teknik force reflow (`offsetWidth`) tetap digunakan untuk mereset animasi memutar/bergoyang gacha pada kartu.
 
 ### 5. Riwayat Gacha dengan Sprite Mini (Checkpoint 4)
-- Bagian riwayat gacha kini menampilkan **sprite gambar mini** dari Pokémon yang berhasil Anda tangkap, lengkap dengan atribut `title` yang memunculkan nama Pokémon beserta kelangkaannya saat kursor diarahkan ke atas chip.
+- Bagian riwayat gacha kini menampilkan **sprite gambar mini** dari Pokémon yang berhasil Anda tangkap melalui jsDelivr CDN, lengkap dengan atribut `title` yang memunculkan nama Pokémon beserta kelangkaannya saat kursor diarahkan ke atas chip.
 
 ---
 
@@ -37,4 +38,4 @@ Sesuai aturan batas pity yang dirandomisasi:
 1. Buka file [hari-1/index.html](file:///Users/byasaa/Project/ai-blockchain/ethjkt-unpam-learning-kit/hari-1/index.html) menggunakan browser Anda.
 2. Tunggu indikator status menampilkan `"Mengambil data Pokémon..."` sampai selesai (status akan hilang dan tombol akan aktif secara otomatis).
 3. Jalankan **TARIK 1x** atau **TARIK 10x**.
-4. Semua hasil tarikan akan muncul beserta gambar Pokémon resmi dari PokeAPI dan riwayat sprite mini di bawahnya.
+4. Semua hasil tarikan akan muncul beserta gambar Pokémon resmi dari PokeAPI (melalui CDN) dan riwayat sprite mini di bawahnya secara lancar tanpa ada pemblokiran aset (error 429).
