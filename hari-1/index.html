@@ -186,8 +186,9 @@
 <script>
   const API_BASE = "https://pokeapi.co/api/v2";
   const CACHE_PREFIX = "pokemon-gacha:v1:";
-  const HISTORY_LIMIT = 18;
+  const HISTORY_LIMIT = 100;
 
+  // mengelompokan id pokemon berdasarkan tingkat kelangkaan
   const rarityConfig = {
     ssr: {
       label: "SSR",
@@ -246,9 +247,11 @@
   let ssrCount = 0;
   let pityTarget = randomPityTarget();
 
+  // generate max pitty
   function randomPityTarget() {
     return Math.floor(Math.random() * 5) + 8;
   }
+
 
   function pickRandom(items) {
     return items[Math.floor(Math.random() * items.length)];
@@ -363,6 +366,7 @@
     const chance = Math.random();
     let rarity = "common";
 
+    // jika pitty sudah menyentuh max atau lagi hoki = SSR
     if (pity >= pityTarget || chance < rarityConfig.ssr.chance) {
       pity = 0;
       pityTarget = randomPityTarget();
@@ -381,7 +385,9 @@
     };
   }
 
+  // membuat objek card dari roll paling akhir
   async function buildPokemonCard(roll) {
+    // fetch data berdasarkan id dari gacha 
     const [pokemon, species] = await Promise.all([
       cachedFetch(`${API_BASE}/pokemon/${roll.id}/`),
       cachedFetch(`${API_BASE}/pokemon-species/${roll.id}/`)
