@@ -235,6 +235,17 @@
     return entry ? entry.name : formatNama(fallback);
   }
 
+  function ambilUrlGambar(pokemon) {
+    const sprites = pokemon.sprites;
+
+    return [
+      sprites?.front_default,
+      sprites?.other?.home?.front_default,
+      sprites?.other?.["official-artwork"]?.front_default,
+      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`
+    ].filter(Boolean);
+  }
+
   async function ambilPokemon(kelas) {
     const id = pilihAcak(pokemonPools[kelas]);
     const pokemon = await fetchJson(`${API_BASE}/pokemon/${id}/`);
@@ -245,7 +256,7 @@
       kelas,
       id: pokemon.id,
       nama: ambilNamaInggris(species, pokemon.name),
-      gambar: pokemon.sprites.other["official-artwork"].front_default || pokemon.sprites.front_default,
+      gambarUrls: ambilUrlGambar(pokemon),
       types: pokemon.types.map((item) => item.type.name),
       totalStat,
       captureRate: species.capture_rate,
@@ -255,9 +266,31 @@
     };
   }
 
+  function pasangGambar(img, hasil, onGagal) {
+    const urls = hasil.gambarUrls.length ? hasil.gambarUrls : [""];
+    let index = 0;
+
+    img.alt = hasil.nama;
+    img.onerror = () => {
+      index += 1;
+
+      if (index < urls.length) {
+        img.src = urls[index];
+        return;
+      }
+
+      img.onerror = null;
+      onGagal?.();
+    };
+    img.src = urls[index];
+  }
+
   function tampilkan(hasil) {
-    elemen.cardImage.src = hasil.gambar;
-    elemen.cardImage.alt = hasil.nama;
+    pasangGambar(elemen.cardImage, hasil, () => {
+      elemen.cardImage.hidden = true;
+      elemen.cardEmoji.hidden = false;
+      elemen.cardEmoji.textContent = "#";
+    });
     elemen.cardImage.hidden = false;
     elemen.cardEmoji.hidden = true;
     elemen.cardName.textContent = hasil.nama;
@@ -280,9 +313,14 @@
 
   function tambahRiwayat(hasil) {
     const chip = document.createElement("div");
+    const img = document.createElement("img");
+
     chip.className = `chip ${hasil.kelas}`;
-    chip.innerHTML = `<img src="${hasil.gambar}" alt="${hasil.nama}">`;
     chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
+    pasangGambar(img, hasil, () => {
+      chip.textContent = `#${hasil.id}`;
+    });
+    chip.appendChild(img);
 
     elemen.history.prepend(chip);
 

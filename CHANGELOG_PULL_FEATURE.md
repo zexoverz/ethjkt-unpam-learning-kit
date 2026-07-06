@@ -46,3 +46,20 @@ Catatan penting:
 
 - Data PokeAPI disimpan di cache memory lewat `Map`, jadi request yang sama tidak dipanggil berulang-ulang selama halaman masih terbuka.
 - Tombol dibuat loading saat fetch berjalan supaya user tidak spam klik saat data belum selesai.
+
+## 2026-07-07 - Perbaikan Gambar Pokemon
+
+Saya memperbaiki bug gambar Pokemon yang kadang tidak muncul atau menjadi broken image.
+
+Penyebab:
+
+- Kode sebelumnya mengambil gambar dari satu jalur utama: `official-artwork`.
+- Tidak semua response atau kondisi jaringan selalu membuat URL itu siap dipakai.
+- Kalau URL gambar gagal dimuat oleh browser, belum ada fallback otomatis.
+
+Perbaikan:
+
+- Gambar sekarang punya beberapa fallback URL.
+- Kode memakai optional chaining (`?.`) saat membaca data sprite.
+- Kalau satu gambar gagal dimuat, browser otomatis mencoba URL berikutnya.
+- Riwayat juga memakai mekanisme fallback yang sama.
