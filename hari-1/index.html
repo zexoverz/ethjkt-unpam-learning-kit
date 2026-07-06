@@ -409,9 +409,19 @@
 
 <script>
   const API_ROOT = "https://pokeapi.co/api/v2";
-  const MAX_POKEMON_ID = 151;
   const HISTORY_LIMIT = 12;
   const CACHE_PREFIX = "pokemon-gacha:";
+  const MAX_RETRIES = 3;
+  const REQUEST_TIMEOUT_MS = 6000;
+  const requestCache = new Map();
+  const pendingRequests = new Map();
+
+  const rarityPools = {
+    ssr: [144, 145, 146, 150, 151],
+    epic: [3, 6, 9, 31, 34, 59, 65, 68, 94, 103, 130, 131, 143, 149],
+    rare: [2, 5, 8, 26, 28, 36, 38, 45, 51, 53, 57, 62, 71, 76, 78, 80, 89, 91, 95, 97, 101, 110, 121, 123, 127, 128, 134, 135, 136, 137, 139, 141, 142, 148],
+    common: [1, 4, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 29, 30, 32, 33, 35, 37, 39, 40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 52, 54, 55, 56, 58, 60, 61, 63, 64, 66, 67, 69, 70, 72, 73, 74, 75, 77, 79, 81, 82, 83, 84, 85, 86, 87, 88, 90, 92, 93, 96, 98, 99, 100, 102, 104, 105, 106, 107, 108, 109, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 122, 124, 125, 126, 129, 132, 133, 138, 140, 147]
+  };
 
   const rarityRules = {
     ssr: { label: "SSR", chance: 0.03 },
@@ -460,6 +470,10 @@
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  function pickRandom(items) {
+    return items[randomInt(0, items.length - 1)];
+  }
+
   function capitalize(text) {
     return text
       .split("-")
@@ -467,28 +481,96 @@
       .join(" ");
   }
 
-  async function fetchJson(url) {
+  function readCachedJson(cacheKey) {
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      return cached ? JSON.parse(cached) : null;
+    } catch (error) {
+      localStorage.removeItem(cacheKey);
+      return null;
+    }
+  }
+
+  function writeCachedJson(cacheKey, data) {
+    try {
+      localStorage.setItem(cacheKey, JSON.stringify(data));
+    } catch (error) {
+      console.warn("Cache write skipped", error);
+    }
+  }
+
+  async function fetchJson(url, label) {
     const cacheKey = CACHE_PREFIX + url;
-    const cached = localStorage.getItem(cacheKey);
+    const memoryCached = requestCache.get(url);
+    const cached = readCachedJson(cacheKey);
+
+    if (memoryCached) {
+      return memoryCached;
+    }
 
     if (cached) {
-      return JSON.parse(cached);
+      const data = JSON.parse(cached);
+      requestCache.set(url, data);
+      return data;
     }
 
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`PokeAPI error ${response.status}`);
+    if (pendingRequests.has(url)) {
+      return pendingRequests.get(url);
     }
 
-    const data = await response.json();
-    localStorage.setItem(cacheKey, JSON.stringify(data));
-    return data;
+    const request = fetchJsonWithRetry(url, label)
+      .then((data) => {
+        requestCache.set(url, data);
+        writeCachedJson(cacheKey, data);
+        return data;
+      })
+      .finally(() => pendingRequests.delete(url));
+
+    pendingRequests.set(url, request);
+    return request;
+  }
+
+  async function fetchJsonWithRetry(url, label) {
+    let lastError;
+
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
+      try {
+        const response = await fetchWithTimeout(url);
+
+        if (!response.ok) {
+          throw new Error(`PokeAPI ${response.status}`);
+        }
+
+        return await response.json();
+      } catch (error) {
+        lastError = error;
+
+        if (attempt < MAX_RETRIES) {
+          await wait(350 * 2 ** attempt + randomInt(0, 150));
+        }
+      }
+    }
+
+    const reason = lastError.name === "AbortError" ? "request timeout" : lastError.message;
+    throw new Error(`Gagal memuat ${label}: ${reason}`);
+  }
+
+  async function fetchWithTimeout(url) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    try {
+      return await fetch(url, { signal: controller.signal });
+    } finally {
+      clearTimeout(timeoutId);
+    }
   }
 
   async function getPokemon(id) {
+    const label = `Pokemon #${id}`;
     const [pokemon, species] = await Promise.all([
-      fetchJson(`${API_ROOT}/pokemon/${id}`),
-      fetchJson(`${API_ROOT}/pokemon-species/${id}`)
+      fetchJson(`${API_ROOT}/pokemon/${id}`, label),
+      fetchJson(`${API_ROOT}/pokemon-species/${id}`, `${label} species`)
     ]);
 
     return {
@@ -514,14 +596,8 @@
     return "common";
   }
 
-  function rollRarity() {
-    state.total += 1;
-    state.pity += 1;
-
-    if (state.pity >= state.pityTarget || Math.random() < rarityRules.ssr.chance) {
-      state.pity = 0;
-      state.ssrCount += 1;
-      state.pityTarget = randomPityTarget();
+  function chooseRarity() {
+    if (state.pity + 1 >= state.pityTarget || Math.random() < rarityRules.ssr.chance) {
       return "ssr";
     }
 
@@ -531,18 +607,31 @@
     return "common";
   }
 
-  async function rollPokemon() {
-    const wantedRarity = rollRarity();
+  function commitSuccessfulPull(rarity) {
+    state.total += 1;
+    state.pity += 1;
 
-    // Try several random Pokemon so the public API data decides the final pool.
-    for (let attempt = 0; attempt < 18; attempt += 1) {
-      const pokemon = await getPokemon(randomInt(1, MAX_POKEMON_ID));
-      const actualRarity = classifyPokemon(pokemon);
-
-      if (actualRarity === wantedRarity || attempt === 17) {
-        return { ...pokemon, rarity: attempt === 17 ? actualRarity : wantedRarity };
-      }
+    if (rarity === "ssr") {
+      state.pity = 0;
+      state.ssrCount += 1;
+      state.pityTarget = randomPityTarget();
     }
+  }
+
+  async function rollPokemon() {
+    const wantedRarity = chooseRarity();
+    const pokemonId = pickRandom(rarityPools[wantedRarity]);
+    const pokemon = await getPokemon(pokemonId);
+    const apiRarity = classifyPokemon(pokemon);
+
+    commitSuccessfulPull(wantedRarity);
+
+    return {
+      ...pokemon,
+      // The pool controls gacha odds; API data still controls details and acts as a sanity check.
+      rarity: wantedRarity,
+      apiRarity
+    };
   }
 
   function createSpriteImage(result, className) {
@@ -679,16 +768,32 @@
 
     try {
       let lastResult;
+      let failedCount = 0;
+      let lastError = "";
+
       for (let i = 0; i < count; i += 1) {
-        lastResult = await rollPokemon();
-        renderPokemon(lastResult);
-        addHistory(lastResult);
+        try {
+          lastResult = await rollPokemon();
+          renderPokemon(lastResult);
+          addHistory(lastResult);
+        } catch (error) {
+          failedCount += 1;
+          lastError = error.message;
+          console.error(error);
+        }
 
         if (i < count - 1) {
           await wait(170);
         }
       }
-      el.status.textContent = `${count} pull selesai. Terakhir dapat ${lastResult.name}.`;
+
+      if (lastResult && failedCount > 0) {
+        el.status.textContent = `${count - failedCount} pull berhasil, ${failedCount} gagal. ${lastError}, coba pull lagi.`;
+      } else if (lastResult) {
+        el.status.textContent = `${count} pull selesai. Terakhir dapat ${lastResult.name}.`;
+      } else {
+        el.status.textContent = `${lastError}, coba pull lagi.`;
+      }
     } catch (error) {
       el.status.textContent = "Gagal mengambil data PokeAPI. Cek internet lalu coba lagi.";
       console.error(error);
