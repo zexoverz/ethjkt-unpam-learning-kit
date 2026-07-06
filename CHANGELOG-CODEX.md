@@ -2,6 +2,12 @@
 
 ## 2026-07-06
 
+- Memperbaiki bug gambar Pokemon yang bisa gagal tampil jika `official-artwork` kosong atau struktur sprite tidak lengkap.
+- Sekarang gambar punya beberapa fallback: official artwork, home artwork, dream world, front default, lalu front shiny.
+- Jika semua gambar gagal, kartu menampilkan placeholder `?` agar tampilan tidak terlihat rusak.
+
+## 2026-07-06 - Pokemon API
+
 - Mengubah simulator menjadi Pokemon gacha yang mengambil data dari PokeAPI.
 - Tiap tarikan mengambil data `pokemon/{id}` untuk sprite, type, dan stat, lalu `pokemon-species/{id}` untuk nama Inggris, genus, flavor text, dan info species.
 - Sistem pity tetap dipakai: peluang SSR kecil, tapi tarikan ke-10 tanpa SSR dijamin menjadi SSR.

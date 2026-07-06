@@ -59,6 +59,17 @@
     image-rendering: pixelated;
     filter: drop-shadow(0 8px 16px rgba(0,0,0,.45));
   }
+  .sprite-wrap {
+    width: 132px; height: 132px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sprite-wrap.empty::before {
+    content: "?";
+    width: 96px; height: 96px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #8b90b0; background: rgba(255,255,255,.06);
+    font-size: 44px; font-weight: 800;
+  }
   .card .sprite.hidden { display: none; }
   .card .dex { font-size: 12px; color: #8b90b0; }
   .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
@@ -129,7 +140,9 @@
 
     <div class="stage">
       <div class="card" id="card">
-        <img class="sprite hidden" id="cardSprite" alt="">
+        <div class="sprite-wrap empty" id="spriteWrap">
+          <img class="sprite hidden" id="cardSprite" alt="">
+        </div>
         <div class="dex" id="cardDex">?</div>
         <div class="name" id="cardName">Tekan TARIK</div>
         <div class="types" id="cardTypes"></div>
@@ -166,6 +179,7 @@
   const cachePokemon = new Map();
 
   const card = document.querySelector("#card");
+  const spriteWrap = document.querySelector("#spriteWrap");
   const cardSprite = document.querySelector("#cardSprite");
   const cardDex = document.querySelector("#cardDex");
   const cardName = document.querySelector("#cardName");
@@ -219,8 +233,11 @@
   }
 
   function ambilSprite(pokemon) {
-    return pokemon.sprites.other["official-artwork"].front_default
+    return pokemon.sprites.other?.["official-artwork"]?.front_default
+      || pokemon.sprites.other?.home?.front_default
+      || pokemon.sprites.other?.dream_world?.front_default
       || pokemon.sprites.front_default
+      || pokemon.sprites.front_shiny
       || "";
   }
 
@@ -280,9 +297,9 @@
   }
 
   function tampilkan(hasil) {
-    cardSprite.src = hasil.sprite;
+    cardSprite.onerror = () => tampilkanSprite("");
+    tampilkanSprite(hasil.sprite);
     cardSprite.alt = hasil.nama;
-    cardSprite.classList.toggle("hidden", !hasil.sprite);
     cardDex.textContent = `#${String(hasil.id).padStart(4, "0")} - ${hasil.genus}`;
     cardName.textContent = hasil.nama;
     cardRarity.textContent = hasil.kelas.toUpperCase();
@@ -306,15 +323,35 @@
     pityFill.style.width = `${(pity / pityLimit) * 100}%`;
   }
 
+  function tampilkanSprite(spriteUrl) {
+    const adaSprite = Boolean(spriteUrl);
+
+    if (adaSprite) {
+      cardSprite.src = spriteUrl;
+    } else {
+      cardSprite.onerror = null;
+      cardSprite.removeAttribute("src");
+    }
+
+    cardSprite.classList.toggle("hidden", !adaSprite);
+    spriteWrap.classList.toggle("empty", !adaSprite);
+  }
+
   function tambahRiwayat(hasil) {
     const chip = document.createElement("div");
-    const img = document.createElement("img");
 
     chip.className = `chip ${hasil.kelas}`;
     chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
-    img.src = hasil.sprite;
-    img.alt = hasil.nama;
-    chip.append(img);
+
+    if (hasil.sprite) {
+      const img = document.createElement("img");
+      img.src = hasil.sprite;
+      img.alt = hasil.nama;
+      img.onerror = () => img.remove();
+      chip.append(img);
+    } else {
+      chip.textContent = "?";
+    }
 
     history.prepend(chip);
 
