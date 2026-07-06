@@ -146,30 +146,16 @@
 
 <script>
   const BATAS_PITY = 10;
+  const API_BASE = "https://pokeapi.co/api/v2";
 
-  const hadiah = {
-    ssr: [
-      { n: "Laptop Baru", e: "💻" },
-      { n: "Beasiswa Full", e: "🎓" },
-      { n: "ETHJKT Hoodie", e: "🧥" }
-    ],
-    epic: [
-      { n: "Sticker Pack", e: "✨" },
-      { n: "Kopi Gratis", e: "☕" },
-      { n: "Gas Fee Aman", e: "⛽" }
-    ],
-    rare: [
-      { n: "Mentor 1 Jam", e: "🧑‍🏫" },
-      { n: "Notebook", e: "📓" },
-      { n: "Keyboard Clicky", e: "⌨️" }
-    ],
-    common: [
-      { n: "Semangat Lagi", e: "🔥" },
-      { n: "Pulpen", e: "🖊️" },
-      { n: "Air Mineral", e: "💧" },
-      { n: "Debug Tipis", e: "🐞" }
-    ]
+  const pokemonPools = {
+    ssr: [144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251, 382, 383, 384, 385, 386, 483, 484, 487, 493, 643, 644, 646, 716, 717, 718, 719, 720, 721, 888, 889, 890, 891, 892, 893, 894, 895, 896, 897, 898, 905],
+    epic: [3, 6, 9, 65, 94, 130, 131, 143, 149, 154, 157, 160, 181, 196, 197, 230, 248, 254, 257, 260, 282, 289, 306, 330, 350, 373, 376, 445, 448, 460, 466, 467, 470, 471, 475, 497, 500, 503, 530, 534, 571, 612, 635, 637, 658, 700, 706, 724, 727, 730, 738, 778, 812, 815, 818, 823, 839, 849, 855, 869, 887],
+    rare: [1, 4, 7, 25, 26, 37, 38, 58, 59, 63, 92, 95, 111, 112, 123, 125, 126, 133, 134, 135, 136, 147, 152, 155, 158, 172, 179, 190, 200, 207, 215, 227, 239, 240, 246, 252, 255, 258, 280, 302, 303, 309, 315, 328, 333, 349, 359, 361, 371, 390, 393, 396, 403, 425, 443, 447, 495, 498, 501, 559, 570, 607, 610, 633, 656, 722, 725, 728, 744, 757, 759, 761, 813, 816, 819, 831, 837, 872],
+    common: [10, 13, 16, 19, 21, 27, 29, 32, 41, 43, 46, 48, 50, 52, 54, 60, 69, 72, 74, 77, 79, 81, 84, 86, 90, 96, 98, 100, 102, 104, 109, 116, 118, 120, 129, 161, 163, 165, 167, 170, 177, 183, 187, 191, 194, 198, 202, 204, 206, 209, 216, 218, 220, 223, 228, 231, 263, 265, 270, 273, 276, 278, 283, 285, 290, 293, 300, 304, 316, 322, 325, 331, 339, 343, 355, 363, 399, 401, 412, 420, 431, 434, 438, 439, 440, 446, 504, 506, 509, 519, 524, 527, 532, 535, 540, 543, 546, 548, 550, 554, 557, 562, 568, 572, 580, 582, 588, 590, 595, 599, 605, 613, 616, 622, 627, 659, 661, 664, 667, 669, 672, 674, 677, 682, 684, 686, 688, 690, 692, 704, 708, 710, 714, 731, 734, 736, 742, 746, 751, 753, 755, 767, 769, 771, 774, 819, 821, 824, 827, 829, 833, 835, 840, 843, 846, 848, 852, 856, 859, 868, 870, 871, 872]
   };
+
+  const apiCache = new Map();
 
   let pity = 0;
   let total = 0;
@@ -181,9 +167,12 @@
     pityText: document.getElementById("pityText"),
     pityFill: document.getElementById("pityFill"),
     card: document.getElementById("card"),
+    cardImage: document.getElementById("cardImage"),
     cardEmoji: document.getElementById("cardEmoji"),
     cardName: document.getElementById("cardName"),
     cardRarity: document.getElementById("cardRarity"),
+    cardTypes: document.getElementById("cardTypes"),
+    cardMeta: document.getElementById("cardMeta"),
     history: document.getElementById("history"),
     tarik1: document.getElementById("tarik1"),
     tarik10: document.getElementById("tarik10")
@@ -193,33 +182,84 @@
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  function ambilHadiah(kelas) {
-    const item = pilihAcak(hadiah[kelas]);
-    return { kelas, nama: item.n, emoji: item.e };
+  function formatNama(nama) {
+    return nama
+      .split("-")
+      .map((kata) => kata.charAt(0).toUpperCase() + kata.slice(1))
+      .join(" ");
   }
 
-  function rollSatu() {
+  async function fetchJson(url) {
+    if (apiCache.has(url)) return apiCache.get(url);
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`PokeAPI error ${response.status}`);
+    }
+
+    const data = await response.json();
+    apiCache.set(url, data);
+    return data;
+  }
+
+  function pilihRarity() {
     total += 1;
     pity += 1;
 
     const angkaAcak = Math.random();
 
-    // Pity membuat SSR pasti muncul maksimal setiap 10 tarikan.
     if (pity >= BATAS_PITY || angkaAcak < 0.03) {
       pity = 0;
       ssrCount += 1;
-      return ambilHadiah("ssr");
+      return "ssr";
     }
 
-    if (angkaAcak < 0.10) return ambilHadiah("epic");
-    if (angkaAcak < 0.30) return ambilHadiah("rare");
-    return ambilHadiah("common");
+    if (angkaAcak < 0.10) return "epic";
+    if (angkaAcak < 0.30) return "rare";
+    return "common";
+  }
+
+  function ambilTeksInggris(entries) {
+    const entry = entries.find((item) => item.language.name === "en");
+    return entry ? entry.flavor_text.replace(/\s+/g, " ") : "";
+  }
+
+  function ambilNamaInggris(species, fallback) {
+    const entry = species.names.find((item) => item.language.name === "en");
+    return entry ? entry.name : formatNama(fallback);
+  }
+
+  async function ambilPokemon(kelas) {
+    const id = pilihAcak(pokemonPools[kelas]);
+    const pokemon = await fetchJson(`${API_BASE}/pokemon/${id}/`);
+    const species = await fetchJson(pokemon.species.url);
+    const totalStat = pokemon.stats.reduce((jumlah, item) => jumlah + item.base_stat, 0);
+
+    return {
+      kelas,
+      id: pokemon.id,
+      nama: ambilNamaInggris(species, pokemon.name),
+      gambar: pokemon.sprites.other["official-artwork"].front_default || pokemon.sprites.front_default,
+      types: pokemon.types.map((item) => item.type.name),
+      totalStat,
+      captureRate: species.capture_rate,
+      isLegendary: species.is_legendary,
+      isMythical: species.is_mythical,
+      teks: ambilTeksInggris(species.flavor_text_entries)
+    };
   }
 
   function tampilkan(hasil) {
-    elemen.cardEmoji.textContent = hasil.emoji;
+    elemen.cardImage.src = hasil.gambar;
+    elemen.cardImage.alt = hasil.nama;
+    elemen.cardImage.hidden = false;
+    elemen.cardEmoji.hidden = true;
     elemen.cardName.textContent = hasil.nama;
-    elemen.cardRarity.textContent = hasil.kelas.toUpperCase();
+    elemen.cardRarity.textContent = `${hasil.kelas.toUpperCase()} #${hasil.id}`;
+    elemen.cardTypes.innerHTML = hasil.types
+      .map((type) => `<span class="type">${type}</span>`)
+      .join("");
+    elemen.cardMeta.textContent = `BST ${hasil.totalStat} | Catch ${hasil.captureRate}${hasil.isLegendary ? " | Legendary" : ""}${hasil.isMythical ? " | Mythical" : ""}`;
 
     elemen.card.className = "card";
     void elemen.card.offsetWidth;
@@ -234,7 +274,7 @@
   function tambahRiwayat(hasil) {
     const chip = document.createElement("div");
     chip.className = `chip ${hasil.kelas}`;
-    chip.textContent = hasil.emoji;
+    chip.innerHTML = `<img src="${hasil.gambar}" alt="${hasil.nama}">`;
     chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
 
     elemen.history.prepend(chip);
@@ -244,15 +284,37 @@
     }
   }
 
-  function tarik(jumlah) {
+  function setLoading(isLoading) {
+    elemen.tarik1.disabled = isLoading;
+    elemen.tarik10.disabled = isLoading;
+    elemen.tarik1.textContent = isLoading ? "LOADING..." : "TARIK 1x";
+    elemen.tarik10.textContent = isLoading ? "LOADING..." : "TARIK 10x";
+  }
+
+  async function rollSatu() {
+    const kelas = pilihRarity();
+    return ambilPokemon(kelas);
+  }
+
+  async function tarik(jumlah) {
     let hasilTerakhir;
 
-    for (let i = 0; i < jumlah; i += 1) {
-      hasilTerakhir = rollSatu();
-      tambahRiwayat(hasilTerakhir);
-    }
+    setLoading(true);
 
-    tampilkan(hasilTerakhir);
+    try {
+      for (let i = 0; i < jumlah; i += 1) {
+        hasilTerakhir = await rollSatu();
+        tambahRiwayat(hasilTerakhir);
+      }
+
+      tampilkan(hasilTerakhir);
+    } catch (error) {
+      elemen.cardName.textContent = "PokeAPI belum bisa diakses";
+      elemen.cardRarity.textContent = "COBA LAGI";
+      elemen.cardMeta.textContent = error.message;
+    } finally {
+      setLoading(false);
+    }
   }
 
   elemen.tarik1.addEventListener("click", () => tarik(1));
