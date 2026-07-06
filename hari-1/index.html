@@ -345,6 +345,12 @@
     object-fit: contain;
   }
 
+  .chip-fallback {
+    color: #2a55a2;
+    font-size: 10px;
+    font-weight: 900;
+  }
+
   .chip.rare { border-color: #2a75bb; background: #e4f3ff; }
   .chip.epic { border-color: #8b5cf6; background: #f2e7ff; }
   .chip.shiny { border-color: #ffcb05; background: #fff3a9; }
@@ -462,10 +468,29 @@
     return found ? found.base_stat : "-";
   }
 
-  function getArtwork(pokemon, isShiny) {
-    const official = pokemon.sprites.other["official-artwork"];
-    if (isShiny && official.front_shiny) return official.front_shiny;
-    return official.front_default || pokemon.sprites.front_default;
+  function getArtworkList(pokemon, isShiny) {
+    const official = pokemon.sprites.other?.["official-artwork"] || {};
+    const home = pokemon.sprites.other?.home || {};
+    const showdown = pokemon.sprites.other?.showdown || {};
+
+    const candidates = isShiny
+      ? [
+          official.front_shiny,
+          home.front_shiny,
+          pokemon.sprites.front_shiny,
+          showdown.front_shiny,
+          official.front_default,
+          home.front_default,
+          pokemon.sprites.front_default
+        ]
+      : [
+          official.front_default,
+          home.front_default,
+          pokemon.sprites.front_default,
+          showdown.front_default
+        ];
+
+    return candidates.filter(Boolean);
   }
 
   function getRarity(isShiny) {
@@ -500,19 +525,58 @@
 
     const pokemon = await fetchPokemon();
     const kelas = getRarity(isShiny);
-    const image = getArtwork(pokemon, isShiny);
+    const images = getArtworkList(pokemon, isShiny);
 
     return {
       kelas,
       id: pokemon.id,
       nama: titleCase(pokemon.name),
-      image,
+      images,
       types: pokemon.types.map((item) => item.type.name),
       hp: getStat(pokemon, "hp"),
       attack: getStat(pokemon, "attack"),
       baseExp: pokemon.base_experience || "-",
       shiny: isShiny
     };
+  }
+
+  function tampilkanPlaceholderImage() {
+    pokemonArt.removeAttribute("src");
+    pokemonArt.alt = "";
+    pokemonArt.hidden = true;
+    placeholder.hidden = false;
+    placeholder.textContent = "Gambar Pokemon belum tersedia";
+  }
+
+  function pasangGambarUtama(hasil) {
+    let imageIndex = 0;
+
+    function cobaGambarBerikutnya() {
+      if (imageIndex >= hasil.images.length) {
+        tampilkanPlaceholderImage();
+        return;
+      }
+
+      pokemonArt.src = hasil.images[imageIndex];
+      imageIndex += 1;
+    }
+
+    if (hasil.images.length === 0) {
+      tampilkanPlaceholderImage();
+      return;
+    }
+
+    pokemonArt.onerror = cobaGambarBerikutnya;
+    pokemonArt.onload = () => {
+      pokemonArt.hidden = false;
+      placeholder.hidden = true;
+    };
+
+    pokemonArt.alt = hasil.nama;
+    pokemonArt.hidden = true;
+    placeholder.hidden = false;
+    placeholder.textContent = "Memuat gambar Pokemon...";
+    cobaGambarBerikutnya();
   }
 
   function updateStats(hasil) {
@@ -527,10 +591,7 @@
     pokemonName.textContent = hasil.nama;
     pokemonId.textContent = `#${hasil.id}`;
     rarity.textContent = hasil.shiny ? "Shiny SSR" : hasil.kelas;
-    pokemonArt.src = hasil.image;
-    pokemonArt.alt = hasil.nama;
-    pokemonArt.hidden = false;
-    placeholder.hidden = true;
+    pasangGambarUtama(hasil);
 
     types.innerHTML = "";
     hasil.types.forEach((typeName) => {
@@ -554,14 +615,29 @@
 
   function tambahRiwayat(hasil) {
     const chip = document.createElement("div");
-    const img = document.createElement("img");
 
     chip.className = `chip ${hasil.kelas}`;
     chip.title = `${hasil.nama} #${hasil.id}`;
-    img.src = hasil.image;
-    img.alt = hasil.nama;
 
-    chip.append(img);
+    if (hasil.images.length > 0) {
+      const img = document.createElement("img");
+      img.src = hasil.images[0];
+      img.alt = hasil.nama;
+      img.onerror = () => {
+        chip.innerHTML = "";
+        const fallback = document.createElement("span");
+        fallback.className = "chip-fallback";
+        fallback.textContent = `#${hasil.id}`;
+        chip.append(fallback);
+      };
+      chip.append(img);
+    } else {
+      const fallback = document.createElement("span");
+      fallback.className = "chip-fallback";
+      fallback.textContent = `#${hasil.id}`;
+      chip.append(fallback);
+    }
+
     history.prepend(chip);
 
     while (history.children.length > 12) {

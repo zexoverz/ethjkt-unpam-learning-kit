@@ -17,3 +17,11 @@ Bahasa mudahnya: sekarang tombol TARIK sudah benar-benar mengacak hadiah. Kalau 
 - Mengubah SSR menjadi Shiny SSR dengan pity 10 pull.
 
 Bahasa mudahnya: sekarang aplikasi tidak pakai daftar hadiah manual lagi. Setiap pull akan minta data Pokemon ke PokeAPI, lalu menampilkan Pokemon yang didapat sebagai kartu gacha.
+
+## 2026-07-06 - Perbaikan gambar Pokemon
+
+- Menambahkan fallback gambar dari official artwork ke Home sprite, sprite biasa, dan Showdown sprite.
+- Menambahkan placeholder kalau semua gambar gagal dimuat.
+- Menambahkan fallback ID di riwayat supaya tidak muncul ikon gambar rusak.
+
+Bahasa mudahnya: kalau gambar Pokemon dari PokeAPI/GitHub gagal kebuka, aplikasi sekarang coba gambar lain dulu. Kalau tetap gagal, kartu tetap rapi dan tidak menampilkan broken image.
