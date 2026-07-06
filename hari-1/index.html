@@ -72,6 +72,19 @@
   .art { display: flex; align-items: center; justify-content: center; }
   .art img { width: min(240px, 82%); max-height: 240px; object-fit: contain; filter: drop-shadow(0 20px 18px rgba(23,32,42,.22)); }
   .placeholder { font-size: 72px; color: rgba(23,32,42,.25); }
+  .local-art {
+    width: 190px; height: 190px; border-radius: 50%;
+    display: grid; place-items: center; position: relative;
+    color: white; font-size: 48px; font-weight: 900;
+    border: 8px solid rgba(255,255,255,.72);
+    box-shadow: 0 18px 30px rgba(23,32,42,.2), inset 0 -18px 30px rgba(23,32,42,.18);
+  }
+  .local-art::before {
+    content: ""; position: absolute; inset: 45%;
+    border-radius: 50%; background: rgba(255,255,255,.8);
+    box-shadow: 0 0 0 12px rgba(255,255,255,.22);
+  }
+  .local-art span { position: relative; text-shadow: 0 3px 10px rgba(23,32,42,.35); }
   .types { display: flex; gap: 8px; flex-wrap: wrap; }
   .type {
     padding: 5px 10px; border-radius: 999px; color: white;
@@ -272,8 +285,26 @@
   }
 
   function replaceChildren(parent, children) {
-    parent.textContent = "";
+    while (parent.lastElementChild) {
+      parent.lastElementChild.remove();
+    }
+
     children.forEach((child) => parent.appendChild(child));
+  }
+
+  function createLocalArt(cardData) {
+    const art = document.createElement("div");
+    const primaryType = cardData.types[0] || "normal";
+    const secondaryType = cardData.types[1] || primaryType;
+
+    art.className = "local-art";
+    art.style.background = `linear-gradient(135deg, ${typeColors[primaryType] || "#667085"}, ${typeColors[secondaryType] || "#17202a"})`;
+
+    const label = document.createElement("span");
+    label.textContent = cardData.name.slice(0, 2).toUpperCase();
+    art.appendChild(label);
+
+    return art;
   }
 
   async function cachedFetch(url) {
@@ -357,27 +388,24 @@
     els.pokemonName.textContent = cardData.name;
     els.dexNumber.textContent = `#${String(cardData.id).padStart(3, "0")}`;
 
+    const localArt = createLocalArt(cardData);
+
     if (cardData.sprite) {
       const artwork = document.createElement("img");
       artwork.src = cardData.sprite;
       artwork.alt = `${cardData.name} artwork`;
+      artwork.loading = "lazy";
       artwork.onerror = () => {
         if (cardData.fallbackSprite && artwork.src !== cardData.fallbackSprite) {
           artwork.src = cardData.fallbackSprite;
           return;
         }
 
-        const placeholder = document.createElement("div");
-        placeholder.className = "placeholder";
-        placeholder.textContent = "?";
-        replaceChildren(els.artWrap, [placeholder]);
+        replaceChildren(els.artWrap, [localArt]);
       };
       replaceChildren(els.artWrap, [artwork]);
     } else {
-      const placeholder = document.createElement("div");
-      placeholder.className = "placeholder";
-      placeholder.textContent = "?";
-      replaceChildren(els.artWrap, [placeholder]);
+      replaceChildren(els.artWrap, [localArt]);
     }
 
     const typeChips = cardData.types.map((type) => {

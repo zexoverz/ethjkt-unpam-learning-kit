@@ -21,3 +21,8 @@
 - Riwayat tetap mencatat 10 hasil, tapi memakai nomor Pokedex dan rarity agar tidak membebani API/CDN.
 - Kartu utama punya fallback ke sprite kecil. Jika gambar tetap ditolak CDN, aplikasi menampilkan placeholder `?`.
 - Jika API mengembalikan `429`, aplikasi menampilkan pesan yang lebih jelas: tunggu sebentar lalu coba `PULL 1x`.
+
+## Image fallback improvement
+
+- Jika artwork dan sprite dari CDN tidak bisa dimuat, kartu sekarang menampilkan badge lokal berbasis nama dan type Pokemon.
+- Ini membuat area gambar tetap terlihat rapi walaupun CDN sedang rate limit.
