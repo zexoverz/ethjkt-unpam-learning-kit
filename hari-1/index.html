@@ -136,7 +136,7 @@
 
 <script>
   const apiBase = "https://pokeapi.co/api/v2";
-  const cachePrefix = "ethjkt-pokemon-";
+  const cachePrefix = "ethjkt-pokemon-v2-";
   const pokemonPools = {
     ssr: [144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251, 382, 383, 384, 385, 386],
     epic: [3, 6, 9, 65, 94, 130, 131, 143, 149, 181, 196, 197, 248, 282, 289, 373],
@@ -175,6 +175,31 @@
       .join(" ");
   }
 
+  function spriteUrlsDari(pokemon) {
+    const urls = [
+      pokemon.sprites.other?.["official-artwork"]?.front_default,
+      pokemon.sprites.other?.home?.front_default,
+      pokemon.sprites.other?.dream_world?.front_default,
+      pokemon.sprites.front_default
+    ];
+
+    return [...new Set(urls.filter(Boolean))];
+  }
+
+  function bacaCachePokemon(cacheKey, id) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(cacheKey));
+
+      if (cached?.id === id && cached?.name && cached?.spriteUrls?.length) {
+        return cached;
+      }
+    } catch (error) {
+      localStorage.removeItem(cacheKey);
+    }
+
+    return null;
+  }
+
   function pilihRarity() {
     total += 1;
     pity += 1;
@@ -196,10 +221,10 @@
 
   async function ambilPokemon(id) {
     const cacheKey = `${cachePrefix}${id}`;
-    const cached = localStorage.getItem(cacheKey);
+    const cached = bacaCachePokemon(cacheKey, id);
 
     if (cached) {
-      return JSON.parse(cached);
+      return cached;
     }
 
     const response = await fetch(`${apiBase}/pokemon/${id}`);
@@ -209,10 +234,16 @@
     }
 
     const pokemon = await response.json();
+    const spriteUrls = spriteUrlsDari(pokemon);
+
+    if (!spriteUrls.length) {
+      throw new Error(`Sprite Pokemon #${pokemon.id} kosong`);
+    }
+
     const simplePokemon = {
       id: pokemon.id,
       name: pokemon.name,
-      sprite: pokemon.sprites.other["official-artwork"].front_default || pokemon.sprites.front_default,
+      spriteUrls,
       types: pokemon.types.map((entry) => entry.type.name),
       height: pokemon.height,
       weight: pokemon.weight
@@ -231,7 +262,7 @@
     return {
       kelas,
       nama: formatNama(pokemon.name),
-      sprite: pokemon.sprite,
+      spriteUrls: pokemon.spriteUrls,
       types: pokemon.types,
       id: pokemon.id,
       height: pokemon.height,
@@ -239,10 +270,28 @@
     };
   }
 
+  function pasangGambarPokemon(image, hasil) {
+    let spriteIndex = 0;
+    const urls = hasil.spriteUrls;
+
+    image.alt = hasil.nama;
+    image.hidden = false;
+    image.onerror = () => {
+      spriteIndex += 1;
+
+      if (spriteIndex < urls.length) {
+        image.src = urls[spriteIndex];
+        return;
+      }
+
+      image.hidden = true;
+      image.onerror = null;
+    };
+    image.src = urls[spriteIndex];
+  }
+
   function tampilkan(hasil) {
-    cardArt.src = hasil.sprite;
-    cardArt.alt = hasil.nama;
-    cardArt.hidden = false;
+    pasangGambarPokemon(cardArt, hasil);
     cardName.textContent = hasil.nama;
     cardRarity.textContent = `${hasil.kelas.toUpperCase()} #${hasil.id}`;
     cardMeta.textContent = `${hasil.types.join(" / ")} | ${hasil.height / 10}m | ${hasil.weight / 10}kg`;
@@ -264,8 +313,7 @@
 
     chip.className = `chip ${hasil.kelas}`;
     chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
-    image.src = hasil.sprite;
-    image.alt = hasil.nama;
+    pasangGambarPokemon(image, hasil);
 
     chip.appendChild(image);
     history.prepend(chip);

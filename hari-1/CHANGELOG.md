@@ -19,3 +19,10 @@
 - Data Pokemon disimpan di `localStorage` setelah pertama kali dimuat supaya tidak sering request ke PokeAPI.
 - Tombol pull masuk mode `LOADING` saat sedang mengambil data dari API.
 - Kalau request API gagal, kartu utama menampilkan pesan error sederhana supaya mudah dipahami.
+
+## Perbaikan gambar Pokemon
+
+- Masalah: beberapa gambar Pokemon bisa kosong kalau URL gambar utama gagal dimuat.
+- Masalah: cache lama bisa menyimpan data gambar yang tidak lengkap, jadi hasil pull terlihat salah atau tidak muncul.
+- Solusi: cache sekarang pakai versi baru dan hanya dipakai kalau ID Pokemon cocok.
+- Solusi: setiap Pokemon menyimpan beberapa pilihan gambar dari PokeAPI, lalu otomatis pindah ke gambar cadangan kalau gambar utama gagal.
