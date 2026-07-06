@@ -3,166 +3,1566 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gacha ETHJKT</title>
+<title>Pokemon Gacha Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg: #0b0f19;
+    --panel: rgba(17, 24, 39, 0.75);
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --ink: #f3f4f6;
+    --muted: #9ca3af;
+    --line: rgba(255, 255, 255, 0.08);
+    --blue: #3b82f6;
+    --blue-glow: rgba(59, 130, 246, 0.5);
+    --red: #ef4444;
+    --gold: #fbbf24;
+    --gold-glow: rgba(251, 191, 36, 0.6);
+    --green: #10b981;
+    --purple: #8b5cf6;
+    --purple-glow: rgba(139, 92, 246, 0.5);
+    --shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    
+    /* Rarity theme colors */
+    --color-common: #9ca3af;
+    --color-rare: #3b82f6;
+    --color-epic: #a855f7;
+    --color-ssr: #fbbf24;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    font-family: "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
-    color: #eaeaf0; min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
+    min-height: 100vh;
+    padding: 24px;
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', "Segoe UI", system-ui, sans-serif;
+    background: 
+      radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      var(--bg);
+    background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+    overflow-x: hidden;
   }
+
+  /* Custom Scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
   .app {
-    width: 100%; max-width: 460px; text-align: center;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px; padding: 24px 22px 28px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(340px, .75fr);
+    gap: 24px;
   }
+
+  .panel {
+    background: var(--panel);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .panel:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .hero {
+    min-height: 700px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--line);
+  }
+
   h1 {
-    font-size: 26px; letter-spacing: 1px; margin-bottom: 4px;
-    background: linear-gradient(90deg,#ffd86b,#ff7eb3,#7ee8ff);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .subtitle { font-size: 12px; color: #8b90b0; margin-bottom: 18px; }
-
-  .stats { display: flex; gap: 10px; margin-bottom: 12px; }
-  .stat {
-    flex: 1; background: rgba(255,255,255,0.05); border-radius: 12px;
-    padding: 10px 6px;
-  }
-  .stat .num { font-size: 22px; font-weight: 700; }
-  .stat .lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; }
-
-  .pity { margin-bottom: 18px; text-align: left; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #b9bdd8; margin-bottom: 6px; }
-  .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
-  .pity-fill {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg,#ffd86b,#ffb347);
-    transition: width 0.35s ease;
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(24px, 3.5vw, 36px);
+    font-weight: 900;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #fff 40%, rgba(255, 255, 255, 0.6));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
   }
 
-  .stage { display: flex; justify-content: center; margin-bottom: 20px; }
-  .card {
-    width: 180px; height: 230px; border-radius: 18px;
-    background: #171b30; border: 3px solid #2a2f4a;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative;
+  .subtitle {
+    max-width: 520px;
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
   }
-  .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
-  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
-  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
 
-  /* warna per rarity */
-  .card.common { border-color: #6b7280; }
-  .card.common .rar { color: #9aa3b2; }
-  .card.rare   { border-color: #4da6ff; box-shadow: 0 0 22px rgba(77,166,255,.45); }
-  .card.rare   .rar { color: #4da6ff; }
-  .card.epic   { border-color: #b06bff; box-shadow: 0 0 26px rgba(176,107,255,.55); }
-  .card.epic   .rar { color: #c88bff; }
-  .card.ssr    { border-color: #ffd24a; box-shadow: 0 0 40px rgba(255,210,74,.8); }
-  .card.ssr    .rar { color: #ffd24a; }
-  .card.ssr    .name { color: #ffe89a; }
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-  /* animasi reveal */
-  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-  @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,210,74,.7)} 50%{box-shadow:0 0 55px rgba(255,210,74,1)} }
-  .card.reveal { animation: pop .4s ease; }
-  .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
+  .sound-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
 
-  .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
+  .sound-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .api-pill {
+    padding: 6px 12px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 999px;
+    color: var(--green);
+    background: rgba(16, 185, 129, 0.06);
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .showcase {
+    display: grid;
+    grid-template-columns: minmax(260px, .9fr) minmax(260px, 1.1fr);
+    gap: 24px;
+    padding: 32px;
+    align-items: center;
+  }
+
+  .sprite-stage {
+    min-height: 380px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: 
+      radial-gradient(circle at center, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.4) 100%),
+      linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%);
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
+  }
+
+  /* Stage Glow based on Rarity */
+  .sprite-stage.ssr-glow {
+    box-shadow: inset 0 0 50px rgba(251, 191, 36, 0.2), 0 0 20px rgba(251, 191, 36, 0.1);
+    border-color: rgba(251, 191, 36, 0.3);
+  }
+  .sprite-stage.epic-glow {
+    box-shadow: inset 0 0 50px rgba(139, 92, 246, 0.2), 0 0 20px rgba(139, 92, 246, 0.1);
+    border-color: rgba(139, 92, 246, 0.3);
+  }
+  .sprite-stage.rare-glow {
+    box-shadow: inset 0 0 50px rgba(59, 130, 246, 0.2), 0 0 20px rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+
+  .sprite-stage::before {
+    content: "";
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    border: 2px dashed rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    animation: rotatePortal 20s linear infinite;
+  }
+
+  @keyframes rotatePortal {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .sprite {
+    width: min(80%, 280px);
+    height: auto;
+    image-rendering: auto;
+    filter: drop-shadow(0 20px 20px rgba(0, 0, 0, 0.6));
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .sprite:hover {
+    transform: scale(1.08) translateY(-5px);
+  }
+
+  /* Gacha Pokéball styling */
+  .pokeball-container {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .pokeball {
+    width: 90px;
+    height: 90px;
+    background: #e2e8f0;
+    border: 8px solid #111827;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  }
+
+  .pokeball::before {
+    content: "";
+    position: absolute;
+    background: #ef4444;
+    width: 100%;
+    height: 50%;
+    top: 0;
+    left: 0;
+    border-bottom: 8px solid #111827;
+  }
+
+  .pokeball::after {
+    content: "";
+    position: absolute;
+    background: #fff;
+    width: 26px;
+    height: 26px;
+    border: 8px solid #111827;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+  }
+
+  .pokeball-button {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 6;
+  }
+
+  .pokeball-button.flashing {
+    animation: buttonFlash 0.3s infinite alternate;
+  }
+
+  @keyframes buttonFlash {
+    from { background-color: #fff; box-shadow: 0 0 2px #fff; }
+    to { background-color: #ef4444; box-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444; }
+  }
+
+  /* Shaking Animation for Pokeball */
+  .shake-anim {
+    animation: gachaShake 0.5s ease-in-out infinite;
+  }
+
+  @keyframes gachaShake {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    15% { transform: translate(-10px, 0) rotate(-18deg); }
+    30% { transform: translate(8px, 0) rotate(16deg); }
+    45% { transform: translate(-8px, 0) rotate(-12deg); }
+    60% { transform: translate(6px, 0) rotate(10deg); }
+    75% { transform: translate(-2px, 0) rotate(-4deg); }
+    90% { transform: translate(2px, 0) rotate(4deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+  }
+
+  .empty-sprite {
+    width: 140px;
+    height: 140px;
+    border: 10px solid #1f2937;
+    border-radius: 50%;
+    background: linear-gradient(#ef4444 0 46%, #1f2937 47% 53%, #fff 54%);
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  .empty-sprite::after {
+    content: "";
+    position: absolute;
+    inset: 42px;
+    border: 8px solid #1f2937;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .details {
+    display: grid;
+    gap: 16px;
+  }
+
+  .dex {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .name {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 900;
+    line-height: 1;
+    text-transform: capitalize;
+    letter-spacing: -0.5px;
+  }
+
+  .rarity {
+    width: fit-content;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .rarity.common { background: var(--color-common); }
+  .rarity.rare { background: var(--color-rare); box-shadow: 0 0 12px rgba(59, 130, 246, 0.4); }
+  .rarity.epic { background: var(--color-epic); box-shadow: 0 0 12px rgba(168, 85, 247, 0.4); }
+  .rarity.ssr { background: var(--color-ssr); color: #1f1300; box-shadow: 0 0 16px rgba(251, 191, 36, 0.5); }
+
+  .type-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .type {
+    padding: 6px 12px;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Official Pokémon Type Colors */
+  .type.normal { background: #a8a77a; }
+  .type.fire { background: #ee8130; box-shadow: 0 0 8px rgba(238, 129, 48, 0.4); }
+  .type.water { background: #6390f0; box-shadow: 0 0 8px rgba(99, 144, 240, 0.4); }
+  .type.electric { background: #f7d02c; color: #111; box-shadow: 0 0 8px rgba(247, 208, 44, 0.4); }
+  .type.grass { background: #7ac74c; box-shadow: 0 0 8px rgba(122, 199, 76, 0.4); }
+  .type.ice { background: #96d9d6; color: #111; box-shadow: 0 0 8px rgba(150, 217, 214, 0.4); }
+  .type.fighting { background: #c22e28; }
+  .type.poison { background: #a33ea1; }
+  .type.ground { background: #e2bf65; color: #111; }
+  .type.flying { background: #a98ff3; }
+  .type.psychic { background: #f95587; }
+  .type.bug { background: #a6b91a; }
+  .type.rock { background: #b6a136; }
+  .type.ghost { background: #735797; }
+  .type.dragon { background: #6f35fc; }
+  .type.steel { background: #b7b7ce; color: #111; }
+  .type.fairy { background: #d685ad; }
+  .type.dark { background: #705746; }
+
+  .flavor {
+    color: #d1d5db;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 48px;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .meta {
+    padding: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    text-align: center;
+  }
+
+  .meta strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 15px;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .meta span {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .stat-bars {
+    display: grid;
+    gap: 8px;
+  }
+
+  .bar-row {
+    display: grid;
+    grid-template-columns: 86px 1fr 34px;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .bar-row span {
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .bar-track {
+    height: 6px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: inherit;
+    background: var(--blue);
+    transition: width 0.8s cubic-bezier(0.1, 1, 0.1, 1);
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 24px 32px 32px;
+    border-top: 1px solid var(--line);
+  }
+
   .btn {
-    flex: 1; padding: 15px 0; border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer;
-    color: #0a0d1c; background: linear-gradient(180deg,#8fd3ff,#4da6ff);
-    transition: transform .08s ease, filter .15s ease;
+    min-height: 52px;
+    border: 0;
+    border-radius: 12px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--blue) 0%, rgba(59, 130, 246, 0.8) 100%);
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    box-shadow: 0 4px 15px var(--blue-glow);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
   }
-  .btn:hover { filter: brightness(1.08); }
-  .btn:active { transform: scale(.95); }
-  .btn.gold { background: linear-gradient(180deg,#ffe58a,#ffb347); }
 
-  .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
-  .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
-  .chip {
-    font-size: 20px; width: 34px; height: 34px; border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    background: #171b30; border: 2px solid #2a2f4a;
+  .btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--blue-glow);
+    filter: brightness(1.1);
   }
-  .chip.rare { border-color: #4da6ff; }
-  .chip.epic { border-color: #b06bff; }
-  .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
+
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .btn.secondary {
+    background: linear-gradient(135deg, var(--purple) 0%, rgba(139, 92, 246, 0.8) 100%);
+    box-shadow: 0 4px 15px var(--purple-glow);
+  }
+
+  .btn.secondary:hover:not(:disabled) {
+    box-shadow: 0 6px 20px var(--purple-glow);
+  }
+
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: .5;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .side {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+  }
+
+  .box { 
+    padding: 20px;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .stat {
+    padding: 12px 6px;
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    text-align: center;
+  }
+
+  .stat .num { 
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px; 
+    font-weight: 900; 
+  }
+  .stat .lbl { 
+    color: var(--muted); 
+    font-size: 10px; 
+    font-weight: 800; 
+    text-transform: uppercase; 
+    margin-top: 2px;
+  }
+
+  .pity { margin-top: 16px; }
+  .pity-top { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+  .pity-track { height: 8px; margin-top: 8px; overflow: hidden; border-radius: 999px; background: rgba(255, 255, 255, 0.08); }
+  .pity-fill { height: 100%; width: 0%; border-radius: inherit; background: linear-gradient(90deg, var(--blue), var(--gold)); transition: width 0.3s ease; }
+
+  /* Tab System for History & Collection */
+  .tabs-header {
+    display: flex;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 4px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .tab-btn.active {
+    color: #fff;
+    border-bottom-color: var(--blue);
+  }
+
+  .tab-pane {
+    display: none;
+  }
+
+  .tab-pane.active {
+    display: block;
+  }
+
+  .history {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 8px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  /* Collection Drawer / Book List */
+  .collection-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .filter-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+
+  .filter-btn.active {
+    background: var(--blue);
+    color: #fff;
+    border-color: var(--blue);
+  }
+
+  .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 8px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .chip {
+    padding: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    text-align: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    cursor: pointer;
+  }
+
+  .chip:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Glow styles for chips */
+  .chip.ssr { border-color: rgba(251, 191, 36, 0.4); box-shadow: 0 0 8px rgba(251, 191, 36, 0.15); }
+  .chip.epic { border-color: rgba(168, 85, 247, 0.4); box-shadow: 0 0 8px rgba(168, 85, 247, 0.15); }
+  .chip.rare { border-color: rgba(59, 130, 246, 0.4); box-shadow: 0 0 8px rgba(59, 130, 246, 0.15); }
+
+  .chip img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+  }
+
+  .chip span {
+    display: block;
+    overflow: hidden;
+    color: #d1d5db;
+    font-size: 10px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    text-transform: capitalize;
+    white-space: nowrap;
+  }
+
+  .status {
+    min-height: 20px;
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+    background: rgba(255, 255, 255, 0.01);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border-left: 3px solid var(--blue);
+  }
+
+  .source {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .source a { color: var(--blue); font-weight: 700; text-decoration: none; }
+  .source a:hover { text-decoration: underline; }
+
+  /* Reveal Animations */
+  .reveal { animation: revealCard .4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+  @keyframes revealCard {
+    from { opacity: 0; transform: translateY(20px) scale(.92); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Gacha Results Modal Overlay */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 6, 12, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal-container {
+    width: min(900px, 94%);
+    background: rgba(17, 24, 39, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    text-align: center;
+  }
+
+  .modal-overlay.active .modal-container {
+    transform: scale(1);
+  }
+
+  .modal-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #fff 0%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .modal-results-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .result-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 12px 8px;
+    transition: all 0.2s;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .modal-overlay.active .result-card {
+    animation: revealCard 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  /* Stagger reveal animations for 10x cards */
+  .result-card:nth-child(1) { animation-delay: 0.1s; }
+  .result-card:nth-child(2) { animation-delay: 0.2s; }
+  .result-card:nth-child(3) { animation-delay: 0.3s; }
+  .result-card:nth-child(4) { animation-delay: 0.4s; }
+  .result-card:nth-child(5) { animation-delay: 0.5s; }
+  .result-card:nth-child(6) { animation-delay: 0.6s; }
+  .result-card:nth-child(7) { animation-delay: 0.7s; }
+  .result-card:nth-child(8) { animation-delay: 0.8s; }
+  .result-card:nth-child(9) { animation-delay: 0.9s; }
+  .result-card:nth-child(10) { animation-delay: 1.0s; }
+
+  .result-card.ssr { border-color: rgba(251, 191, 36, 0.5); background: radial-gradient(circle at center, rgba(251, 191, 36, 0.1) 0%, transparent 100%); }
+  .result-card.epic { border-color: rgba(168, 85, 247, 0.5); background: radial-gradient(circle at center, rgba(168, 85, 247, 0.1) 0%, transparent 100%); }
+  .result-card.rare { border-color: rgba(59, 130, 246, 0.5); background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 100%); }
+
+  .result-card img {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    image-rendering: auto;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+  }
+
+  .result-card-name {
+    display: block;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: capitalize;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .result-card-rarity {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 8px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .result-card-rarity.ssr { background: var(--color-ssr); color: #111; }
+  .result-card-rarity.epic { background: var(--color-epic); color: #fff; }
+  .result-card-rarity.rare { background: var(--color-rare); color: #fff; }
+  .result-card-rarity.common { background: var(--color-common); color: #fff; }
+
+  .close-modal-btn {
+    min-width: 140px;
+    padding: 12px 24px;
+    background: #fff;
+    border: none;
+    color: #000;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .close-modal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+  }
+
+  /* Responsive styling */
+  @media (max-width: 960px) {
+    body { padding: 16px; }
+    .app { grid-template-columns: 1fr; }
+    .hero { min-height: auto; }
+    .showcase { grid-template-columns: 1fr; }
+    .sprite-stage { min-height: 320px; }
+    .modal-results-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .topbar, .actions, .showcase { padding-left: 20px; padding-right: 20px; }
+    .topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .topbar-actions { align-self: stretch; justify-content: space-between; }
+    .actions { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; gap: 8px; }
+    .modal-results-grid { grid-template-columns: repeat(2, 1fr); }
+  }
 </style>
 </head>
 <body>
-  <div class="app">
-    <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
-
-    <div class="stats">
-      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
-    </div>
-
-    <div class="pity">
-      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
-      <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-    </div>
-
-    <div class="stage">
-      <div class="card" id="card">
-        <div class="emoji" id="cardEmoji">?</div>
-        <div class="name" id="cardName">Tekan TARIK</div>
-        <div class="rar" id="cardRarity"></div>
+  <main class="app">
+    <section class="panel hero">
+      <div class="topbar">
+        <div>
+          <h1>Pokemon Gacha Lab</h1>
+          <p class="subtitle">Pull Pokemon from live PokeAPI data. Rarity is calculated from capture rate and pity points.</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="sound-btn" id="soundToggle" aria-label="Toggle Sound">🔊 Sound On</button>
+          <div class="api-pill" id="apiStatus">PokeAPI ready</div>
+        </div>
       </div>
-    </div>
 
-    <div class="buttons">
-      <button class="btn" id="tarik1">TARIK 1x</button>
-      <button class="btn gold" id="tarik10">TARIK 10x</button>
-    </div>
+      <div class="showcase">
+        <div class="sprite-stage" id="spriteStage">
+          <!-- Pokeball wrapper for gacha shake -->
+          <div class="pokeball-container" id="pokeballContainer" style="opacity: 0;">
+            <div class="pokeball" id="pokeball">
+              <div class="pokeball-button" id="pokeballBtn"></div>
+            </div>
+          </div>
+          <div class="empty-sprite" id="emptySprite" aria-hidden="true"></div>
+          <img class="sprite" id="pokemonSprite" alt="" hidden>
+        </div>
 
-    <div class="hist-lbl">Riwayat Terakhir</div>
-    <div class="history" id="history"></div>
+        <div class="details">
+          <div class="dex" id="dexNumber">National Dex</div>
+          <h2 class="name" id="pokemonName">Press Pull</h2>
+          <div class="rarity common" id="rarity">Waiting</div>
+          <div class="type-list" id="types"></div>
+          <p class="flavor" id="flavor">Start a pull to begin. Data is dynamically cached to keep your local Pokedex responsive.</p>
+
+          <div class="meta-grid">
+            <div class="meta"><strong id="generation">-</strong><span>Generation</span></div>
+            <div class="meta"><strong id="captureRate">-</strong><span>Capture</span></div>
+            <div class="meta"><strong id="ability">-</strong><span>Ability</span></div>
+          </div>
+
+          <div class="stat-bars" id="statBars"></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="pullOne">Pull 1x</button>
+        <button class="btn secondary" id="pullTen">Pull 10x</button>
+      </div>
+    </section>
+
+    <aside class="side">
+      <section class="panel box">
+        <div class="stats">
+          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Pulls</div></div>
+          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR</div></div>
+          <div class="stat"><div class="num" id="seenCount">0</div><div class="lbl">Unique</div></div>
+        </div>
+        <div class="pity">
+          <div class="pity-top"><span>SSR pity</span><span id="pityText">0 / 20</span></div>
+          <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
+        </div>
+        <p class="status" id="status">Welcome to the Pokémon Gacha simulator.</p>
+      </section>
+
+      <section class="panel box">
+        <div class="tabs-header">
+          <button class="tab-btn active" id="tabHistory">Recent Pulls</button>
+          <button class="tab-btn" id="tabCollection">Collection Book</button>
+        </div>
+        
+        <!-- Recent Pulls Tab -->
+        <div class="tab-pane active" id="paneHistory">
+          <div class="history" id="history"></div>
+        </div>
+
+        <!-- Collection Book Tab -->
+        <div class="tab-pane" id="paneCollection">
+          <div class="collection-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="ssr">SSR</button>
+            <button class="filter-btn" data-filter="epic">Epic</button>
+            <button class="filter-btn" data-filter="rare">Rare</button>
+            <button class="filter-btn" data-filter="common">Common</button>
+          </div>
+          <div class="collection-grid" id="collectionGrid"></div>
+        </div>
+
+        <p class="source">Powered by <a href="https://pokeapi.co/" target="_blank" rel="noreferrer">PokeAPI</a></p>
+      </section>
+    </aside>
+  </main>
+
+  <!-- Gacha 10x Results Modal Overlay -->
+  <div class="modal-overlay" id="resultsModal">
+    <div class="modal-container">
+      <h3 class="modal-title">Gacha Pull Results</h3>
+      <div class="modal-results-grid" id="modalResultsGrid"></div>
+      <button class="close-modal-btn" id="closeModal">OK</button>
+    </div>
   </div>
 
 <script>
-  // ==========================================================
-  // MISI HARI 1 - GACHA SIMULATOR (STARTER)
-  //
-  // Tampilan (HTML + CSS) udah jadi. TUGAS kamu: bikin LOGIKA-nya.
-  // JANGAN ketik manual. SURUH Codex yang nulis tiap CHECKPOINT,
-  // kamu BACA & VERIFIKASI. Save file -> refresh browser buat lihat.
-  //
-  // Ikutin urutan checkpoint di README.md. Contoh prompt ada di sana.
-  // ==========================================================
+  const API_BASE = "https://pokeapi.co/api/v2";
+  const CACHE_PREFIX = "pokemon-gacha:";
+  const PITY_LIMIT = 20;
+  const HISTORY_LIMIT = 15;
+  const STAT_MAX = 180;
+  const SSR_IDS = [
+    144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251, 377, 378, 379,
+    380, 381, 382, 383, 384, 385, 386, 480, 481, 482, 483, 484, 487, 488,
+    491, 492, 493, 494, 643, 644, 646, 716, 717, 718, 719, 720, 721, 785,
+    786, 787, 788, 789, 790, 791, 792, 800, 801, 802, 807, 808, 809, 888,
+    889, 890, 891, 892, 893, 894, 895, 896, 897, 898, 905, 1001, 1002,
+    1003, 1004, 1007, 1008, 1009, 1010, 1024, 1025
+  ];
 
-  // CHECKPOINT 1 - Data & acak
-  //   TODO: bikin object `hadiah` berisi 4 array (ssr, epic, rare, common),
-  //         tiap item { n: "nama", e: "emoji" }.
-  //   TODO: bikin variabel pity=0, total=0, ssrCount=0.
-  //   TODO: fungsi pilihAcak(arr) -> balikin 1 item acak dari array.
+  // Retro Game Synthesizer using Web Audio API
+  const Sound = {
+    ctx: null,
+    enabled: true,
+    init() {
+      if (!this.ctx) {
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
+    },
+    toggle() {
+      this.enabled = !this.enabled;
+      document.querySelector("#soundToggle").textContent = this.enabled ? "🔊 Sound On" : "🔇 Sound Off";
+    },
+    play(type) {
+      if (!this.enabled) return;
+      try {
+        this.init();
+        const ctx = this.ctx;
+        const now = ctx.currentTime;
+        
+        if (type === 'click') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(150, now + 0.06);
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.06);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        } else if (type === 'pity') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(350, now);
+          osc.frequency.setValueAtTime(550, now + 0.06);
+          gain.gain.setValueAtTime(0.04, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.12);
+          osc.start(now);
+          osc.stop(now + 0.13);
+        } else if (type === 'shake') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(90, now);
+          osc.frequency.exponentialRampToValueAtTime(50, now + 0.2);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        } else if (type === 'common_pull') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(261.63, now); // C4
+          osc.frequency.exponentialRampToValueAtTime(523.25, now + 0.2); // C5
+          gain.gain.setValueAtTime(0.05, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'epic_pull') {
+          const osc1 = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(ctx.destination);
+          osc1.type = 'sine';
+          osc2.type = 'triangle';
+          osc1.frequency.setValueAtTime(329.63, now); // E4
+          osc2.frequency.setValueAtTime(392.00, now); // G4
+          osc1.frequency.setValueAtTime(523.25, now + 0.08); // C5
+          osc2.frequency.setValueAtTime(659.25, now + 0.08); // E5
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.35);
+          osc1.start(now);
+          osc2.start(now);
+          osc1.stop(now + 0.35);
+          osc2.stop(now + 0.35);
+        } else if (type === 'ssr_pull') {
+          // SSR Melodic Chime Fanfare
+          const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50]; 
+          const duration = 0.07;
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = (idx % 2 === 0) ? 'sine' : 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * duration);
+            gain.gain.setValueAtTime(0.05, now + idx * duration);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * duration + 0.35);
+            osc.start(now + idx * duration);
+            osc.stop(now + idx * duration + 0.4);
+          });
+        }
+      } catch (e) {
+        console.warn("Web Audio context error:", e);
+      }
+    }
+  };
 
-  // CHECKPOINT 2 - Logika tarikan
-  //   TODO: fungsi rollSatu() -> total & pity nambah 1, pakai Math.random():
-  //         pity>=10 ATAU acak<0.03 -> SSR (pity balik 0, ssrCount nambah)
-  //         acak<0.10 -> EPIC, acak<0.30 -> RARE, selain itu -> COMMON.
-  //         balikin { kelas, nama, emoji }.
+  let pity = 0;
+  let total = 0;
+  let ssrCount = 0;
+  let isPulling = false;
+  let activeFilter = 'all';
+  const seenPokemon = new Set();
+  let collection = []; // Array of normalized pokemon items
 
-  // CHECKPOINT 3 - Tampilkan + animasi
-  //   TODO: fungsi tampilkan(hasil) -> isi #cardEmoji, #cardName, #cardRarity,
-  //         set className kartu jadi "card <kelas> reveal" (trik reset animasi:
-  //         set "card", baca card.offsetWidth, baru set kelas+reveal).
-  //         Update #total, #ssrCount, #pityText, dan lebar #pityFill.
+  const ui = {
+    apiStatus: document.querySelector("#apiStatus"),
+    soundToggle: document.querySelector("#soundToggle"),
+    spriteStage: document.querySelector("#spriteStage"),
+    emptySprite: document.querySelector("#emptySprite"),
+    pokemonSprite: document.querySelector("#pokemonSprite"),
+    pokeballContainer: document.querySelector("#pokeballContainer"),
+    pokeball: document.querySelector("#pokeball"),
+    pokeballBtn: document.querySelector("#pokeballBtn"),
+    dexNumber: document.querySelector("#dexNumber"),
+    pokemonName: document.querySelector("#pokemonName"),
+    rarity: document.querySelector("#rarity"),
+    types: document.querySelector("#types"),
+    flavor: document.querySelector("#flavor"),
+    generation: document.querySelector("#generation"),
+    captureRate: document.querySelector("#captureRate"),
+    ability: document.querySelector("#ability"),
+    statBars: document.querySelector("#statBars"),
+    pullOne: document.querySelector("#pullOne"),
+    pullTen: document.querySelector("#pullTen"),
+    total: document.querySelector("#total"),
+    ssrCount: document.querySelector("#ssrCount"),
+    seenCount: document.querySelector("#seenCount"),
+    pityText: document.querySelector("#pityText"),
+    pityFill: document.querySelector("#pityFill"),
+    status: document.querySelector("#status"),
+    history: document.querySelector("#history"),
+    
+    // Tab Elements
+    tabHistory: document.querySelector("#tabHistory"),
+    tabCollection: document.querySelector("#tabCollection"),
+    paneHistory: document.querySelector("#paneHistory"),
+    paneCollection: document.querySelector("#paneCollection"),
+    collectionGrid: document.querySelector("#collectionGrid"),
+    
+    // Modal elements
+    resultsModal: document.querySelector("#resultsModal"),
+    modalResultsGrid: document.querySelector("#modalResultsGrid"),
+    closeModal: document.querySelector("#closeModal")
+  };
 
-  // CHECKPOINT 4 - Riwayat + tombol
-  //   TODO: fungsi tambahRiwayat(hasil) -> bikin div .chip <kelas>, isi emoji,
-  //         taruh paling depan di #history, batasi maks 12 chip.
-  //   TODO: tombol #tarik1 -> tarik 1x. tombol #tarik10 -> ulang 10x.
+  // Sound toggle button click
+  ui.soundToggle.addEventListener("click", () => {
+    Sound.play('click');
+    Sound.toggle();
+  });
 
-  // >> Buka Codex, kerjain checkpoint SATU PER SATU. Baca hasilnya.
-  // >> Kamu PILOT-nya, bukan penonton.
+  // Local storage session loading
+  function loadSession() {
+    total = Number(localStorage.getItem(`${CACHE_PREFIX}total`) || 0);
+    ssrCount = Number(localStorage.getItem(`${CACHE_PREFIX}ssrCount`) || 0);
+    pity = Number(localStorage.getItem(`${CACHE_PREFIX}pity`) || 0);
+    
+    const savedCollection = localStorage.getItem(`${CACHE_PREFIX}collection`);
+    if (savedCollection) {
+      try {
+        collection = JSON.parse(savedCollection);
+        collection.forEach(p => seenPokemon.add(p.id));
+      } catch (err) {
+        console.error("Failed to parse collection", err);
+      }
+    }
+  }
+
+  function saveSession() {
+    localStorage.setItem(`${CACHE_PREFIX}total`, total);
+    localStorage.setItem(`${CACHE_PREFIX}ssrCount`, ssrCount);
+    localStorage.setItem(`${CACHE_PREFIX}pity`, pity);
+    localStorage.setItem(`${CACHE_PREFIX}collection`, JSON.stringify(collection));
+  }
+
+  async function getJson(url, cacheKey) {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) return JSON.parse(cached);
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`PokeAPI request failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    localStorage.setItem(cacheKey, JSON.stringify(data));
+    return data;
+  }
+
+  function randomItem(items) {
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  async function loadPokemon(id) {
+    const [pokemon, species] = await Promise.all([
+      getJson(`${API_BASE}/pokemon/${id}`, `${CACHE_PREFIX}pokemon:${id}`),
+      getJson(`${API_BASE}/pokemon-species/${id}`, `${CACHE_PREFIX}species:${id}`)
+    ]);
+
+    return normalizePokemon(pokemon, species);
+  }
+
+  function normalizePokemon(pokemon, species) {
+    const englishName = species.names.find((item) => item.language.name === "en")?.name || pokemon.name;
+    const genus = species.genera.find((item) => item.language.name === "en")?.genus || "Pokemon";
+    const flavor = species.flavor_text_entries.find((item) => item.language.name === "en")?.flavor_text || "";
+    const sprite = pokemon.sprites.other?.["official-artwork"]?.front_default
+      || pokemon.sprites.other?.home?.front_default
+      || pokemon.sprites.front_default;
+
+    return {
+      id: pokemon.id,
+      name: englishName,
+      genus,
+      flavor: flavor.replace(/\s+/g, " ").trim(),
+      sprite,
+      types: pokemon.types.map((slot) => slot.type.name),
+      stats: pokemon.stats.map((slot) => ({
+        name: slot.stat.name.replace("special-", "sp. "),
+        value: slot.base_stat
+      })),
+      ability: pokemon.abilities.find((slot) => !slot.is_hidden)?.ability.name || pokemon.abilities[0]?.ability.name || "-",
+      height: pokemon.height,
+      weight: pokemon.weight,
+      generation: species.generation.name.replace("generation-", "gen "),
+      captureRate: species.capture_rate,
+      isLegendary: species.is_legendary,
+      isMythical: species.is_mythical
+    };
+  }
+
+  function chooseRarity(mon, pityTriggered) {
+    if (pityTriggered || mon.isMythical || mon.isLegendary) return "ssr";
+    if (mon.captureRate <= 45) return "epic";
+    if (mon.captureRate <= 90) return "rare";
+    return "common";
+  }
+
+  // Robust roll one with automatic retry
+  async function rollOne(forceSsr = false) {
+    const speciesCount = 1025; // Limit to stable generation 1-9 species
+    let attempts = 0;
+    const maxAttempts = 5;
+
+    while (attempts < maxAttempts) {
+      try {
+        const id = forceSsr ? randomItem(SSR_IDS) : Math.floor(Math.random() * speciesCount) + 1;
+        const mon = await loadPokemon(id);
+        const rarity = chooseRarity(mon, forceSsr);
+
+        total += 1;
+        pity = rarity === "ssr" ? 0 : pity + 1;
+        if (rarity === "ssr") ssrCount += 1;
+        seenPokemon.add(mon.id);
+
+        const result = { ...mon, rarity };
+        
+        // Add to persistent collection
+        if (!collection.some(item => item.id === result.id)) {
+          collection.push(result);
+        }
+
+        return result;
+      } catch (error) {
+        attempts++;
+        console.warn(`Gacha fetch attempt ${attempts} failed. Retrying...`, error);
+        if (attempts >= maxAttempts) throw error;
+      }
+    }
+  }
+
+  // Trigger sound & shake animation for Gacha sequence
+  async function playGachaSequence(rarity) {
+    ui.pokemonSprite.hidden = true;
+    ui.emptySprite.hidden = true;
+    ui.pokeballContainer.style.opacity = "1";
+    ui.pokeball.classList.add("shake-anim");
+    ui.pokeballBtn.classList.add("flashing");
+
+    const shakeInterval = setInterval(() => Sound.play('shake'), 400);
+
+    await new Promise((resolve) => setTimeout(resolve, 1400));
+
+    clearInterval(shakeInterval);
+    ui.pokeball.classList.remove("shake-anim");
+    ui.pokeballBtn.classList.remove("flashing");
+    ui.pokeballContainer.style.opacity = "0";
+
+    // Play rarity-specific pull fanfare
+    Sound.play(`${rarity}_pull`);
+  }
+
+  async function pull(amount) {
+    if (isPulling) return;
+    setLoading(true, `Pulling ${amount} Pokemon...`);
+    Sound.play('click');
+
+    try {
+      if (amount === 1) {
+        const forceSsr = pity + 1 >= PITY_LIMIT;
+        const result = await rollOne(forceSsr);
+        
+        // Play the animations
+        await playGachaSequence(result.rarity);
+        
+        addHistory(result);
+        renderPokemon(result);
+        renderCollection();
+        saveSession();
+        renderSession();
+        setStatus(`Got ${result.name}! Added to your Collection Book.`);
+      } else {
+        // Multi Pull 10x
+        let results = [];
+        let highestRarity = 'common';
+        
+        for (let index = 0; index < amount; index += 1) {
+          const forceSsr = pity + 1 >= PITY_LIMIT;
+          const result = await rollOne(forceSsr);
+          results.push(result);
+          
+          if (result.rarity === 'ssr') highestRarity = 'ssr';
+          else if (result.rarity === 'epic' && highestRarity !== 'ssr') highestRarity = 'epic';
+          else if (result.rarity === 'rare' && highestRarity !== 'ssr' && highestRarity !== 'epic') highestRarity = 'rare';
+        }
+
+        // Play visual sequence with highest rarity fanfare
+        await playGachaSequence(highestRarity);
+        
+        // Render 10x modal results
+        renderTenResults(results);
+        
+        results.forEach(res => addHistory(res));
+        renderPokemon(results[results.length - 1]); // Load last one to stage
+        renderCollection();
+        saveSession();
+        renderSession();
+        setStatus(`Completed 10x pull! Check your box.`);
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus("PokeAPI connectivity issue. Retrying may resolve it.", true);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function renderPokemon(mon) {
+    ui.emptySprite.hidden = true;
+    ui.pokemonSprite.hidden = false;
+    ui.pokemonSprite.src = mon.sprite || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%231e293b' stroke='%233b82f6' stroke-width='6'/></svg>";
+    ui.pokemonSprite.alt = mon.name;
+
+    ui.dexNumber.textContent = `#${String(mon.id).padStart(4, "0")} - ${mon.genus}`;
+    ui.pokemonName.textContent = mon.name;
+    ui.rarity.textContent = mon.rarity;
+    ui.rarity.className = `rarity ${mon.rarity}`;
+    ui.flavor.textContent = mon.flavor || "No English flavor data cataloged for this Pokemon.";
+    ui.generation.textContent = mon.generation;
+    ui.captureRate.textContent = mon.captureRate;
+    ui.ability.textContent = titleCase(mon.ability);
+
+    ui.types.replaceChildren(...mon.types.map(createTypeChip));
+    ui.statBars.replaceChildren(...mon.stats.map(createStatBar));
+
+    // Dynamic glow effects around stage
+    ui.spriteStage.className = `sprite-stage ${mon.rarity}-glow`;
+
+    ui.spriteStage.classList.remove("reveal");
+    void ui.spriteStage.offsetWidth;
+    ui.spriteStage.classList.add("reveal");
+  }
+
+  function createTypeChip(type) {
+    const chip = document.createElement("span");
+    chip.className = `type ${type}`;
+    chip.textContent = type;
+    return chip;
+  }
+
+  function createStatBar(stat) {
+    const row = document.createElement("div");
+    row.className = "bar-row";
+
+    const label = document.createElement("span");
+    label.textContent = stat.name;
+
+    const track = document.createElement("div");
+    track.className = "bar-track";
+
+    const fill = document.createElement("div");
+    fill.className = "bar-fill";
+    fill.style.width = `0%`;
+    // trigger width change after render
+    setTimeout(() => {
+      fill.style.width = `${Math.min(100, (stat.value / STAT_MAX) * 100)}%`;
+    }, 50);
+
+    const value = document.createElement("strong");
+    value.textContent = stat.value;
+
+    track.append(fill);
+    row.append(label, track, value);
+    return row;
+  }
+
+  function addHistory(mon) {
+    const chip = document.createElement("div");
+    chip.className = `chip ${mon.rarity}`;
+    chip.onclick = () => { Sound.play('click'); renderPokemon(mon); };
+
+    const image = document.createElement("img");
+    image.src = mon.sprite || "";
+    image.alt = mon.name;
+
+    const name = document.createElement("span");
+    name.textContent = mon.name;
+
+    chip.title = `${mon.name} - ${mon.rarity.toUpperCase()}`;
+    chip.append(image, name);
+    ui.history.prepend(chip);
+
+    while (ui.history.children.length > HISTORY_LIMIT) {
+      ui.history.lastElementChild.remove();
+    }
+  }
+
+  // Render Collection Book items with filtering
+  function renderCollection() {
+    ui.collectionGrid.innerHTML = "";
+    
+    const filtered = collection.filter(mon => {
+      if (activeFilter === 'all') return true;
+      return mon.rarity === activeFilter;
+    });
+
+    // Sort by ID
+    filtered.sort((a, b) => a.id - b.id);
+
+    filtered.forEach(mon => {
+      const chip = document.createElement("div");
+      chip.className = `chip ${mon.rarity}`;
+      chip.onclick = () => { Sound.play('click'); renderPokemon(mon); };
+
+      const image = document.createElement("img");
+      image.src = mon.sprite || "";
+      image.alt = mon.name;
+
+      const name = document.createElement("span");
+      name.textContent = mon.name;
+
+      chip.title = `${mon.name} - ${mon.rarity.toUpperCase()}`;
+      chip.append(image, name);
+      ui.collectionGrid.appendChild(chip);
+    });
+  }
+
+  // Display 10x Pulls Modal
+  function renderTenResults(items) {
+    ui.modalResultsGrid.innerHTML = "";
+    
+    items.forEach(mon => {
+      const card = document.createElement("div");
+      card.className = `result-card ${mon.rarity}`;
+      card.onclick = () => { Sound.play('click'); renderPokemon(mon); };
+
+      const img = document.createElement("img");
+      img.src = mon.sprite || "";
+      img.alt = mon.name;
+
+      const name = document.createElement("span");
+      name.className = "result-card-name";
+      name.textContent = mon.name;
+
+      const rarityBadge = document.createElement("span");
+      rarityBadge.className = `result-card-rarity ${mon.rarity}`;
+      rarityBadge.textContent = mon.rarity;
+
+      card.append(img, name, rarityBadge);
+      ui.modalResultsGrid.appendChild(card);
+    });
+
+    ui.resultsModal.classList.add("active");
+  }
+
+  // Close results modal
+  ui.closeModal.addEventListener("click", () => {
+    Sound.play('click');
+    ui.resultsModal.classList.remove("active");
+  });
+
+  function renderSession() {
+    ui.total.textContent = total;
+    ui.ssrCount.textContent = ssrCount;
+    ui.seenCount.textContent = seenPokemon.size;
+    ui.pityText.textContent = `${pity} / ${PITY_LIMIT}`;
+    ui.pityFill.style.width = `${(pity / PITY_LIMIT) * 100}%`;
+  }
+
+  function setLoading(loading, message = "") {
+    isPulling = loading;
+    ui.pullOne.disabled = loading;
+    ui.pullTen.disabled = loading;
+    ui.apiStatus.textContent = loading ? "Loading..." : "PokeAPI ready";
+    if (message) setStatus(message);
+  }
+
+  function setStatus(message, isError = false) {
+    ui.status.textContent = message;
+    ui.status.style.borderLeftColor = isError ? "var(--red)" : "var(--blue)";
+  }
+
+  function titleCase(value) {
+    return value
+      .split("-")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+  }
+
+  // Tab Navigation Click Bindings
+  ui.tabHistory.addEventListener("click", () => {
+    Sound.play('click');
+    ui.tabHistory.classList.add("active");
+    ui.tabCollection.classList.remove("active");
+    ui.paneHistory.classList.add("active");
+    ui.paneCollection.classList.remove("active");
+  });
+
+  ui.tabCollection.addEventListener("click", () => {
+    Sound.play('click');
+    ui.tabCollection.classList.add("active");
+    ui.tabHistory.classList.remove("active");
+    ui.paneCollection.classList.add("active");
+    ui.paneHistory.classList.remove("active");
+    renderCollection();
+  });
+
+  // Collection Filter Button Bindings
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      Sound.play('click');
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      e.target.classList.add("active");
+      activeFilter = e.target.dataset.filter;
+      renderCollection();
+    });
+  });
+
+  ui.pullOne.addEventListener("click", () => pull(1));
+  ui.pullTen.addEventListener("click", () => pull(10));
+
+  // Initialize
+  loadSession();
+  renderSession();
+  if (collection.length > 0) {
+    renderPokemon(collection[collection.length - 1]);
+    renderCollection();
+    // populate history with last few collected items
+    const startIdx = Math.max(0, collection.length - HISTORY_LIMIT);
+    for (let i = startIdx; i < collection.length; i++) {
+      addHistory(collection[i]);
+    }
+  }
 </script>
 </body>
 </html>
