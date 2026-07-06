@@ -6,6 +6,7 @@
 - Tombol `TARIK 1x` mengambil satu Pokemon.
 - Tombol `TARIK 10x` mengambil sepuluh Pokemon.
 - Hasil pull muncul di kartu utama dengan gambar Pokemon.
+- Pull detail menampilkan stat Pokemon seperti HP, ATK, DEF, SPA, SPD, dan SPE.
 - Riwayat pull terakhir muncul di bagian bawah sebagai thumbnail Pokemon.
 - Total pull dan jumlah SSR ikut bertambah otomatis.
 

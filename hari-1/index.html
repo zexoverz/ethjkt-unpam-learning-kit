@@ -157,6 +157,35 @@
       line-height: 1.45;
     }
 
+    .stat-bars {
+      width: 100%;
+      display: grid;
+      gap: 5px;
+      margin-top: 4px;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: 34px 1fr 24px;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: #d8dcf0;
+    }
+
+    .stat-row .bar {
+      height: 6px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .09);
+    }
+
+    .stat-row .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #8fd3ff, #ffd24a);
+    }
+
     /* warna per rarity */
     .card.common {
       border-color: #6b7280;
@@ -375,6 +404,7 @@
         <div class="name" id="cardName">Tekan TARIK</div>
         <div class="rar" id="cardRarity"></div>
         <div class="meta" id="cardMeta"></div>
+        <div class="stat-bars" id="statBars"></div>
       </div>
     </div>
 
@@ -420,6 +450,7 @@
     const cardName = document.querySelector("#cardName");
     const cardRarity = document.querySelector("#cardRarity");
     const cardMeta = document.querySelector("#cardMeta");
+    const statBars = document.querySelector("#statBars");
     const totalText = document.querySelector("#total");
     const ssrCountText = document.querySelector("#ssrCount");
     const pityText = document.querySelector("#pityText");
@@ -503,6 +534,26 @@
       return pokemon.stats.reduce((totalStat, stat) => totalStat + stat.base_stat, 0);
     }
 
+    function formatStatName(nama) {
+      const statNames = {
+        hp: "HP",
+        attack: "ATK",
+        defense: "DEF",
+        "special-attack": "SPA",
+        "special-defense": "SPD",
+        speed: "SPE"
+      };
+
+      return statNames[nama] || nama.toUpperCase();
+    }
+
+    function ambilStats(pokemon) {
+      return pokemon.stats.map((stat) => ({
+        nama: formatStatName(stat.stat.name),
+        nilai: stat.base_stat
+      }));
+    }
+
     function tentukanRarity(pokemon, species) {
       const baseStatTotal = hitungBaseStatTotal(pokemon);
 
@@ -529,6 +580,7 @@
         kelas: tentukanRarity(pokemon, species),
         sprite: pokemon.sprites.other["official-artwork"].front_default || pokemon.sprites.front_default,
         types: pokemon.types.map((typeInfo) => typeInfo.type.name),
+        stats: ambilStats(pokemon),
         baseStatTotal: hitungBaseStatTotal(pokemon),
         captureRate: species.capture_rate,
         isLegendary: species.is_legendary,
@@ -596,6 +648,7 @@
       cardMeta.textContent = hasil.types
         ? `#${hasil.id} - ${hasil.types.join(" / ")} - BST ${hasil.baseStatTotal}`
         : "";
+      tampilkanStats(hasil.stats);
 
       card.className = "card";
       card.offsetWidth;
@@ -605,6 +658,33 @@
       ssrCountText.textContent = ssrCount;
       pityText.textContent = `${pity} / ${pityTarget}`;
       pityFill.style.width = `${(pity / pityTarget) * 100}%`;
+    }
+
+    function tampilkanStats(stats) {
+      statBars.innerHTML = "";
+
+      if (!stats) {
+        return;
+      }
+
+      for (const stat of stats) {
+        const row = document.createElement("div");
+        const label = document.createElement("span");
+        const bar = document.createElement("div");
+        const fill = document.createElement("div");
+        const value = document.createElement("span");
+
+        row.className = "stat-row";
+        bar.className = "bar";
+        fill.className = "bar-fill";
+        label.textContent = stat.nama;
+        value.textContent = stat.nilai;
+        fill.style.width = `${Math.min(100, (stat.nilai / 180) * 100)}%`;
+
+        bar.appendChild(fill);
+        row.append(label, bar, value);
+        statBars.appendChild(row);
+      }
     }
 
     function tambahRiwayat(hasil) {
