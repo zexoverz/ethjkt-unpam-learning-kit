@@ -128,41 +128,125 @@
   </div>
 
 <script>
-  // ==========================================================
-  // MISI HARI 1 - GACHA SIMULATOR (STARTER)
-  //
-  // Tampilan (HTML + CSS) udah jadi. TUGAS kamu: bikin LOGIKA-nya.
-  // JANGAN ketik manual. SURUH Codex yang nulis tiap CHECKPOINT,
-  // kamu BACA & VERIFIKASI. Save file -> refresh browser buat lihat.
-  //
-  // Ikutin urutan checkpoint di README.md. Contoh prompt ada di sana.
-  // ==========================================================
+  const BATAS_PITY = 10;
+  const MAKS_RIWAYAT = 12;
 
-  // CHECKPOINT 1 - Data & acak
-  //   TODO: bikin object `hadiah` berisi 4 array (ssr, epic, rare, common),
-  //         tiap item { n: "nama", e: "emoji" }.
-  //   TODO: bikin variabel pity=0, total=0, ssrCount=0.
-  //   TODO: fungsi pilihAcak(arr) -> balikin 1 item acak dari array.
+  const hadiah = {
+    ssr: [
+      { n: "Laptop Dewa", e: "💻" },
+      { n: "Airdrop Sultan", e: "💎" },
+      { n: "Mentor Rahasia", e: "🧙" }
+    ],
+    epic: [
+      { n: "Gas Fee Gratis", e: "⛽" },
+      { n: "Bug Jadi Fitur", e: "✨" },
+      { n: "Ide Startup", e: "🚀" }
+    ],
+    rare: [
+      { n: "Kopi Coding", e: "☕" },
+      { n: "Commit Rapi", e: "✅" },
+      { n: "WiFi Stabil", e: "📶" }
+    ],
+    common: [
+      { n: "Semangat Lagi", e: "🔥" },
+      { n: "Catatan Kelas", e: "📝" },
+      { n: "Stiker ETHJKT", e: "🏷️" },
+      { n: "Error Kecil", e: "🔧" }
+    ]
+  };
 
-  // CHECKPOINT 2 - Logika tarikan
-  //   TODO: fungsi rollSatu() -> total & pity nambah 1, pakai Math.random():
-  //         pity>=10 ATAU acak<0.03 -> SSR (pity balik 0, ssrCount nambah)
-  //         acak<0.10 -> EPIC, acak<0.30 -> RARE, selain itu -> COMMON.
-  //         balikin { kelas, nama, emoji }.
+  let pity = 0;
+  let total = 0;
+  let ssrCount = 0;
 
-  // CHECKPOINT 3 - Tampilkan + animasi
-  //   TODO: fungsi tampilkan(hasil) -> isi #cardEmoji, #cardName, #cardRarity,
-  //         set className kartu jadi "card <kelas> reveal" (trik reset animasi:
-  //         set "card", baca card.offsetWidth, baru set kelas+reveal).
-  //         Update #total, #ssrCount, #pityText, dan lebar #pityFill.
+  const card = document.querySelector("#card");
+  const cardEmoji = document.querySelector("#cardEmoji");
+  const cardName = document.querySelector("#cardName");
+  const cardRarity = document.querySelector("#cardRarity");
+  const totalEl = document.querySelector("#total");
+  const ssrCountEl = document.querySelector("#ssrCount");
+  const pityText = document.querySelector("#pityText");
+  const pityFill = document.querySelector("#pityFill");
+  const history = document.querySelector("#history");
+  const tarik1 = document.querySelector("#tarik1");
+  const tarik10 = document.querySelector("#tarik10");
 
-  // CHECKPOINT 4 - Riwayat + tombol
-  //   TODO: fungsi tambahRiwayat(hasil) -> bikin div .chip <kelas>, isi emoji,
-  //         taruh paling depan di #history, batasi maks 12 chip.
-  //   TODO: tombol #tarik1 -> tarik 1x. tombol #tarik10 -> ulang 10x.
+  function pilihAcak(daftarHadiah) {
+    const indexAcak = Math.floor(Math.random() * daftarHadiah.length);
+    return daftarHadiah[indexAcak];
+  }
 
-  // >> Buka Codex, kerjain checkpoint SATU PER SATU. Baca hasilnya.
-  // >> Kamu PILOT-nya, bukan penonton.
+  function buatHasil(kelas) {
+    const item = pilihAcak(hadiah[kelas]);
+    return {
+      kelas,
+      nama: item.n,
+      emoji: item.e
+    };
+  }
+
+  function rollSatu() {
+    total += 1;
+    pity += 1;
+
+    const angkaAcak = Math.random();
+    let kelas = "common";
+
+    // Pity membuat SSR pasti muncul kalau sudah 10 tarikan tanpa SSR.
+    if (pity >= BATAS_PITY || angkaAcak < 0.03) {
+      kelas = "ssr";
+      pity = 0;
+      ssrCount += 1;
+    } else if (angkaAcak < 0.10) {
+      kelas = "epic";
+    } else if (angkaAcak < 0.30) {
+      kelas = "rare";
+    }
+
+    return buatHasil(kelas);
+  }
+
+  function tampilkan(hasil) {
+    cardEmoji.textContent = hasil.emoji;
+    cardName.textContent = hasil.nama;
+    cardRarity.textContent = hasil.kelas.toUpperCase();
+
+    card.className = "card";
+    void card.offsetWidth;
+    card.className = `card ${hasil.kelas} reveal`;
+
+    totalEl.textContent = total;
+    ssrCountEl.textContent = ssrCount;
+    pityText.textContent = `${pity} / ${BATAS_PITY}`;
+    pityFill.style.width = `${(pity / BATAS_PITY) * 100}%`;
+  }
+
+  function tambahRiwayat(hasil) {
+    const chip = document.createElement("div");
+    chip.className = `chip ${hasil.kelas}`;
+    chip.textContent = hasil.emoji;
+    chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
+
+    history.prepend(chip);
+
+    while (history.children.length > MAKS_RIWAYAT) {
+      history.lastElementChild.remove();
+    }
+  }
+
+  function tarik(jumlah) {
+    let hasilTerakhir;
+
+    for (let i = 0; i < jumlah; i += 1) {
+      hasilTerakhir = rollSatu();
+      tambahRiwayat(hasilTerakhir);
+    }
+
+    tampilkan(hasilTerakhir);
+  }
+
+  tarik1.addEventListener("click", () => tarik(1));
+  tarik10.addEventListener("click", () => tarik(10));
 </script>
 </body>
 </html>
