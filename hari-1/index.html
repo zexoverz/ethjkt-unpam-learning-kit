@@ -139,10 +139,46 @@
   // ==========================================================
 
   // CHECKPOINT 1 - Data & acak
-  //   TODO: bikin object `hadiah` berisi 4 array (ssr, epic, rare, common),
-  //         tiap item { n: "nama", e: "emoji" }.
-  //   TODO: bikin variabel pity=0, total=0, ssrCount=0.
-  //   TODO: fungsi pilihAcak(arr) -> balikin 1 item acak dari array.
+  // Data hadiah gacha berdasarkan tingkat kelangkaan (rarity)
+  const hadiah = {
+    ssr: [
+      { n: "1 ETH", e: "🪙" },
+      { n: "Laptop RTX", e: "💻" },
+      { n: "Devcon Ticket", e: "✈️" }
+    ],
+    epic: [
+      { n: "Jaket Hoodie ETH", e: "🧥" },
+      { n: "Hardware Wallet", e: "🔒" },
+      { n: "Tiket VIP ETHJKT", e: "🎟️" }
+    ],
+    rare: [
+      { n: "Kaos ETHJKT", e: "👕" },
+      { n: "Stiker Ethereum", e: "🏷️" },
+      { n: "Buku Solidity", e: "📘" }
+    ],
+    common: [
+      { n: "Garam", e: "🧂" },
+      { n: "Teh Obeng", e: "🍹" },
+      { n: "Indomie", e: "🍜" },
+      { n: "Kopi Saset", e: "☕" }
+    ]
+  };
+
+  // Variabel state untuk gacha
+  let pity = 0;
+  let total = 0;
+  let ssrCount = 0;
+  
+  // Fungsi untuk merandom limit pity antara 5 dan 15
+  function getRandomPityLimit() {
+    return Math.floor(Math.random() * (15 - 5 + 1)) + 5;
+  }
+  let pityLimit = getRandomPityLimit();
+
+  // Fungsi helper untuk mengambil satu item secara acak dari array
+  function pilihAcak(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
 
   // CHECKPOINT 2 - Logika tarikan
   //   TODO: fungsi rollSatu() -> total & pity nambah 1, pakai Math.random():
