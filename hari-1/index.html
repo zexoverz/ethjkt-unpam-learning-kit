@@ -66,6 +66,10 @@
     min-height: 34px; font-size: 12px; line-height: 1.35;
     color: #b9bdd8; padding: 0 4px;
   }
+  .flavor {
+    min-height: 34px; font-size: 11px; line-height: 1.35;
+    color: #8b90b0; padding: 0 4px;
+  }
 
   /* warna per rarity */
   .card.common { border-color: #6b7280; }
@@ -132,6 +136,7 @@
         <div class="rar" id="cardRarity"></div>
         <div class="types" id="cardTypes"></div>
         <div class="meta" id="cardMeta"></div>
+        <div class="flavor" id="cardFlavor"></div>
       </div>
     </div>
 
@@ -173,6 +178,7 @@
     cardRarity: document.getElementById("cardRarity"),
     cardTypes: document.getElementById("cardTypes"),
     cardMeta: document.getElementById("cardMeta"),
+    cardFlavor: document.getElementById("cardFlavor"),
     history: document.getElementById("history"),
     tarik1: document.getElementById("tarik1"),
     tarik10: document.getElementById("tarik10")
@@ -260,6 +266,7 @@
       .map((type) => `<span class="type">${type}</span>`)
       .join("");
     elemen.cardMeta.textContent = `BST ${hasil.totalStat} | Catch ${hasil.captureRate}${hasil.isLegendary ? " | Legendary" : ""}${hasil.isMythical ? " | Mythical" : ""}`;
+    elemen.cardFlavor.textContent = hasil.teks;
 
     elemen.card.className = "card";
     void elemen.card.offsetWidth;
@@ -312,6 +319,7 @@
       elemen.cardName.textContent = "PokeAPI belum bisa diakses";
       elemen.cardRarity.textContent = "COBA LAGI";
       elemen.cardMeta.textContent = error.message;
+      elemen.cardFlavor.textContent = "";
     } finally {
       setLoading(false);
     }
