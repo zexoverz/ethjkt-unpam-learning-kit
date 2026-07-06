@@ -2,6 +2,13 @@
 
 ## 2026-07-06
 
+- Mengubah simulator menjadi Pokemon gacha yang mengambil data dari PokeAPI.
+- Tiap tarikan mengambil data `pokemon/{id}` untuk sprite, type, dan stat, lalu `pokemon-species/{id}` untuk nama Inggris, genus, flavor text, dan info species.
+- Sistem pity tetap dipakai: peluang SSR kecil, tapi tarikan ke-10 tanpa SSR dijamin menjadi SSR.
+- Tombol dibuat loading saat data sedang diambil agar user tidak menekan berkali-kali dan membuat hasil berantakan.
+
+## 2026-07-06 - Sebelumnya
+
 - Menambahkan fitur tarik gacha 1x dan 10x di `hari-1/index.html`.
 - Menambahkan aturan rarity: SSR 3%, Epic 7%, Rare 20%, dan sisanya Common.
 - Menambahkan pity: jika belum dapat SSR, tarikan ke-10 dijamin SSR.
