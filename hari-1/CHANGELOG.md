@@ -31,3 +31,8 @@
 
 - Kartu sekarang mulai dari gambar SVG lokal, jadi area art selalu punya image yang tampil.
 - Kalau remote artwork berhasil dimuat, browser bisa menukarnya ke gambar asli.
+
+## Real image source
+
+- Gambar utama sekarang mengambil artwork resmi dari host Pokemon, bukan dari sprite CDN GitHub.
+- Kalau host itu gagal, kartu tetap menampilkan fallback lokal supaya layout tidak kosong.

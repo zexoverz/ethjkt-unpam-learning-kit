@@ -278,8 +278,6 @@
     children.forEach((child) => parent.appendChild(child));
   }
 
-  const ImageCtor = typeof Image !== "undefined" ? Image : null;
-
   function createLocalArtDataUrl(cardData) {
     const primaryType = cardData.types[0] || "normal";
     const secondaryType = cardData.types[1] || primaryType;
@@ -368,8 +366,6 @@
     const genus = species.genera.find((entry) => entry.language.name === "en")?.genus || "Unknown";
     const flavor = species.flavor_text_entries.find((entry) => entry.language.name === "en")?.flavor_text || "No Pokedex text available.";
     const ability = pokemon.abilities.find((entry) => !entry.is_hidden)?.ability.name || pokemon.abilities[0]?.ability.name || "-";
-    const officialArt = pokemon.sprites.other?.["official-artwork"]?.front_default;
-    const fallbackSprite = pokemon.sprites.front_default;
     const statTotal = pokemon.stats.reduce((sum, stat) => sum + stat.base_stat, 0);
 
     return {
@@ -380,8 +376,6 @@
       genus: genus.replace(" Pokemon", ""),
       flavor: flavor.replace(/[\n\f]/g, " "),
       ability: titleCase(ability),
-      sprite: officialArt || fallbackSprite,
-      fallbackSprite,
       statTotal,
       types: pokemon.types.sort((a, b) => a.slot - b.slot).map((entry) => entry.type.name),
       isLegendary: species.is_legendary || species.is_mythical
@@ -395,56 +389,11 @@
     const artwork = document.createElement("img");
     artwork.alt = `${cardData.name} artwork`;
     artwork.loading = "lazy";
-    artwork.src = createLocalArtDataUrl(cardData);
+    artwork.src = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${String(cardData.id).padStart(3, "0")}.png`;
 
-    if (cardData.sprite) {
-      const remoteSprite = cardData.sprite;
-      const remoteFallback = cardData.fallbackSprite;
-
-      artwork.dataset.localSrc = artwork.src;
-      artwork.onload = () => {
-        if (artwork.dataset.remoteApplied === "1") {
-          delete artwork.dataset.remoteApplied;
-        }
-      };
-      artwork.onerror = () => {
-        if (artwork.dataset.remoteApplied === "1" && remoteFallback && remoteFallback !== remoteSprite) {
-          artwork.dataset.remoteApplied = "0";
-          artwork.src = remoteFallback;
-          return;
-        }
-
-        artwork.src = artwork.dataset.localSrc;
-        artwork.dataset.remoteApplied = "0";
-      };
-
-      if (ImageCtor) {
-        const probe = new ImageCtor();
-        probe.onload = () => {
-          artwork.dataset.remoteApplied = "1";
-          artwork.src = remoteSprite;
-        };
-        probe.onerror = () => {
-          if (remoteFallback && remoteFallback !== remoteSprite) {
-            const fallbackProbe = new ImageCtor();
-            fallbackProbe.onload = () => {
-              artwork.dataset.remoteApplied = "1";
-              artwork.src = remoteFallback;
-            };
-            fallbackProbe.onerror = () => {
-              artwork.src = artwork.dataset.localSrc;
-              artwork.dataset.remoteApplied = "0";
-            };
-            fallbackProbe.src = remoteFallback;
-            return;
-          }
-
-          artwork.src = artwork.dataset.localSrc;
-          artwork.dataset.remoteApplied = "0";
-        };
-        probe.src = remoteSprite;
-      }
-    }
+    artwork.onerror = () => {
+      artwork.src = createLocalArtDataUrl(cardData);
+    };
 
     replaceChildren(els.artWrap, [artwork]);
 
