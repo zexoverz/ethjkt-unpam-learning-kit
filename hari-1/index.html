@@ -319,7 +319,7 @@
       <div class="history" id="history"></div>
     </div>
 
-<script>
+    <script>
       // ==========================================================
       // MISI HARI 1 - GACHA SIMULATOR (STARTER)
       //
@@ -353,126 +353,126 @@
       //         taruh paling depan di #history, batasi maks 12 chip.
       //   TODO: tombol #tarik1 -> tarik 1x. tombol #tarik10 -> ulang 10x.
 
-  // >> Buka Codex, kerjain checkpoint SATU PER SATU. Baca hasilnya.
-  // >> Kamu PILOT-nya, bukan penonton.
+      // >> Buka Codex, kerjain checkpoint SATU PER SATU. Baca hasilnya.
+      // >> Kamu PILOT-nya, bukan penonton.
 
-  const hadiah = {
-    ssr: [
-      { n: "ETHJKT Whale", e: "🐋" },
-      { n: "Gas Hero", e: "🔥" },
-      { n: "Onchain Legend", e: "👑" },
-      { n: "Golden Builder", e: "🏆" }
-    ],
-    epic: [
-      { n: "Smart Contract", e: "📜" },
-      { n: "Diamond Hands", e: "💎" },
-      { n: "Node Runner", e: "🖥️" },
-      { n: "Airdrop Hunter", e: "🪂" }
-    ],
-    rare: [
-      { n: "Testnet Badge", e: "🎖️" },
-      { n: "Gas Saver", e: "⛽" },
-      { n: "NFT Mint", e: "🖼️" },
-      { n: "Wallet Wizard", e: "🪄" }
-    ],
-    common: [
-      { n: "GM Sticker", e: "☀️" },
-      { n: "Coffee Fuel", e: "☕" },
-      { n: "Discord Ping", e: "🔔" },
-      { n: "Learning Note", e: "📒" },
-      { n: "Basic Wallet", e: "👛" }
-    ]
-  };
+      const hadiah = {
+        ssr: [
+          { n: "ETHJKT Whale", e: "🐋" },
+          { n: "Gas Hero", e: "🔥" },
+          { n: "Onchain Legend", e: "👑" },
+          { n: "Golden Builder", e: "🏆" },
+        ],
+        epic: [
+          { n: "Smart Contract", e: "📜" },
+          { n: "Diamond Hands", e: "💎" },
+          { n: "Node Runner", e: "🖥️" },
+          { n: "Airdrop Hunter", e: "🪂" },
+        ],
+        rare: [
+          { n: "Testnet Badge", e: "🎖️" },
+          { n: "Gas Saver", e: "⛽" },
+          { n: "NFT Mint", e: "🖼️" },
+          { n: "Wallet Wizard", e: "🪄" },
+        ],
+        common: [
+          { n: "GM Sticker", e: "☀️" },
+          { n: "Coffee Fuel", e: "☕" },
+          { n: "Discord Ping", e: "🔔" },
+          { n: "Learning Note", e: "📒" },
+          { n: "Basic Wallet", e: "👛" },
+        ],
+      };
 
-  let pity = 0;
-  let total = 0;
-  let ssrCount = 0;
-  let pityTarget = acakPityTarget();
+      let pity = 0;
+      let total = 0;
+      let ssrCount = 0;
+      let pityTarget = acakPityTarget();
 
-  const card = document.getElementById("card");
-  const cardEmoji = document.getElementById("cardEmoji");
-  const cardName = document.getElementById("cardName");
-  const cardRarity = document.getElementById("cardRarity");
-  const totalEl = document.getElementById("total");
-  const ssrCountEl = document.getElementById("ssrCount");
-  const pityText = document.getElementById("pityText");
-  const pityFill = document.getElementById("pityFill");
-  const history = document.getElementById("history");
-  const tarik1 = document.getElementById("tarik1");
-  const tarik10 = document.getElementById("tarik10");
+      const card = document.getElementById("card");
+      const cardEmoji = document.getElementById("cardEmoji");
+      const cardName = document.getElementById("cardName");
+      const cardRarity = document.getElementById("cardRarity");
+      const totalEl = document.getElementById("total");
+      const ssrCountEl = document.getElementById("ssrCount");
+      const pityText = document.getElementById("pityText");
+      const pityFill = document.getElementById("pityFill");
+      const history = document.getElementById("history");
+      const tarik1 = document.getElementById("tarik1");
+      const tarik10 = document.getElementById("tarik10");
 
-  function acakPityTarget() {
-    return Math.floor(Math.random() * 6) + 5; // 5 sampai 10 pull
-  }
+      function acakPityTarget() {
+        return Math.floor(Math.random() * 6) + 5; // 5 sampai 10 pull
+      }
 
-  function pilihAcak(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
+      function pilihAcak(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
 
-  function rollSatu() {
-    total += 1;
-    pity += 1;
+      function rollSatu() {
+        total += 1;
+        pity += 1;
 
-    const acak = Math.random();
-    let kelas = "common";
+        const acak = Math.random();
+        let kelas = "common";
 
-    if (pity >= pityTarget || acak < 0.03) {
-      kelas = "ssr";
-      pity = 0;
-      ssrCount += 1;
-      pityTarget = acakPityTarget();
-    } else if (acak < 0.10) {
-      kelas = "epic";
-    } else if (acak < 0.30) {
-      kelas = "rare";
-    }
+        if (pity >= pityTarget || acak < 0.03) {
+          kelas = "ssr";
+          pity = 0;
+          ssrCount += 1;
+          pityTarget = acakPityTarget();
+        } else if (acak < 0.1) {
+          kelas = "epic";
+        } else if (acak < 0.3) {
+          kelas = "rare";
+        }
 
-    const item = pilihAcak(hadiah[kelas]);
-    return { kelas, nama: item.n, emoji: item.e };
-  }
+        const item = pilihAcak(hadiah[kelas]);
+        return { kelas, nama: item.n, emoji: item.e };
+      }
 
-  function tampilkan(hasil) {
-    cardEmoji.textContent = hasil.emoji;
-    cardName.textContent = hasil.nama;
-    cardRarity.textContent = hasil.kelas.toUpperCase();
+      function tampilkan(hasil) {
+        cardEmoji.textContent = hasil.emoji;
+        cardName.textContent = hasil.nama;
+        cardRarity.textContent = hasil.kelas.toUpperCase();
 
-    card.className = "card";
-    void card.offsetWidth;
-    card.className = `card ${hasil.kelas} reveal`;
+        card.className = "card";
+        void card.offsetWidth;
+        card.className = `card ${hasil.kelas} reveal`;
 
-    totalEl.textContent = total;
-    ssrCountEl.textContent = ssrCount;
-    pityText.textContent = `${pity} / ${pityTarget}`;
-    pityFill.style.width = `${Math.min((pity / pityTarget) * 100, 100)}%`;
-  }
+        totalEl.textContent = total;
+        ssrCountEl.textContent = ssrCount;
+        pityText.textContent = `${pity} / ${pityTarget}`;
+        pityFill.style.width = `${Math.min((pity / pityTarget) * 100, 100)}%`;
+      }
 
-  function tambahRiwayat(hasil) {
-    const chip = document.createElement("div");
-    chip.className = `chip ${hasil.kelas}`;
-    chip.textContent = hasil.emoji;
-    chip.title = `${hasil.nama} - ${hasil.kelas.toUpperCase()}`;
+      function tambahRiwayat(hasil) {
+        const chip = document.createElement("div");
+        chip.className = `chip ${hasil.kelas}`;
+        chip.textContent = hasil.emoji;
+        chip.title = `${hasil.nama} - ${hasil.kelas.toUpperCase()}`;
 
-    history.prepend(chip);
+        history.prepend(chip);
 
-    while (history.children.length > 12) {
-      history.lastElementChild.remove();
-    }
-  }
+        while (history.children.length > 12) {
+          history.lastElementChild.remove();
+        }
+      }
 
-  function tarik(jumlah) {
-    let hasilTerakhir;
+      function tarik(jumlah) {
+        let hasilTerakhir;
 
-    for (let i = 0; i < jumlah; i += 1) {
-      hasilTerakhir = rollSatu();
-      tambahRiwayat(hasilTerakhir);
-    }
+        for (let i = 0; i < jumlah; i += 1) {
+          hasilTerakhir = rollSatu();
+          tambahRiwayat(hasilTerakhir);
+        }
 
-    tampilkan(hasilTerakhir);
-  }
+        tampilkan(hasilTerakhir);
+      }
 
-  tarik1.addEventListener("click", () => tarik(1));
-  tarik10.addEventListener("click", () => tarik(10));
-  tampilkan({ kelas: "", nama: "Tekan TARIK", emoji: "?" });
-</script>
+      tarik1.addEventListener("click", () => tarik(1));
+      tarik10.addEventListener("click", () => tarik(10));
+      tampilkan({ kelas: "", nama: "Tekan TARIK", emoji: "?" });
+    </script>
   </body>
 </html>
