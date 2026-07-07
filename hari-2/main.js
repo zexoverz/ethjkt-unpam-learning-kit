@@ -173,6 +173,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const product = products.find((item) => item.id == id);
     if (!product) return;
 
+    if (!Number.isInteger(quantity)) {
+      showToast("Jumlah harus berupa angka.");
+      renderCart();
+      return;
+    }
+
     if (quantity <= 0) {
       delete cart[id];
     } else {

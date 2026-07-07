@@ -131,3 +131,18 @@ Namun UI sidebar sebelumnya hanya punya baris "Total", tanpa baris subtotal dan 
 Tambahkan rincian subtotal dan biaya penanganan di sidebar sebelum total akhir.
 
 **Status:** Sudah diperbaiki di `hari-2/index.html`, `hari-2/main.js`, dan `hari-2/style.css`.
+
+## 7. Input jumlah tidak valid bisa merusak total
+
+**Kategori:** Bug
+
+**Masalah:**
+Jika input jumlah di keranjang dikosongkan atau berisi nilai tidak valid, `parseInt()` bisa menghasilkan `NaN`. Nilai itu kemudian bisa masuk ke jumlah item dan membuat subtotal/total ikut menjadi `NaN`.
+
+**Penyebab:**
+Fungsi `updateQuantity()` sebelumnya hanya mengecek `quantity <= 0`. Untuk `NaN`, pengecekan itu bernilai `false`, sehingga kode lanjut menyimpan nilai tidak valid.
+
+**Cara menyelesaikan:**
+Tambahkan validasi `Number.isInteger(quantity)` sebelum jumlah dipakai. Jika tidak valid, tampilkan toast dan render ulang cart agar input kembali ke nilai terakhir yang valid.
+
+**Status:** Sudah diperbaiki di `hari-2/main.js`.
