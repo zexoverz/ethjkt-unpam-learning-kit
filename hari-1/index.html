@@ -1,168 +1,633 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gacha ETHJKT</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
-    color: #eaeaf0; min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
-  }
-  .app {
-    width: 100%; max-width: 460px; text-align: center;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px; padding: 24px 22px 28px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-  h1 {
-    font-size: 26px; letter-spacing: 1px; margin-bottom: 4px;
-    background: linear-gradient(90deg,#ffd86b,#ff7eb3,#7ee8ff);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .subtitle { font-size: 12px; color: #8b90b0; margin-bottom: 18px; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokemon Gacha Simulator</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background:
+          linear-gradient(rgba(10, 16, 28, 0.64), rgba(10, 16, 28, 0.88)),
+          url("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"),
+          radial-gradient(circle at 50% 0%, #315da8 0%, #10182b 70%);
+        background-position:
+          center,
+          calc(50% + 130px) 38px,
+          center;
+        background-repeat: no-repeat;
+        background-size:
+          auto,
+          120px 120px,
+          auto;
+        color: #f7f9fc;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .app {
+        width: 100%;
+        max-width: 480px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 24px 22px 28px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+      h1 {
+        font-size: 28px;
+        letter-spacing: 0;
+        margin-bottom: 4px;
+        background: linear-gradient(90deg, #ffcb05, #ffffff, #3b82f6);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .subtitle {
+        font-size: 12px;
+        color: #c9d4ee;
+        margin-bottom: 18px;
+      }
 
-  .stats { display: flex; gap: 10px; margin-bottom: 12px; }
-  .stat {
-    flex: 1; background: rgba(255,255,255,0.05); border-radius: 12px;
-    padding: 10px 6px;
-  }
-  .stat .num { font-size: 22px; font-weight: 700; }
-  .stat .lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; }
+      .stats {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .stat {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 10px 6px;
+      }
+      .stat .num {
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .stat .lbl {
+        font-size: 11px;
+        color: #c9d4ee;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
 
-  .pity { margin-bottom: 18px; text-align: left; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #b9bdd8; margin-bottom: 6px; }
-  .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
-  .pity-fill {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg,#ffd86b,#ffb347);
-    transition: width 0.35s ease;
-  }
+      .pity {
+        margin-bottom: 18px;
+        text-align: left;
+      }
+      .pity-top {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #d9e2f7;
+        margin-bottom: 6px;
+      }
+      .pity-track {
+        height: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .pity-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #ffd86b, #ffb347);
+        transition: width 0.35s ease;
+      }
 
-  .stage { display: flex; justify-content: center; margin-bottom: 20px; }
-  .card {
-    width: 180px; height: 230px; border-radius: 18px;
-    background: #171b30; border: 3px solid #2a2f4a;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative;
-  }
-  .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
-  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
-  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
+      .stage {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .card {
+        width: 210px;
+        min-height: 272px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, #f8fbff 0%, #e9f0fb 100%);
+        border: 4px solid #2f4d7a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        position: relative;
+        color: #172033;
+        overflow: hidden;
+      }
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border: 2px solid rgba(47, 77, 122, 0.14);
+        border-radius: 10px;
+        pointer-events: none;
+      }
+      .pokemon-img {
+        width: 128px;
+        height: 128px;
+        object-fit: contain;
+        image-rendering: pixelated;
+        filter: drop-shadow(0 8px 12px rgba(20, 36, 68, 0.28));
+      }
+      .card .name {
+        font-size: 20px;
+        font-weight: 700;
+        padding: 0 8px;
+        text-transform: capitalize;
+      }
+      .card .rar {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.9;
+      }
+      .pokemon-number {
+        font-size: 12px;
+        color: #5d6a80;
+        font-weight: 700;
+      }
+      .type-row {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        min-height: 25px;
+      }
+      .type-chip {
+        border-radius: 999px;
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 5px 9px;
+        text-transform: uppercase;
+      }
+      .status {
+        min-height: 18px;
+        margin: -10px 0 14px;
+        color: #d9e2f7;
+        font-size: 12px;
+      }
 
-  /* warna per rarity */
-  .card.common { border-color: #6b7280; }
-  .card.common .rar { color: #9aa3b2; }
-  .card.rare   { border-color: #4da6ff; box-shadow: 0 0 22px rgba(77,166,255,.45); }
-  .card.rare   .rar { color: #4da6ff; }
-  .card.epic   { border-color: #b06bff; box-shadow: 0 0 26px rgba(176,107,255,.55); }
-  .card.epic   .rar { color: #c88bff; }
-  .card.ssr    { border-color: #ffd24a; box-shadow: 0 0 40px rgba(255,210,74,.8); }
-  .card.ssr    .rar { color: #ffd24a; }
-  .card.ssr    .name { color: #ffe89a; }
+      /* warna per rarity */
+      .card.common {
+        border-color: #9aa3b2;
+      }
+      .card.common .rar {
+        color: #9aa3b2;
+      }
+      .card.rare {
+        border-color: #3b82f6;
+        box-shadow: 0 0 22px rgba(59, 130, 246, 0.42);
+      }
+      .card.rare .rar {
+        color: #4da6ff;
+      }
+      .card.epic {
+        border-color: #9d4edd;
+        box-shadow: 0 0 28px rgba(157, 78, 221, 0.52);
+      }
+      .card.epic .rar {
+        color: #c88bff;
+      }
+      .card.ssr {
+        border-color: #ffcb05;
+        box-shadow: 0 0 40px rgba(255, 203, 5, 0.72);
+      }
+      .card.ssr .rar {
+        color: #ffd24a;
+      }
+      .card.ssr .name {
+        color: #ffe89a;
+      }
 
-  /* animasi reveal */
-  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-  @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,210,74,.7)} 50%{box-shadow:0 0 55px rgba(255,210,74,1)} }
-  .card.reveal { animation: pop .4s ease; }
-  .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
+      /* animasi reveal */
+      @keyframes pop {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.08);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-6px);
+        }
+        40% {
+          transform: translateX(6px);
+        }
+        60% {
+          transform: translateX(-4px);
+        }
+        80% {
+          transform: translateX(4px);
+        }
+      }
+      @keyframes glowpulse {
+        0%,
+        100% {
+          box-shadow: 0 0 30px rgba(255, 210, 74, 0.7);
+        }
+        50% {
+          box-shadow: 0 0 55px rgba(255, 210, 74, 1);
+        }
+      }
+      .card.reveal {
+        animation: pop 0.4s ease;
+      }
+      .card.ssr.reveal {
+        animation:
+          pop 0.4s ease,
+          shake 0.5s ease 0.4s,
+          glowpulse 1.2s ease-in-out 0.4s 2;
+      }
 
-  .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
-  .btn {
-    flex: 1; padding: 15px 0; border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer;
-    color: #0a0d1c; background: linear-gradient(180deg,#8fd3ff,#4da6ff);
-    transition: transform .08s ease, filter .15s ease;
-  }
-  .btn:hover { filter: brightness(1.08); }
-  .btn:active { transform: scale(.95); }
-  .btn.gold { background: linear-gradient(180deg,#ffe58a,#ffb347); }
+      .buttons {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+      .btn {
+        flex: 1;
+        padding: 15px 0;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        cursor: pointer;
+        color: #0a0d1c;
+        background: linear-gradient(180deg, #ffdd57, #ffcb05);
+        transition:
+          transform 0.08s ease,
+          filter 0.15s ease;
+      }
+      .btn:hover {
+        filter: brightness(1.08);
+      }
+      .btn:active {
+        transform: scale(0.95);
+      }
+      .btn.gold {
+        background: linear-gradient(180deg, #78a8ff, #3b82f6);
+        color: #ffffff;
+      }
 
-  .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
-  .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
-  .chip {
-    font-size: 20px; width: 34px; height: 34px; border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    background: #171b30; border: 2px solid #2a2f4a;
-  }
-  .chip.rare { border-color: #4da6ff; }
-  .chip.epic { border-color: #b06bff; }
-  .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
-</style>
-</head>
-<body>
-  <div class="app">
-    <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
+      .hist-lbl {
+        font-size: 11px;
+        color: #c9d4ee;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: left;
+        margin-bottom: 8px;
+      }
+      .history {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-height: 34px;
+      }
+      .chip {
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #171b30;
+        border: 2px solid #2a2f4a;
+      }
+      .chip.rare {
+        border-color: #4da6ff;
+      }
+      .chip.epic {
+        border-color: #b06bff;
+      }
+      .chip.ssr {
+        border-color: #ffd24a;
+        box-shadow: 0 0 10px rgba(255, 210, 74, 0.6);
+      }
+      .chip img {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+        image-rendering: pixelated;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <h1>Pokemon Gacha</h1>
+      <div class="subtitle">Pull random Pokemon from the public PokeAPI</div>
 
-    <div class="stats">
-      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
-    </div>
-
-    <div class="pity">
-      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
-      <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-    </div>
-
-    <div class="stage">
-      <div class="card" id="card">
-        <div class="emoji" id="cardEmoji">?</div>
-        <div class="name" id="cardName">Tekan TARIK</div>
-        <div class="rar" id="cardRarity"></div>
+      <div class="stats">
+        <div class="stat">
+          <div class="num" id="total">0</div>
+          <div class="lbl">Total Pull</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="ssrCount">0</div>
+          <div class="lbl">SSR Found</div>
+        </div>
       </div>
+
+      <div class="pity">
+        <div class="pity-top">
+          <span>Pity to SSR Pokemon</span><span id="pityText">0 / 10</span>
+        </div>
+        <div class="pity-track">
+          <div class="pity-fill" id="pityFill"></div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="card" id="card">
+          <img
+            class="pokemon-img"
+            id="pokemonImage"
+            alt=""
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+          />
+          <div class="pokemon-number" id="pokemonNumber">Ready</div>
+          <div class="name" id="cardName">Press Pull</div>
+          <div class="rar" id="cardRarity"></div>
+          <div class="type-row" id="typeRow"></div>
+        </div>
+      </div>
+
+      <div class="status" id="statusText"></div>
+
+      <div class="buttons">
+        <button class="btn" id="tarik1">PULL 1x</button>
+        <button class="btn gold" id="tarik10">PULL 10x</button>
+      </div>
+
+      <div class="hist-lbl">Recent Pulls</div>
+      <div class="history" id="history"></div>
     </div>
 
-    <div class="buttons">
-      <button class="btn" id="tarik1">TARIK 1x</button>
-      <button class="btn gold" id="tarik10">TARIK 10x</button>
-    </div>
+    <script>
+      const API_BASE = "https://pokeapi.co/api/v2";
+      const FALLBACK_IMAGE =
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png";
 
-    <div class="hist-lbl">Riwayat Terakhir</div>
-    <div class="history" id="history"></div>
-  </div>
+      const typeColors = {
+        normal: "#8a8f99",
+        fire: "#f97316",
+        water: "#2563eb",
+        electric: "#d4a900",
+        grass: "#16a34a",
+        ice: "#38bdf8",
+        fighting: "#b91c1c",
+        poison: "#9333ea",
+        ground: "#a16207",
+        flying: "#60a5fa",
+        psychic: "#db2777",
+        bug: "#65a30d",
+        rock: "#78716c",
+        ghost: "#6d28d9",
+        dragon: "#4338ca",
+        dark: "#3f3f46",
+        steel: "#64748b",
+        fairy: "#ec4899",
+      };
 
-<script>
-  // ==========================================================
-  // MISI HARI 1 - GACHA SIMULATOR (STARTER)
-  //
-  // Tampilan (HTML + CSS) udah jadi. TUGAS kamu: bikin LOGIKA-nya.
-  // JANGAN ketik manual. SURUH Codex yang nulis tiap CHECKPOINT,
-  // kamu BACA & VERIFIKASI. Save file -> refresh browser buat lihat.
-  //
-  // Ikutin urutan checkpoint di README.md. Contoh prompt ada di sana.
-  // ==========================================================
+      const pokemonPools = {
+        common: [
+          10, 13, 16, 19, 21, 23, 27, 29, 32, 41, 46, 48, 54, 60, 74, 81, 84,
+          98, 129, 161, 163, 165, 167, 191, 194, 263, 265, 270, 273, 293, 300,
+          399, 401, 504, 506, 519, 659, 661, 819, 821, 915,
+        ],
+        rare: [
+          1, 4, 7, 25, 37, 52, 58, 63, 66, 92, 95, 104, 123, 127, 133, 147,
+          152, 155, 158, 172, 175, 179, 190, 215, 246, 252, 255, 258, 280, 302,
+          359, 371, 403, 447, 610, 633, 704, 722, 725, 728, 782, 906, 909, 912,
+        ],
+        epic: [
+          3, 6, 9, 26, 38, 59, 65, 68, 94, 130, 131, 134, 135, 136, 143, 149,
+          154, 157, 160, 196, 197, 212, 214, 248, 282, 289, 306, 330, 373, 376,
+          445, 448, 461, 635, 658, 700, 706, 724, 727, 730, 778, 887, 908, 911,
+          914,
+        ],
+        ssr: [
+          144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251, 377, 378, 379,
+          380, 381, 382, 383, 384, 385, 386, 483, 484, 487, 491, 493, 643, 644,
+          646, 716, 717, 718, 719, 720, 721, 789, 790, 791, 792, 800, 888, 889,
+          890, 891, 892, 893, 894, 895, 896, 897, 898, 905,
+        ],
+      };
 
-  // CHECKPOINT 1 - Data & acak
-  //   TODO: bikin object `hadiah` berisi 4 array (ssr, epic, rare, common),
-  //         tiap item { n: "nama", e: "emoji" }.
-  //   TODO: bikin variabel pity=0, total=0, ssrCount=0.
-  //   TODO: fungsi pilihAcak(arr) -> balikin 1 item acak dari array.
+      let pity = 0;
+      let total = 0;
+      let ssrCount = 0;
+      let pityTarget = acakPityTarget();
+      const pokemonCache = new Map();
 
-  // CHECKPOINT 2 - Logika tarikan
-  //   TODO: fungsi rollSatu() -> total & pity nambah 1, pakai Math.random():
-  //         pity>=10 ATAU acak<0.03 -> SSR (pity balik 0, ssrCount nambah)
-  //         acak<0.10 -> EPIC, acak<0.30 -> RARE, selain itu -> COMMON.
-  //         balikin { kelas, nama, emoji }.
+      const card = document.getElementById("card");
+      const pokemonImage = document.getElementById("pokemonImage");
+      const pokemonNumber = document.getElementById("pokemonNumber");
+      const cardName = document.getElementById("cardName");
+      const cardRarity = document.getElementById("cardRarity");
+      const typeRow = document.getElementById("typeRow");
+      const statusText = document.getElementById("statusText");
+      const totalEl = document.getElementById("total");
+      const ssrCountEl = document.getElementById("ssrCount");
+      const pityText = document.getElementById("pityText");
+      const pityFill = document.getElementById("pityFill");
+      const history = document.getElementById("history");
+      const tarik1 = document.getElementById("tarik1");
+      const tarik10 = document.getElementById("tarik10");
 
-  // CHECKPOINT 3 - Tampilkan + animasi
-  //   TODO: fungsi tampilkan(hasil) -> isi #cardEmoji, #cardName, #cardRarity,
-  //         set className kartu jadi "card <kelas> reveal" (trik reset animasi:
-  //         set "card", baca card.offsetWidth, baru set kelas+reveal).
-  //         Update #total, #ssrCount, #pityText, dan lebar #pityFill.
+      function acakPityTarget() {
+        return Math.floor(Math.random() * 6) + 8; // 8 sampai 13 pull
+      }
 
-  // CHECKPOINT 4 - Riwayat + tombol
-  //   TODO: fungsi tambahRiwayat(hasil) -> bikin div .chip <kelas>, isi emoji,
-  //         taruh paling depan di #history, batasi maks 12 chip.
-  //   TODO: tombol #tarik1 -> tarik 1x. tombol #tarik10 -> ulang 10x.
+      function pilihAcak(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
 
-  // >> Buka Codex, kerjain checkpoint SATU PER SATU. Baca hasilnya.
-  // >> Kamu PILOT-nya, bukan penonton.
-</script>
-</body>
+      function formatName(name) {
+        return name
+          .split("-")
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(" ");
+      }
+
+      function readCachedPokemon(id) {
+        const cacheKey = `pokemon:${id}`;
+        const cached = pokemonCache.get(id);
+
+        if (cached) return cached;
+
+        try {
+          const stored = localStorage.getItem(cacheKey);
+          if (!stored) return null;
+
+          const pokemon = JSON.parse(stored);
+          pokemonCache.set(id, pokemon);
+          return pokemon;
+        } catch {
+          localStorage.removeItem(cacheKey);
+          return null;
+        }
+      }
+
+      function writeCachedPokemon(pokemon) {
+        const cacheKey = `pokemon:${pokemon.id}`;
+        pokemonCache.set(pokemon.id, pokemon);
+
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(pokemon));
+        } catch {
+          // If browser storage is full or blocked, the in-memory cache still works.
+        }
+      }
+
+      async function ambilPokemon(id) {
+        const cached = readCachedPokemon(id);
+        if (cached) return cached;
+
+        const response = await fetch(`${API_BASE}/pokemon/${id}`);
+        if (!response.ok) {
+          throw new Error(`PokeAPI request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const pokemon = {
+          id: data.id,
+          name: formatName(data.name),
+          image:
+            data.sprites.other?.["official-artwork"]?.front_default ||
+            data.sprites.front_default ||
+            FALLBACK_IMAGE,
+          types: data.types.map((entry) => entry.type.name),
+          height: data.height,
+          weight: data.weight,
+          baseExperience: data.base_experience,
+        };
+
+        writeCachedPokemon(pokemon);
+        return pokemon;
+      }
+
+      function rollRarity() {
+        total += 1;
+        pity += 1;
+
+        const acak = Math.random();
+
+        if (pity >= pityTarget || acak < 0.03) {
+          pity = 0;
+          ssrCount += 1;
+          pityTarget = acakPityTarget();
+          return "ssr";
+        }
+
+        if (acak < 0.12) return "epic";
+        if (acak < 0.35) return "rare";
+        return "common";
+      }
+
+      async function rollSatu() {
+        const kelas = rollRarity();
+        const pokemonId = pilihAcak(pokemonPools[kelas]);
+        const pokemon = await ambilPokemon(pokemonId);
+        return { kelas, pokemon };
+      }
+
+      function tampilkanTypes(types) {
+        typeRow.innerHTML = "";
+
+        for (const type of types) {
+          const chip = document.createElement("span");
+          chip.className = "type-chip";
+          chip.textContent = type;
+          chip.style.backgroundColor = typeColors[type] || typeColors.normal;
+          typeRow.append(chip);
+        }
+      }
+
+      function tampilkan(hasil) {
+        pokemonImage.src = hasil.pokemon.image;
+        pokemonImage.alt = hasil.pokemon.name;
+        pokemonNumber.textContent = `#${String(hasil.pokemon.id).padStart(4, "0")}`;
+        cardName.textContent = hasil.pokemon.name;
+        cardRarity.textContent = hasil.kelas.toUpperCase();
+        tampilkanTypes(hasil.pokemon.types);
+
+        card.className = "card";
+        void card.offsetWidth;
+        card.className = `card ${hasil.kelas} reveal`;
+
+        totalEl.textContent = total;
+        ssrCountEl.textContent = ssrCount;
+        pityText.textContent = `${pity} / ${pityTarget}`;
+        pityFill.style.width = `${Math.min((pity / pityTarget) * 100, 100)}%`;
+      }
+
+      function tambahRiwayat(hasil) {
+        const chip = document.createElement("div");
+        const img = document.createElement("img");
+
+        chip.className = `chip ${hasil.kelas}`;
+        chip.title = `${hasil.pokemon.name} - ${hasil.kelas.toUpperCase()}`;
+        img.src = hasil.pokemon.image;
+        img.alt = hasil.pokemon.name;
+        chip.append(img);
+
+        history.prepend(chip);
+
+        while (history.children.length > 12) {
+          history.lastElementChild.remove();
+        }
+      }
+
+      function setLoading(isLoading, message = "") {
+        tarik1.disabled = isLoading;
+        tarik10.disabled = isLoading;
+        statusText.textContent = message;
+      }
+
+      async function tarik(jumlah) {
+        let hasilTerakhir;
+
+        setLoading(true, `Pulling ${jumlah} Pokemon...`);
+
+        try {
+          for (let i = 0; i < jumlah; i += 1) {
+            hasilTerakhir = await rollSatu();
+            tambahRiwayat(hasilTerakhir);
+          }
+
+          tampilkan(hasilTerakhir);
+          setLoading(false, "Pull complete.");
+        } catch (error) {
+          console.error(error);
+          setLoading(false, "Could not reach PokeAPI. Check your connection.");
+        }
+      }
+
+      tarik1.addEventListener("click", () => tarik(1));
+      tarik10.addEventListener("click", () => tarik(10));
+      pityText.textContent = `${pity} / ${pityTarget}`;
+    </script>
+  </body>
 </html>
