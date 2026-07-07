@@ -1,4 +1,4 @@
-Ôªøconst API_BASE = "https://pokeapi.co/api/v2";
+const API_BASE = "https://pokeapi.co/api/v2";
 const CACHE_KEY = "pokepack.apiCache.v1";
 const STATE_KEY = "pokepack.collection.v1";
 const CACHE_TTL = 1000 * 60 * 60 * 24;
@@ -107,12 +107,12 @@ async function initializeApi(force = false) {
   try {
     const cachedFresh = !force && loadApiCache();
     if (cachedFresh && state.pokemonList.length && state.types.length) {
-      setStatus(`Loaded ${state.pokemonList.length.toLocaleString()} Pok√©mon from local cache.`);
+      setStatus(`Loaded ${state.pokemonList.length.toLocaleString()} PokÈmon from local cache.`);
       await renderFeaturedPokemon();
       return;
     }
 
-    setStatus("Fetching Pok√©mon index and type filters from Pok√©API...");
+    setStatus("Fetching PokÈmon index and type filters from PokÈAPI...");
     const [pokemonIndex, typeList] = await Promise.all([
       fetchPokemonIndex(),
       fetchJson(`${API_BASE}/type`)
@@ -123,12 +123,12 @@ async function initializeApi(force = false) {
     state.types = (typeList.results || []).map((type) => type.name).filter((name) => !["unknown", "shadow"].includes(name));
     persistApiCache();
     renderTypeOptions();
-    setStatus(`Ready: ${state.pokemonList.length.toLocaleString()} Pok√©mon and ${state.types.length} types indexed from Pok√©API.`);
+    setStatus(`Ready: ${state.pokemonList.length.toLocaleString()} PokÈmon and ${state.types.length} types indexed from PokÈAPI.`);
     await renderFeaturedPokemon();
   } catch (error) {
     console.error(error);
-    setStatus("Pok√©API request failed. Using any cached data available.");
-    showToast("Could not refresh Pok√©API data.");
+    setStatus("PokÈAPI request failed. Using any cached data available.");
+    showToast("Could not refresh PokÈAPI data.");
   } finally {
     state.loading = false;
     setButtons(false);
@@ -202,7 +202,7 @@ function normalizePokemon(pokemon, species) {
   const shinyArtwork = pokemon.sprites?.other?.["official-artwork"]?.front_shiny || pokemon.sprites?.front_shiny || artwork;
   const stats = pokemon.stats.map((item) => ({ name: item.stat.name, value: item.base_stat }));
   const bst = stats.reduce((sum, item) => sum + item.value, 0);
-  const genus = species.genera?.find((item) => item.language.name === "en")?.genus || "Pok√©mon";
+  const genus = species.genera?.find((item) => item.language.name === "en")?.genus || "PokÈmon";
   const flavor = species.flavor_text_entries?.find((item) => item.language.name === "en")?.flavor_text?.replace(/[\n\f]/g, " ") || "No species note available.";
   const rarity = classifyRarity({ pokemon, species, bst });
 
@@ -231,6 +231,9 @@ function normalizePokemon(pokemon, species) {
   };
 }
 
+// PokÈAPI has no card rarity field, so rarity is derived from canonical game data:
+// legendary/mythical species are Legendary; otherwise strong base stats, high base
+// experience, and low capture rates progressively map to Epic, Rare, and Uncommon.
 function classifyRarity({ pokemon, species, bst }) {
   const exp = pokemon.base_experience || 0;
   const capture = species.capture_rate ?? 255;
@@ -243,7 +246,7 @@ function classifyRarity({ pokemon, species, bst }) {
 
 async function openPack() {
   if (!state.pokemonList.length) {
-    showToast("Loading Pok√©API index first.");
+    showToast("Loading PokÈAPI index first.");
     await initializeApi();
     if (!state.pokemonList.length) return;
   }
@@ -375,7 +378,7 @@ function renderHomeStats() {
   const duplicates = Math.max(0, state.stats.totalPokemon - unique);
   el.homeStats.innerHTML = [
     statHtml("Packs opened", state.stats.packsOpened),
-    statHtml("Total Pok√©mon", state.stats.totalPokemon),
+    statHtml("Total PokÈmon", state.stats.totalPokemon),
     statHtml("Unique owned", unique),
     statHtml("Duplicates", duplicates)
   ].join("");
@@ -435,7 +438,7 @@ function renderCollection() {
   el.completionBar.style.width = `${Math.min(100, completion)}%`;
 
   if (!filtered.length) {
-    el.collectionGrid.innerHTML = `<div class="empty-state">No Pok√©mon match this collection view.</div>`;
+    el.collectionGrid.innerHTML = `<div class="empty-state">No PokÈmon match this collection view.</div>`;
     return;
   }
 
@@ -513,11 +516,11 @@ function openDetails(pokemon) {
   el.dialogContent.innerHTML = `<div class="dialog-layout">
     <div class="dialog-art"><img src="${pokemon.artwork}" alt="${escapeHtml(pokemon.name)}" onerror="this.onerror=null;this.src='${pokemon.sprite}'"></div>
     <div>
-      <p class="eyebrow">${escapeHtml(pokemon.rarity)} Pok√©mon</p>
+      <p class="eyebrow">${escapeHtml(pokemon.rarity)} PokÈmon</p>
       <h2>${escapeHtml(pokemon.name)}</h2>
       <p class="panel-copy">${escapeHtml(pokemon.flavor)}</p>
       <div class="detail-grid">
-        <div><span>Pok√©dex Number</span><strong>#${String(pokemon.pokedexNumber).padStart(4, "0")}</strong></div>
+        <div><span>PokÈdex Number</span><strong>#${String(pokemon.pokedexNumber).padStart(4, "0")}</strong></div>
         <div><span>Species</span><strong>${escapeHtml(pokemon.genus || pokemon.species)}</strong></div>
         <div><span>Type</span><strong>${pokemon.types.map(titleCase).join(" / ")}</strong></div>
         <div><span>Height</span><strong>${(pokemon.height / 10).toFixed(1)} m</strong></div>
