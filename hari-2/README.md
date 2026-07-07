@@ -93,6 +93,7 @@ Jangan cuma nebak dari baca kode. BUKTIIN di layar: reproduksi angkanya,
 screenshot / catat langkahnya.
 
 Prompt bantu (boleh ke Codex/Claude, buat NGERTI, bukan nyari jawaban):
+
 ```
 "Baca cara kode ini menghitung dan menampilkan Total. Menurut kamu,
 kondisi input seperti apa yang bisa bikin hasilnya salah atau aneh?
@@ -123,6 +124,7 @@ Buktiin tiap celah beneran. "Kayaknya rawan" belum keitung kamu harus
 bisa nunjukin celahnya kepake.
 
 Prompt bantu:
+
 ```
 "Di file ini: (1) gimana cara kode nampilin catatan dari user, aman
 dari XSS nggak? (2) apakah ada rahasia atau logika penting yang ada di
@@ -161,6 +163,7 @@ GOAL: perbaiki temuanmu, dibantu AI, TAPI kamu yang paham.
 
 Buat tiap temuan yang udah kamu buktiin: minta AI bantu betulin, lalu
 kamu WAJIB bisa jelasin kenapa fix-nya bener. Contoh prompt:
+
 ```
 "Aku nemu masalah ini: <jelasin temuanmu>. Betulin di kode ini, dan
 jelasin kenapa cara itu yang bener + prinsip umum di baliknya."
@@ -190,6 +193,7 @@ Temuan #: [BUG / KEAMANAN / ETIKA]
 ```
 
 Plus 1 refleksi penutup:
+
 ```
 - Bedanya "kode jalan" sama "kode benar & jujur" itu apa, menurutmu,
   setelah level ini?
