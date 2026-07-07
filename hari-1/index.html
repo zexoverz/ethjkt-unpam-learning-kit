@@ -202,98 +202,201 @@
   </div>
 
 <script>
-  const hadiah = {
-    ssr: [
-      { n: "Legendary Builder", e: "🏆" },
-      { n: "ETH Whale", e: "💎" },
-      { n: "Smart Contract Master", e: "🧠" }
-    ],
-    epic: [
-      { n: "Gas Optimizer", e: "⚡" },
-      { n: "DeFi Strategist", e: "📈" },
-      { n: "Node Guardian", e: "🛡️" }
-    ],
-    rare: [
-      { n: "NFT Artist", e: "🎨" },
-      { n: "Wallet Wizard", e: "🪄" },
-      { n: "Testnet Hunter", e: "🧪" }
-    ],
-    common: [
-      { n: "Fresh Learner", e: "📘" },
-      { n: "Bug Fixer", e: "🔧" },
-      { n: "Block Explorer", e: "🔎" },
-      { n: "Coffee Coder", e: "☕" }
-    ]
+  const API_BASE = "https://pokeapi.co/api/v2";
+  const maxPity = 10;
+  const fallbackMaxPokemonId = 1025;
+  const ssrPool = [
+    144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251,
+    377, 378, 379, 380, 381, 382, 383, 384, 385, 386,
+    483, 484, 487, 491, 492, 493, 494, 643, 644, 646, 716,
+    717, 718, 719, 720, 721, 888, 889, 890, 891, 892, 893,
+    894, 895, 896, 897, 898, 905, 1007, 1008, 1024
+  ];
+  const typeColors = {
+    normal: "#7a8494", fire: "#e35d3e", water: "#3387d7", electric: "#d9a921",
+    grass: "#3f9b56", ice: "#4ca6b7", fighting: "#b94b3f", poison: "#8e58b7",
+    ground: "#b98244", flying: "#6f89d8", psychic: "#d95f8d", bug: "#7f9f33",
+    rock: "#9a7b42", ghost: "#5d5a9d", dragon: "#6f61d8", dark: "#5c5360",
+    steel: "#6f8796", fairy: "#d774aa"
   };
 
-  const maxPity = 10;
   let pity = 0;
   let total = 0;
   let ssrCount = 0;
+  const seenPokemon = new Set();
+  const apiCache = new Map();
+  let pokemonCountPromise = null;
 
   const card = document.getElementById("card");
   const cardEmoji = document.getElementById("cardEmoji");
   const cardName = document.getElementById("cardName");
   const cardRarity = document.getElementById("cardRarity");
+  const dexNo = document.getElementById("dexNo");
+  const pokemonImage = document.getElementById("pokemonImage");
+  const typeRow = document.getElementById("typeRow");
+  const flavorText = document.getElementById("flavorText");
   const totalText = document.getElementById("total");
   const ssrCountText = document.getElementById("ssrCount");
+  const seenCountText = document.getElementById("seenCount");
   const pityText = document.getElementById("pityText");
   const pityFill = document.getElementById("pityFill");
   const history = document.getElementById("history");
   const tarik1Button = document.getElementById("tarik1");
   const tarik10Button = document.getElementById("tarik10");
 
-  function pilihAcak(daftarHadiah) {
-    const index = Math.floor(Math.random() * daftarHadiah.length);
-    return daftarHadiah[index];
+  function pilihAcak(daftar) {
+    return daftar[Math.floor(Math.random() * daftar.length)];
   }
 
-  function buatHasil(kelas) {
-    const item = pilihAcak(hadiah[kelas]);
-    return { kelas, nama: item.n, emoji: item.e };
+  function angkaAcak(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  function rollSatu() {
-    total += 1;
-    pity += 1;
-
-    const acak = Math.random();
-    let kelas = "common";
-
-    // Pity menjamin SSR maksimal setiap 10 tarikan kalau belum beruntung.
-    if (pity >= maxPity || acak < 0.03) {
-      kelas = "ssr";
-      pity = 0;
-      ssrCount += 1;
-    } else if (acak < 0.10) {
-      kelas = "epic";
-    } else if (acak < 0.30) {
-      kelas = "rare";
+  async function ambilJson(url) {
+    if (apiCache.has(url)) {
+      return apiCache.get(url);
     }
 
-    return buatHasil(kelas);
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("PokeAPI request failed: " + response.status);
+    }
+
+    const data = await response.json();
+    apiCache.set(url, data);
+    return data;
+  }
+
+  function namaBagus(nama) {
+    return nama
+      .split("-")
+      .map((kata) => kata.charAt(0).toUpperCase() + kata.slice(1))
+      .join(" ");
+  }
+
+  function teksInggris(daftar, key) {
+    const item = daftar.find((entry) => entry.language.name === "en");
+    return item ? item[key].replace(/[\n\f]/g, " ") : "";
+  }
+
+  function pilihRarity() {
+    pity += 1;
+    const acak = Math.random();
+
+    if (pity >= maxPity || acak < 0.03) {
+      pity = 0;
+      return "ssr";
+    }
+    if (acak < 0.10) return "epic";
+    if (acak < 0.30) return "rare";
+    return "common";
+  }
+
+  function ambilJumlahPokemon() {
+    if (!pokemonCountPromise) {
+      pokemonCountPromise = ambilJson(API_BASE + "/pokemon-species?limit=1")
+        .then((data) => data.count || fallbackMaxPokemonId)
+        .catch(() => fallbackMaxPokemonId);
+    }
+
+    return pokemonCountPromise;
+  }
+
+  async function pilihPokemonId(kelas) {
+    if (kelas === "ssr") {
+      return pilihAcak(ssrPool);
+    }
+
+    if (kelas === "epic") {
+      return angkaAcak(1, 493);
+    }
+
+    const maxPokemonId = await ambilJumlahPokemon();
+    return angkaAcak(1, maxPokemonId);
+  }
+
+  function rarityDariSpecies(kelasAwal, species) {
+    if (species.is_legendary || species.is_mythical) {
+      return "ssr";
+    }
+    if (kelasAwal === "epic" || species.capture_rate <= 45) {
+      return "epic";
+    }
+    if (kelasAwal === "rare" || species.is_baby || species.capture_rate <= 90) {
+      return "rare";
+    }
+    return "common";
+  }
+
+  async function rollSatu() {
+    const kelasAwal = pilihRarity();
+    const pokemonId = await pilihPokemonId(kelasAwal);
+    const pokemon = await ambilJson(API_BASE + "/pokemon/" + pokemonId + "/");
+    const species = await ambilJson(pokemon.species.url);
+    const kelas = rarityDariSpecies(kelasAwal, species);
+
+    total += 1;
+    if (kelas === "ssr") {
+      ssrCount += 1;
+      pity = 0;
+    }
+    seenPokemon.add(species.id);
+
+    return {
+      kelas: kelas,
+      id: species.id,
+      nama: teksInggris(species.names, "name") || namaBagus(pokemon.name),
+      genus: teksInggris(species.genera, "genus"),
+      deskripsi: teksInggris(species.flavor_text_entries, "flavor_text"),
+      sprite:
+        pokemon.sprites.other["official-artwork"].front_default ||
+        pokemon.sprites.other.home.front_default ||
+        pokemon.sprites.front_default,
+      types: pokemon.types.map((slot) => slot.type.name),
+      ability: pokemon.abilities[0] ? namaBagus(pokemon.abilities[0].ability.name) : "Unknown",
+      baseExp: pokemon.base_experience || 0
+    };
   }
 
   function tampilkan(hasil) {
-    cardEmoji.textContent = hasil.emoji;
+    dexNo.textContent = "#" + String(hasil.id).padStart(4, "0");
+    pokemonImage.src = hasil.sprite;
+    pokemonImage.alt = hasil.nama;
+    pokemonImage.hidden = false;
+    cardEmoji.hidden = true;
     cardName.textContent = hasil.nama;
     cardRarity.textContent = hasil.kelas.toUpperCase();
+    flavorText.textContent = (hasil.genus || "Pokemon") + " - " + (hasil.deskripsi || "Ability: " + hasil.ability);
+    typeRow.replaceChildren(
+      ...hasil.types.map((type) => {
+        const pill = document.createElement("span");
+        pill.className = "type-pill";
+        pill.textContent = type;
+        pill.style.backgroundColor = typeColors[type] || typeColors.normal;
+        return pill;
+      })
+    );
 
     card.className = "card";
     void card.offsetWidth;
-    card.className = `card ${hasil.kelas} reveal`;
+    card.className = "card " + hasil.kelas + " reveal";
 
     totalText.textContent = total;
     ssrCountText.textContent = ssrCount;
-    pityText.textContent = `${pity} / ${maxPity}`;
-    pityFill.style.width = `${(pity / maxPity) * 100}%`;
+    seenCountText.textContent = seenPokemon.size;
+    pityText.textContent = pity + " / " + maxPity;
+    pityFill.style.width = (pity / maxPity) * 100 + "%";
   }
 
   function tambahRiwayat(hasil) {
     const chip = document.createElement("div");
-    chip.className = `chip ${hasil.kelas}`;
-    chip.textContent = hasil.emoji;
-    chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
+    const img = document.createElement("img");
+
+    chip.className = "chip " + hasil.kelas;
+    chip.title = hasil.nama + " (" + hasil.kelas.toUpperCase() + ")";
+    img.src = hasil.sprite;
+    img.alt = hasil.nama;
+    chip.append(img);
 
     history.prepend(chip);
 
@@ -302,11 +405,27 @@
     }
   }
 
-  function tarik(jumlahTarikan) {
-    for (let i = 0; i < jumlahTarikan; i += 1) {
-      const hasil = rollSatu();
-      tampilkan(hasil);
-      tambahRiwayat(hasil);
+  function setLoading(isLoading) {
+    tarik1Button.disabled = isLoading;
+    tarik10Button.disabled = isLoading;
+    tarik1Button.textContent = isLoading ? "Pulling..." : "Pull 1x";
+    tarik10Button.textContent = isLoading ? "Pulling..." : "Pull 10x";
+  }
+
+  async function tarik(jumlahTarikan) {
+    setLoading(true);
+
+    try {
+      for (let i = 0; i < jumlahTarikan; i += 1) {
+        const hasil = await rollSatu();
+        tampilkan(hasil);
+        tambahRiwayat(hasil);
+      }
+    } catch (error) {
+      flavorText.textContent = "Gagal mengambil data dari PokeAPI. Coba pull lagi saat koneksi tersedia.";
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
