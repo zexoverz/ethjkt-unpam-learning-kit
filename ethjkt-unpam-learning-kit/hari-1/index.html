@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokemon Gacha Simulator</title>
+<style>
+  :root {
+    --bg: #f3f6fb;
+    --panel: #ffffff;
+    --ink: #172033;
+    --muted: #65728a;
+    --line: #dfe5ef;
+    --red: #ef5350;
+    --blue: #2d6cdf;
+    --gold: #f4b400;
+    --violet: #7c4dff;
+    --green: #2ea44f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color: var(--ink);
+    background:
+      linear-gradient(135deg, rgba(239,83,80,.16), transparent 32%),
+      linear-gradient(315deg, rgba(45,108,223,.16), transparent 34%),
+      var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .app {
+    width: min(100%, 980px);
+    display: grid;
+    grid-template-columns: minmax(300px, 420px) 1fr;
+    gap: 18px;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 18px 45px rgba(23,32,51,.12);
+  }
+
+  .machine {
+    min-height: 640px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #e3352f, #ef5350);
+  }
+
+  h1 { font-size: 22px; line-height: 1.1; letter-spacing: .3px; }
+  .subtitle { font-size: 12px; opacity: .86; margin-top: 4px; }
+
+  .api-pill {
+    flex: 0 0 auto;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .6px;
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,.5);
+    border-radius: 999px;
+    padding: 7px 10px;
+  }
+
+  .screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 24px 22px;
+    background:
+      radial-gradient(circle at 50% 34%, rgba(45,108,223,.12), transparent 34%),
+      linear-gradient(#ffffff, #f8fafd);
+  }
+
+  .pokemon-card {
+    width: 100%;
+    max-width: 320px;
+    min-height: 390px;
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    background: #ffffff;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    overflow: hidden;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .dex { color: var(--muted); font-size: 13px; font-weight: 700; }
+  .rarity {
+    min-width: 92px;
+    text-align: center;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    color: #ffffff;
+    background: #8a94a6;
+  }
+
+  .pokemon-card.common .rarity { background: #73808f; }
+  .pokemon-card.rare .rarity { background: var(--blue); }
+  .pokemon-card.ultra .rarity { background: var(--violet); }
+  .pokemon-card.legendary .rarity { background: linear-gradient(135deg, #f4b400, #ef5350); }
+
+  .art-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 210px;
+    background:
+      linear-gradient(90deg, rgba(23,32,51,.05) 1px, transparent 1px),
+      linear-gradient(rgba(23,32,51,.05) 1px, transparent 1px),
+      #f5f8fc;
+    background-size: 22px 22px;
+  }
+
+  .pokeball-mark {
+    width: 150px;
+    aspect-ratio: 1;
+    border: 18px solid rgba(23,32,51,.06);
+    border-radius: 50%;
+    position: absolute;
+  }
+
+  .pokeball-mark::before {
+    content: "";
+    position: absolute;
+    inset: 48% -18px auto;
+    height: 18px;
+    background: rgba(23,32,51,.06);
+  }
+
+  .pokemon-img {
+    position: relative;
+    width: 210px;
+    height: 210px;
+    object-fit: contain;
+    image-rendering: auto;
+    opacity: 0;
+    transform: translateY(8px) scale(.96);
+    transition: opacity .25s ease, transform .25s ease;
+  }
+
+  .pokemon-img.ready {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .sprite-placeholder {
+    position: relative;
+    width: 132px;
+    aspect-ratio: 1;
+    border: 8px solid #d9e1ee;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #7d8aa0;
+    font-size: 42px;
+    font-weight: 900;
+    background: #ffffff;
+  }
+
+  .sprite-placeholder::before {
+    content: "";
+    position: absolute;
+    inset: calc(50% - 4px) -8px auto;
+    height: 8px;
+    background: #d9e1ee;
+  }
+
+  .sprite-placeholder::after {
+    content: "";
+    position: absolute;
+    width: 32px;
+    aspect-ratio: 1;
+    border: 6px solid #d9e1ee;
+    border-radius: 50%;
+    background: #ffffff;
+  }
+
+  .sprite-placeholder.visible {
+    display: flex;
+  }
+
+  .card-body {
+    padding: 14px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .name-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .pokemon-name { font-size: 25px; line-height: 1.1; text-transform: capitalize; }
+  .genus { color: var(--muted); font-size: 12px; text-align: right; }
+
+  .types { display: flex; flex-wrap: wrap; gap: 6px; min-height: 27px; }
+  .type {
+    border-radius: 999px;
+    padding: 6px 9px;
+    color: #ffffff;
+    background: #7f8c8d;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .flavor {
+    min-height: 54px;
+    color: #3c465a;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .mini-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .mini-stat {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px;
+  }
+
+  .mini-stat strong { display: block; font-size: 16px; }
+  .mini-stat span { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .6px; }
+
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .btn {
+    border: 0;
+    border-radius: 8px;
+    padding: 14px 12px;
+    font-weight: 900;
+    font-size: 14px;
+    color: #ffffff;
+    background: var(--blue);
+    cursor: pointer;
+    transition: transform .08s ease, filter .15s ease;
+  }
+
+  .btn.gold { background: var(--gold); color: #172033; }
+  .btn:hover { filter: brightness(1.05); }
+  .btn:active { transform: translateY(1px); }
+  .btn:disabled { cursor: wait; filter: grayscale(.2) opacity(.72); }
+
+  .status {
+    width: 100%;
+    max-width: 320px;
+    min-height: 18px;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .side {
+    padding: 18px;
+    display: grid;
+    align-content: start;
+    gap: 16px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .stat {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+    background: #fbfcff;
+  }
+
+  .stat .num { display: block; font-size: 24px; font-weight: 900; }
+  .stat .lbl { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .7px; }
+
+  .pity { display: grid; gap: 7px; }
+  .pity-top { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
+  .pity-track { height: 11px; border-radius: 999px; overflow: hidden; background: #e7edf6; }
+  .pity-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), var(--red)); transition: width .25s ease; }
+
+  .section-title {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .8px;
+  }
+
+  .history {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+    gap: 8px;
+  }
+
+  .chip {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    min-height: 82px;
+    padding: 7px;
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    background: #ffffff;
+  }
+
+  .chip img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+  }
+
+  .chip strong {
+    max-width: 100%;
+    font-size: 11px;
+    text-transform: capitalize;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .chip span { font-size: 9px; font-weight: 900; color: var(--muted); text-transform: uppercase; }
+  .chip.legendary { border-color: rgba(244,180,0,.85); box-shadow: 0 0 0 2px rgba(244,180,0,.12); }
+  .chip.ultra { border-color: rgba(124,77,255,.65); }
+  .chip.rare { border-color: rgba(45,108,223,.65); }
+
+  .common-note {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  @media (max-width: 760px) {
+    body { align-items: flex-start; padding: 12px; }
+    .app { grid-template-columns: 1fr; }
+    .machine { min-height: auto; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+  <main class="app">
+    <section class="panel machine">
+      <div class="topbar">
+        <div>
+          <h1>Pokemon Gacha</h1>
+          <div class="subtitle">Pull real Pokemon data from PokeAPI</div>
+        </div>
+        <div class="api-pill">LIVE API</div>
+      </div>
+
+      <div class="screen">
+        <article class="pokemon-card common" id="card">
+          <div class="card-head">
+            <div class="dex" id="dexNo">#----</div>
+            <div class="rarity" id="rarity">Ready</div>
+          </div>
+
+          <div class="art-wrap">
+            <div class="pokeball-mark"></div>
+            <img class="pokemon-img" id="pokemonImg" alt="">
+            <div class="sprite-placeholder" id="spritePlaceholder" aria-hidden="true">?</div>
+          </div>
+
+          <div class="card-body">
+            <div class="name-row">
+              <h2 class="pokemon-name" id="pokemonName">Press Pull</h2>
+              <div class="genus" id="genus">PokeAPI</div>
+            </div>
+            <div class="types" id="types"></div>
+            <p class="flavor" id="flavor">Each pull fetches Pokemon details and species metadata from the public API.</p>
+            <div class="mini-stats">
+              <div class="mini-stat"><strong id="baseExp">-</strong><span>Base EXP</span></div>
+              <div class="mini-stat"><strong id="captureRate">-</strong><span>Capture</span></div>
+              <div class="mini-stat"><strong id="statTotal">-</strong><span>Stats</span></div>
+            </div>
+          </div>
+        </article>
+
+        <div class="controls">
+          <button class="btn" id="pull1">PULL 1x</button>
+          <button class="btn gold" id="pull10">PULL 10x</button>
+        </div>
+        <div class="status" id="status">Ready to pull.</div>
+      </div>
+    </section>
+
+    <aside class="panel side">
+      <div class="stats-grid">
+        <div class="stat"><span class="num" id="total">0</span><span class="lbl">Total Pull</span></div>
+        <div class="stat"><span class="num" id="legendaryCount">0</span><span class="lbl">Legendary</span></div>
+        <div class="stat"><span class="num" id="uniqueCount">0</span><span class="lbl">Unique</span></div>
+      </div>
+
+      <div class="pity">
+        <div class="pity-top"><span>Legendary / Mythical pity</span><span id="pityText">0 / 10</span></div>
+        <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
+      </div>
+
+      <div>
+        <div class="section-title">Last Pulls</div>
+        <div class="history" id="history"></div>
+      </div>
+
+      <p class="common-note">
+        Rarity is derived from PokeAPI species and battle data: legendary/mythical flags,
+        capture rate, and base experience.
+      </p>
+    </aside>
+  </main>
+
+<script>
+  const API_BASE = "https://pokeapi.co/api/v2";
+  const MAX_POKEMON_ID = 1025;
+  const PITY_LIMIT = 10;
+
+  const LEGENDARY_OR_MYTHICAL_IDS = [
+    144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251,
+    377, 378, 379, 380, 381, 382, 383, 384, 385, 386,
+    480, 481, 482, 483, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493,
+    494, 638, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649,
+    716, 717, 718, 719, 720, 721, 772, 773, 785, 786, 787, 788, 789,
+    790, 791, 792, 800, 801, 802, 807, 808, 809, 888, 889, 890, 891,
+    892, 893, 894, 895, 896, 897, 898, 905, 1001, 1002, 1003, 1004,
+    1007, 1008, 1009, 1010, 1024, 1025
+  ];
+
+  const typeColors = {
+    normal: "#9099a1", fire: "#ff6b3a", water: "#3985d7", electric: "#f5c531",
+    grass: "#42a85f", ice: "#58c8d6", fighting: "#d13f63", poison: "#9b59b6",
+    ground: "#d97845", flying: "#6f8edb", psychic: "#f65f8f", bug: "#8cb230",
+    rock: "#b8a038", ghost: "#5662a6", dragon: "#096dc4", dark: "#5a5366",
+    steel: "#5f8ea1", fairy: "#ec8fe6"
+  };
+
+  let pity = 0;
+  let total = 0;
+  let legendaryCount = 0;
+  const ownedPokemon = new Set();
+  const cache = new Map();
+
+  const els = {
+    card: document.getElementById("card"),
+    dexNo: document.getElementById("dexNo"),
+    rarity: document.getElementById("rarity"),
+    pokemonImg: document.getElementById("pokemonImg"),
+    spritePlaceholder: document.getElementById("spritePlaceholder"),
+    pokemonName: document.getElementById("pokemonName"),
+    genus: document.getElementById("genus"),
+    types: document.getElementById("types"),
+    flavor: document.getElementById("flavor"),
+    baseExp: document.getElementById("baseExp"),
+    captureRate: document.getElementById("captureRate"),
+    statTotal: document.getElementById("statTotal"),
+    total: document.getElementById("total"),
+    legendaryCount: document.getElementById("legendaryCount"),
+    uniqueCount: document.getElementById("uniqueCount"),
+    pityText: document.getElementById("pityText"),
+    pityFill: document.getElementById("pityFill"),
+    history: document.getElementById("history"),
+    status: document.getElementById("status"),
+    pull1: document.getElementById("pull1"),
+    pull10: document.getElementById("pull10")
+  };
+
+  function randomItem(items) {
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  function randomPokemonId(forceLegendary) {
+    if (forceLegendary) return randomItem(LEGENDARY_OR_MYTHICAL_IDS);
+    return Math.floor(Math.random() * MAX_POKEMON_ID) + 1;
+  }
+
+  async function fetchJson(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`PokeAPI request failed: ${response.status}`);
+    return response.json();
+  }
+
+  async function getPokemon(id) {
+    if (cache.has(id)) return cache.get(id);
+
+    const pokemon = await fetchJson(`${API_BASE}/pokemon/${id}/`);
+    const species = await fetchJson(pokemon.species.url);
+    const normalized = normalizePokemon(pokemon, species);
+
+    cache.set(id, normalized);
+    return normalized;
+  }
+
+  function normalizePokemon(pokemon, species) {
+    const englishName = species.names.find((entry) => entry.language.name === "en");
+    const englishGenus = species.genera.find((entry) => entry.language.name === "en");
+    const englishFlavor = species.flavor_text_entries.find((entry) => entry.language.name === "en");
+    const statTotal = pokemon.stats.reduce((sum, item) => sum + item.base_stat, 0);
+    const rarity = getRarity(pokemon, species, statTotal);
+
+    const spriteUrls = getSpriteUrls(pokemon);
+
+    return {
+      id: pokemon.id,
+      name: englishName?.name || formatName(pokemon.name),
+      genus: englishGenus?.genus || "Pokemon",
+      flavor: cleanFlavorText(englishFlavor?.flavor_text || "No Pokedex entry available."),
+      image: spriteUrls[0] || "",
+      spriteUrls,
+      types: pokemon.types.map((entry) => entry.type.name),
+      baseExperience: pokemon.base_experience || 0,
+      captureRate: species.capture_rate,
+      generation: formatName(species.generation.name),
+      statTotal,
+      rarity
+    };
+  }
+
+  function getRarity(pokemon, species, statTotal) {
+    if (species.is_legendary || species.is_mythical) return "legendary";
+    if ((pokemon.base_experience || 0) >= 240 || statTotal >= 580 || species.capture_rate <= 35) return "ultra";
+    if ((pokemon.base_experience || 0) >= 160 || statTotal >= 450 || species.capture_rate <= 90) return "rare";
+    return "common";
+  }
+
+  function getSpriteUrls(pokemon) {
+    const sprites = pokemon.sprites;
+    const urls = [
+      sprites.other?.["official-artwork"]?.front_default,
+      sprites.other?.home?.front_default,
+      sprites.other?.dream_world?.front_default,
+      sprites.front_default,
+      sprites.other?.["official-artwork"]?.front_shiny,
+      sprites.other?.home?.front_shiny,
+      sprites.front_shiny
+    ];
+
+    return [...new Set(urls.filter(Boolean))];
+  }
+
+  function formatName(value) {
+    return value
+      .split("-")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+  }
+
+  function cleanFlavorText(text) {
+    return text.replace(/[\n\f\r]+/g, " ");
+  }
+
+  async function pullMany(amount) {
+    setLoading(true, `Pulling ${amount} Pokemon...`);
+    let latest = null;
+
+    try {
+      for (let i = 0; i < amount; i++) {
+        const forceLegendary = pity + 1 >= PITY_LIMIT;
+        const pokemon = await getPokemon(randomPokemonId(forceLegendary));
+        registerPull(pokemon);
+        addHistory(pokemon);
+        latest = pokemon;
+      }
+
+      renderPokemon(latest);
+      els.status.textContent = amount === 1 ? "Pull complete." : "Ten-pull complete.";
+    } catch (error) {
+      els.status.textContent = "Could not reach PokeAPI. Check your connection and try again.";
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function registerPull(pokemon) {
+    total += 1;
+    ownedPokemon.add(pokemon.id);
+
+    if (pokemon.rarity === "legendary") {
+      pity = 0;
+      legendaryCount += 1;
+    } else {
+      pity += 1;
+    }
+
+    updateCounters();
+  }
+
+  function updateCounters() {
+    els.total.textContent = total;
+    els.legendaryCount.textContent = legendaryCount;
+    els.uniqueCount.textContent = ownedPokemon.size;
+    els.pityText.textContent = `${pity} / ${PITY_LIMIT}`;
+    els.pityFill.style.width = `${Math.min(pity / PITY_LIMIT, 1) * 100}%`;
+  }
+
+  function renderPokemon(pokemon) {
+    els.card.className = `pokemon-card ${pokemon.rarity}`;
+    els.dexNo.textContent = `#${String(pokemon.id).padStart(4, "0")}`;
+    els.rarity.textContent = pokemon.rarity;
+    els.pokemonName.textContent = pokemon.name;
+    els.genus.textContent = pokemon.genus;
+    els.flavor.textContent = pokemon.flavor;
+    els.baseExp.textContent = pokemon.baseExperience;
+    els.captureRate.textContent = pokemon.captureRate;
+    els.statTotal.textContent = pokemon.statTotal;
+
+    loadImageWithFallback(els.pokemonImg, pokemon, true);
+
+    els.types.replaceChildren(...pokemon.types.map(createTypePill));
+  }
+
+  function loadImageWithFallback(img, pokemon, isMainImage) {
+    let attempt = 0;
+    const urls = pokemon.spriteUrls.length ? pokemon.spriteUrls : [pokemon.image].filter(Boolean);
+
+    img.classList.remove("ready");
+    img.alt = pokemon.name;
+
+    if (isMainImage) {
+      els.spritePlaceholder.classList.remove("visible");
+    }
+
+    function showPlaceholder() {
+      img.removeAttribute("src");
+      img.alt = "";
+
+      if (isMainImage) {
+        els.spritePlaceholder.classList.add("visible");
+      }
+    }
+
+    function tryNextSprite() {
+      if (attempt >= urls.length) {
+        showPlaceholder();
+        return;
+      }
+
+      img.src = urls[attempt];
+      attempt += 1;
+    }
+
+    img.onload = () => img.classList.add("ready");
+    img.onerror = tryNextSprite;
+    tryNextSprite();
+  }
+
+  function createTypePill(type) {
+    const pill = document.createElement("span");
+    pill.className = "type";
+    pill.textContent = type;
+    pill.style.background = typeColors[type] || "#7f8c8d";
+    return pill;
+  }
+
+  function addHistory(pokemon) {
+    const chip = document.createElement("div");
+    const image = document.createElement("img");
+    const name = document.createElement("strong");
+    const rarity = document.createElement("span");
+
+    chip.className = `chip ${pokemon.rarity}`;
+    chip.title = `#${pokemon.id} ${pokemon.name} - ${pokemon.rarity.toUpperCase()}`;
+
+    loadImageWithFallback(image, pokemon, false);
+    name.textContent = pokemon.name;
+    rarity.textContent = pokemon.rarity;
+
+    chip.append(image, name, rarity);
+    els.history.prepend(chip);
+
+    while (els.history.children.length > 12) {
+      els.history.lastElementChild.remove();
+    }
+  }
+
+  function setLoading(isLoading, message) {
+    els.pull1.disabled = isLoading;
+    els.pull10.disabled = isLoading;
+    if (message) els.status.textContent = message;
+  }
+
+  els.pull1.addEventListener("click", () => pullMany(1));
+  els.pull10.addEventListener("click", () => pullMany(10));
+</script>
+</body>
+</html>
