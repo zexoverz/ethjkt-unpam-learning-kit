@@ -9,18 +9,18 @@
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Katalog resmi toko. Harga "asli" tercatat di sini.
+  // Katalog resmi toko. Harga "asli" tercatat di sini beserta stok awal masing-masing produk.
   const products = [
-    { id: 1,  name: "Apel Fuji",       price: 1.5, produceId: "#4131", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg" },
-    { id: 2,  name: "Jeruk Navel",     price: 2.0, produceId: "#4012", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg" },
-    { id: 3,  name: "Pisang",          price: 1.2, produceId: "#4011", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg" },
-    { id: 4,  name: "Anggur",          price: 3.5, produceId: "#4022", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg" },
-    { id: 5,  name: "Stroberi",        price: 4.5, produceId: "#4252", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg" },
-    { id: 6,  name: "Blueberry",       price: 5.0, produceId: "#4264", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg" },
-    { id: 7,  name: "Nanas",           price: 3.0, produceId: "#4430", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg" },
-    { id: 8,  name: "Mangga",          price: 2.8, produceId: "#4951", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg" },
-    { id: 9,  name: "Kiwi",            price: 1.9, produceId: "#4301", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg" },
-    { id: 10, name: "Semangka (Potong)", price: 3.2, produceId: "#4032", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg" }
+    { id: 1,  name: "Apel Fuji",       price: 1.5, produceId: "#4131", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg", stock: 8 },
+    { id: 2,  name: "Jeruk Navel",     price: 2.0, produceId: "#4012", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg", stock: 5 },
+    { id: 3,  name: "Pisang",          price: 1.2, produceId: "#4011", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg", stock: 12 },
+    { id: 4,  name: "Anggur",          price: 3.5, produceId: "#4022", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg", stock: 6 },
+    { id: 5,  name: "Stroberi",        price: 4.5, produceId: "#4252", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg", stock: 4 },
+    { id: 6,  name: "Blueberry",       price: 5.0, produceId: "#4264", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg", stock: 3 },
+    { id: 7,  name: "Nanas",           price: 3.0, produceId: "#4430", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg", stock: 7 },
+    { id: 8,  name: "Mangga",          price: 2.8, produceId: "#4951", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg", stock: 5 },
+    { id: 9,  name: "Kiwi",            price: 1.9, produceId: "#4301", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg", stock: 9 },
+    { id: 10, name: "Semangka (Potong)", price: 3.2, produceId: "#4032", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg", stock: 6 }
   ];
 
   let cart = {};
@@ -28,9 +28,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // Biaya penanganan kecil biar operasional toko tetap jalan.
   const HANDLING_FEE = 0.30;
 
-  // Kupon internal buat teman-teman petani. Jangan disebar ya.
-  const KUPON_RAHASIA = "TEMANFARMER";
+  // Hash SHA-256 dari kupon rahasia (Kupon asli: "TEMANFARMER" tidak disimpan mentah)
+  const KUPON_HASH = "a12497e637e42764b41e7c6de1b07a8906d8e8841c7522a471a48a1ee74d61cd";
   let diskon = 0; // 0 = tanpa diskon, 0.9 = potong 90%
+
+  // Helper untuk menghitung hash SHA-256
+  async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
 
   const productSection = document.getElementById("product-section");
   const cartDetailsEl = document.getElementById("cart-details");
@@ -44,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     products.forEach((product) => {
       const quantity = cart[product.id] ? cart[product.id].count : 0;
-      const sisa = Math.floor(Math.random() * 5) + 1; // sisa stok hari ini
+      const sisa = product.stock - quantity; // Sisa stok hari ini (jujur dan dinamis)
 
       const productCard = document.createElement("article");
       productCard.classList.add("product");
@@ -55,11 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
           <h2>${product.name}</h2>
           <p class="price">$${product.price.toFixed(2)}</p>
         </div>
-        <p class="stock">tinggal ${sisa} lagi hari ini!</p>
+        <p class="stock">${sisa > 0 ? `tinggal ${sisa} lagi hari ini!` : `stok habis`}</p>
         <div class="quantity-controls">
           <button class="quantity-button minus-button" data-id="${product.id}">−</button>
           <span class="quantity-display" id="quantity-${product.id}">${quantity}</span>
-          <button class="quantity-button plus-button" data-id="${product.id}" data-price="${product.price}">+</button>
+          <button class="quantity-button plus-button" data-id="${product.id}">+</button>
         </div>
       `;
       productSection.appendChild(productCard);
@@ -112,28 +120,72 @@ document.addEventListener("DOMContentLoaded", () => {
     if (note) {
       const preview = document.createElement("div");
       preview.className = "note-preview";
-      preview.innerHTML = "Catatan: " + note; // innerHTML biar tulisannya rapi
+      preview.textContent = "Catatan: " + note; // Menggunakan textContent agar aman dari XSS
       cartDetailsEl.appendChild(preview);
+    }
+
+    // Tampilkan rincian Subtotal secara transparan di sidebar
+    const subtotalEl = document.createElement("div");
+    subtotalEl.className = "cart-item-subtotal";
+    subtotalEl.style.display = "flex";
+    subtotalEl.style.justifyContent = "space-between";
+    subtotalEl.style.fontSize = "0.9rem";
+    subtotalEl.style.color = "var(--olive)";
+    subtotalEl.style.marginTop = "0.8rem";
+    subtotalEl.style.paddingTop = "0.5rem";
+    subtotalEl.style.borderTop = "1px dashed var(--line)";
+    subtotalEl.innerHTML = `<span>Subtotal</span><strong>$${totalPrice.toFixed(2)}</strong>`;
+    cartDetailsEl.appendChild(subtotalEl);
+
+    // Tampilkan rincian biaya penanganan secara transparan di sidebar
+    const handlingEl = document.createElement("div");
+    handlingEl.className = "cart-item-handling";
+    handlingEl.style.display = "flex";
+    handlingEl.style.justifyContent = "space-between";
+    handlingEl.style.fontSize = "0.9rem";
+    handlingEl.style.color = "var(--olive)";
+    handlingEl.style.marginTop = "0.2rem";
+    handlingEl.innerHTML = `<span>Biaya penanganan</span><strong>$${HANDLING_FEE.toFixed(2)}</strong>`;
+    cartDetailsEl.appendChild(handlingEl);
+
+    // Tampilkan rincian diskon secara transparan di sidebar jika kupon aktif
+    if (diskon > 0) {
+      const discountEl = document.createElement("div");
+      discountEl.className = "cart-item-discount";
+      discountEl.style.display = "flex";
+      discountEl.style.justifyContent = "space-between";
+      discountEl.style.fontSize = "0.9rem";
+      discountEl.style.color = "var(--olive)";
+      discountEl.style.marginTop = "0.2rem";
+      const potongan = (totalPrice + HANDLING_FEE) * diskon;
+      discountEl.innerHTML = `<span>Kupon (-90%)</span><strong>-$${potongan.toFixed(2)}</strong>`;
+      cartDetailsEl.appendChild(discountEl);
     }
 
     // Total akhir = barang + biaya penanganan, lalu potong diskon.
     let total = totalPrice + HANDLING_FEE;
     total = total - total * diskon;
 
-    totalPriceEl.textContent = total;
+    totalPriceEl.textContent = total.toFixed(2); // Dibulatkan ke 2 desimal
     updateCartCount();
     renderProducts();
   }
 
   /* TAMBAH BARANG */
-  function addToCart(id, price) {
+  function addToCart(id) {
     const product = products.find((item) => item.id == id);
     if (!product) return;
 
     if (!cart[id]) {
       cart[id] = { ...product, count: 0 };
     }
-    cart[id].price = price;   // pakai harga dari kartu di layar
+    
+    if (cart[id].count >= product.stock) {
+      showToast(`Stok ${product.name} habis.`);
+      return;
+    }
+
+    cart[id].price = product.price;   // Selalu gunakan harga resmi dari katalog
     cart[id].count++;
     renderCart();
   }
@@ -157,8 +209,19 @@ document.addEventListener("DOMContentLoaded", () => {
   /* UBAH JUMLAH */
   function updateQuantity(id, quantity) {
     if (!cart[id]) return;
+    const product = products.find((item) => item.id == id);
+    if (!product) return;
+
+    if (isNaN(quantity) || quantity === "") {
+      // Hiraukan nilai kosong agar tidak diset sebagai NaN
+      return;
+    }
+
     if (quantity <= 0) {
       delete cart[id];
+    } else if (quantity > product.stock) {
+      showToast(`Stok ${product.name} tidak mencukupi.`);
+      cart[id].count = product.stock;
     } else {
       cart[id].count = quantity;
     }
@@ -166,10 +229,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* KUPON */
-  function applyCoupon() {
-    const code = document.getElementById("coupon").value;
+  async function applyCoupon() {
+    const code = document.getElementById("coupon").value.trim().toUpperCase();
     const msg = document.getElementById("coupon-msg");
-    if (code === KUPON_RAHASIA) {
+    const inputHash = await sha256(code);
+    if (inputHash === KUPON_HASH) {
       diskon = 0.9;
       msg.textContent = "Kupon aktif! Potongan 90%.";
       msg.style.color = "#6e7b61";
@@ -228,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
       <div class="row"><span>Biaya penanganan</span><span>$${HANDLING_FEE.toFixed(2)}</span></div>
       ${diskon ? `<div class="row"><span>Kupon (-90%)</span><span>-$${potongan.toFixed(2)}</span></div>` : ""}
-      <div class="row grand"><span>Total</span><span>$${total}</span></div>
+      <div class="row grand"><span>Total</span><span>$${total.toFixed(2)}</span></div>
     `;
 
     reviewModal.classList.add("open");
@@ -254,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = event.target;
 
     if (target.classList.contains("plus-button")) {
-      addToCart(target.dataset.id, Number(target.dataset.price));
+      addToCart(target.dataset.id);
     }
     if (target.classList.contains("minus-button")) {
       removeFromCart(target.dataset.id);
@@ -280,11 +344,27 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("input", (event) => {
     const target = event.target;
     if (target.classList.contains("edit-quantity-input")) {
-      const quantity = parseInt(target.value, 10);
+      const val = target.value;
+      if (val === "") return; // Abaikan saat user sedang menghapus isi input
+      const quantity = parseInt(val, 10);
+      if (isNaN(quantity)) return;
       updateQuantity(target.dataset.id, quantity);
     }
     if (target.id === "note") {
       renderCart();
+    }
+  });
+
+  /* EVENT CHANGE (BLUR/ENTER) */
+  document.addEventListener("change", (event) => {
+    const target = event.target;
+    if (target.classList.contains("edit-quantity-input")) {
+      const quantity = parseInt(target.value, 10);
+      if (isNaN(quantity) || quantity <= 0) {
+        deleteItem(target.dataset.id);
+      } else {
+        updateQuantity(target.dataset.id, quantity);
+      }
     }
   });
 
