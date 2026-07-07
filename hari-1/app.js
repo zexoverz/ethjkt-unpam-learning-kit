@@ -9,7 +9,8 @@
 // ==========================================================
 
 // ---------- Konfigurasi rarity & pity ----------
-const PITY_MAX = 10; // tarikan ke-10 dijamin Legendary (SSR) kalau belum dapat
+const PITY_MIN = 7;  // setiap siklus pity diacak supaya tidak selalu sama
+const PITY_MAX = 12; // batas tertinggi jaminan Legendary (SSR)
 
 // Peluang tiap tier (dicek berurutan): SSR 3%, EPIC 10%, RARE 30%, sisanya COMMON.
 const RATE_SSR = 0.03;
@@ -29,6 +30,25 @@ const DEX_MAX = 1025; // batas National Dex yang punya official artwork
 const SSR_IDS = [144,145,146,150,151,243,244,245,249,250,251,377,378,379,380,381,382,383,384,385,386,480,481,482,483,484,485,486,487,488,491,492,493,494,638,639,640,641,642,643,644,645,646,647,648,649,716,717,718,719,720,721,785,786,787,788,791,792,800,801,802,807,809,888,889,890,891,892,893,894,895,896,897,898,905,1001,1002,1003,1004,1007,1008,1014,1015,1016,1017,1024];
 const EPIC_IDS = [3,6,9,149,248,257,282,373,376,445,448,462,530,635,700,706,784,887,998];
 const SPECIAL_IDS = new Set([...SSR_IDS, ...EPIC_IDS]);
+
+// Data cadangan lokal. Dipakai kalau PokeAPI sedang tidak bisa diakses,
+// sehingga tombol PULL tetap menampilkan hasil di kelas rarity yang benar.
+const FALLBACK_POKEMON = [
+  { id: 25, name: "Pikachu", types: ["electric"], stats: [35,55,40,50,50,90], tier: "common" },
+  { id: 1, name: "Bulbasaur", types: ["grass", "poison"], stats: [45,49,49,65,65,45], tier: "common" },
+  { id: 4, name: "Charmander", types: ["fire"], stats: [39,52,43,60,50,65], tier: "common" },
+  { id: 7, name: "Squirtle", types: ["water"], stats: [44,48,65,50,64,43], tier: "common" },
+  { id: 94, name: "Gengar", types: ["ghost", "poison"], stats: [60,65,60,130,75,110], tier: "rare" },
+  { id: 130, name: "Gyarados", types: ["water", "flying"], stats: [95,125,79,60,100,81], tier: "rare" },
+  { id: 143, name: "Snorlax", types: ["normal"], stats: [160,110,65,65,110,30], tier: "rare" },
+  { id: 149, name: "Dragonite", types: ["dragon", "flying"], stats: [91,134,95,100,100,80], tier: "epic" },
+  { id: 445, name: "Garchomp", types: ["dragon", "ground"], stats: [108,130,95,80,85,102], tier: "epic" },
+  { id: 6, name: "Charizard", types: ["fire", "flying"], stats: [78,84,78,109,85,100], tier: "epic" },
+  { id: 150, name: "Mewtwo", types: ["psychic"], stats: [106,110,90,154,90,130], tier: "ssr" },
+  { id: 384, name: "Rayquaza", types: ["dragon", "flying"], stats: [105,150,90,150,90,95], tier: "ssr" },
+  { id: 249, name: "Lugia", types: ["psychic", "flying"], stats: [106,90,130,90,154,110], tier: "ssr" },
+  { id: 382, name: "Kyogre", types: ["water"], stats: [100,100,90,150,140,90], tier: "ssr" },
+];
 
 // Warna resmi tiap tipe Pokémon (untuk badge tipe).
 const TYPE_COLORS = {
@@ -68,6 +88,10 @@ function acakAntara(min, max) {
 // Ambil satu elemen acak dari array.
 function pilihAcak(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function randomPityTarget() {
+  return acakAntara(PITY_MIN, PITY_MAX);
 }
 
 // Pilih ID Pokémon sesuai tier hasil roll.
@@ -117,8 +141,36 @@ async function getPokemon(id) {
   return mon;
 }
 
+function artworkUrl(id, shiny) {
+  const folder = shiny ? "shiny/" : "";
+  return "https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/other/official-artwork/" + folder + id + ".png";
+}
+
+function spriteUrl(id) {
+  return "https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/" + id + ".png";
+}
+
+function localPokemon(kelas) {
+  const pool = FALLBACK_POKEMON.filter(p => p.tier === kelas);
+  const p = pilihAcak(pool.length ? pool : FALLBACK_POKEMON);
+  return {
+    id: p.id,
+    name: p.name,
+    artwork: artworkUrl(p.id, false),
+    shinyArtwork: artworkUrl(p.id, true),
+    fallbackArt: spriteUrl(p.id),
+    types: p.types,
+    stats: Object.keys(STAT_LABELS).map((name, i) => ({ name, value: p.stats[i] })),
+    bst: p.stats.reduce((sum, value) => sum + value, 0),
+    isLegendary: kelas === "ssr",
+    isMythical: false,
+    offline: true,
+  };
+}
+
 // ---------- State permainan ----------
 let pity = 0;      // tarikan sejak Legendary terakhir
+let pityTarget = randomPityTarget(); // target pity siklus ini, diacak ulang setelah SSR
 let total = 0;     // total tarikan
 let ssrCount = 0;  // total Legendary/Mythical didapat
 
@@ -131,7 +183,7 @@ const STORAGE_KEY = "pokegacha_state_v1";
 
 function saveState() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ total, pity, ssrCount, collection }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ total, pity, pityTarget, ssrCount, collection }));
   } catch (e) {
     // localStorage bisa penuh atau diblokir — abaikan, game tetap jalan.
   }
@@ -144,6 +196,9 @@ function loadState() {
     const s = JSON.parse(raw);
     total = s.total || 0;
     pity = s.pity || 0;
+    pityTarget = s.pityTarget || randomPityTarget();
+    if (pityTarget < PITY_MIN || pityTarget > PITY_MAX) pityTarget = randomPityTarget();
+    if (pity >= pityTarget) pity = Math.max(0, pityTarget - 1);
     ssrCount = s.ssrCount || 0;
     collection = s.collection || {};
   } catch (e) {
@@ -206,7 +261,7 @@ const el = {
 function decideRarity() {
   const acak = Math.random();
   // "+1" karena tarikan ini belum masuk hitungan pity.
-  if (pity + 1 >= PITY_MAX || acak < RATE_SSR) return "ssr";
+  if (pity + 1 >= pityTarget || acak < RATE_SSR) return "ssr";
   if (acak < RATE_EPIC) return "epic";
   if (acak < RATE_RARE) return "rare";
   return "common";
@@ -216,15 +271,19 @@ function decideRarity() {
 function commitCounters(kelas) {
   total += 1;
   pity += 1;
-  if (kelas === "ssr") { pity = 0; ssrCount += 1; }
+  if (kelas === "ssr") {
+    pity = 0;
+    pityTarget = randomPityTarget();
+    ssrCount += 1;
+  }
 }
 
 // ---------- Update panel statistik & pity bar ----------
 function updateStats() {
   el.total.textContent = total;
   el.ssrCount.textContent = ssrCount;
-  el.pityText.textContent = pity + " / " + PITY_MAX;
-  el.pityFill.style.width = (pity / PITY_MAX) * 100 + "%";
+  el.pityText.textContent = pity + " / " + pityTarget;
+  el.pityFill.style.width = (pity / pityTarget) * 100 + "%";
 }
 
 // ---------- Status loading & error ----------
@@ -322,10 +381,16 @@ async function pull() {
   const kelas = decideRarity();
   const id = pickId(kelas);
   try {
-    const mon = await getPokemon(id);
+    let mon;
+    try {
+      mon = await getPokemon(id);
+    } catch (apiError) {
+      mon = localPokemon(kelas);
+      showError("Mode cadangan: PokeAPI tidak tersedia, hasil tetap diacak lokal.");
+    }
     const shiny = Math.random() < SHINY_RATE && !!mon.shinyArtwork;
     const result = { ...mon, kelas, shiny };
-    commitCounters(kelas); // hanya dihitung kalau fetch sukses
+    commitCounters(kelas); // hanya dihitung setelah ada hasil yang siap ditampilkan
     recordCatch(result);   // masukkan ke koleksi Pokédex
     updateStats();
     render(result);
