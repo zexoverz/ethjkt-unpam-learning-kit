@@ -15,3 +15,11 @@
 - Rarity gacha diambil dari `card_sets.set_rarity`: collector/ghost/ultimate/prismatic/quarter century menjadi SSR, secret/ultra/platinum/gold menjadi Epic, super/rare menjadi Rare, sisanya Common.
 - Logika pity tetap sama: SSR dipaksa pada pity ke-10 atau peluang acak SSR 3%, lalu pity reset ke 0.
 - Tampilan kartu sekarang memakai gambar kartu, nama, rarity, tipe, race, attribute, deskripsi singkat, statistik, dan riwayat gambar kartu.
+
+## 2026-07-07
+
+- Merapikan desain agar terasa seperti dashboard koleksi kartu: warna lebih tenang, border lebih sederhana, panel jelas, dan efek visual dikurangi.
+- Menambahkan koleksi kartu unik memakai `Set` berdasarkan ID kartu dari API.
+- Menambahkan badge koleksi: First Pull, Binder Start, Deck Builder, Shiny Hunter, Monster Slot, Spell Slot, dan Trap Slot.
+- Badge otomatis berubah dari locked ke unlocked setelah syarat koleksi terpenuhi.
+- Statistik baru `Koleksi Unik` ikut diperbarui setiap roll.
