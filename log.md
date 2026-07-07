@@ -31,3 +31,10 @@
 - Menambah badge rarity untuk 3 SSR, 10 SSR, 5 Epic unik, dan 10 Rare unik.
 - Menambah badge variasi koleksi untuk Monster/Spell/Trap lengkap, race Dragon/Spellcaster/Warrior/Machine, atribut LIGHT/DARK, dan 4 atribut berbeda.
 - Menambahkan helper sederhana untuk menghitung rarity, race, attribute, dan jumlah attribute unik di koleksi.
+
+## 2026-07-07
+
+- Mengubah layout agar kartu hasil gacha menjadi fokus utama dengan ukuran kartu lebih besar dan panel samping lebih ringkas.
+- Badge koleksi dipindahkan ke drawer tersembunyi yang dibuka lewat tombol `BADGES x / 27`.
+- Tombol badge selalu menampilkan jumlah badge yang sudah terbuka dibanding total badge.
+- Visual dibuat lebih sederhana dengan warna netral, border biasa, dan efek dekoratif yang lebih sedikit.

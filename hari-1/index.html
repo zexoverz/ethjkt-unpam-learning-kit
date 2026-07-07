@@ -8,35 +8,35 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: "Segoe UI", system-ui, sans-serif;
-    background: #111318;
+    background: #151515;
     color: #f3efe4; min-height: 100vh;
     display: flex; align-items: center; justify-content: center; padding: 18px;
   }
   .app {
-    width: 100%; max-width: 960px;
-    background: #1a1d24;
-    border: 1px solid #343944;
-    border-radius: 10px; padding: 22px;
-    box-shadow: 0 20px 56px rgba(0,0,0,0.42);
+    width: 100%; max-width: 980px;
+    background: #202020;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px; padding: 22px;
+    box-shadow: 0 18px 42px rgba(0,0,0,0.38);
   }
   .top { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
   h1 {
     font-size: 28px; letter-spacing: 0; margin-bottom: 4px;
     color: #f3efe4;
   }
-  .subtitle, .status { font-size: 12px; color: #a8adbf; }
+  .subtitle, .status { font-size: 12px; color: #aaa; }
   .status { text-align: right; max-width: 260px; }
 
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
   .stat {
-    background: #20242d; border: 1px solid #383e4c;
-    border-radius: 8px; padding: 10px 8px; text-align: center;
+    background: #262626; border: 1px solid #3b3b3b;
+    border-radius: 6px; padding: 10px 8px; text-align: center;
   }
   .stat .num { font-size: 22px; font-weight: 800; }
-  .stat .lbl { font-size: 11px; color: #a8adbf; text-transform: uppercase; letter-spacing: 1px; }
+  .stat .lbl { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
 
   .pity { margin-bottom: 18px; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #d1d5e4; margin-bottom: 6px; }
+  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #d7d0bf; margin-bottom: 6px; }
   .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
   .pity-fill {
     height: 100%; width: 0%;
@@ -44,26 +44,26 @@
     transition: width 0.35s ease;
   }
 
-  .board { display: grid; grid-template-columns: 280px 1fr; gap: 22px; align-items: start; }
+  .board { display: grid; grid-template-columns: minmax(300px, 360px) 1fr; gap: 22px; align-items: start; }
   .stage { display: flex; justify-content: center; }
   .card {
-    width: 240px; min-height: 410px; border-radius: 12px;
-    background: #151821; border: 2px solid #4a5160;
+    width: min(100%, 320px); min-height: 520px; border-radius: 8px;
+    background: #171717; border: 2px solid #555;
     display: flex; flex-direction: column; align-items: stretch;
     overflow: hidden; position: relative;
   }
   .card-art {
     width: 100%; aspect-ratio: 421 / 614; object-fit: cover;
-    background: #222733;
+    background: #252525;
   }
-  .card-info { padding: 12px; display: grid; gap: 7px; }
-  .card .name { font-size: 17px; font-weight: 800; line-height: 1.2; min-height: 42px; }
+  .card-info { padding: 14px; display: grid; gap: 8px; }
+  .card .name { font-size: 20px; font-weight: 800; line-height: 1.2; min-height: 48px; }
   .card .rar { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
   .owned-note { color: #d6a94c; font-size: 11px; font-weight: 800; min-height: 14px; text-transform: uppercase; }
   .meta { display: flex; flex-wrap: wrap; gap: 6px; }
   .tag {
-    font-size: 11px; color: #dbe2f4; background: #252b36;
-    border: 1px solid #38404f; border-radius: 999px; padding: 4px 7px;
+    font-size: 11px; color: #e6e1d5; background: #292929;
+    border: 1px solid #454545; border-radius: 999px; padding: 4px 7px;
   }
   .desc {
     color: #c0c6d6; font-size: 12px; line-height: 1.35;
@@ -97,30 +97,34 @@
   .btn:active { transform: scale(.96); }
   .btn:disabled { cursor: not-allowed; opacity: .45; }
   .btn.gold { background: #d6a94c; }
+  .btn.secondary { background: #333; color: #f3efe4; border: 1px solid #4a4a4a; }
+  .tools { display: grid; grid-template-columns: 1fr; gap: 10px; }
 
   .panel {
-    background: #20242d; border: 1px solid #383e4c;
-    border-radius: 8px; padding: 12px;
+    background: #262626; border: 1px solid #3b3b3b;
+    border-radius: 6px; padding: 12px;
   }
   .panel-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-  .hist-lbl { font-size: 11px; color: #a8adbf; text-transform: uppercase; letter-spacing: 1px; }
+  .hist-lbl { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
   .history { display: grid; grid-template-columns: repeat(6, 52px); gap: 8px; min-height: 76px; }
   .chip {
     width: 52px; height: 76px; border-radius: 6px; overflow: hidden;
-    background: #151926; border: 2px solid #444b5f;
+    background: #171717; border: 2px solid #4a4a4a;
   }
   .chip img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .chip.rare { border-color: #5ab2ff; }
   .chip.epic { border-color: #b077ff; }
   .chip.ssr { border-color: #ffd44d; box-shadow: 0 0 12px rgba(255,212,77,.65); }
+  .badge-drawer { display: none; }
+  .badge-drawer.open { display: block; }
   .badges { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .badge {
-    min-height: 58px; border: 1px solid #3a414e; border-radius: 8px;
-    padding: 9px; background: #181c24;
+    min-height: 58px; border: 1px solid #444; border-radius: 6px;
+    padding: 9px; background: #202020;
   }
-  .badge.unlocked { border-color: #d6a94c; background: #272315; }
+  .badge.unlocked { border-color: #d6a94c; background: #2a2619; }
   .badge-name { font-size: 13px; font-weight: 800; margin-bottom: 3px; }
-  .badge-rule { font-size: 11px; color: #a8adbf; line-height: 1.35; }
+  .badge-rule { font-size: 11px; color: #aaa; line-height: 1.35; }
   .badge.unlocked .badge-rule { color: #dfc777; }
 
   @media (max-width: 720px) {
@@ -174,12 +178,8 @@
           <button class="btn gold" id="tarik10" disabled>TARIK 10x</button>
         </div>
 
-        <div class="panel">
-          <div class="panel-head">
-            <div class="hist-lbl">Badge Koleksi</div>
-            <div class="hist-lbl" id="badgeCount">0 / 0</div>
-          </div>
-          <div class="badges" id="badgeList"></div>
+        <div class="tools">
+          <button class="btn secondary" id="badgeToggle" type="button">BADGES 0 / 0</button>
         </div>
 
         <div class="panel">
@@ -187,6 +187,14 @@
             <div class="hist-lbl">Riwayat Terakhir</div>
           </div>
           <div class="history" id="history"></div>
+        </div>
+
+        <div class="panel badge-drawer" id="badgePanel">
+          <div class="panel-head">
+            <div class="hist-lbl">Badge Koleksi</div>
+            <div class="hist-lbl" id="badgeCount">0 / 0</div>
+          </div>
+          <div class="badges" id="badgeList"></div>
         </div>
       </div>
     </div>
@@ -249,6 +257,8 @@
   const history = document.getElementById("history");
   const badgeList = document.getElementById("badgeList");
   const badgeCount = document.getElementById("badgeCount");
+  const badgeToggle = document.getElementById("badgeToggle");
+  const badgePanel = document.getElementById("badgePanel");
   const statusText = document.getElementById("status");
   const tarik1 = document.getElementById("tarik1");
   const tarik10 = document.getElementById("tarik10");
@@ -415,6 +425,7 @@
       badgeList.appendChild(item);
     });
     badgeCount.textContent = unlockedBadges.size + " / " + badges.length;
+    badgeToggle.textContent = "BADGES " + unlockedBadges.size + " / " + badges.length;
     collectionCountText.textContent = collectionCards.length;
   }
 
@@ -478,6 +489,11 @@
       tampilkan(hasil);
       tambahRiwayat(hasil);
     }
+  });
+
+  // Badge disimpan di drawer agar fokus utama tetap ke kartu hasil roll.
+  badgeToggle.addEventListener("click", function () {
+    badgePanel.classList.toggle("open");
   });
 
   muatKartu();
