@@ -1,99 +1,167 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poké Gacha ETHJKT</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PokeGacha & Safari Park Adventure</title>
+  <meta name="description" content="Tangkap Pokémon impianmu, tonton mereka berkeliaran di Safari Park, dan pamerkan Pokedex-mu di game retro-modern premium ini.">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="pokedex">
-    <!-- Bagian atas ala perangkat Pokédex: lensa biru + 3 lampu indikator -->
-    <div class="pokedex-top">
-      <div class="lens"></div>
-      <div class="lights">
-        <span class="light red"></span>
-        <span class="light yellow"></span>
-        <span class="light green"></span>
-      </div>
-      <div class="brand">POKÉDEX</div>
+
+  <!-- Game Header -->
+  <header>
+    <div class="logo-container">
+      <h1 id="app-title">POKÉGACHA</h1>
+      <span id="app-subtitle">Safari Park Adventure</span>
     </div>
-
-    <!-- Layar putih tempat semua konten tampil -->
-    <div class="screen">
-      <h1>POKÉ GACHA</h1>
-      <div class="subtitle">tarik Pokémon asli — data langsung dari PokeAPI</div>
-
-      <!-- Navigasi tab -->
-      <div class="tabs">
-        <button class="tab active" data-tab="gacha">Gacha</button>
-        <button class="tab" data-tab="koleksi">Koleksi</button>
-        <button class="tab" data-tab="badge">Badge</button>
+    
+    <div class="stats-bar">
+      <!-- Coins Stat Chip -->
+      <div class="stat-chip coin" id="coin-container" title="Koin Anda">
+        <!-- SVG gold coin -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--primary-yellow)">
+          <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2"/>
+          <circle cx="12" cy="12" r="6" stroke="#000" stroke-width="1.5" stroke-dasharray="2 1"/>
+          <text x="12" y="16" font-family="'Outfit', sans-serif" font-weight="900" font-size="12" text-anchor="middle" fill="#000">P</text>
+        </svg>
+        <span id="coin-count">500</span>
+        <button id="claim-coins-btn" title="Klaim Koin Harian / Gratis">+100</button>
       </div>
 
-      <!-- ============ TAB: GACHA ============ -->
-      <div class="tab-panel" id="panel-gacha">
-        <div class="stats">
-          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
-        </div>
+      <!-- Tickets Stat Chip -->
+      <div class="stat-chip ticket" id="ticket-container" title="Gacha Tiket">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#ff7675">
+          <rect x="3" y="6" width="18" height="12" rx="2" stroke="#000" stroke-width="2"/>
+          <circle cx="6" cy="12" r="2" fill="#000"/>
+          <line x1="10" y1="9" x2="10" y2="15" stroke="#000" stroke-width="2" stroke-dasharray="2 2"/>
+        </svg>
+        <span id="ticket-count">5</span>
+      </div>
 
-        <div class="pity">
-          <div class="pity-top"><span>Pity ke Legendary gratis</span><span id="pityText">0 / 10</span></div>
-          <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-        </div>
+      <!-- Sound Toggle -->
+      <button class="sound-toggle" id="sound-btn" aria-label="Aktifkan/Nonaktifkan Suara" title="Aktifkan/Nonaktifkan Suara">
+        <svg id="sound-icon-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+        <svg id="sound-icon-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/>
+          <line x1="23" y1="9" x2="17" y2="15" stroke="currentColor" stroke-width="2"/>
+          <line x1="17" y1="9" x2="23" y2="15" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </button>
+    </div>
+  </header>
 
-        <div class="stage">
-          <div class="card" id="card">
-            <div class="spinner" id="spinner"></div>
-            <img class="sprite" id="sprite" alt="">
-            <div class="shiny-badge" id="shinyBadge">✨ SHINY</div>
-            <div class="placeholder" id="placeholder">
-              <div class="pokeball"></div>
-              <div class="ph-text">Tekan PULL</div>
-            </div>
+  <!-- Main Grid Layout -->
+  <main>
+    
+    <!-- Safari Park Roaming Playground -->
+    <section class="safari-section" aria-labelledby="safari-heading">
+      <!-- Retro Hills & Mountains Scenery -->
+      <div class="safari-mountain-back"></div>
+      <div class="safari-mountain-front"></div>
+      <div class="safari-meadow-floor"></div>
+      <div class="safari-bg-grid"></div>
+      <div class="safari-header" id="safari-heading">SAFARI PARK - PLAYGROUND</div>
+      <div class="safari-playground" id="safari-playground">
+        <!-- Roaming Pokemon will be injected here via JavaScript -->
+      </div>
+    </section>
+
+    <!-- Gacha Machine Panel -->
+    <section class="gacha-panel" aria-labelledby="gacha-heading">
+      <h2 id="gacha-heading" style="display:none">Gacha Controls</h2>
+      <div class="machine-display">
+        <div class="machine-sprite">
+          <div class="machine-sprite-center"></div>
+        </div>
+        <div class="machine-text" id="machine-status">READY FOR SPINS!<br>Temukan Pokémon Legendaris!</div>
+      </div>
+
+      <div class="gacha-actions">
+        <!-- Roll 1 Gacha Button -->
+        <button class="gacha-btn single" id="roll-1-btn">
+          <span>Roll 1x</span>
+          <div class="btn-price">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--primary-yellow)">
+              <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2"/>
+            </svg>
+            <span>100</span>
           </div>
+        </button>
+
+        <!-- Roll 10 Gacha Button -->
+        <button class="gacha-btn multi" id="roll-10-btn">
+          <span>Roll 10x</span>
+          <div class="btn-price">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--primary-yellow)">
+              <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2"/>
+            </svg>
+            <span>900</span>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- Pokedex / Collection Area -->
+    <section class="collection-section" aria-labelledby="collection-heading">
+      <div class="collection-header">
+        <h2 id="collection-heading">POKÉDEX KOLEKSI (<span id="caught-total">0</span>/1025)</h2>
+        
+        <div class="collection-filters">
+          <button class="filter-btn active" data-filter="all">Semua</button>
+          <button class="filter-btn" data-filter="common">Common</button>
+          <button class="filter-btn" data-filter="rare">Rare</button>
+          <button class="filter-btn" data-filter="epic">Epic</button>
+          <button class="filter-btn" data-filter="shiny">Shiny</button>
         </div>
-
-        <div class="poke-info">
-          <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
-          <div class="types" id="types"></div>
-          <div class="rar" id="rarity"></div>
-          <div class="stats-panel" id="statsPanel"></div>
-        </div>
-
-        <div class="err" id="err"></div>
-
-        <div class="buttons">
-          <button class="btn" id="tarik1">PULL 1x</button>
-          <button class="btn gold" id="tarik10">PULL 10x</button>
-        </div>
-
-        <div class="hist-lbl">Riwayat Terakhir</div>
-        <div class="history" id="history"></div>
       </div>
 
-      <!-- ============ TAB: KOLEKSI ============ -->
-      <div class="tab-panel" id="panel-koleksi" hidden>
-        <div class="stats">
-          <div class="stat"><div class="num" id="uniqueCount">0</div><div class="lbl">Jenis Terkumpul</div></div>
-          <div class="stat"><div class="num" id="shinyCount">0</div><div class="lbl">Shiny</div></div>
+      <!-- Pokémon Cards Grid -->
+      <div class="pokemon-grid" id="pokemon-grid">
+        <!-- Caught pokemon will appear here -->
+        <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;" id="empty-state">
+          Belum ada Pokémon yang tertangkap. Yuk gacha sekarang!
         </div>
-        <div class="collection-empty" id="collectionEmpty">Belum ada Pokémon. Tarik dulu di tab Gacha! 🎣</div>
-        <div class="collection-grid" id="collectionGrid"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Gacha Animation/Reveal Dialog Modal -->
+  <dialog id="gacha-dialog" aria-modal="true" aria-labelledby="gacha-dialog-title">
+    <div class="gacha-modal-content">
+      <h2 id="gacha-dialog-title" class="machine-text" style="margin: 0 0 15px 0; font-size: 1rem;">MENARIK GACHA...</h2>
+      
+      <!-- Ball Shake and Burst Display -->
+      <div class="gacha-animation-box" id="gacha-animation-box">
+        <div class="gacha-pokeball shake" id="animation-ball"></div>
       </div>
 
-      <!-- ============ TAB: BADGE ============ -->
-      <div class="tab-panel" id="panel-badge" hidden>
-        <p class="badge-intro">Kumpulkan Pokémon tiap tipe untuk menguasai gym Kanto dan meraih 8 badge-nya!</p>
-        <div class="champion" id="champion" hidden>👑 CHAMPION! Kamu menguasai semua 8 gym Kanto!</div>
-        <div class="badge-grid" id="badgeGrid"></div>
+      <!-- Reveal Pokemon Area -->
+      <div class="reveal-container" id="reveal-container" style="display: none;">
+        <div class="reveal-grid" id="reveal-grid">
+          <!-- Pulled Pokemon cards will be dynamically injected here -->
+        </div>
+        <button class="modal-close-btn" id="gacha-close-btn">SELESAI</button>
       </div>
     </div>
-  </div>
+  </dialog>
 
-  <!-- Notifikasi kecil saat dapat badge baru -->
-  <div class="toast" id="toast" hidden></div>
+  <!-- Pokemon Detail Modal -->
+  <dialog id="detail-dialog" aria-modal="true" aria-labelledby="detail-dialog-title">
+    <div class="detail-modal-content">
+      <div class="detail-header">
+        <h3 id="detail-dialog-title">Detail Pokémon</h3>
+        <button class="detail-close" id="detail-close-btn" aria-label="Tutup Detail">&times;</button>
+      </div>
+      <div class="detail-body" id="detail-body">
+        <!-- Pokémon details generated by JS -->
+      </div>
+    </div>
+  </dialog>
 
   <script src="app.js"></script>
 </body>
