@@ -1,294 +1,628 @@
-// ============================================================
-//  PASAR PAGI — mesin keranjang belanja
-//  "Ditulis AI." Katanya udah rapi, aman, siap jualan.
-//
-//  Kodenya JALAN & keliatan meyakinkan. Tapi jangan ketipu:
-//  diselipin BUG, CELAH KEAMANAN, dan POLA GELAP (dark pattern).
-//  Tugas kamu (TIM KEAMANAN): jalanin, belanja, lalu BEDAH pelan.
-//  Kamu gerbang terakhir sebelum ini "dijual" ke orang beneran.
-// ============================================================
+﻿const API_BASE = "https://db.ygoprodeck.com/api/v7/";
+const CARD_CACHE_KEY = "millenniumPack.cardCache.v1";
+const COLLECTION_KEY = "millenniumPack.collection.v1";
+const STATS_KEY = "millenniumPack.stats.v1";
+const CACHE_TTL = 1000 * 60 * 60 * 12;
+const PACK_SIZE = 5;
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Katalog resmi toko. Harga "asli" tercatat di sini.
-  const products = [
-    { id: 1,  name: "Apel Fuji",       price: 1.5, produceId: "#4131", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg" },
-    { id: 2,  name: "Jeruk Navel",     price: 2.0, produceId: "#4012", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg" },
-    { id: 3,  name: "Pisang",          price: 1.2, produceId: "#4011", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg" },
-    { id: 4,  name: "Anggur",          price: 3.5, produceId: "#4022", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg" },
-    { id: 5,  name: "Stroberi",        price: 4.5, produceId: "#4252", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg" },
-    { id: 6,  name: "Blueberry",       price: 5.0, produceId: "#4264", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg" },
-    { id: 7,  name: "Nanas",           price: 3.0, produceId: "#4430", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg" },
-    { id: 8,  name: "Mangga",          price: 2.8, produceId: "#4951", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg" },
-    { id: 9,  name: "Kiwi",            price: 1.9, produceId: "#4301", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg" },
-    { id: 10, name: "Semangka (Potong)", price: 3.2, produceId: "#4032", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg" }
-  ];
+/** @typedef {{id:number,name:string,type:string,frameType:string,desc:string,atk?:number,def?:number,level?:number,race?:string,attribute?:string,archetype?:string,scale?:number,linkval?:number,linkmarkers?:string[],tcg_date?:string,md_rarity?:string,card_sets?:CardSet[],card_images?:CardImage[],card_prices?:CardPrice[]}} YgoCard */
+/** @typedef {{set_name:string,set_code:string,set_rarity:string,set_rarity_code?:string,set_price?:string}} CardSet */
+/** @typedef {{id:number,image_url:string,image_url_small:string,image_url_cropped:string}} CardImage */
+/** @typedef {{tcgplayer_price?:string,cardmarket_price?:string,ebay_price?:string,amazon_price?:string,coolstuffinc_price?:string}} CardPrice */
+/** @typedef {{card:YgoCard,rarity:string,set:CardSet|null,pulledAt:number,favorite?:boolean,count:number,lastPulledAt:number}} CollectionEntry */
 
-  let cart = {};
+const rarityWeights = [
+  { name: "Common", weight: 65, rank: 1 },
+  { name: "Rare", weight: 20, rank: 2 },
+  { name: "Super Rare", weight: 12, rank: 3 },
+  { name: "Ultra Rare", weight: 5, rank: 4 },
+  { name: "Secret Rare", weight: 0.95, rank: 5 }
+];
 
-  // Biaya penanganan kecil biar operasional toko tetap jalan.
-  const HANDLING_FEE = 0.30;
+const state = {
+  cards: /** @type {YgoCard[]} */ ([]),
+  sets: [],
+  archetypes: [],
+  rarityBuckets: new Map(),
+  collection: /** @type {Record<string, CollectionEntry>} */ ({}),
+  stats: {
+    packsOpened: 0,
+    totalCards: 0,
+    highestRarity: "None",
+    history: [],
+    rarityDistribution: {}
+  },
+  currentPulls: [],
+  loading: false
+};
 
-  // Kupon internal buat teman-teman petani. Jangan disebar ya.
-  const KUPON_RAHASIA = "TEMANFARMER";
-  let diskon = 0; // 0 = tanpa diskon, 0.9 = potong 90%
+const el = {
+  views: document.querySelectorAll(".view"),
+  navLinks: document.querySelectorAll(".nav-link"),
+  homeStats: document.getElementById("home-stats"),
+  featuredCards: document.getElementById("featured-cards"),
+  openPack: document.getElementById("open-pack"),
+  preloadCards: document.getElementById("preload-cards"),
+  apiStatus: document.getElementById("api-status"),
+  rateTable: document.getElementById("rate-table"),
+  stagePack: document.getElementById("stage-pack"),
+  stageLight: document.getElementById("stage-light"),
+  flash: document.getElementById("flash"),
+  pullResults: document.getElementById("pull-results"),
+  collectionGrid: document.getElementById("collection-grid"),
+  collectionSearch: document.getElementById("collection-search"),
+  rarityFilter: document.getElementById("rarity-filter"),
+  typeFilter: document.getElementById("type-filter"),
+  sortSelect: document.getElementById("sort-select"),
+  resetCollection: document.getElementById("reset-collection"),
+  progressText: document.getElementById("collection-progress-text"),
+  progressBar: document.getElementById("collection-progress-bar"),
+  statsGrid: document.getElementById("stats-grid"),
+  historyList: document.getElementById("history-list"),
+  dialog: document.getElementById("card-dialog"),
+  dialogContent: document.getElementById("dialog-content"),
+  dialogClose: document.getElementById("dialog-close"),
+  toast: document.getElementById("toast"),
+  soundToggle: document.getElementById("sound-toggle"),
+  confetti: document.getElementById("confetti")
+};
 
-  const productSection = document.getElementById("product-section");
-  const cartDetailsEl = document.getElementById("cart-details");
-  const totalPriceEl = document.getElementById("modal-total-price");
-  const cartCountEl = document.getElementById("cart-count");
-  const reviewModal = document.getElementById("review-modal");
+document.addEventListener("DOMContentLoaded", init);
 
-  /* RENDER PRODUK */
-  function renderProducts() {
-    productSection.innerHTML = "";
+async function init() {
+  bindEvents();
+  loadLocalState();
+  renderRateTable();
+  renderAll();
+  await loadApiData();
+}
 
-    products.forEach((product) => {
-      const quantity = cart[product.id] ? cart[product.id].count : 0;
-      const sisa = Math.floor(Math.random() * 5) + 1; // sisa stok hari ini
+function bindEvents() {
+  el.navLinks.forEach((button) => button.addEventListener("click", () => showView(button.dataset.view)));
+  document.querySelectorAll("[data-view-jump]").forEach((button) => button.addEventListener("click", () => showView(button.dataset.viewJump)));
+  document.getElementById("start-gacha").addEventListener("click", () => showView("gacha"));
+  el.openPack.addEventListener("click", openPack);
+  el.preloadCards.addEventListener("click", () => loadApiData(true));
+  [el.collectionSearch, el.rarityFilter, el.typeFilter, el.sortSelect].forEach((input) => input.addEventListener("input", renderCollection));
+  el.resetCollection.addEventListener("click", resetCollection);
+  el.dialogClose.addEventListener("click", () => el.dialog.close());
+  el.dialog.addEventListener("click", (event) => {
+    if (event.target === el.dialog) el.dialog.close();
+  });
+}
 
-      const productCard = document.createElement("article");
-      productCard.classList.add("product");
-      productCard.innerHTML = `
-        <p class="produce-id">${product.produceId}</p>
-        <img src="${product.image}" alt="${product.name}" class="product-image">
-        <div class="item-meta">
-          <h2>${product.name}</h2>
-          <p class="price">$${product.price.toFixed(2)}</p>
-        </div>
-        <p class="stock">tinggal ${sisa} lagi hari ini!</p>
-        <div class="quantity-controls">
-          <button class="quantity-button minus-button" data-id="${product.id}">−</button>
-          <span class="quantity-display" id="quantity-${product.id}">${quantity}</span>
-          <button class="quantity-button plus-button" data-id="${product.id}" data-price="${product.price}">+</button>
-        </div>
-      `;
-      productSection.appendChild(productCard);
-    });
-  }
+function showView(viewId) {
+  el.views.forEach((view) => view.classList.toggle("active-view", view.id === viewId));
+  el.navLinks.forEach((button) => button.classList.toggle("active", button.dataset.view === viewId));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
-  /* HITUNG JUMLAH BARANG DI KERANJANG */
-  function updateCartCount() {
-    const totalCount = Object.values(cart).reduce((sum, item) => sum + item.count, 0);
-    cartCountEl.textContent = totalCount;
-  }
+async function loadApiData(force = false) {
+  if (state.loading) return;
+  state.loading = true;
+  setLoading(true);
 
-  /* RENDER KERANJANG */
-  function renderCart() {
-    cartDetailsEl.innerHTML = "";
-    let totalPrice = 0;
-
-    if (Object.keys(cart).length === 0) {
-      cartDetailsEl.innerHTML = `<p class="empty-cart">Keranjang kamu masih kosong.</p>`;
-      totalPriceEl.textContent = "0.00";
-      updateCartCount();
-      renderProducts();
+  try {
+    const cached = readCache();
+    if (!force && cached) {
+      applyApiData(cached);
+      setStatus(`Loaded ${state.cards.length.toLocaleString()} cards from browser cache.`);
       return;
     }
 
-    Object.values(cart).forEach((item) => {
-      const itemTotal = item.count * item.price;
-      totalPrice += itemTotal;
+    setStatus("Fetching YGOPRODeck cardinfo, card sets, and archetypes...");
+    const [cardsResponse, setsResponse, archetypesResponse] = await Promise.all([
+      fetch(`${API_BASE}cardinfo.php?format=tcg&misc=yes`),
+      fetch(`${API_BASE}cardsets.php`),
+      fetch(`${API_BASE}archetypes.php`)
+    ]);
 
-      const listItem = document.createElement("div");
-      listItem.classList.add("cart-item");
-      listItem.innerHTML = `
-        <div class="cart-item-top">
-          <div>
-            <div class="cart-item-name">${item.name}</div>
-            <div class="cart-item-price">$${item.price.toFixed(2)} / buah</div>
-          </div>
-          <strong>$${itemTotal.toFixed(2)}</strong>
-        </div>
-        <div class="cart-item-controls">
-          <input type="number" min="1" class="edit-quantity-input" value="${item.count}" data-id="${item.id}">
-          <i class="fas fa-trash delete-icon" data-id="${item.id}"></i>
-        </div>
-      `;
-      cartDetailsEl.appendChild(listItem);
+    if (!cardsResponse.ok) throw new Error(`cardinfo.php returned ${cardsResponse.status}`);
+    const cardsPayload = await cardsResponse.json();
+    const setsPayload = setsResponse.ok ? await setsResponse.json() : [];
+    const archetypesPayload = archetypesResponse.ok ? await archetypesResponse.json() : [];
+    const payload = { cards: cardsPayload.data || [], sets: setsPayload || [], archetypes: archetypesPayload || [], savedAt: Date.now() };
+    localStorage.setItem(CARD_CACHE_KEY, JSON.stringify(payload));
+    applyApiData(payload);
+    setStatus(`Loaded ${state.cards.length.toLocaleString()} live TCG cards and ${state.sets.length.toLocaleString()} sets.`);
+  } catch (error) {
+    console.error(error);
+    const cached = readCache(true);
+    if (cached) {
+      applyApiData(cached);
+      setStatus("API request failed. Using the last saved local cache.");
+      showToast("API unavailable, using cached archive.");
+    } else {
+      setStatus("Could not load YGOPRODeck data. Check network access and retry.");
+      showToast("Could not load YGOPRODeck data.");
+    }
+  } finally {
+    state.loading = false;
+    setLoading(false);
+    renderAll();
+  }
+}
+
+function readCache(ignoreTtl = false) {
+  try {
+    const raw = localStorage.getItem(CARD_CACHE_KEY);
+    if (!raw) return null;
+    const cached = JSON.parse(raw);
+    if (!ignoreTtl && Date.now() - cached.savedAt > CACHE_TTL) return null;
+    return cached;
+  } catch {
+    return null;
+  }
+}
+
+function applyApiData(payload) {
+  state.cards = (payload.cards || []).filter((card) => card.card_images?.length && !["Skill Card", "Token"].includes(card.type));
+  state.sets = payload.sets || [];
+  state.archetypes = payload.archetypes || [];
+  buildRarityBuckets();
+}
+
+function buildRarityBuckets() {
+  state.rarityBuckets = new Map(rarityWeights.map((rarity) => [rarity.name, []]));
+
+  state.cards.forEach((card) => {
+    const cardSets = Array.isArray(card.card_sets) ? card.card_sets : [];
+    const matched = new Set();
+
+    cardSets.forEach((set) => {
+      const rarity = classifyRarity(set.set_rarity, card);
+      if (!state.rarityBuckets.has(rarity)) state.rarityBuckets.set(rarity, []);
+      state.rarityBuckets.get(rarity).push({ card, set, rarity });
+      matched.add(rarity);
     });
 
-    // Preview catatan buat petani (biar user lihat tulisannya).
-    const note = document.getElementById("note").value;
-    if (note) {
-      const preview = document.createElement("div");
-      preview.className = "note-preview";
-      preview.innerHTML = "Catatan: " + note; // innerHTML biar tulisannya rapi
-      cartDetailsEl.appendChild(preview);
+    if (!cardSets.length) {
+      const rarity = classifyRarity("", card);
+      state.rarityBuckets.get(rarity).push({ card, set: null, rarity });
     }
+  });
+}
 
-    // Total akhir = barang + biaya penanganan, lalu potong diskon.
-    let total = totalPrice + HANDLING_FEE;
-    total = total - total * diskon;
+function classifyRarity(rawRarity = "", card = {}) {
+  const rarity = rawRarity.toLowerCase();
+  const md = String(card.md_rarity || "").toUpperCase();
 
-    totalPriceEl.textContent = total;
-    updateCartCount();
-    renderProducts();
+  if (rarity.includes("secret") || rarity.includes("starlight") || rarity.includes("ghost") || rarity.includes("collector")) return "Secret Rare";
+  if (rarity.includes("ultra") || md === "UR") return "Ultra Rare";
+  if (rarity.includes("super") || md === "SR") return "Super Rare";
+  if (rarity.includes("rare") || md === "R") return "Rare";
+  return "Common";
+}
+
+function rollRarity(slotIndex) {
+  const table = slotIndex === PACK_SIZE - 1
+    ? [
+        { name: "Common", weight: 25 },
+        { name: "Rare", weight: 34 },
+        { name: "Super Rare", weight: 24 },
+        { name: "Ultra Rare", weight: 12 },
+        { name: "Secret Rare", weight: 2.5 }
+      ]
+    : rarityWeights;
+  const total = table.reduce((sum, item) => sum + item.weight, 0);
+  let cursor = Math.random() * total;
+  for (const item of table) {
+    cursor -= item.weight;
+    if (cursor <= 0) return item.name;
+  }
+  return "Common";
+}
+
+function choosePull(rarity) {
+  const preferred = state.rarityBuckets.get(rarity) || [];
+  const pool = preferred.length ? preferred : state.cards.map((card) => ({ card, set: card.card_sets?.[0] || null, rarity: classifyRarity(card.card_sets?.[0]?.set_rarity, card) }));
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+async function openPack() {
+  if (!state.cards.length) {
+    showToast("Load card data first.");
+    await loadApiData();
+    if (!state.cards.length) return;
   }
 
-  /* TAMBAH BARANG */
-  function addToCart(id, price) {
-    const product = products.find((item) => item.id == id);
-    if (!product) return;
+  el.openPack.disabled = true;
+  el.pullResults.innerHTML = "";
+  state.currentPulls = [];
+  playTone(180, 0.08);
+  el.stagePack.classList.remove("torn");
+  el.stagePack.classList.add("opening");
+  await wait(900);
+  el.stagePack.classList.remove("opening");
+  el.stagePack.classList.add("torn");
+  el.flash.classList.add("show");
+  setTimeout(() => el.flash.classList.remove("show"), 900);
 
-    if (!cart[id]) {
-      cart[id] = { ...product, count: 0 };
-    }
-    cart[id].price = price;   // pakai harga dari kartu di layar
-    cart[id].count++;
-    renderCart();
+  const pulls = Array.from({ length: PACK_SIZE }, (_, index) => choosePull(rollRarity(index)));
+  state.currentPulls = pulls;
+  pulls.forEach((pull, index) => {
+    setTimeout(() => revealPullCard(pull, index), 420 + index * 620);
+  });
+
+  await wait(420 + PACK_SIZE * 620 + 500);
+  savePulls(pulls);
+  renderAll();
+  el.stagePack.classList.remove("torn");
+  el.openPack.disabled = false;
+}
+
+function revealPullCard(pull, index) {
+  const article = document.createElement("article");
+  article.className = `pull-card revealed ${rarityClass(pull.rarity)} ${index === PACK_SIZE - 1 ? "final" : ""}`;
+  article.style.setProperty("--delay", "0ms");
+  article.innerHTML = `<div class="card-inner"><div class="card-back"></div>${cardFaceHtml(pull.card, pull.rarity, pull.set, true)}</div>`;
+  article.addEventListener("click", () => openCardDialog(pull.card, pull.rarity, pull.set));
+  el.pullResults.appendChild(article);
+  playTone(index === PACK_SIZE - 1 ? 440 : 260 + index * 35, 0.09);
+
+  if (["Ultra Rare", "Secret Rare"].includes(pull.rarity)) {
+    el.stageLight.animate([
+      { transform: "scale(1)", opacity: 0.5 },
+      { transform: "scale(1.5)", opacity: 0.85 },
+      { transform: "scale(1)", opacity: 0.45 }
+    ], { duration: 900, easing: "ease-out" });
   }
+  if (pull.rarity === "Secret Rare") burstConfetti();
+}
 
-  /* KURANGI BARANG */
-  function removeFromCart(id) {
-    if (!cart[id]) return;
-    cart[id].count--;
-    if (cart[id].count <= 0) {
-      delete cart[id];
-    }
-    renderCart();
-  }
+function savePulls(pulls) {
+  state.stats.packsOpened += 1;
+  state.stats.totalCards += pulls.length;
 
-  /* HAPUS BARANG */
-  function deleteItem(id) {
-    delete cart[id];
-    renderCart();
-  }
-
-  /* UBAH JUMLAH */
-  function updateQuantity(id, quantity) {
-    if (!cart[id]) return;
-    if (quantity <= 0) {
-      delete cart[id];
+  pulls.forEach((pull) => {
+    const key = String(pull.card.id);
+    const existing = state.collection[key];
+    if (existing) {
+      existing.count += 1;
+      existing.lastPulledAt = Date.now();
+      existing.rarity = higherRarity(existing.rarity, pull.rarity);
+      if (rarityRank(pull.rarity) >= rarityRank(existing.rarity)) existing.set = pull.set;
     } else {
-      cart[id].count = quantity;
+      state.collection[key] = {
+        card: pull.card,
+        rarity: pull.rarity,
+        set: pull.set,
+        pulledAt: Date.now(),
+        lastPulledAt: Date.now(),
+        favorite: false,
+        count: 1
+      };
     }
-    renderCart();
+    state.stats.rarityDistribution[pull.rarity] = (state.stats.rarityDistribution[pull.rarity] || 0) + 1;
+    state.stats.highestRarity = higherRarity(state.stats.highestRarity, pull.rarity);
+  });
+
+  const historyEntries = pulls.map((pull) => ({ id: pull.card.id, name: pull.card.name, rarity: pull.rarity, image: getImage(pull.card, "small"), set: pull.set?.set_name || "Unknown set", at: Date.now() }));
+  state.stats.history = [...historyEntries, ...state.stats.history].slice(0, 40);
+  persistLocalState();
+  showToast("Pack added to collection.");
+}
+
+function higherRarity(a, b) {
+  if (a === "None") return b;
+  return rarityRank(b) > rarityRank(a) ? b : a;
+}
+
+function rarityRank(rarity) {
+  return rarityWeights.find((item) => item.name === rarity)?.rank || 0;
+}
+
+function renderAll() {
+  renderHomeStats();
+  renderFeaturedCards();
+  renderCollection();
+  renderStats();
+}
+
+function renderHomeStats() {
+  const unique = Object.keys(state.collection).length;
+  const duplicates = Math.max(0, state.stats.totalCards - unique);
+  el.homeStats.innerHTML = [
+    statHtml("Packs opened", state.stats.packsOpened),
+    statHtml("Cards obtained", state.stats.totalCards),
+    statHtml("Unique cards", unique),
+    statHtml("Duplicates", duplicates)
+  ].join("");
+}
+
+function statHtml(label, value) {
+  return `<div class="stat-card"><span>${label}</span><strong>${String(value).toLocaleString()}</strong></div>`;
+}
+
+function renderRateTable() {
+  el.rateTable.innerHTML = rarityWeights.map((rarity) => `<div class="rate-row"><span>${rarity.name}</span><strong>${rarity.weight}%</strong></div>`).join("");
+}
+
+function renderFeaturedCards() {
+  if (!state.cards.length) return;
+  const wanted = ["Dark Magician", "Blue-Eyes White Dragon", "Exodia the Forbidden One", "Red-Eyes Black Dragon"];
+  const featured = wanted.map((name) => state.cards.find((card) => card.name === name)).filter(Boolean);
+  const fallback = state.cards.slice(0, 4 - featured.length);
+  el.featuredCards.classList.remove("skeleton-grid");
+  el.featuredCards.innerHTML = [...featured, ...fallback].slice(0, 4).map((card) => {
+    const set = card.card_sets?.[0] || null;
+    const rarity = classifyRarity(set?.set_rarity, card);
+    return `<article class="featured-card ${rarityClass(rarity)}">${cardFaceHtml(card, rarity, set)}</article>`;
+  }).join("");
+  el.featuredCards.querySelectorAll(".featured-card").forEach((node, index) => node.addEventListener("click", () => {
+    const card = [...featured, ...fallback][index];
+    const set = card.card_sets?.[0] || null;
+    openCardDialog(card, classifyRarity(set?.set_rarity, card), set);
+  }));
+}
+
+function renderCollection() {
+  const entries = Object.values(state.collection);
+  const query = el.collectionSearch.value.trim().toLowerCase();
+  const rarityFilter = el.rarityFilter.value;
+  const typeFilter = el.typeFilter.value;
+  const sort = el.sortSelect.value;
+
+  let filtered = entries.filter((entry) => {
+    const card = entry.card;
+    const haystack = [card.name, card.type, card.race, card.attribute, card.archetype, entry.set?.set_name, entry.set?.set_code].filter(Boolean).join(" ").toLowerCase();
+    const typeOk = typeFilter === "all" || (typeFilter === "Monster" ? !["Spell Card", "Trap Card"].includes(card.type) : card.type === typeFilter);
+    return (!query || haystack.includes(query)) && (rarityFilter === "all" || entry.rarity === rarityFilter) && typeOk;
+  });
+
+  filtered.sort((a, b) => {
+    if (sort === "name") return a.card.name.localeCompare(b.card.name);
+    if (sort === "rarity") return rarityRank(b.rarity) - rarityRank(a.rarity);
+    if (sort === "dupes") return b.count - a.count;
+    return b.lastPulledAt - a.lastPulledAt;
+  });
+
+  const totalCards = state.cards.length || 1;
+  const progress = Math.min(100, (entries.length / totalCards) * 100);
+  el.progressText.textContent = `${progress.toFixed(2)}% complete`;
+  el.progressBar.style.width = `${progress}%`;
+
+  if (!filtered.length) {
+    el.collectionGrid.innerHTML = `<div class="empty-state">No cards match this collection view.</div>`;
+    return;
   }
 
-  /* KUPON */
-  function applyCoupon() {
-    const code = document.getElementById("coupon").value;
-    const msg = document.getElementById("coupon-msg");
-    if (code === KUPON_RAHASIA) {
-      diskon = 0.9;
-      msg.textContent = "Kupon aktif! Potongan 90%.";
-      msg.style.color = "#6e7b61";
-    } else {
-      diskon = 0;
-      msg.textContent = "Kode kupon salah.";
-      msg.style.color = "#b96f5c";
-    }
-    renderCart();
+  el.collectionGrid.innerHTML = filtered.map((entry) => collectionCardHtml(entry)).join("");
+  el.collectionGrid.querySelectorAll("[data-detail]").forEach((button) => button.addEventListener("click", () => {
+    const entry = state.collection[button.dataset.detail];
+    openCardDialog(entry.card, entry.rarity, entry.set);
+  }));
+  el.collectionGrid.querySelectorAll("[data-favorite]").forEach((button) => button.addEventListener("click", () => toggleFavorite(button.dataset.favorite)));
+  el.collectionGrid.querySelectorAll("[data-delete]").forEach((button) => button.addEventListener("click", () => deleteCard(button.dataset.delete)));
+}
+
+function collectionCardHtml(entry) {
+  return `<article class="collection-card ${rarityClass(entry.rarity)}">
+    ${cardFaceHtml(entry.card, entry.rarity, entry.set)}
+    <div class="card-content">
+      <div class="meta-line"><span class="pill">Owned x${entry.count}</span>${entry.favorite ? `<span class="pill">Favorite</span>` : ""}</div>
+      <div class="card-actions">
+        <button class="icon-btn" data-detail="${entry.card.id}">Details</button>
+        <button class="icon-btn ${entry.favorite ? "active" : ""}" data-favorite="${entry.card.id}">Star</button>
+        <button class="icon-btn" data-delete="${entry.card.id}">Delete</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function renderStats() {
+  const unique = Object.keys(state.collection).length;
+  const duplicates = Math.max(0, state.stats.totalCards - unique);
+  const topRarity = state.stats.highestRarity || "None";
+  el.statsGrid.innerHTML = [
+    statHtml("Total packs", state.stats.packsOpened),
+    statHtml("Total cards", state.stats.totalCards),
+    statHtml("Highest rarity", topRarity),
+    statHtml("Duplicate count", duplicates)
+  ].join("");
+
+  const distribution = rarityWeights.map((rarity) => {
+    const count = state.stats.rarityDistribution[rarity.name] || 0;
+    return `<div class="history-item"><span class="pill rarity-badge" style="--rarity-color:${rarityColor(rarity.name)}">${rarity.name}</span><strong>${count}</strong><span>${state.stats.totalCards ? ((count / state.stats.totalCards) * 100).toFixed(1) : "0.0"}%</span></div>`;
+  }).join("");
+
+  const history = state.stats.history.length
+    ? state.stats.history.map((item) => `<div class="history-item"><img class="history-thumb" src="${item.image}" alt="${escapeHtml(item.name)}" loading="lazy"><div><strong>${escapeHtml(item.name)}</strong><div class="meta-line"><span class="pill rarity-badge" style="--rarity-color:${rarityColor(item.rarity)}">${item.rarity}</span><span class="pill">${escapeHtml(item.set)}</span></div></div><time>${new Date(item.at).toLocaleDateString()}</time></div>`).join("")
+    : `<div class="empty-state">Open a pack to create pull history.</div>`;
+
+  el.historyList.innerHTML = distribution + history;
+}
+
+function cardFaceHtml(card, rarity, set, compact = false) {
+  const image = getImage(card, compact ? "small" : "full");
+  const stats = formatStats(card);
+  return `<div class="card-face">
+    <img class="card-image" src="${image}" alt="${escapeHtml(card.name)}" loading="lazy">
+    <div class="card-content">
+      <h3 class="card-title">${escapeHtml(card.name)}</h3>
+      <div class="meta-line">
+        <span class="pill rarity-badge" style="--rarity-color:${rarityColor(rarity)}">${rarity}</span>
+        <span class="pill">${escapeHtml(card.attribute || card.frameType || "Card")}</span>
+        <span class="pill">${escapeHtml(card.type)}</span>
+      </div>
+      <div class="meta-line">
+        ${stats.map((item) => `<span class="pill">${escapeHtml(item)}</span>`).join("")}
+      </div>
+      <p class="card-desc">${escapeHtml(card.desc || "No effect text available.")}</p>
+      <div class="meta-line">
+        <span class="pill">${escapeHtml(card.archetype || "No archetype")}</span>
+        <span class="pill">${escapeHtml(set?.set_name || "No set data")}</span>
+        <span class="pill">ID ${card.id}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function openCardDialog(card, rarity, set) {
+  el.dialogContent.innerHTML = `<div class="dialog-layout">
+    <img src="${getImage(card, "full")}" alt="${escapeHtml(card.name)}">
+    <div>
+      <p class="eyebrow">${escapeHtml(rarity)}</p>
+      <h2>${escapeHtml(card.name)}</h2>
+      <div class="detail-list">
+        <div><span>Attribute</span><strong>${escapeHtml(card.attribute || card.frameType || "N/A")}</strong></div>
+        <div><span>Card type</span><strong>${escapeHtml(card.type)}</strong></div>
+        <div><span>Level / Link</span><strong>${escapeHtml(String(card.level ?? card.linkval ?? "N/A"))}</strong></div>
+        <div><span>Race</span><strong>${escapeHtml(card.race || "N/A")}</strong></div>
+        <div><span>ATK / DEF</span><strong>${escapeHtml(`${card.atk ?? "-"} / ${card.def ?? "-"}`)}</strong></div>
+        <div><span>Archetype</span><strong>${escapeHtml(card.archetype || "None")}</strong></div>
+        <div><span>Card set</span><strong>${escapeHtml(set?.set_name || "No set data")}</strong></div>
+        <div><span>Card ID</span><strong>${card.id}</strong></div>
+      </div>
+      <p class="panel-copy">${escapeHtml(card.desc || "No effect text available.")}</p>
+      <div class="meta-line"><span class="pill">${escapeHtml(set?.set_code || "No set code")}</span><span class="pill">${escapeHtml(set?.set_rarity || rarity)}</span><span class="pill">$${escapeHtml(set?.set_price || card.card_prices?.[0]?.tcgplayer_price || "0.00")}</span></div>
+    </div>
+  </div>`;
+  el.dialog.showModal();
+}
+
+function formatStats(card) {
+  const output = [];
+  if (card.level) output.push(`Level ${card.level}`);
+  if (card.linkval) output.push(`Link ${card.linkval}`);
+  if (card.race) output.push(card.race);
+  if (card.atk !== undefined) output.push(`ATK ${card.atk}`);
+  if (card.def !== undefined) output.push(`DEF ${card.def}`);
+  if (card.scale !== undefined) output.push(`Scale ${card.scale}`);
+  return output.slice(0, 4);
+}
+
+function getImage(card, size) {
+  const image = card.card_images?.[0];
+  if (!image) return "";
+  return size === "small" ? image.image_url_small : image.image_url;
+}
+
+function rarityClass(rarity) {
+  return `rarity-${rarity.replaceAll(" ", "-")}`;
+}
+
+function rarityColor(rarity) {
+  return {
+    "Common": "#c6c8d1",
+    "Rare": "#74c0fc",
+    "Super Rare": "#c084fc",
+    "Ultra Rare": "#ffd166",
+    "Secret Rare": "#ff7ad9"
+  }[rarity] || "#c6c8d1";
+}
+
+function toggleFavorite(id) {
+  const entry = state.collection[id];
+  if (!entry) return;
+  entry.favorite = !entry.favorite;
+  persistLocalState();
+  renderCollection();
+}
+
+function deleteCard(id) {
+  const entry = state.collection[id];
+  if (!entry) return;
+  if (entry.count > 1) entry.count -= 1;
+  else delete state.collection[id];
+  persistLocalState();
+  renderAll();
+}
+
+function resetCollection() {
+  if (!confirm("Reset all pulled cards and statistics?")) return;
+  state.collection = {};
+  state.stats = { packsOpened: 0, totalCards: 0, highestRarity: "None", history: [], rarityDistribution: {} };
+  persistLocalState();
+  renderAll();
+  showToast("Collection reset.");
+}
+
+function loadLocalState() {
+  try {
+    state.collection = JSON.parse(localStorage.getItem(COLLECTION_KEY)) || {};
+    state.stats = { ...state.stats, ...(JSON.parse(localStorage.getItem(STATS_KEY)) || {}) };
+  } catch {
+    state.collection = {};
   }
+}
 
-  /* TOAST */
-  let toastTimer = null;
-  function showToast(message) {
-    const t = document.getElementById("toast");
-    t.textContent = message;
-    t.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
-  }
+function persistLocalState() {
+  localStorage.setItem(COLLECTION_KEY, JSON.stringify(state.collection));
+  localStorage.setItem(STATS_KEY, JSON.stringify(state.stats));
+}
 
-  /* MODAL REVIEW CHECKOUT */
-  function openReview() {
-    if (Object.keys(cart).length === 0) {
-      showToast("Keranjang kamu masih kosong.");
-      return;
-    }
+function setLoading(loading) {
+  el.openPack.disabled = loading;
+  el.preloadCards.disabled = loading;
+}
 
-    const itemsEl = document.getElementById("review-items");
-    itemsEl.innerHTML = "";
-    let subtotal = 0;
-    Object.values(cart).forEach((item) => {
-      const line = item.count * item.price;
-      subtotal += line;
-      const row = document.createElement("div");
-      row.className = "review-line";
-      row.innerHTML = `<span>${item.name} x ${item.count}</span><span>$${line.toFixed(2)}</span>`;
-      itemsEl.appendChild(row);
+function setStatus(message) {
+  el.apiStatus.textContent = message;
+}
+
+function showToast(message) {
+  el.toast.textContent = message;
+  el.toast.classList.add("show");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => el.toast.classList.remove("show"), 2800);
+}
+
+function playTone(frequency, duration) {
+  if (!el.soundToggle.checked) return;
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+  const context = new AudioContext();
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  oscillator.frequency.value = frequency;
+  oscillator.type = "triangle";
+  gain.gain.setValueAtTime(0.0001, context.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.07, context.currentTime + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + duration);
+  oscillator.connect(gain).connect(context.destination);
+  oscillator.start();
+  oscillator.stop(context.currentTime + duration + 0.02);
+}
+
+function burstConfetti() {
+  const canvas = el.confetti;
+  const ctx = canvas.getContext("2d");
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * window.devicePixelRatio;
+  canvas.height = rect.height * window.devicePixelRatio;
+  const particles = Array.from({ length: 90 }, () => ({
+    x: canvas.width / 2,
+    y: canvas.height * 0.28,
+    vx: (Math.random() - 0.5) * 13,
+    vy: Math.random() * -10 - 3,
+    size: Math.random() * 7 + 3,
+    color: ["#f4c84f", "#ff7ad9", "#64f4ff", "#ffffff"][Math.floor(Math.random() * 4)],
+    life: 90
+  }));
+
+  function frame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.28;
+      p.life -= 1;
+      ctx.globalAlpha = Math.max(p.life / 90, 0);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, p.size, p.size);
     });
-
-    const noteWrap = document.getElementById("review-note-wrap");
-    noteWrap.innerHTML = "";
-    const note = document.getElementById("note").value;
-    if (note) {
-      const n = document.createElement("div");
-      n.className = "review-note";
-      n.textContent = "Catatan: " + note;
-      noteWrap.appendChild(n);
-    }
-
-    let total = subtotal + HANDLING_FEE;
-    total = total - total * diskon;
-    const potongan = (subtotal + HANDLING_FEE) * diskon;
-
-    document.getElementById("review-breakdown").innerHTML = `
-      <div class="row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
-      <div class="row"><span>Biaya penanganan</span><span>$${HANDLING_FEE.toFixed(2)}</span></div>
-      ${diskon ? `<div class="row"><span>Kupon (-90%)</span><span>-$${potongan.toFixed(2)}</span></div>` : ""}
-      <div class="row grand"><span>Total</span><span>$${total}</span></div>
-    `;
-
-    reviewModal.classList.add("open");
+    ctx.globalAlpha = 1;
+    if (particles.some((p) => p.life > 0)) requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
+  frame();
+}
 
-  function closeReview() {
-    reviewModal.classList.remove("open");
-  }
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-  function placeOrder() {
-    closeReview();
-    cart = {};
-    diskon = 0;
-    document.getElementById("note").value = "";
-    document.getElementById("coupon").value = "";
-    document.getElementById("coupon-msg").textContent = "";
-    renderCart();
-    showToast("Pesanan masuk! Sampai jumpa besok pagi.");
-  }
-
-  /* EVENT KLIK */
-  document.addEventListener("click", (event) => {
-    const target = event.target;
-
-    if (target.classList.contains("plus-button")) {
-      addToCart(target.dataset.id, Number(target.dataset.price));
-    }
-    if (target.classList.contains("minus-button")) {
-      removeFromCart(target.dataset.id);
-    }
-    if (target.classList.contains("delete-icon")) {
-      deleteItem(target.dataset.id);
-    }
-    if (target.id === "apply-coupon") {
-      applyCoupon();
-    }
-    if (target.id === "checkout-button") {
-      openReview();
-    }
-    if (target.id === "review-confirm") {
-      placeOrder();
-    }
-    if (target.id === "review-back" || target === reviewModal) {
-      closeReview();
-    }
-  });
-
-  /* EVENT INPUT */
-  document.addEventListener("input", (event) => {
-    const target = event.target;
-    if (target.classList.contains("edit-quantity-input")) {
-      const quantity = parseInt(target.value, 10);
-      updateQuantity(target.dataset.id, quantity);
-    }
-    if (target.id === "note") {
-      renderCart();
-    }
-  });
-
-  /* MULAI */
-  renderProducts();
-  renderCart();
-});
+function escapeHtml(value) {
+  return String(value).replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#039;", '"': "&quot;" }[char]));
+}

@@ -1,86 +1,159 @@
-<!DOCTYPE html>
-<html lang="id">
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pasar Pagi</title>
+  <title>Millennium Pack - Yu-Gi-Oh! Gacha Simulator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="header">
-    <div class="brand">
-      <p class="eyebrow">buah segar / pagi yang tenang</p>
-      <h1>Pasar Pagi</h1>
-    </div>
+  <div class="site-shell">
+    <div class="sigil sigil-left" aria-hidden="true"></div>
+    <div class="sigil sigil-right" aria-hidden="true"></div>
 
-    <div class="cart-summary">
-      <span class="cart-label">keranjang</span>
-      <div class="cart-pill">
-        <i class="fas fa-shopping-basket"></i>
-        <span id="cart-count">0</span>
-      </div>
-    </div>
-  </header>
+    <header class="topbar">
+      <a class="brand-mark" href="#home" aria-label="Millennium Pack home">
+        <span class="pyramid-mark"></span>
+        <span>
+          <strong>Millennium Pack</strong>
+          <small>YGOPRODeck powered gacha</small>
+        </span>
+      </a>
+      <nav class="nav-tabs" aria-label="Primary navigation">
+        <button class="nav-link active" data-view="home">Home</button>
+        <button class="nav-link" data-view="gacha">Gacha</button>
+        <button class="nav-link" data-view="collection">Collection</button>
+        <button class="nav-link" data-view="stats">Stats</button>
+      </nav>
+    </header>
 
-  <main class="store-layout">
-    <section class="products-area">
-      <div class="market-note">
-        <p>
-          Jam pasar yang tenang. Buah musiman ditata pelan-pelan, dengan
-          keterikatan emosional yang patut dipertanyakan.
-        </p>
-      </div>
-
-      <section id="product-section" class="product-section"></section>
-    </section>
-
-    <aside class="cart-sidebar">
-      <div class="cart-header">
-        <h2>Keranjang Kamu</h2>
-        <p>barang pilihan yang kebanyakan</p>
-      </div>
-
-      <div id="cart-details" class="cart-details"></div>
-
-      <div class="cart-footer">
-        <label class="field-label" for="note">Catatan buat petani</label>
-        <textarea id="note" class="note-input" placeholder="mis. titip di depan pintu biru ya :)"></textarea>
-
-        <div class="coupon-row">
-          <input id="coupon" class="coupon-input" placeholder="kode kupon">
-          <button id="apply-coupon" class="coupon-btn">Pakai</button>
-        </div>
-        <div id="coupon-msg" class="coupon-msg"></div>
-
-        <div class="total-row">
-          <span>Total</span>
-          <strong>$<span id="modal-total-price">0.00</span></strong>
+    <main>
+      <section id="home" class="view active-view">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Ancient duel terminal online</p>
+            <h1>Open packs under the Eye of Anubis.</h1>
+            <p class="hero-lede">A premium Yu-Gi-Oh! pack simulator that pulls live card metadata, official artwork, set rarities, archetypes, and prices from the YGOPRODeck API.</p>
+            <div class="hero-actions">
+              <button class="primary-btn" id="start-gacha">Start Gacha</button>
+              <button class="ghost-btn" data-view-jump="collection">View Collection</button>
+            </div>
+            <div class="hero-stats" id="home-stats"></div>
+          </div>
+          <div class="hero-pack-wrap" aria-label="Animated booster pack preview">
+            <div class="millennium-ring"></div>
+            <div class="booster-pack idle-pack">
+              <div class="pack-top">Duelist Relic</div>
+              <div class="pack-eye"></div>
+              <div class="pack-title">Millennium<br>Pack</div>
+              <div class="pack-bottom">5 cards per opening</div>
+            </div>
+          </div>
         </div>
 
-        <button id="checkout-button" class="checkout-button">
-          Lanjut ke Pembayaran
-        </button>
-      </div>
-    </aside>
-  </main>
+        <section class="section-block">
+          <div class="section-heading">
+            <p class="eyebrow">Featured pulls</p>
+            <h2>Cards from the live archive</h2>
+          </div>
+          <div id="featured-cards" class="featured-grid skeleton-grid"></div>
+        </section>
+      </section>
 
-  <div class="modal-overlay" id="review-modal">
-    <div class="modal-card">
-      <h3>Cek Pesanan Kamu</h3>
-      <p class="modal-sub">Lihat sekali lagi sebelum dikirim ke petani.</p>
-      <div id="review-items"></div>
-      <div id="review-note-wrap"></div>
-      <div class="review-breakdown" id="review-breakdown"></div>
-      <div class="modal-actions">
-        <button class="btn-back" id="review-back">Kembali</button>
-        <button class="btn-confirm" id="review-confirm">Konfirmasi Pesanan</button>
-      </div>
-    </div>
+      <section id="gacha" class="view">
+        <div class="gacha-layout">
+          <aside class="control-panel glass-panel">
+            <p class="eyebrow">Booster chamber</p>
+            <h2>Open a five-card pack</h2>
+            <p class="panel-copy">Each pull rolls against the simulator rarity table, then chooses from cards grouped by YGOPRODeck set rarity data. The fifth card receives a boosted rare slot.</p>
+            <button class="primary-btn wide" id="open-pack">Open Pack</button>
+            <button class="ghost-btn wide" id="preload-cards">Refresh API Cache</button>
+            <label class="sound-toggle">
+              <input type="checkbox" id="sound-toggle">
+              <span>Sound effects</span>
+            </label>
+            <div class="rate-table" id="rate-table"></div>
+            <div class="api-status" id="api-status">Preparing duel disk...</div>
+          </aside>
+
+          <div class="pack-stage glass-panel">
+            <div class="stage-light" id="stage-light"></div>
+            <div class="booster-pack stage-pack" id="stage-pack">
+              <div class="pack-top">Sealed Relic</div>
+              <div class="pack-eye"></div>
+              <div class="pack-title">Millennium<br>Pack</div>
+              <div class="pack-bottom">Tap Open Pack</div>
+            </div>
+            <div class="flash" id="flash"></div>
+            <div class="cards-row" id="pull-results"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="collection" class="view">
+        <div class="collection-header glass-panel">
+          <div>
+            <p class="eyebrow">Vault of memories</p>
+            <h2>Your collection</h2>
+          </div>
+          <div class="collection-progress">
+            <span id="collection-progress-text">0%</span>
+            <div class="progress-track"><div id="collection-progress-bar"></div></div>
+          </div>
+        </div>
+
+        <div class="toolbar glass-panel">
+          <input id="collection-search" class="input" placeholder="Search cards, archetypes, sets...">
+          <select id="rarity-filter" class="input">
+            <option value="all">All rarities</option>
+            <option value="Common">Common</option>
+            <option value="Rare">Rare</option>
+            <option value="Super Rare">Super Rare</option>
+            <option value="Ultra Rare">Ultra Rare</option>
+            <option value="Secret Rare">Secret Rare</option>
+          </select>
+          <select id="type-filter" class="input">
+            <option value="all">All types</option>
+            <option value="Monster">Monsters</option>
+            <option value="Spell Card">Spells</option>
+            <option value="Trap Card">Traps</option>
+          </select>
+          <select id="sort-select" class="input">
+            <option value="newest">Newest</option>
+            <option value="name">Name A-Z</option>
+            <option value="rarity">Rarity</option>
+            <option value="dupes">Duplicates</option>
+          </select>
+          <button class="danger-btn" id="reset-collection">Reset</button>
+        </div>
+
+        <div id="collection-grid" class="collection-grid"></div>
+      </section>
+
+      <section id="stats" class="view">
+        <div class="stats-grid" id="stats-grid"></div>
+        <div class="history-panel glass-panel">
+          <div class="section-heading compact">
+            <p class="eyebrow">Recent fate</p>
+            <h2>Pull history</h2>
+          </div>
+          <div id="history-list" class="history-list"></div>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <dialog id="card-dialog" class="card-dialog">
+    <button class="dialog-close" id="dialog-close" aria-label="Close card details">x</button>
+    <div id="dialog-content"></div>
+  </dialog>
 
+  <div class="toast" id="toast"></div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
   <script src="main.js"></script>
 </body>
 </html>
