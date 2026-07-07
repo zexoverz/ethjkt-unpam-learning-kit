@@ -11,16 +11,16 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Katalog resmi toko. Harga "asli" tercatat di sini.
   const products = [
-    { id: 1,  name: "Apel Fuji",       price: 1.5, produceId: "#4131", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg" },
-    { id: 2,  name: "Jeruk Navel",     price: 2.0, produceId: "#4012", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg" },
-    { id: 3,  name: "Pisang",          price: 1.2, produceId: "#4011", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg" },
-    { id: 4,  name: "Anggur",          price: 3.5, produceId: "#4022", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg" },
-    { id: 5,  name: "Stroberi",        price: 4.5, produceId: "#4252", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg" },
-    { id: 6,  name: "Blueberry",       price: 5.0, produceId: "#4264", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg" },
-    { id: 7,  name: "Nanas",           price: 3.0, produceId: "#4430", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg" },
-    { id: 8,  name: "Mangga",          price: 2.8, produceId: "#4951", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg" },
-    { id: 9,  name: "Kiwi",            price: 1.9, produceId: "#4301", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg" },
-    { id: 10, name: "Semangka (Potong)", price: 3.2, produceId: "#4032", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg" }
+    { id: 1,  name: "Apel Fuji",       price: 1.5, stock: 2, produceId: "#4131", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg" },
+    { id: 2,  name: "Jeruk Navel",     price: 2.0, stock: 4, produceId: "#4012", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg" },
+    { id: 3,  name: "Pisang",          price: 1.2, stock: 5, produceId: "#4011", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg" },
+    { id: 4,  name: "Anggur",          price: 3.5, stock: 3, produceId: "#4022", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg" },
+    { id: 5,  name: "Stroberi",        price: 4.5, stock: 1, produceId: "#4252", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg" },
+    { id: 6,  name: "Blueberry",       price: 5.0, stock: 2, produceId: "#4264", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg" },
+    { id: 7,  name: "Nanas",           price: 3.0, stock: 4, produceId: "#4430", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg" },
+    { id: 8,  name: "Mangga",          price: 2.8, stock: 3, produceId: "#4951", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg" },
+    { id: 9,  name: "Kiwi",            price: 1.9, stock: 2, produceId: "#4301", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg" },
+    { id: 10, name: "Semangka (Potong)", price: 3.2, stock: 5, produceId: "#4032", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg" }
   ];
 
   let cart = {};
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     products.forEach((product) => {
       const quantity = cart[product.id] ? cart[product.id].count : 0;
-      const sisa = Math.floor(Math.random() * 5) + 1; // sisa stok hari ini
+      const isOutOfStock = quantity >= product.stock;
 
       const productCard = document.createElement("article");
       productCard.classList.add("product");
@@ -55,11 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
           <h2>${product.name}</h2>
           <p class="price">$${product.price.toFixed(2)}</p>
         </div>
-        <p class="stock">tinggal ${sisa} lagi hari ini!</p>
+        <p class="stock">tinggal ${product.stock} lagi hari ini!</p>
         <div class="quantity-controls">
           <button class="quantity-button minus-button" data-id="${product.id}">−</button>
           <span class="quantity-display" id="quantity-${product.id}">${quantity}</span>
-          <button class="quantity-button plus-button" data-id="${product.id}" data-price="${product.price}">+</button>
+          <button class="quantity-button plus-button" data-id="${product.id}" data-price="${product.price}" ${isOutOfStock ? "disabled" : ""}>+</button>
         </div>
       `;
       productSection.appendChild(productCard);
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <strong>$${itemTotal.toFixed(2)}</strong>
         </div>
         <div class="cart-item-controls">
-          <input type="number" min="1" class="edit-quantity-input" value="${item.count}" data-id="${item.id}">
+          <input type="number" min="1" max="${item.stock}" class="edit-quantity-input" value="${item.count}" data-id="${item.id}">
           <i class="fas fa-trash delete-icon" data-id="${item.id}"></i>
         </div>
       `;
@@ -130,6 +130,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const product = products.find((item) => item.id == id);
     if (!product) return;
 
+    const currentCount = cart[id] ? cart[id].count : 0;
+    if (currentCount >= product.stock) {
+      showToast(`Stok ${product.name} cuma ${product.stock}.`);
+      return;
+    }
+
     if (!cart[id]) {
       cart[id] = { ...product, count: 0 };
     }
@@ -157,10 +163,17 @@ document.addEventListener("DOMContentLoaded", () => {
   /* UBAH JUMLAH */
   function updateQuantity(id, quantity) {
     if (!cart[id]) return;
+    const product = products.find((item) => item.id == id);
+    if (!product) return;
+
     if (quantity <= 0) {
       delete cart[id];
     } else {
-      cart[id].count = quantity;
+      const safeQuantity = Math.min(quantity, product.stock);
+      cart[id].count = safeQuantity;
+      if (quantity > product.stock) {
+        showToast(`Stok ${product.name} cuma ${product.stock}.`);
+      }
     }
     renderCart();
   }

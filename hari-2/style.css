@@ -265,6 +265,18 @@ body {
   transform: scale(1.05);
 }
 
+.quantity-button:disabled {
+  opacity: 0.45;
+
+  cursor: not-allowed;
+}
+
+.quantity-button:disabled:hover {
+  background: #ece3d7;
+
+  transform: none;
+}
+
 .quantity-display {
   font-size: 0.95rem;
 
