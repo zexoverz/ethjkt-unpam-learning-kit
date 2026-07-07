@@ -1,86 +1,127 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pasar Pagi</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-</head>
-<body>
-  <header class="header">
-    <div class="brand">
-      <p class="eyebrow">buah segar / pagi yang tenang</p>
-      <h1>Pasar Pagi</h1>
-    </div>
-
-    <div class="cart-summary">
-      <span class="cart-label">keranjang</span>
-      <div class="cart-pill">
-        <i class="fas fa-shopping-basket"></i>
-        <span id="cart-count">0</span>
-      </div>
-    </div>
-  </header>
-
-  <main class="store-layout">
-    <section class="products-area">
-      <div class="market-note">
-        <p>
-          Jam pasar yang tenang. Buah musiman ditata pelan-pelan, dengan
-          keterikatan emosional yang patut dipertanyakan.
-        </p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pasar Pagi</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="brand">
+        <!-- [FIX-13] DARK-03: Teks eyebrow diubah jadi informatif, bukan framing emosional -->
+        <p class="eyebrow">buah segar / langsung dari petani lokal</p>
+        <h1>Pasar Pagi</h1>
       </div>
 
-      <section id="product-section" class="product-section"></section>
-    </section>
-
-    <aside class="cart-sidebar">
-      <div class="cart-header">
-        <h2>Keranjang Kamu</h2>
-        <p>barang pilihan yang kebanyakan</p>
-      </div>
-
-      <div id="cart-details" class="cart-details"></div>
-
-      <div class="cart-footer">
-        <label class="field-label" for="note">Catatan buat petani</label>
-        <textarea id="note" class="note-input" placeholder="mis. titip di depan pintu biru ya :)"></textarea>
-
-        <div class="coupon-row">
-          <input id="coupon" class="coupon-input" placeholder="kode kupon">
-          <button id="apply-coupon" class="coupon-btn">Pakai</button>
+      <div class="cart-summary">
+        <span class="cart-label">keranjang</span>
+        <div class="cart-pill">
+          <i class="fas fa-shopping-basket"></i>
+          <span id="cart-count">0</span>
         </div>
-        <div id="coupon-msg" class="coupon-msg"></div>
+      </div>
+    </header>
 
-        <div class="total-row">
-          <span>Total</span>
-          <strong>$<span id="modal-total-price">0.00</span></strong>
+    <main class="store-layout">
+      <section class="products-area">
+        <div class="market-note">
+          <!-- [FIX-13] DARK-03: Teks market note diperbarui — sebelumnya menggunakan
+               framing "keterikatan emosional" untuk memanipulasi keputusan beli -->
+          <p>
+            Pilih buah segar langsung dari petani lokal. Stok diperbarui setiap
+            pagi hari.
+          </p>
         </div>
 
-        <button id="checkout-button" class="checkout-button">
-          Lanjut ke Pembayaran
+        <section id="product-section" class="product-section"></section>
+      </section>
+
+      <aside class="cart-sidebar">
+        <div class="cart-header">
+          <h2>Keranjang Kamu</h2>
+          <!-- [FIX-13] DARK-03: Subtitle diubah jadi netral, sebelumnya
+               "barang pilihan yang kebanyakan" = confirm shaming halus -->
+          <p>pilihan buah segar kamu hari ini</p>
+        </div>
+
+        <div id="cart-details" class="cart-details"></div>
+
+        <div class="cart-footer">
+          <label class="field-label" for="note">Catatan buat petani</label>
+          <textarea
+            id="note"
+            class="note-input"
+            placeholder="mis. titip di depan pintu biru ya :)"
+          ></textarea>
+
+          <div class="coupon-row">
+            <input id="coupon" class="coupon-input" placeholder="kode kupon" />
+            <button id="apply-coupon" class="coupon-btn">Pakai</button>
+          </div>
+          <div id="coupon-msg" class="coupon-msg"></div>
+
+          <!-- [FIX-08] BUG-05/DARK-04: Tampilkan handling fee di sidebar sejak awal
+               Sebelumnya: fee hanya muncul di modal checkout (hidden fee / dark pattern) -->
+          <div class="fee-row">
+            <span>Biaya penanganan</span>
+            <span>$0.30</span>
+          </div>
+
+          <div class="total-row">
+            <span>Total</span>
+            <strong>$<span id="modal-total-price">0.00</span></strong>
+          </div>
+
+          <button id="checkout-button" class="checkout-button">
+            Lanjut ke Pembayaran
+          </button>
+        </div>
+      </aside>
+    </main>
+
+    <div class="modal-overlay" id="review-modal">
+      <div class="modal-card">
+        <h3>Cek Pesanan Kamu</h3>
+        <p class="modal-sub">Lihat sekali lagi sebelum dikirim ke petani.</p>
+        <div id="review-items"></div>
+        <div id="review-note-wrap"></div>
+        <div class="review-breakdown" id="review-breakdown"></div>
+        <div class="modal-actions">
+          <button class="btn-back" id="review-back">Kembali</button>
+          <button class="btn-confirm" id="review-confirm">
+            Konfirmasi Pesanan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- [FIX-16] CODE-03: Overlay konfirmasi pesanan dengan nomor order
+         Sebelumnya: hanya toast 3 detik yang langsung menghilang -->
+    <div class="modal-overlay" id="order-confirm">
+      <div class="modal-card oc-card">
+        <div class="oc-icon">✓</div>
+        <h3>Pesanan Diterima!</h3>
+        <p class="modal-sub">Terima kasih sudah belanja di Pasar Pagi 🌿</p>
+        <p class="oc-id-label">No. Pesanan: <strong id="oc-id"></strong></p>
+        <div id="oc-items" class="oc-items"></div>
+        <p id="oc-note" class="review-note" style="display:none"></p>
+        <div class="total-row" style="margin-top:0.8rem; padding-top:0.8rem;">
+          <span>Total Dibayar</span>
+          <strong>$<span id="oc-total"></span></strong>
+        </div>
+        <button class="checkout-button" id="oc-close" style="margin-top:1rem">
+          Selesai
         </button>
       </div>
-    </aside>
-  </main>
-
-  <div class="modal-overlay" id="review-modal">
-    <div class="modal-card">
-      <h3>Cek Pesanan Kamu</h3>
-      <p class="modal-sub">Lihat sekali lagi sebelum dikirim ke petani.</p>
-      <div id="review-items"></div>
-      <div id="review-note-wrap"></div>
-      <div class="review-breakdown" id="review-breakdown"></div>
-      <div class="modal-actions">
-        <button class="btn-back" id="review-back">Kembali</button>
-        <button class="btn-confirm" id="review-confirm">Konfirmasi Pesanan</button>
-      </div>
     </div>
-  </div>
 
-  <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
 
-  <script src="main.js"></script>
-</body>
+    <script src="main.js"></script>
+  </body>
 </html>
