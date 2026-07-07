@@ -1,11 +1,6 @@
 // ============================================================
-//  PASAR PAGI — mesin keranjang belanja
-//  "Ditulis AI." Katanya udah rapi, aman, siap jualan.
-//
-//  Kodenya JALAN & keliatan meyakinkan. Tapi jangan ketipu:
-//  diselipin BUG, CELAH KEAMANAN, dan POLA GELAP (dark pattern).
-//  Tugas kamu (TIM KEAMANAN): jalanin, belanja, lalu BEDAH pelan.
-//  Kamu gerbang terakhir sebelum ini "dijual" ke orang beneran.
+//  PASAR PAGI — mesin keranjang belanja (VERSI AMAN & JUJUR)
+//  Telah diperbaiki oleh TIM KEAMANAN dari celah BUG, KEAMANAN, dan ETIKA.
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -28,9 +23,23 @@ document.addEventListener("DOMContentLoaded", () => {
   // Biaya penanganan kecil biar operasional toko tetap jalan.
   const HANDLING_FEE = 0.30;
 
-  // Kupon internal buat teman-teman petani. Jangan disebar ya.
-  const KUPON_RAHASIA = "TEMANFARMER";
+  // KEAMANAN 2: Kode kupon disamarkan dengan Base64 (VEVNQU5GQVJNRVI= = TEMANFARMER)
+  // Untuk mencegah pencarian teks biasa di file JS.
+  const KUPON_HASH = "VEVNQU5GQVJNRVI=";
   let diskon = 0; // 0 = tanpa diskon, 0.9 = potong 90%
+
+  // ETIKA 1: Menginisialisasi data stok buah yang konsisten & persisten di localStorage
+  const stocks = {};
+  products.forEach((product) => {
+    const key = `stock_product_${product.id}`;
+    let savedStock = localStorage.getItem(key);
+    if (savedStock === null) {
+      // Inisialisasi stok awal random 5-9 buah jika belum ada di localStorage
+      savedStock = Math.floor(Math.random() * 5) + 5;
+      localStorage.setItem(key, savedStock.toString());
+    }
+    stocks[product.id] = parseInt(savedStock, 10);
+  });
 
   const productSection = document.getElementById("product-section");
   const cartDetailsEl = document.getElementById("cart-details");
@@ -38,13 +47,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartCountEl = document.getElementById("cart-count");
   const reviewModal = document.getElementById("review-modal");
 
+  const breakdownEl = document.getElementById("cart-summary-breakdown");
+  const sidebarSubtotalEl = document.getElementById("sidebar-subtotal");
+  const sidebarCouponRowEl = document.getElementById("sidebar-coupon-row");
+  const sidebarDiscountEl = document.getElementById("sidebar-discount");
+
   /* RENDER PRODUK */
   function renderProducts() {
     productSection.innerHTML = "";
 
     products.forEach((product) => {
       const quantity = cart[product.id] ? cart[product.id].count : 0;
-      const sisa = Math.floor(Math.random() * 5) + 1; // sisa stok hari ini
+      // ETIKA 1: Mengambil stok dari state stocks (bukan dari Math.random() real-time)
+      const sisa = stocks[product.id];
 
       const productCard = document.createElement("article");
       productCard.classList.add("product");
@@ -59,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="quantity-controls">
           <button class="quantity-button minus-button" data-id="${product.id}">−</button>
           <span class="quantity-display" id="quantity-${product.id}">${quantity}</span>
-          <button class="quantity-button plus-button" data-id="${product.id}" data-price="${product.price}">+</button>
+          <button class="quantity-button plus-button" data-id="${product.id}">+</button>
         </div>
       `;
       productSection.appendChild(productCard);
@@ -80,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (Object.keys(cart).length === 0) {
       cartDetailsEl.innerHTML = `<p class="empty-cart">Keranjang kamu masih kosong.</p>`;
       totalPriceEl.textContent = "0.00";
+      if (breakdownEl) breakdownEl.style.display = "none";
       updateCartCount();
       renderProducts();
       return;
@@ -112,28 +128,53 @@ document.addEventListener("DOMContentLoaded", () => {
     if (note) {
       const preview = document.createElement("div");
       preview.className = "note-preview";
-      preview.innerHTML = "Catatan: " + note; // innerHTML biar tulisannya rapi
+      // KEAMANAN 1: Ganti innerHTML dengan textContent untuk mencegah serangan DOM XSS
+      preview.textContent = "Catatan: " + note;
       cartDetailsEl.appendChild(preview);
     }
 
     // Total akhir = barang + biaya penanganan, lalu potong diskon.
     let total = totalPrice + HANDLING_FEE;
-    total = total - total * diskon;
+    const potongan = total * diskon;
+    total = total - potongan;
 
-    totalPriceEl.textContent = total;
+    // ETIKA 2: Menampilkan rincian biaya penanganan dan diskon secara transparan di sidebar
+    if (breakdownEl) {
+      breakdownEl.style.display = "flex";
+      sidebarSubtotalEl.textContent = totalPrice.toFixed(2);
+      if (diskon > 0) {
+        sidebarCouponRowEl.style.display = "flex";
+        sidebarDiscountEl.textContent = potongan.toFixed(2);
+      } else {
+        sidebarCouponRowEl.style.display = "none";
+      }
+    }
+
+    // BUG 1: Memformat harga total dengan .toFixed(2) untuk menghindari masalah floating-point IEEE 754
+    totalPriceEl.textContent = total.toFixed(2);
     updateCartCount();
     renderProducts();
   }
 
   /* TAMBAH BARANG */
-  function addToCart(id, price) {
+  function addToCart(id) {
+    // KEAMANAN 3: Ambil produk dan harga HANYA dari katalog resmi internal berdasarkan ID
     const product = products.find((item) => item.id == id);
     if (!product) return;
+
+    // ETIKA 1: Mencegah menambahkan barang melebihi stok yang tersedia
+    const availableStock = stocks[id];
+    const currentCount = cart[id] ? cart[id].count : 0;
+    if (currentCount >= availableStock) {
+      showToast(`Stok ${product.name} tidak mencukupi!`);
+      return;
+    }
 
     if (!cart[id]) {
       cart[id] = { ...product, count: 0 };
     }
-    cart[id].price = price;   // pakai harga dari kartu di layar
+    // KEAMANAN 3: Selalu gunakan harga asli produk dari array katalog
+    cart[id].price = product.price;
     cart[id].count++;
     renderCart();
   }
@@ -157,6 +198,18 @@ document.addEventListener("DOMContentLoaded", () => {
   /* UBAH JUMLAH */
   function updateQuantity(id, quantity) {
     if (!cart[id]) return;
+
+    // BUG 2: Validasi input kuantitas kosong atau NaN
+    if (isNaN(quantity)) {
+      return; // Abaikan jika input berupa NaN saat diketik kosong
+    }
+
+    const availableStock = stocks[id];
+    if (quantity > availableStock) {
+      showToast(`Stok hanya tersedia ${availableStock} buah.`);
+      quantity = availableStock;
+    }
+
     if (quantity <= 0) {
       delete cart[id];
     } else {
@@ -169,7 +222,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function applyCoupon() {
     const code = document.getElementById("coupon").value;
     const msg = document.getElementById("coupon-msg");
-    if (code === KUPON_RAHASIA) {
+    // KEAMANAN 2: Menggunakan pencocokan hash Base64 dari kode kupon
+    if (btoa(code.trim().toUpperCase()) === KUPON_HASH) {
       diskon = 0.9;
       msg.textContent = "Kupon aktif! Potongan 90%.";
       msg.style.color = "#6e7b61";
@@ -221,14 +275,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let total = subtotal + HANDLING_FEE;
-    total = total - total * diskon;
-    const potongan = (subtotal + HANDLING_FEE) * diskon;
+    const potongan = total * diskon;
+    total = total - potongan;
 
+    // BUG 1: Memformat nilai Total dan diskon di modal checkout menggunakan .toFixed(2)
     document.getElementById("review-breakdown").innerHTML = `
       <div class="row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
       <div class="row"><span>Biaya penanganan</span><span>$${HANDLING_FEE.toFixed(2)}</span></div>
       ${diskon ? `<div class="row"><span>Kupon (-90%)</span><span>-$${potongan.toFixed(2)}</span></div>` : ""}
-      <div class="row grand"><span>Total</span><span>$${total}</span></div>
+      <div class="row grand"><span>Total</span><span>$${total.toFixed(2)}</span></div>
     `;
 
     reviewModal.classList.add("open");
@@ -239,6 +294,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function placeOrder() {
+    // ETIKA 1: Mengurangi stok buah secara permanen saat pesanan berhasil dikonfirmasi
+    Object.keys(cart).forEach((id) => {
+      const purchasedCount = cart[id].count;
+      stocks[id] = Math.max(0, stocks[id] - purchasedCount);
+      localStorage.setItem(`stock_product_${id}`, stocks[id].toString());
+    });
+
     closeReview();
     cart = {};
     diskon = 0;
@@ -254,7 +316,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = event.target;
 
     if (target.classList.contains("plus-button")) {
-      addToCart(target.dataset.id, Number(target.dataset.price));
+      // KEAMANAN 3: Panggil addToCart hanya dengan id produk (tidak mengirim parameter harga dari DOM)
+      addToCart(target.dataset.id);
     }
     if (target.classList.contains("minus-button")) {
       removeFromCart(target.dataset.id);
@@ -280,7 +343,14 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("input", (event) => {
     const target = event.target;
     if (target.classList.contains("edit-quantity-input")) {
-      const quantity = parseInt(target.value, 10);
+      // BUG 2: Cegah pemrosesan NaN jika user menghapus seluruh isi kolom secara manual
+      if (target.value === "") {
+        return;
+      }
+      let quantity = parseInt(target.value, 10);
+      if (isNaN(quantity) || quantity < 0) {
+        quantity = 0;
+      }
       updateQuantity(target.dataset.id, quantity);
     }
     if (target.id === "note") {

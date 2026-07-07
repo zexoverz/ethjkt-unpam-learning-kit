@@ -53,6 +53,21 @@
         </div>
         <div id="coupon-msg" class="coupon-msg"></div>
 
+        <div class="cart-summary-breakdown" id="cart-summary-breakdown" style="display: none; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; font-size: 0.9rem; border-bottom: 1px dashed var(--line); padding-bottom: 0.8rem;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>Subtotal</span>
+            <span>$<span id="sidebar-subtotal">0.00</span></span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Biaya Penanganan</span>
+            <span>$<span id="sidebar-handling">0.30</span></span>
+          </div>
+          <div id="sidebar-coupon-row" style="display: none; justify-content: space-between; color: var(--olive);">
+            <span>Kupon (-90%)</span>
+            <span>-$<span id="sidebar-discount">0.00</span></span>
+          </div>
+        </div>
+
         <div class="total-row">
           <span>Total</span>
           <strong>$<span id="modal-total-price">0.00</span></strong>
