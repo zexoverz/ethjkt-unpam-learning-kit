@@ -4,11 +4,14 @@ Tanggal: 7 Juli 2026
 
 ## Yang ditambahkan
 
-- Tombol `TARIK 1x` sekarang menjalankan satu pull acak.
-- Tombol `TARIK 10x` sekarang menjalankan sepuluh pull sekaligus.
-- Hasil pull muncul di kartu utama, lengkap dengan emoji, nama hadiah, dan rarity.
-- Riwayat pull terakhir muncul sebagai chip kecil.
+- Sistem gacha sekarang memakai Pokemon dari PokeAPI.
+- Tombol `TARIK 1x` mengambil satu Pokemon acak.
+- Tombol `TARIK 10x` mengambil sepuluh Pokemon acak.
+- Hasil pull muncul di kartu utama, lengkap dengan gambar, nama Pokemon, nomor Pokedex, tipe, dan rarity.
+- Riwayat pull terakhir muncul sebagai chip kecil dengan gambar Pokemon.
 - Sistem pity dibuat: kalau sudah 10 pull tanpa SSR, pull berikutnya dijamin SSR.
+- Kalau gambar Pokemon dari satu sumber gagal, kode mencoba sumber gambar lain.
+- Kalau semua gambar gagal atau kosong, kartu menampilkan inisial Pokemon supaya tidak terlihat rusak.
 
 ## Aturan peluang
 
