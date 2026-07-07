@@ -1,168 +1,478 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gacha ETHJKT</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
-    color: #eaeaf0; min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
-  }
-  .app {
-    width: 100%; max-width: 460px; text-align: center;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px; padding: 24px 22px 28px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-  h1 {
-    font-size: 26px; letter-spacing: 1px; margin-bottom: 4px;
-    background: linear-gradient(90deg,#ffd86b,#ff7eb3,#7ee8ff);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .subtitle { font-size: 12px; color: #8b90b0; margin-bottom: 18px; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gacha ETHJKT</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
+        color: #eaeaf0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .app {
+        width: 100%;
+        max-width: 460px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 24px 22px 28px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+      h1 {
+        font-size: 26px;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+        background: linear-gradient(90deg, #ffd86b, #ff7eb3, #7ee8ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .subtitle {
+        font-size: 12px;
+        color: #8b90b0;
+        margin-bottom: 18px;
+      }
 
-  .stats { display: flex; gap: 10px; margin-bottom: 12px; }
-  .stat {
-    flex: 1; background: rgba(255,255,255,0.05); border-radius: 12px;
-    padding: 10px 6px;
-  }
-  .stat .num { font-size: 22px; font-weight: 700; }
-  .stat .lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; }
+      .stats {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .stat {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 10px 6px;
+      }
+      .stat .num {
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .stat .lbl {
+        font-size: 11px;
+        color: #8b90b0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
 
-  .pity { margin-bottom: 18px; text-align: left; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #b9bdd8; margin-bottom: 6px; }
-  .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
-  .pity-fill {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg,#ffd86b,#ffb347);
-    transition: width 0.35s ease;
-  }
+      .pity {
+        margin-bottom: 18px;
+        text-align: left;
+      }
+      .pity-top {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #b9bdd8;
+        margin-bottom: 6px;
+      }
+      .pity-track {
+        height: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .pity-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #ffd86b, #ffb347);
+        transition: width 0.35s ease;
+      }
 
-  .stage { display: flex; justify-content: center; margin-bottom: 20px; }
-  .card {
-    width: 180px; height: 230px; border-radius: 18px;
-    background: #171b30; border: 3px solid #2a2f4a;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative;
-  }
-  .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
-  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
-  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
+      .stage {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .card {
+        width: 180px;
+        height: 230px;
+        border-radius: 18px;
+        background: #171b30;
+        border: 3px solid #2a2f4a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        position: relative;
+      }
+      .card .emoji {
+        font-size: 74px;
+        line-height: 1;
+        filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+      }
+      .card .name {
+        font-size: 17px;
+        font-weight: 700;
+        padding: 0 8px;
+      }
+      .card .rar {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        opacity: 0.9;
+      }
 
-  /* warna per rarity */
-  .card.common { border-color: #6b7280; }
-  .card.common .rar { color: #9aa3b2; }
-  .card.rare   { border-color: #4da6ff; box-shadow: 0 0 22px rgba(77,166,255,.45); }
-  .card.rare   .rar { color: #4da6ff; }
-  .card.epic   { border-color: #b06bff; box-shadow: 0 0 26px rgba(176,107,255,.55); }
-  .card.epic   .rar { color: #c88bff; }
-  .card.ssr    { border-color: #ffd24a; box-shadow: 0 0 40px rgba(255,210,74,.8); }
-  .card.ssr    .rar { color: #ffd24a; }
-  .card.ssr    .name { color: #ffe89a; }
+      /* warna per rarity */
+      .card.common {
+        border-color: #6b7280;
+      }
+      .card.common .rar {
+        color: #9aa3b2;
+      }
+      .card.rare {
+        border-color: #4da6ff;
+        box-shadow: 0 0 22px rgba(77, 166, 255, 0.45);
+      }
+      .card.rare .rar {
+        color: #4da6ff;
+      }
+      .card.epic {
+        border-color: #b06bff;
+        box-shadow: 0 0 26px rgba(176, 107, 255, 0.55);
+      }
+      .card.epic .rar {
+        color: #c88bff;
+      }
+      .card.ssr {
+        border-color: #ffd24a;
+        box-shadow: 0 0 40px rgba(255, 210, 74, 0.8);
+      }
+      .card.ssr .rar {
+        color: #ffd24a;
+      }
+      .card.ssr .name {
+        color: #ffe89a;
+      }
 
-  /* animasi reveal */
-  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-  @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,210,74,.7)} 50%{box-shadow:0 0 55px rgba(255,210,74,1)} }
-  .card.reveal { animation: pop .4s ease; }
-  .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
+      /* animasi reveal */
+      @keyframes pop {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.08);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-6px);
+        }
+        40% {
+          transform: translateX(6px);
+        }
+        60% {
+          transform: translateX(-4px);
+        }
+        80% {
+          transform: translateX(4px);
+        }
+      }
+      @keyframes glowpulse {
+        0%,
+        100% {
+          box-shadow: 0 0 30px rgba(255, 210, 74, 0.7);
+        }
+        50% {
+          box-shadow: 0 0 55px rgba(255, 210, 74, 1);
+        }
+      }
+      .card.reveal {
+        animation: pop 0.4s ease;
+      }
+      .card.ssr.reveal {
+        animation:
+          pop 0.4s ease,
+          shake 0.5s ease 0.4s,
+          glowpulse 1.2s ease-in-out 0.4s 2;
+      }
 
-  .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
-  .btn {
-    flex: 1; padding: 15px 0; border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer;
-    color: #0a0d1c; background: linear-gradient(180deg,#8fd3ff,#4da6ff);
-    transition: transform .08s ease, filter .15s ease;
-  }
-  .btn:hover { filter: brightness(1.08); }
-  .btn:active { transform: scale(.95); }
-  .btn.gold { background: linear-gradient(180deg,#ffe58a,#ffb347); }
+      .buttons {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+      .btn {
+        flex: 1;
+        padding: 15px 0;
+        border: none;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        cursor: pointer;
+        color: #0a0d1c;
+        background: linear-gradient(180deg, #8fd3ff, #4da6ff);
+        transition:
+          transform 0.08s ease,
+          filter 0.15s ease;
+      }
+      .btn:hover {
+        filter: brightness(1.08);
+      }
+      .btn:active {
+        transform: scale(0.95);
+      }
+      .btn.gold {
+        background: linear-gradient(180deg, #ffe58a, #ffb347);
+      }
 
-  .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
-  .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
-  .chip {
-    font-size: 20px; width: 34px; height: 34px; border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    background: #171b30; border: 2px solid #2a2f4a;
-  }
-  .chip.rare { border-color: #4da6ff; }
-  .chip.epic { border-color: #b06bff; }
-  .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
-</style>
-</head>
-<body>
-  <div class="app">
-    <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
+      .hist-lbl {
+        font-size: 11px;
+        color: #8b90b0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: left;
+        margin-bottom: 8px;
+      }
+      .history {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-height: 34px;
+      }
+      .chip {
+        font-size: 20px;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #171b30;
+        border: 2px solid #2a2f4a;
+      }
+      .chip.rare {
+        border-color: #4da6ff;
+      }
+      .chip.epic {
+        border-color: #b06bff;
+      }
+      .chip.ssr {
+        border-color: #ffd24a;
+        box-shadow: 0 0 10px rgba(255, 210, 74, 0.6);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <h1>GACHA ETHJKT</h1>
+      <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
 
-    <div class="stats">
-      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
-    </div>
-
-    <div class="pity">
-      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
-      <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-    </div>
-
-    <div class="stage">
-      <div class="card" id="card">
-        <div class="emoji" id="cardEmoji">?</div>
-        <div class="name" id="cardName">Tekan TARIK</div>
-        <div class="rar" id="cardRarity"></div>
+      <div class="stats">
+        <div class="stat">
+          <div class="num" id="total">0</div>
+          <div class="lbl">Total Tarik</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="ssrCount">0</div>
+          <div class="lbl">SSR Didapat</div>
+        </div>
       </div>
-    </div>
 
-    <div class="buttons">
-      <button class="btn" id="tarik1">TARIK 1x</button>
-      <button class="btn gold" id="tarik10">TARIK 10x</button>
-    </div>
+      <div class="pity">
+        <div class="pity-top">
+          <span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span>
+        </div>
+        <div class="pity-track">
+          <div class="pity-fill" id="pityFill"></div>
+        </div>
+      </div>
 
-    <div class="hist-lbl">Riwayat Terakhir</div>
-    <div class="history" id="history"></div>
-  </div>
+      <div class="stage">
+        <div class="card" id="card">
+          <div class="emoji" id="cardEmoji">?</div>
+          <div class="name" id="cardName">Tekan TARIK</div>
+          <div class="rar" id="cardRarity"></div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn" id="tarik1">TARIK 1x</button>
+        <button class="btn gold" id="tarik10">TARIK 10x</button>
+      </div>
+
+      <div class="hist-lbl">Riwayat Terakhir</div>
+      <div class="history" id="history"></div>
+    </div>
 
 <script>
-  // ==========================================================
-  // MISI HARI 1 - GACHA SIMULATOR (STARTER)
-  //
-  // Tampilan (HTML + CSS) udah jadi. TUGAS kamu: bikin LOGIKA-nya.
-  // JANGAN ketik manual. SURUH Codex yang nulis tiap CHECKPOINT,
-  // kamu BACA & VERIFIKASI. Save file -> refresh browser buat lihat.
-  //
-  // Ikutin urutan checkpoint di README.md. Contoh prompt ada di sana.
-  // ==========================================================
+      // ==========================================================
+      // MISI HARI 1 - GACHA SIMULATOR (STARTER)
+      //
+      // Tampilan (HTML + CSS) udah jadi. TUGAS kamu: bikin LOGIKA-nya.
+      // JANGAN ketik manual. SURUH Codex yang nulis tiap CHECKPOINT,
+      // kamu BACA & VERIFIKASI. Save file -> refresh browser buat lihat.
+      //
+      // Ikutin urutan checkpoint di README.md. Contoh prompt ada di sana.
+      // ==========================================================
 
-  // CHECKPOINT 1 - Data & acak
-  //   TODO: bikin object `hadiah` berisi 4 array (ssr, epic, rare, common),
-  //         tiap item { n: "nama", e: "emoji" }.
-  //   TODO: bikin variabel pity=0, total=0, ssrCount=0.
-  //   TODO: fungsi pilihAcak(arr) -> balikin 1 item acak dari array.
+      // CHECKPOINT 1 - Data & acak
+      //   TODO: bikin object `hadiah` berisi 4 array (ssr, epic, rare, common),
+      //         tiap item { n: "nama", e: "emoji" }.
+      //   TODO: bikin variabel pity=0, total=0, ssrCount=0.
+      //   TODO: fungsi pilihAcak(arr) -> balikin 1 item acak dari array.
 
-  // CHECKPOINT 2 - Logika tarikan
-  //   TODO: fungsi rollSatu() -> total & pity nambah 1, pakai Math.random():
-  //         pity>=10 ATAU acak<0.03 -> SSR (pity balik 0, ssrCount nambah)
-  //         acak<0.10 -> EPIC, acak<0.30 -> RARE, selain itu -> COMMON.
-  //         balikin { kelas, nama, emoji }.
+      // CHECKPOINT 2 - Logika tarikan
+      //   TODO: fungsi rollSatu() -> total & pity nambah 1, pakai Math.random():
+      //         pity>=10 ATAU acak<0.03 -> SSR (pity balik 0, ssrCount nambah)
+      //         acak<0.10 -> EPIC, acak<0.30 -> RARE, selain itu -> COMMON.
+      //         balikin { kelas, nama, emoji }.
 
-  // CHECKPOINT 3 - Tampilkan + animasi
-  //   TODO: fungsi tampilkan(hasil) -> isi #cardEmoji, #cardName, #cardRarity,
-  //         set className kartu jadi "card <kelas> reveal" (trik reset animasi:
-  //         set "card", baca card.offsetWidth, baru set kelas+reveal).
-  //         Update #total, #ssrCount, #pityText, dan lebar #pityFill.
+      // CHECKPOINT 3 - Tampilkan + animasi
+      //   TODO: fungsi tampilkan(hasil) -> isi #cardEmoji, #cardName, #cardRarity,
+      //         set className kartu jadi "card <kelas> reveal" (trik reset animasi:
+      //         set "card", baca card.offsetWidth, baru set kelas+reveal).
+      //         Update #total, #ssrCount, #pityText, dan lebar #pityFill.
 
-  // CHECKPOINT 4 - Riwayat + tombol
-  //   TODO: fungsi tambahRiwayat(hasil) -> bikin div .chip <kelas>, isi emoji,
-  //         taruh paling depan di #history, batasi maks 12 chip.
-  //   TODO: tombol #tarik1 -> tarik 1x. tombol #tarik10 -> ulang 10x.
+      // CHECKPOINT 4 - Riwayat + tombol
+      //   TODO: fungsi tambahRiwayat(hasil) -> bikin div .chip <kelas>, isi emoji,
+      //         taruh paling depan di #history, batasi maks 12 chip.
+      //   TODO: tombol #tarik1 -> tarik 1x. tombol #tarik10 -> ulang 10x.
 
   // >> Buka Codex, kerjain checkpoint SATU PER SATU. Baca hasilnya.
   // >> Kamu PILOT-nya, bukan penonton.
+
+  const hadiah = {
+    ssr: [
+      { n: "ETHJKT Whale", e: "🐋" },
+      { n: "Gas Hero", e: "🔥" },
+      { n: "Onchain Legend", e: "👑" },
+      { n: "Golden Builder", e: "🏆" }
+    ],
+    epic: [
+      { n: "Smart Contract", e: "📜" },
+      { n: "Diamond Hands", e: "💎" },
+      { n: "Node Runner", e: "🖥️" },
+      { n: "Airdrop Hunter", e: "🪂" }
+    ],
+    rare: [
+      { n: "Testnet Badge", e: "🎖️" },
+      { n: "Gas Saver", e: "⛽" },
+      { n: "NFT Mint", e: "🖼️" },
+      { n: "Wallet Wizard", e: "🪄" }
+    ],
+    common: [
+      { n: "GM Sticker", e: "☀️" },
+      { n: "Coffee Fuel", e: "☕" },
+      { n: "Discord Ping", e: "🔔" },
+      { n: "Learning Note", e: "📒" },
+      { n: "Basic Wallet", e: "👛" }
+    ]
+  };
+
+  let pity = 0;
+  let total = 0;
+  let ssrCount = 0;
+  let pityTarget = acakPityTarget();
+
+  const card = document.getElementById("card");
+  const cardEmoji = document.getElementById("cardEmoji");
+  const cardName = document.getElementById("cardName");
+  const cardRarity = document.getElementById("cardRarity");
+  const totalEl = document.getElementById("total");
+  const ssrCountEl = document.getElementById("ssrCount");
+  const pityText = document.getElementById("pityText");
+  const pityFill = document.getElementById("pityFill");
+  const history = document.getElementById("history");
+  const tarik1 = document.getElementById("tarik1");
+  const tarik10 = document.getElementById("tarik10");
+
+  function acakPityTarget() {
+    return Math.floor(Math.random() * 6) + 5; // 5 sampai 10 pull
+  }
+
+  function pilihAcak(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function rollSatu() {
+    total += 1;
+    pity += 1;
+
+    const acak = Math.random();
+    let kelas = "common";
+
+    if (pity >= pityTarget || acak < 0.03) {
+      kelas = "ssr";
+      pity = 0;
+      ssrCount += 1;
+      pityTarget = acakPityTarget();
+    } else if (acak < 0.10) {
+      kelas = "epic";
+    } else if (acak < 0.30) {
+      kelas = "rare";
+    }
+
+    const item = pilihAcak(hadiah[kelas]);
+    return { kelas, nama: item.n, emoji: item.e };
+  }
+
+  function tampilkan(hasil) {
+    cardEmoji.textContent = hasil.emoji;
+    cardName.textContent = hasil.nama;
+    cardRarity.textContent = hasil.kelas.toUpperCase();
+
+    card.className = "card";
+    void card.offsetWidth;
+    card.className = `card ${hasil.kelas} reveal`;
+
+    totalEl.textContent = total;
+    ssrCountEl.textContent = ssrCount;
+    pityText.textContent = `${pity} / ${pityTarget}`;
+    pityFill.style.width = `${Math.min((pity / pityTarget) * 100, 100)}%`;
+  }
+
+  function tambahRiwayat(hasil) {
+    const chip = document.createElement("div");
+    chip.className = `chip ${hasil.kelas}`;
+    chip.textContent = hasil.emoji;
+    chip.title = `${hasil.nama} - ${hasil.kelas.toUpperCase()}`;
+
+    history.prepend(chip);
+
+    while (history.children.length > 12) {
+      history.lastElementChild.remove();
+    }
+  }
+
+  function tarik(jumlah) {
+    let hasilTerakhir;
+
+    for (let i = 0; i < jumlah; i += 1) {
+      hasilTerakhir = rollSatu();
+      tambahRiwayat(hasilTerakhir);
+    }
+
+    tampilkan(hasilTerakhir);
+  }
+
+  tarik1.addEventListener("click", () => tarik(1));
+  tarik10.addEventListener("click", () => tarik(10));
+  tampilkan({ kelas: "", nama: "Tekan TARIK", emoji: "?" });
 </script>
-</body>
+  </body>
 </html>
