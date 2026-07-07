@@ -40,6 +40,18 @@
 - Mempertahankan sistem pity 10 tarikan untuk hasil `Legend`.
 - Memodernisasi UI menjadi layout dashboard dua kolom dengan glass panel, kartu karakter besar, stats, history, dan daftar character pool.
 
+## Perubahan API — Beralih ke api.api-onepiece.com
+
+- Mengganti API dari `https://www.onepieceapi.com/api/characters` (65 karakter, tanpa gambar) ke `https://api.api-onepiece.com/v2/characters/en` (786 karakter, lebih lengkap).
+- Struktur data baru:
+  - `name` langsung string (tidak perlu `name.en`).
+  - `bounty` berupa string terformat seperti `"3.000.000.000"`, di-parse dengan `parseInt(replace(/\./g, ''))`.
+  - `size` berupa string seperti `"174cm"`, di-parse untuk ambil angka.
+  - Tidak ada `blood_type`, diganti dengan `job` dan `crew.name`.
+  - `status` berupa string seperti `"vivant"` / `"living"`.
+- Semua fungsi (`getName`, `getBounty`, `getSize`, `showResult`, dll) disesuaikan dengan format baru.
+- Fallback karakter lokal juga diperbarui mengikuti struktur API baru.
+
 ## Perubahan Lanjutan - Modern UI + Character Images + Rare Effects
 
 - **Character Images**: Karena API One Piece tidak menyediakan gambar (`image_url: null`), gambar karakter diambil dari One Piece Fandom Wiki via MediaWiki API JSONP (`onepiece.fandom.com/api.php`). Hasil dicache di memori agar tidak fetching ulang.

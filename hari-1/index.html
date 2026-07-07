@@ -559,13 +559,13 @@
 </main>
 
 <script>
-  const API_URL = "https://www.onepieceapi.com/api/characters";
+  const API_URL = "https://api.api-onepiece.com/v2/characters/en";
   const FALLBACK_CHARACTERS = [
-    { name: { en: "Monkey D. Luffy" }, status: "Alive", height: 174, blood_type: "F", image_url: null, bounties: [{ amount: 3000000000, is_active: true }] },
-    { name: { en: "Roronoa Zoro" }, status: "Alive", height: 181, blood_type: "XF", image_url: null, bounties: [{ amount: 1111000000, is_active: true }] },
-    { name: { en: "Nami" }, status: "Alive", height: 170, blood_type: "X", image_url: null, bounties: [{ amount: 366000000, is_active: true }] },
-    { name: { en: "Sanji" }, status: "Alive", height: 180, blood_type: "S", image_url: null, bounties: [{ amount: 1032000000, is_active: true }] },
-    { name: { en: "Tony Tony Chopper" }, status: "Alive", height: 90, blood_type: "X", image_url: null, bounties: [{ amount: 1000, is_active: true }] }
+    { name: "Monkey D Luffy", size: "174cm", bounty: "3.000.000.000", status: "vivant", job: "Captain", crew: { name: "Straw Hat Pirates" } },
+    { name: "Roronoa Zoro", size: "181cm", bounty: "1.101.000.000", status: "living", job: "Swordsman", crew: { name: "Straw Hat Pirates" } },
+    { name: "Nami", size: "170cm", bounty: "366.000.000", status: "living", job: "Navigator", crew: { name: "Straw Hat Pirates" } },
+    { name: "Sanji", size: "180cm", bounty: "1.032.000.000", status: "living", job: "Cook", crew: { name: "Straw Hat Pirates" } },
+    { name: "Tony Tony Chopper", size: "90cm", bounty: "1.000", status: "living", job: "Doctor", crew: { name: "Straw Hat Pirates" } }
   ];
 
   const RARITY_LABEL = {
@@ -634,14 +634,19 @@
   createStars();
 
   function getName(character) {
-    return character?.name?.en || character?.name || "Unknown";
+    return character?.name || "Unknown";
   }
 
   function getBounty(character) {
-    const bounties = Array.isArray(character.bounties) ? character.bounties : [];
-    if (bounties.length === 0) return 0;
-    const active = bounties.find(b => b.is_active);
-    return Number((active || bounties[0]).amount) || 0;
+    if (!character?.bounty) return 0;
+    const num = parseInt(character.bounty.replace(/\./g, ""), 10);
+    return num || 0;
+  }
+
+  function getSize(character) {
+    if (!character?.size) return null;
+    const num = parseInt(character.size.replace(/[^0-9]/g, ""), 10);
+    return num || null;
   }
 
   function formatBounty(amount) {
@@ -892,10 +897,12 @@
     cardName.textContent = name;
     cardRarity.textContent = RARITY_LABEL[result.kelas];
     bountyDisplay.textContent = formatBounty(bounty);
+    const size = getSize(character);
     cardMeta.innerHTML = `
       <span class="pill">${character.status || "Unknown"}</span>
-      <span class="pill">${character.height ? character.height + " cm" : "Height unknown"}</span>
-      <span class="pill">Blood ${character.blood_type || "Unknown"}</span>
+      <span class="pill">${size ? size + " cm" : "Height unknown"}</span>
+      <span class="pill">${character.job || "Unknown role"}</span>
+      <span class="pill">${character.crew?.name || "Unknown crew"}</span>
     `;
 
     card.className = "card reveal";
