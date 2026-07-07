@@ -23,3 +23,11 @@
 - Menambahkan badge koleksi: First Pull, Binder Start, Deck Builder, Shiny Hunter, Monster Slot, Spell Slot, dan Trap Slot.
 - Badge otomatis berubah dari locked ke unlocked setelah syarat koleksi terpenuhi.
 - Statistik baru `Koleksi Unik` ikut diperbarui setiap roll.
+
+## 2026-07-07
+
+- Menambah badge koleksi lebih banyak untuk target 25, 50, 100, 250, dan 500 kartu unik.
+- Menambah badge progres tarikan untuk 50, 100, dan 250 total pull.
+- Menambah badge rarity untuk 3 SSR, 10 SSR, 5 Epic unik, dan 10 Rare unik.
+- Menambah badge variasi koleksi untuk Monster/Spell/Trap lengkap, race Dragon/Spellcaster/Warrior/Machine, atribut LIGHT/DARK, dan 4 atribut berbeda.
+- Menambahkan helper sederhana untuk menghitung rarity, race, attribute, dan jumlah attribute unik di koleksi.

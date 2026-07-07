@@ -202,10 +202,30 @@
     { id: "first", name: "First Pull", rule: "Dapatkan 1 kartu.", test: function () { return collectionCards.length >= 1; } },
     { id: "five", name: "Binder Start", rule: "Koleksi 5 kartu unik.", test: function () { return collectionCards.length >= 5; } },
     { id: "ten", name: "Deck Builder", rule: "Koleksi 10 kartu unik.", test: function () { return collectionCards.length >= 10; } },
+    { id: "twenty_five", name: "Local Collector", rule: "Koleksi 25 kartu unik.", test: function () { return collectionCards.length >= 25; } },
+    { id: "fifty", name: "Binder Page 50", rule: "Koleksi 50 kartu unik.", test: function () { return collectionCards.length >= 50; } },
+    { id: "hundred", name: "Century Binder", rule: "Koleksi 100 kartu unik.", test: function () { return collectionCards.length >= 100; } },
+    { id: "two_fifty", name: "Archive Keeper", rule: "Koleksi 250 kartu unik.", test: function () { return collectionCards.length >= 250; } },
+    { id: "five_hundred", name: "Museum Shelf", rule: "Koleksi 500 kartu unik.", test: function () { return collectionCards.length >= 500; } },
     { id: "ssr", name: "Shiny Hunter", rule: "Dapatkan minimal 1 SSR.", test: function () { return ssrCount >= 1; } },
+    { id: "three_ssr", name: "Triple Shine", rule: "Dapatkan 3 SSR.", test: function () { return ssrCount >= 3; } },
+    { id: "ten_ssr", name: "Golden Binder", rule: "Dapatkan 10 SSR.", test: function () { return ssrCount >= 10; } },
+    { id: "epic_five", name: "Epic Stack", rule: "Koleksi 5 kartu Epic unik.", test: function () { return hitungRarity("epic") >= 5; } },
+    { id: "rare_ten", name: "Rare Row", rule: "Koleksi 10 kartu Rare unik.", test: function () { return hitungRarity("rare") >= 10; } },
     { id: "monster", name: "Monster Slot", rule: "Koleksi 1 kartu Monster.", test: function () { return punyaTipe("Monster"); } },
     { id: "spell", name: "Spell Slot", rule: "Koleksi 1 kartu Spell.", test: function () { return punyaTipe("Spell Card"); } },
-    { id: "trap", name: "Trap Slot", rule: "Koleksi 1 kartu Trap.", test: function () { return punyaTipe("Trap Card"); } }
+    { id: "trap", name: "Trap Slot", rule: "Koleksi 1 kartu Trap.", test: function () { return punyaTipe("Trap Card"); } },
+    { id: "all_slots", name: "Main Deck Basics", rule: "Punya Monster, Spell, dan Trap.", test: function () { return punyaTipe("Monster") && punyaTipe("Spell Card") && punyaTipe("Trap Card"); } },
+    { id: "dragon", name: "Dragon Caller", rule: "Koleksi 1 Dragon.", test: function () { return punyaRace("Dragon"); } },
+    { id: "spellcaster", name: "Spellcaster Desk", rule: "Koleksi 1 Spellcaster.", test: function () { return punyaRace("Spellcaster"); } },
+    { id: "warrior", name: "Warrior Line", rule: "Koleksi 1 Warrior.", test: function () { return punyaRace("Warrior"); } },
+    { id: "machine", name: "Machine Bay", rule: "Koleksi 1 Machine.", test: function () { return punyaRace("Machine"); } },
+    { id: "light", name: "Light Album", rule: "Koleksi 1 atribut LIGHT.", test: function () { return punyaAttribute("LIGHT"); } },
+    { id: "dark", name: "Dark Album", rule: "Koleksi 1 atribut DARK.", test: function () { return punyaAttribute("DARK"); } },
+    { id: "elements_four", name: "Four Elements", rule: "Koleksi 4 atribut berbeda.", test: function () { return hitungAttributeUnik() >= 4; } },
+    { id: "pull_50", name: "50 Pulls", rule: "Lakukan 50 tarikan.", test: function () { return total >= 50; } },
+    { id: "pull_100", name: "100 Pulls", rule: "Lakukan 100 tarikan.", test: function () { return total >= 100; } },
+    { id: "pull_250", name: "250 Pulls", rule: "Lakukan 250 tarikan.", test: function () { return total >= 250; } }
   ];
 
   // State utama game: pity reset setiap SSR, total dan SSR terus dihitung.
@@ -303,6 +323,36 @@
     return collectionCards.some(function (item) {
       return item.type.indexOf(text) !== -1;
     });
+  }
+
+  // Hitung kartu unik dari rarity tertentu di koleksi.
+  function hitungRarity(kelas) {
+    return collectionCards.filter(function (item) {
+      return item.kelas === kelas;
+    }).length;
+  }
+
+  // Cek race kartu seperti Dragon, Warrior, atau Spellcaster.
+  function punyaRace(text) {
+    return collectionCards.some(function (item) {
+      return item.race === text;
+    });
+  }
+
+  // Cek attribute monster seperti LIGHT atau DARK.
+  function punyaAttribute(text) {
+    return collectionCards.some(function (item) {
+      return item.attribute === text;
+    });
+  }
+
+  // Hitung jumlah attribute berbeda yang sudah dimiliki.
+  function hitungAttributeUnik() {
+    const attributes = new Set();
+    collectionCards.forEach(function (item) {
+      if (item.attribute) attributes.add(item.attribute);
+    });
+    return attributes.size;
   }
 
   // Jika satu rarity kosong dari API, pakai seluruh kartu supaya roll tidak error.
