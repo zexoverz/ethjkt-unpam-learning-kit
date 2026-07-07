@@ -265,6 +265,14 @@ body {
   transform: scale(1.05);
 }
 
+.quantity-button:disabled {
+  opacity: 0.45;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
 .quantity-display {
   font-size: 0.95rem;
 
@@ -424,6 +432,15 @@ body {
   color: var(--orange);
 }
 
+.stock.sold-out {
+  color: #b96f5c;
+  font-weight: 600;
+}
+
+.product.sold-out {
+  opacity: 0.82;
+}
+
 /* CATATAN + KUPON */
 
 .field-label {
@@ -509,6 +526,26 @@ body {
   margin-top: 0.4rem;
 
   font-size: 0.85rem;
+}
+
+.cart-breakdown {
+  margin: 1rem 0;
+  padding: 0.8rem 0;
+
+  border-top: 1px dashed var(--line);
+  border-bottom: 1px dashed var(--line);
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: 0.2rem 0;
+
+  color: var(--olive);
+  font-size: 0.9rem;
 }
 
 /* MODAL REVIEW */
