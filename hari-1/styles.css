@@ -207,6 +207,8 @@ button { cursor: pointer; }
 .side-panel { align-self: start; position: sticky; top: 98px; padding: 22px; border-radius: 28px; }
 .side-panel > * + * { margin-top: 14px; }
 .rate-table { display: grid; gap: 8px; }
+.rate-table h3 { margin: 8px 0 0; color: var(--blue-deep); font-size: .78rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 900; }
+.compact-rate { padding-block: 8px; }
 .rate-row { display: flex; justify-content: space-between; padding: 10px 12px; border-radius: 16px; background: rgba(255,255,255,.62); color: var(--muted); font-weight: 800; }
 .rate-row strong { color: var(--blue-deep); }
 .pack-arena { min-height: 720px; padding: 20px; border-radius: 32px; }
@@ -316,3 +318,4 @@ button { cursor: pointer; }
   .dialog-layout { grid-template-columns: 1fr; }
   .detail-grid { grid-template-columns: 1fr; }
 }
+

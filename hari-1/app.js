@@ -3,7 +3,7 @@ const CACHE_KEY = "pokepack.apiCache.v1";
 const STATE_KEY = "pokepack.collection.v1";
 const CACHE_TTL = 1000 * 60 * 60 * 24;
 const PACK_SIZE = 5;
-const MAX_POKEMON_POOL = 1025;
+const INDEX_PAGE_SIZE = 2000;
 
 const rarityTable = [
   { name: "Common", weight: 55, rank: 1 },
@@ -33,7 +33,8 @@ const state = {
     rarityDistribution: {},
     history: []
   },
-  loading: false
+  loading: false,
+  pokemonCount: 0
 };
 
 const el = {
@@ -112,16 +113,17 @@ async function initializeApi(force = false) {
     }
 
     setStatus("Fetching Pokémon index and type filters from PokéAPI...");
-    const [pokemonList, typeList] = await Promise.all([
-      fetchJson(`${API_BASE}/pokemon?limit=${MAX_POKEMON_POOL}&offset=0`),
+    const [pokemonIndex, typeList] = await Promise.all([
+      fetchPokemonIndex(),
       fetchJson(`${API_BASE}/type`)
     ]);
 
-    state.pokemonList = pokemonList.results || [];
+    state.pokemonList = pokemonIndex.results || [];
+    state.pokemonCount = pokemonIndex.count || state.pokemonList.length;
     state.types = (typeList.results || []).map((type) => type.name).filter((name) => !["unknown", "shadow"].includes(name));
     persistApiCache();
     renderTypeOptions();
-    setStatus(`Ready: ${state.pokemonList.length.toLocaleString()} Pokémon and ${state.types.length} types indexed.`);
+    setStatus(`Ready: ${state.pokemonList.length.toLocaleString()} Pokémon and ${state.types.length} types indexed from PokéAPI.`);
     await renderFeaturedPokemon();
   } catch (error) {
     console.error(error);
@@ -132,6 +134,13 @@ async function initializeApi(force = false) {
     setButtons(false);
     renderAll();
   }
+}
+
+async function fetchPokemonIndex() {
+  const firstPage = await fetchJson(`${API_BASE}/pokemon?limit=1&offset=0`);
+  const count = firstPage.count || INDEX_PAGE_SIZE;
+  const limit = Math.min(count, INDEX_PAGE_SIZE);
+  return fetchJson(`${API_BASE}/pokemon?limit=${limit}&offset=0`);
 }
 
 async function fetchJson(url) {
@@ -148,6 +157,7 @@ function loadApiCache() {
     state.pokemonList = cached.pokemonList || [];
     state.types = cached.types || [];
     state.detailCache = cached.detailCache || {};
+    state.pokemonCount = cached.pokemonCount || state.pokemonList.length;
     renderTypeOptions();
     return Date.now() - (cached.savedAt || 0) < CACHE_TTL;
   } catch {
@@ -161,6 +171,7 @@ function persistApiCache() {
       pokemonList: state.pokemonList,
       types: state.types,
       detailCache: state.detailCache,
+      pokemonCount: state.pokemonCount,
       savedAt: Date.now()
     }));
   } catch {
@@ -375,7 +386,9 @@ function statHtml(label, value) {
 }
 
 function renderRateTable() {
-  el.rateTable.innerHTML = rarityTable.map((item) => `<div class="rate-row"><span>${item.name}</span><strong>${item.weight}%</strong></div>`).join("");
+  const baseRates = rarityTable.map((item) => `<div class="rate-row"><span>${item.name}</span><strong>${item.weight}%</strong></div>`).join("");
+  const finalRates = finalSlotTable.map((item) => `<div class="rate-row compact-rate"><span>${item.name}</span><strong>${item.weight}%</strong></div>`).join("");
+  el.rateTable.innerHTML = `<h3>Base slots</h3>${baseRates}<h3>Final slot boost</h3>${finalRates}`;
 }
 
 function renderTypeOptions() {
@@ -645,3 +658,4 @@ function titleCase(value) {
 function escapeHtml(value) {
   return String(value).replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#039;", '"': "&quot;" }[char]));
 }
+
