@@ -11,16 +11,16 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Katalog resmi toko. Harga "asli" tercatat di sini.
   const products = [
-    { id: 1,  name: "Apel Fuji",       price: 1.5, produceId: "#4131", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg" },
-    { id: 2,  name: "Jeruk Navel",     price: 2.0, produceId: "#4012", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg" },
-    { id: 3,  name: "Pisang",          price: 1.2, produceId: "#4011", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg" },
-    { id: 4,  name: "Anggur",          price: 3.5, produceId: "#4022", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg" },
-    { id: 5,  name: "Stroberi",        price: 4.5, produceId: "#4252", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg" },
-    { id: 6,  name: "Blueberry",       price: 5.0, produceId: "#4264", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg" },
-    { id: 7,  name: "Nanas",           price: 3.0, produceId: "#4430", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg" },
-    { id: 8,  name: "Mangga",          price: 2.8, produceId: "#4951", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg" },
-    { id: 9,  name: "Kiwi",            price: 1.9, produceId: "#4301", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg" },
-    { id: 10, name: "Semangka (Potong)", price: 3.2, produceId: "#4032", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg" }
+    { id: 1,  name: "Apel Fuji",       price: 1.5, stock: 2, produceId: "#4131", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg" },
+    { id: 2,  name: "Jeruk Navel",     price: 2.0, stock: 4, produceId: "#4012", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg" },
+    { id: 3,  name: "Pisang",          price: 1.2, stock: 5, produceId: "#4011", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg" },
+    { id: 4,  name: "Anggur",          price: 3.5, stock: 3, produceId: "#4022", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg" },
+    { id: 5,  name: "Stroberi",        price: 4.5, stock: 1, produceId: "#4252", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg" },
+    { id: 6,  name: "Blueberry",       price: 5.0, stock: 2, produceId: "#4264", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg" },
+    { id: 7,  name: "Nanas",           price: 3.0, stock: 4, produceId: "#4430", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg" },
+    { id: 8,  name: "Mangga",          price: 2.8, stock: 3, produceId: "#4951", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg" },
+    { id: 9,  name: "Kiwi",            price: 1.9, stock: 2, produceId: "#4301", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg" },
+    { id: 10, name: "Semangka (Potong)", price: 3.2, stock: 5, produceId: "#4032", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg" }
   ];
 
   let cart = {};
@@ -28,12 +28,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Biaya penanganan kecil biar operasional toko tetap jalan.
   const HANDLING_FEE = 0.30;
 
-  // Kupon internal buat teman-teman petani. Jangan disebar ya.
-  const KUPON_RAHASIA = "TEMANFARMER";
-  let diskon = 0; // 0 = tanpa diskon, 0.9 = potong 90%
+  const PUBLIC_COUPONS = {
+    PASARPAGI10: 0.1
+  };
+  let diskon = 0; // 0 = tanpa diskon, 0.1 = potong 10%
 
   const productSection = document.getElementById("product-section");
   const cartDetailsEl = document.getElementById("cart-details");
+  const subtotalPriceEl = document.getElementById("cart-subtotal-price");
+  const handlingFeeEl = document.getElementById("cart-handling-fee");
   const totalPriceEl = document.getElementById("modal-total-price");
   const cartCountEl = document.getElementById("cart-count");
   const reviewModal = document.getElementById("review-modal");
@@ -44,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     products.forEach((product) => {
       const quantity = cart[product.id] ? cart[product.id].count : 0;
-      const sisa = Math.floor(Math.random() * 5) + 1; // sisa stok hari ini
+      const isOutOfStock = quantity >= product.stock;
 
       const productCard = document.createElement("article");
       productCard.classList.add("product");
@@ -55,11 +58,11 @@ document.addEventListener("DOMContentLoaded", () => {
           <h2>${product.name}</h2>
           <p class="price">$${product.price.toFixed(2)}</p>
         </div>
-        <p class="stock">tinggal ${sisa} lagi hari ini!</p>
+        <p class="stock">tinggal ${product.stock} lagi hari ini!</p>
         <div class="quantity-controls">
           <button class="quantity-button minus-button" data-id="${product.id}">−</button>
           <span class="quantity-display" id="quantity-${product.id}">${quantity}</span>
-          <button class="quantity-button plus-button" data-id="${product.id}" data-price="${product.price}">+</button>
+          <button class="quantity-button plus-button" data-id="${product.id}" data-price="${product.price}" ${isOutOfStock ? "disabled" : ""}>+</button>
         </div>
       `;
       productSection.appendChild(productCard);
@@ -79,6 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (Object.keys(cart).length === 0) {
       cartDetailsEl.innerHTML = `<p class="empty-cart">Keranjang kamu masih kosong.</p>`;
+      subtotalPriceEl.textContent = "0.00";
+      handlingFeeEl.textContent = "0.00";
       totalPriceEl.textContent = "0.00";
       updateCartCount();
       renderProducts();
@@ -100,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <strong>$${itemTotal.toFixed(2)}</strong>
         </div>
         <div class="cart-item-controls">
-          <input type="number" min="1" class="edit-quantity-input" value="${item.count}" data-id="${item.id}">
+          <input type="number" min="1" max="${item.stock}" class="edit-quantity-input" value="${item.count}" data-id="${item.id}">
           <i class="fas fa-trash delete-icon" data-id="${item.id}"></i>
         </div>
       `;
@@ -112,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (note) {
       const preview = document.createElement("div");
       preview.className = "note-preview";
-      preview.innerHTML = "Catatan: " + note; // innerHTML biar tulisannya rapi
+      preview.textContent = "Catatan: " + note;
       cartDetailsEl.appendChild(preview);
     }
 
@@ -120,20 +125,28 @@ document.addEventListener("DOMContentLoaded", () => {
     let total = totalPrice + HANDLING_FEE;
     total = total - total * diskon;
 
-    totalPriceEl.textContent = total;
+    subtotalPriceEl.textContent = totalPrice.toFixed(2);
+    handlingFeeEl.textContent = HANDLING_FEE.toFixed(2);
+    totalPriceEl.textContent = total.toFixed(2);
     updateCartCount();
     renderProducts();
   }
 
   /* TAMBAH BARANG */
-  function addToCart(id, price) {
+  function addToCart(id) {
     const product = products.find((item) => item.id == id);
     if (!product) return;
+
+    const currentCount = cart[id] ? cart[id].count : 0;
+    if (currentCount >= product.stock) {
+      showToast(`Stok ${product.name} cuma ${product.stock}.`);
+      return;
+    }
 
     if (!cart[id]) {
       cart[id] = { ...product, count: 0 };
     }
-    cart[id].price = price;   // pakai harga dari kartu di layar
+    cart[id].price = product.price;
     cart[id].count++;
     renderCart();
   }
@@ -157,21 +170,34 @@ document.addEventListener("DOMContentLoaded", () => {
   /* UBAH JUMLAH */
   function updateQuantity(id, quantity) {
     if (!cart[id]) return;
+    const product = products.find((item) => item.id == id);
+    if (!product) return;
+
+    if (!Number.isInteger(quantity)) {
+      showToast("Jumlah harus berupa angka.");
+      renderCart();
+      return;
+    }
+
     if (quantity <= 0) {
       delete cart[id];
     } else {
-      cart[id].count = quantity;
+      const safeQuantity = Math.min(quantity, product.stock);
+      cart[id].count = safeQuantity;
+      if (quantity > product.stock) {
+        showToast(`Stok ${product.name} cuma ${product.stock}.`);
+      }
     }
     renderCart();
   }
 
   /* KUPON */
   function applyCoupon() {
-    const code = document.getElementById("coupon").value;
+    const code = document.getElementById("coupon").value.trim().toUpperCase();
     const msg = document.getElementById("coupon-msg");
-    if (code === KUPON_RAHASIA) {
-      diskon = 0.9;
-      msg.textContent = "Kupon aktif! Potongan 90%.";
+    if (PUBLIC_COUPONS[code]) {
+      diskon = PUBLIC_COUPONS[code];
+      msg.textContent = `Kupon aktif! Potongan ${Math.round(diskon * 100)}%.`;
       msg.style.color = "#6e7b61";
     } else {
       diskon = 0;
@@ -227,8 +253,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("review-breakdown").innerHTML = `
       <div class="row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
       <div class="row"><span>Biaya penanganan</span><span>$${HANDLING_FEE.toFixed(2)}</span></div>
-      ${diskon ? `<div class="row"><span>Kupon (-90%)</span><span>-$${potongan.toFixed(2)}</span></div>` : ""}
-      <div class="row grand"><span>Total</span><span>$${total}</span></div>
+      ${diskon ? `<div class="row"><span>Kupon (-${Math.round(diskon * 100)}%)</span><span>-$${potongan.toFixed(2)}</span></div>` : ""}
+      <div class="row grand"><span>Total</span><span>$${total.toFixed(2)}</span></div>
     `;
 
     reviewModal.classList.add("open");
@@ -254,7 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = event.target;
 
     if (target.classList.contains("plus-button")) {
-      addToCart(target.dataset.id, Number(target.dataset.price));
+      addToCart(target.dataset.id);
     }
     if (target.classList.contains("minus-button")) {
       removeFromCart(target.dataset.id);
