@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gacha ETHJKT</title>
+<title>Pokemon Gacha ETHJKT</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -50,9 +50,16 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 8px; position: relative;
   }
-  .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
+  .card .pokemon-img {
+    width: 118px; height: 118px; object-fit: contain;
+    image-rendering: auto; filter: drop-shadow(0 8px 14px rgba(0,0,0,.45));
+  }
+  .card .pokemon-img.is-hidden { display: none; }
   .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
   .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
+  .card .type {
+    font-size: 11px; color: #b9bdd8; text-transform: uppercase; letter-spacing: 1px;
+  }
 
   /* warna per rarity */
   .card.common { border-color: #6b7280; }
@@ -81,7 +88,10 @@
   }
   .btn:hover { filter: brightness(1.08); }
   .btn:active { transform: scale(.95); }
+  .btn:disabled { cursor: wait; filter: grayscale(.45) brightness(.75); transform: none; }
   .btn.gold { background: linear-gradient(180deg,#ffe58a,#ffb347); }
+
+  .message { min-height: 18px; margin: -10px 0 14px; font-size: 12px; color: #ffce73; }
 
   .result-panel {
     text-align: left; margin-bottom: 18px; padding: 12px;
@@ -98,7 +108,7 @@
     border: 2px solid #2a2f4a; display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 2px;
   }
-  .result-item .emoji { font-size: 20px; line-height: 1; }
+  .result-item img { width: 30px; height: 30px; object-fit: contain; }
   .result-item .rarity { font-size: 9px; font-weight: 800; letter-spacing: .5px; }
   .result-item.common .rarity { color: #9aa3b2; }
   .result-item.rare { border-color: #4da6ff; }
@@ -111,10 +121,11 @@
   .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
   .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
   .chip {
-    font-size: 20px; width: 34px; height: 34px; border-radius: 9px;
+    width: 34px; height: 34px; border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
     background: #171b30; border: 2px solid #2a2f4a;
   }
+  .chip img { width: 28px; height: 28px; object-fit: contain; }
   .chip.rare { border-color: #4da6ff; }
   .chip.epic { border-color: #b06bff; }
   .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
@@ -122,23 +133,24 @@
 </head>
 <body>
   <div class="app">
-    <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
+    <h1>POKEMON GACHA</h1>
+    <div class="subtitle">pull Pokemon dari PokeAPI, incar SSR legendary</div>
 
     <div class="stats">
-      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
+      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Pull</div></div>
       <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
     </div>
 
     <div class="pity">
-      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
+      <div class="pity-top"><span>Pity ke SSR Pokemon</span><span id="pityText">0 / 10</span></div>
       <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
     </div>
 
     <div class="stage">
       <div class="card" id="card">
-        <div class="emoji" id="cardEmoji">?</div>
-        <div class="name" id="cardName">Tekan TARIK</div>
+        <img class="pokemon-img is-hidden" id="cardImage" alt="">
+        <div class="name" id="cardName">Tekan PULL</div>
+        <div class="type" id="cardType"></div>
         <div class="rar" id="cardRarity"></div>
       </div>
     </div>
@@ -147,6 +159,8 @@
       <button class="btn" id="tarik1">PULL 1x</button>
       <button class="btn gold" id="tarik10">PULL 10x</button>
     </div>
+
+    <div class="message" id="message"></div>
 
     <div class="result-panel">
       <div class="result-title">Hasil Pull Terakhir</div>
@@ -159,38 +173,32 @@
 
 <script>
   const PITY_LIMIT = 10;
+  const API_BASE = "https://pokeapi.co/api/v2/pokemon";
+  const LOADING_MESSAGE = "Mengambil Pokemon dari PokeAPI...";
+  const SPRITE_FALLBACK =
+    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png";
 
-  const hadiah = {
-    ssr: [
-      { n: "Laptop Quantum", e: "💻" },
-      { n: "ETHJKT Hoodie", e: "🧥" },
-      { n: "Golden Ticket", e: "🎫" }
-    ],
-    epic: [
-      { n: "Keyboard RGB", e: "⌨️" },
-      { n: "Sticker Pack", e: "✨" },
-      { n: "Mentor Call", e: "📞" }
-    ],
-    rare: [
-      { n: "Kopi Coding", e: "☕" },
-      { n: "Gas Fee Voucher", e: "⛽" },
-      { n: "Notebook", e: "📓" }
-    ],
+  const pokemonPools = {
+    ssr: [144, 145, 146, 150, 151, 249, 250, 384, 382, 383],
+    epic: [3, 6, 9, 25, 65, 94, 130, 143, 149, 448],
+    rare: [1, 4, 7, 26, 37, 39, 52, 58, 59, 95, 123, 131, 133, 134, 135, 136],
     common: [
-      { n: "Semangat", e: "🔥" },
-      { n: "Pensil", e: "✏️" },
-      { n: "Air Mineral", e: "🥤" },
-      { n: "Permen", e: "🍬" }
+      10, 13, 16, 19, 21, 23, 27, 29, 32, 41, 43, 46, 48, 54, 60, 66, 69, 72,
+      74, 77, 79, 81, 84, 86, 88, 90, 92, 96, 98, 100, 102, 104, 109, 111, 116,
+      118, 120, 129
     ]
   };
+  const pokemonCache = new Map();
 
   let pity = 0;
   let total = 0;
   let ssrCount = 0;
+  let sedangPull = false;
 
   const card = document.getElementById("card");
-  const cardEmoji = document.getElementById("cardEmoji");
+  const cardImage = document.getElementById("cardImage");
   const cardName = document.getElementById("cardName");
+  const cardType = document.getElementById("cardType");
   const cardRarity = document.getElementById("cardRarity");
   const totalText = document.getElementById("total");
   const ssrCountText = document.getElementById("ssrCount");
@@ -198,31 +206,89 @@
   const pityFill = document.getElementById("pityFill");
   const history = document.getElementById("history");
   const resultList = document.getElementById("resultList");
+  const message = document.getElementById("message");
+  const tombolPull = [document.getElementById("tarik1"), document.getElementById("tarik10")];
 
   function pilihAcak(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  function rollSatu() {
-    total += 1;
-    pity += 1;
-
+  function pilihRarity() {
+    const pitySetelahPull = pity + 1;
     const angkaAcak = Math.random();
     let kelas = "common";
 
     // Pity membuat SSR pasti keluar maksimal setiap 10 pull.
-    if (pity >= PITY_LIMIT || angkaAcak < 0.03) {
+    if (pitySetelahPull >= PITY_LIMIT || angkaAcak < 0.03) {
       kelas = "ssr";
-      pity = 0;
-      ssrCount += 1;
     } else if (angkaAcak < 0.10) {
       kelas = "epic";
     } else if (angkaAcak < 0.30) {
       kelas = "rare";
     }
 
-    const item = pilihAcak(hadiah[kelas]);
-    return { kelas, nama: item.n, emoji: item.e };
+    return kelas;
+  }
+
+  function formatNama(nama) {
+    return nama
+      .split("-")
+      .map((kata) => kata.charAt(0).toUpperCase() + kata.slice(1))
+      .join(" ");
+  }
+
+  function ambilSprite(dataPokemon) {
+    return (
+      dataPokemon.sprites?.other?.["official-artwork"]?.front_default ||
+      dataPokemon.sprites?.other?.home?.front_default ||
+      dataPokemon.sprites?.front_default ||
+      SPRITE_FALLBACK
+    );
+  }
+
+  function ambilSpriteKecil(dataPokemon) {
+    return dataPokemon.sprites?.front_default || ambilSprite(dataPokemon);
+  }
+
+  async function fetchPokemon(id) {
+    if (pokemonCache.has(id)) {
+      return pokemonCache.get(id);
+    }
+
+    const response = await fetch(`${API_BASE}/${id}`);
+
+    if (!response.ok) {
+      throw new Error(`PokeAPI gagal mengambil Pokemon ID ${id}`);
+    }
+
+    const data = await response.json();
+    const pokemon = {
+      id: data.id,
+      nama: formatNama(data.name),
+      tipe: data.types.map((item) => item.type.name).join(" / "),
+      sprite: ambilSprite(data),
+      spriteKecil: ambilSpriteKecil(data)
+    };
+
+    pokemonCache.set(id, pokemon);
+    return pokemon;
+  }
+
+  async function rollSatu() {
+    const kelas = pilihRarity();
+    const pokemonId = pilihAcak(pokemonPools[kelas]);
+    const pokemon = await fetchPokemon(pokemonId);
+
+    total += 1;
+
+    if (kelas === "ssr") {
+      pity = 0;
+      ssrCount += 1;
+    } else {
+      pity += 1;
+    }
+
+    return { kelas, ...pokemon };
   }
 
   function updateStats() {
@@ -233,8 +299,13 @@
   }
 
   function tampilkan(hasil) {
-    cardEmoji.textContent = hasil.emoji;
-    cardName.textContent = hasil.nama;
+    cardImage.src = hasil.sprite;
+    cardImage.alt = hasil.nama;
+    cardImage.dataset.fallback = hasil.spriteKecil || SPRITE_FALLBACK;
+    delete cardImage.dataset.triedFallback;
+    cardImage.classList.remove("is-hidden");
+    cardName.textContent = `#${hasil.id} ${hasil.nama}`;
+    cardType.textContent = hasil.tipe;
     cardRarity.textContent = hasil.kelas.toUpperCase();
 
     card.className = "card";
@@ -247,9 +318,15 @@
   function tambahRiwayat(hasil) {
     const chip = document.createElement("div");
     chip.className = `chip ${hasil.kelas}`;
-    chip.textContent = hasil.emoji;
     chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
 
+    const img = document.createElement("img");
+    img.src = hasil.spriteKecil;
+    img.alt = hasil.nama;
+    img.dataset.fallback = SPRITE_FALLBACK;
+    pasangFallbackGambar(img);
+
+    chip.append(img);
     history.prepend(chip);
 
     while (history.children.length > 12) {
@@ -265,32 +342,71 @@
       item.className = `result-item ${hasil.kelas}`;
       item.title = hasil.nama;
 
-      const emoji = document.createElement("div");
-      emoji.className = "emoji";
-      emoji.textContent = hasil.emoji;
+      const img = document.createElement("img");
+      img.src = hasil.spriteKecil;
+      img.alt = hasil.nama;
+      img.dataset.fallback = SPRITE_FALLBACK;
+      pasangFallbackGambar(img);
 
       const rarity = document.createElement("div");
       rarity.className = "rarity";
       rarity.textContent = hasil.kelas.toUpperCase();
 
-      item.append(emoji, rarity);
+      item.append(img, rarity);
       resultList.append(item);
     });
   }
 
-  function pull(jumlah) {
-    const hasilPull = [];
+  function pasangFallbackGambar(img) {
+    img.addEventListener("error", () => {
+      const fallback = img.dataset.fallback || SPRITE_FALLBACK;
 
-    for (let i = 0; i < jumlah; i += 1) {
-      const hasil = rollSatu();
-      hasilPull.push(hasil);
-      tambahRiwayat(hasil);
-    }
-
-    tampilkan(hasilPull[hasilPull.length - 1]);
-    tampilkanDaftarHasil(hasilPull);
+      if (!img.dataset.triedFallback && img.src !== fallback) {
+        img.dataset.triedFallback = "true";
+        img.src = fallback;
+      } else {
+        img.classList.add("is-hidden");
+      }
+    });
   }
 
+  function setLoading(isLoading) {
+    sedangPull = isLoading;
+    tombolPull.forEach((tombol) => {
+      tombol.disabled = isLoading;
+    });
+    if (isLoading) {
+      message.textContent = LOADING_MESSAGE;
+    } else if (message.textContent === LOADING_MESSAGE) {
+      message.textContent = "";
+    }
+  }
+
+  async function pull(jumlah) {
+    if (sedangPull) return;
+
+    const hasilPull = [];
+
+    setLoading(true);
+
+    try {
+      for (let i = 0; i < jumlah; i += 1) {
+        const hasil = await rollSatu();
+        hasilPull.push(hasil);
+        tambahRiwayat(hasil);
+      }
+
+      tampilkan(hasilPull[hasilPull.length - 1]);
+      tampilkanDaftarHasil(hasilPull);
+    } catch (error) {
+      message.textContent = "Gagal ambil Pokemon. Cek koneksi, lalu coba lagi.";
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  pasangFallbackGambar(cardImage);
   document.getElementById("tarik1").addEventListener("click", () => pull(1));
   document.getElementById("tarik10").addEventListener("click", () => pull(10));
 
