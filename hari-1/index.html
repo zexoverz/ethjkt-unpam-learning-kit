@@ -3,36 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poké Gacha ETHJKT</title>
+<title>Poké Gacha & Battle Arena — ETHJKT</title>
+<!-- Google Fonts: Outfit (modern heading), Poppins (body), Orbitron (tech stats) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;600;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="pokedex">
-    <!-- Bagian atas ala perangkat Pokédex: lensa biru + 3 lampu indikator -->
+    <!-- Bagian atas ala perangkat Pokédex: lensa biru + 3 lampu indikator + branding modern -->
     <div class="pokedex-top">
-      <div class="lens"></div>
-      <div class="lights">
-        <span class="light red"></span>
-        <span class="light yellow"></span>
-        <span class="light green"></span>
+      <div class="lens-container" id="soundToggle" title="Klik untuk bisukan/aktifkan suara">
+        <div class="lens">
+          <div class="lens-reflection"></div>
+        </div>
       </div>
-      <div class="brand">POKÉDEX</div>
+      <div class="lights">
+        <span class="light red pulse-light"></span>
+        <span class="light yellow pulse-light" style="animation-delay: 0.2s"></span>
+        <span class="light green pulse-light" style="animation-delay: 0.4s"></span>
+      </div>
+      
+      <!-- Widget koin di bagian atas kanan -->
+      <div class="coin-display">
+        <span class="coin-icon">🪙</span>
+        <span class="coin-num" id="coinCount">100</span>
+      </div>
     </div>
 
-    <!-- Layar putih tempat semua konten tampil -->
+    <!-- Layar Pokédex utama -->
     <div class="screen">
-      <h1>POKÉ GACHA</h1>
-      <div class="subtitle">tarik Pokémon asli — data langsung dari PokeAPI</div>
+      <div class="pokedex-header">
+        <h1>POKÉ GACHA</h1>
+        <div class="subtitle">Tarik Pack & Kuasai Arena — Data Asli dari PokeAPI</div>
+      </div>
 
       <!-- Navigasi tab -->
       <div class="tabs">
         <button class="tab active" data-tab="gacha">Gacha</button>
+        <button class="tab" data-tab="battle">Battle</button>
         <button class="tab" data-tab="koleksi">Koleksi</button>
-        <button class="tab" data-tab="badge">Badge</button>
+        <button class="tab" data-tab="badge">Badges</button>
       </div>
 
-      <!-- ============ TAB: GACHA ============ -->
+      <!-- ============ TAB: GACHA (PULLS) ============ -->
       <div class="tab-panel" id="panel-gacha">
+        <!-- Coin & Daily Claim widget -->
+        <div class="claim-bar">
+          <span>Koin seret? Ambil koin gratis!</span>
+          <button class="btn-claim" id="claimBtn">🎁 Klaim +50 Koin</button>
+        </div>
+
         <div class="stats">
           <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
           <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
@@ -43,50 +65,183 @@
           <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
         </div>
 
-        <div class="stage">
-          <div class="card" id="card">
-            <div class="spinner" id="spinner"></div>
-            <img class="sprite" id="sprite" alt="">
-            <div class="shiny-badge" id="shinyBadge">✨ SHINY</div>
-            <div class="placeholder" id="placeholder">
-              <div class="pokeball"></div>
-              <div class="ph-text">Tekan PULL</div>
+        <!-- Pemilihan Booster Pack -->
+        <div class="pack-store-title">PILIH BOOSTER PACK</div>
+        <div class="pack-list">
+          <div class="pack-card active" data-pack="kanto">
+            <div class="pack-glow"></div>
+            <div class="pack-art red-pack">
+              <div class="pack-symbol">🔴</div>
+            </div>
+            <div class="pack-info-mini">
+              <h3>Kanto Journey</h3>
+              <p>Gen 1 (IDs 1-151)</p>
+              <div class="pack-cost">🪙 15 (Pack) / 🪙 4 (1x)</div>
+            </div>
+          </div>
+
+          <div class="pack-card" data-pack="eevee">
+            <div class="pack-glow"></div>
+            <div class="pack-art eevee-pack">
+              <div class="pack-symbol">🦊</div>
+            </div>
+            <div class="pack-info-mini">
+              <h3>Eevee Spark</h3>
+              <p>Eevee + Fairy (Shiny rate 10%)</p>
+              <div class="pack-cost">🪙 40 (Pack) / 🪙 10 (1x)</div>
+            </div>
+          </div>
+
+          <div class="pack-card" data-pack="legendary">
+            <div class="pack-glow"></div>
+            <div class="pack-art gold-pack">
+              <div class="pack-symbol">👑</div>
+            </div>
+            <div class="pack-info-mini">
+              <h3>Legendary Raid</h3>
+              <p>Epic & SSR Only</p>
+              <div class="pack-cost">🪙 100 (Pack) / 🪙 25 (1x)</div>
             </div>
           </div>
         </div>
 
-        <div class="poke-info">
-          <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
-          <div class="genus" id="genus">Waiting for scan</div>
-          <div class="types" id="types"></div>
-          <div class="rar" id="rarity"></div>
-          <p class="flavor" id="flavorText">Press PULL to scan a Pokemon from PokeAPI.</p>
-          <div class="data-grid" id="dataGrid"></div>
-          <div class="detail-block">
-            <div class="detail-title">Abilities</div>
-            <div class="pill-list" id="abilities"></div>
+        <!-- Tombol Tarik (Tipe single / multi digerakkan oleh pack yang dipilih) -->
+        <div class="buttons">
+          <button class="btn" id="tarik1">PULL 1x</button>
+          <button class="btn gold" id="tarik10">PULL 10x (2 Packs)</button>
+        </div>
+
+        <!-- Area Detail Scan Pokémon Terakhir (Card Detail) -->
+        <div class="scan-result-container">
+          <div class="stage">
+            <div class="card" id="card">
+              <div class="spinner" id="spinner"></div>
+              <img class="sprite" id="sprite" alt="">
+              <div class="shiny-badge" id="shinyBadge">✨ SHINY</div>
+              <div class="placeholder" id="placeholder">
+                <div class="pokeball"></div>
+                <div class="ph-text">Tekan PULL di atas</div>
+              </div>
+            </div>
           </div>
-          <div class="detail-block">
-            <div class="detail-title">Moves</div>
-            <div class="pill-list" id="moves"></div>
+
+          <div class="poke-info">
+            <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
+            <div class="genus" id="genus">Menunggu Pemindaian</div>
+            <div class="types" id="types"></div>
+            <div class="rar" id="rarity"></div>
+            <p class="flavor" id="flavorText">Tekan PULL untuk menarik kartu Pokémon betulan dari database PokeAPI.</p>
+            
+            <div class="data-grid" id="dataGrid"></div>
+            
+            <div class="detail-block">
+              <div class="detail-title">Abilities</div>
+              <div class="pill-list" id="abilities"></div>
+            </div>
+            
+            <div class="detail-block">
+              <div class="detail-title">Moves</div>
+              <div class="pill-list" id="moves"></div>
+            </div>
+            
+            <div class="detail-block">
+              <div class="detail-title">Evolution</div>
+              <div class="evolution-line" id="evolutionLine"></div>
+            </div>
+            
+            <button class="cry-btn" id="cryBtn" type="button" hidden>🔊 Putar Suara Tangisan</button>
+            <div class="stats-panel" id="statsPanel"></div>
           </div>
-          <div class="detail-block">
-            <div class="detail-title">Evolution</div>
-            <div class="evolution-line" id="evolutionLine"></div>
-          </div>
-          <button class="cry-btn" id="cryBtn" type="button" hidden>Play cry</button>
-          <div class="stats-panel" id="statsPanel"></div>
         </div>
 
         <div class="err" id="err"></div>
 
-        <div class="buttons">
-          <button class="btn" id="tarik1">PULL 1x</button>
-          <button class="btn gold" id="tarik10">PULL 10x</button>
-        </div>
-
-        <div class="hist-lbl">Riwayat Terakhir</div>
+        <div class="hist-lbl">Riwayat Tarikan Terakhir</div>
         <div class="history" id="history"></div>
+      </div>
+
+      <!-- ============ TAB: BATTLE ARENA (NEW) ============ -->
+      <div class="tab-panel" id="panel-battle" hidden>
+        <div class="battle-arena">
+          <div class="battle-setup" id="battleSetup">
+            <h3>PILIH PETARUNG & TIER MUSUH</h3>
+            
+            <div class="battle-form-group">
+              <label for="userPokeSelect">Pilih Pokémon-mu:</label>
+              <select class="battle-select" id="userPokeSelect">
+                <!-- Diisi dinamis -->
+              </select>
+            </div>
+
+            <div class="battle-tiers">
+              <div class="battle-tier-card active" data-tier="trainer">
+                <h4>Gym Trainer</h4>
+                <p>Mudah • 🪙 5 Entry</p>
+                <strong>Hadiah: 🪙 15</strong>
+              </div>
+              <div class="battle-tier-card" data-tier="leader">
+                <h4>Gym Leader</h4>
+                <p>Sedang • 🪙 15 Entry</p>
+                <strong>Hadiah: 🪙 45</strong>
+              </div>
+              <div class="battle-tier-card" data-tier="elite">
+                <h4>Elite Four</h4>
+                <p>Sulit • 🪙 30 Entry</p>
+                <strong>Hadiah: 🪙 100</strong>
+              </div>
+              <div class="battle-tier-card" data-tier="champion">
+                <h4>Rival Champion</h4>
+                <p>Ekstrim • 🪙 50 Entry</p>
+                <strong>Hadiah: 🪙 200</strong>
+              </div>
+            </div>
+
+            <button class="btn-battle-start" id="startBattleBtn">⚔️ MULAI PERPERTARUNGAN ⚔️</button>
+            <p class="battle-err" id="battleErr"></p>
+          </div>
+
+          <!-- Panggung Pertarungan -->
+          <div class="battle-stage" id="battleStage" hidden>
+            <div class="battle-vs-screen">
+              <!-- Pokémon Musuh -->
+              <div class="battle-fighter opponent">
+                <div class="fighter-info">
+                  <span class="fighter-name" id="oppName">AI Charizard</span>
+                  <span class="fighter-hp-text" id="oppHpText">HP: 100/100</span>
+                </div>
+                <div class="hp-bar-track">
+                  <div class="hp-bar-fill" id="oppHpFill" style="width: 100%"></div>
+                </div>
+                <div class="fighter-sprite-container">
+                  <img class="fighter-sprite" id="oppSprite" src="" alt="">
+                </div>
+              </div>
+
+              <div class="vs-divider">VS</div>
+
+              <!-- Pokémon User -->
+              <div class="battle-fighter player">
+                <div class="fighter-sprite-container">
+                  <img class="fighter-sprite" id="playerSprite" src="" alt="">
+                </div>
+                <div class="hp-bar-track">
+                  <div class="hp-bar-fill" id="playerHpFill" style="width: 100%"></div>
+                </div>
+                <div class="fighter-info">
+                  <span class="fighter-name" id="playerName">Pikachu</span>
+                  <span class="fighter-hp-text" id="playerHpText">HP: 100/100</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Log Pertarungan -->
+            <div class="battle-log" id="battleLog"></div>
+
+            <div class="battle-actions" id="battleActions" hidden>
+              <button class="btn-battle-exit" id="exitBattleBtn">Kembali ke Lobi</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ============ TAB: KOLEKSI ============ -->
@@ -95,21 +250,86 @@
           <div class="stat"><div class="num" id="uniqueCount">0</div><div class="lbl">Jenis Terkumpul</div></div>
           <div class="stat"><div class="num" id="shinyCount">0</div><div class="lbl">Shiny</div></div>
         </div>
+
+        <!-- Kolom pencarian & filter tipe -->
+        <div class="filter-bar">
+          <input type="text" class="search-input" id="pokeSearch" placeholder="Cari Pokémon berdasarkan nama...">
+          <div class="filter-pills" id="typeFilters">
+            <button class="filter-pill active" data-type="all">Semua</button>
+            <button class="filter-pill" data-type="shiny">✨ Shiny</button>
+            <button class="filter-pill" data-type="ssr">👑 Legendary</button>
+            <button class="filter-pill" data-type="fire">🔥 Api</button>
+            <button class="filter-pill" data-type="water">💧 Air</button>
+            <button class="filter-pill" data-type="grass">🌿 Rumput</button>
+            <button class="filter-pill" data-type="electric">⚡ Listrik</button>
+          </div>
+        </div>
+
         <div class="collection-empty" id="collectionEmpty">Belum ada Pokémon. Tarik dulu di tab Gacha! 🎣</div>
         <div class="collection-grid" id="collectionGrid"></div>
       </div>
 
-      <!-- ============ TAB: BADGE ============ -->
+      <!-- ============ TAB: BADGES (GYM & MASTERY) ============ -->
       <div class="tab-panel" id="panel-badge" hidden>
-        <p class="badge-intro">Kumpulkan Pokémon tiap tipe untuk menguasai gym Kanto dan meraih 8 badge-nya!</p>
-        <div class="champion" id="champion" hidden>👑 CHAMPION! Kamu menguasai semua 8 gym Kanto!</div>
+        <!-- Gym Badges Kanto -->
+        <div class="badge-section-title">🏆 KANTO GYM BADGES</div>
+        <p class="badge-intro">Kumpulkan Pokémon tipe tertentu untuk menantang Gym Leader Kanto dan rebut 8 badge legendaris!</p>
+        <div class="champion" id="champion" hidden>👑 CHAMPION! Kamu telah menguasai semua 8 Gym Kanto!</div>
         <div class="badge-grid" id="badgeGrid"></div>
+
+        <!-- Mastery Badges (Spesial Koleksi) -->
+        <div class="badge-section-title" style="margin-top: 24px;">🎖️ COLLECTION MASTERY BADGES</div>
+        <p class="badge-intro">Lengkapi koleksi bertema khusus di bawah ini untuk mendapatkan gelar Master dan badge eksklusif!</p>
+        <div class="mastery-grid" id="masteryGrid">
+          <!-- Diisi dinamis oleh JavaScript -->
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Notifikasi kecil saat dapat badge baru -->
+  <!-- INTERACTIVE PACK OPENING STAGE (OVERLAY MODAL) -->
+  <div class="pack-overlay" id="packOverlay" hidden>
+    <div class="pack-overlay-content">
+      <h2 id="packOverlayTitle">BOOSTER PACK OPENING</h2>
+      <div class="pack-wrapper-stage" id="packWrapperStage">
+        <!-- Tampilan bungkus kartu pack gacha -->
+        <div class="booster-pack-wrapper" id="boosterPackWrapper">
+          <div class="pack-flap top"></div>
+          <div class="pack-front" id="packFrontArt">
+            <div class="pack-logo">🔴</div>
+            <div class="pack-title">KANTO</div>
+            <div class="pack-sub">BOOSTER</div>
+          </div>
+          <div class="pack-flap bottom"></div>
+          <div class="rip-glow" id="ripGlow"></div>
+        </div>
+        <button class="btn-tear" id="tearPackBtn">SOBEK BUNGKUS PACK</button>
+      </div>
+
+      <!-- Stage kartu-kartu yang keluar dari pack -->
+      <div class="pack-cards-stage" id="packCardsStage" hidden>
+        <p class="pack-tip">Klik kartu di bawah untuk membaliknya!</p>
+        <div class="cards-fan-grid" id="cardsFanGrid">
+          <!-- 5 kartu diposisikan di sini -->
+        </div>
+        <div class="pack-opening-footer">
+          <button class="btn-reveal-all" id="revealAllBtn">BUKA SEMUA KARTU</button>
+          <button class="btn-done" id="doneOpeningBtn" disabled>SELESAI</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifikasi kecil saat meraih badge baru -->
   <div class="toast" id="toast" hidden></div>
+
+  <!-- Modal Detail Pokémon (ketika sel koleksi diklik) -->
+  <div class="detail-modal" id="detailModal" hidden>
+    <div class="detail-modal-content">
+      <span class="close-modal" id="closeModal">&times;</span>
+      <div id="modalContentContainer"></div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
