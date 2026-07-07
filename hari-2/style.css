@@ -503,12 +503,33 @@ body {
   font-weight: 600;
 }
 
+.coupon-hint {
+  margin: 0.45rem 0 0;
+
+  color: var(--olive);
+  font-size: 0.82rem;
+}
+
 .coupon-msg {
   min-height: 1rem;
 
   margin-top: 0.4rem;
 
   font-size: 0.85rem;
+}
+
+.cart-breakdown {
+  margin: 1rem 0;
+}
+
+.cart-breakdown .row {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 0.2rem 0;
+
+  color: var(--olive);
+  font-size: 0.9rem;
 }
 
 /* MODAL REVIEW */
