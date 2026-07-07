@@ -3,128 +3,202 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gacha ETHJKT</title>
+<title>Pokemon Gacha Simulator</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --paper: #f8f3e8;
+    --ink: #243044;
+    --muted: #6f7787;
+    --line: #d9d2c2;
+    --red: #d94141;
+    --blue: #2c73d2;
+    --yellow: #f6c945;
+    --green: #2f9f67;
+  }
+
   body {
     font-family: "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
-    color: #eaeaf0; min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
+    background:
+      linear-gradient(135deg, rgba(217,65,65,.08) 25%, transparent 25%) -18px 0 / 36px 36px,
+      linear-gradient(225deg, rgba(44,115,210,.08) 25%, transparent 25%) -18px 0 / 36px 36px,
+      var(--paper);
+    color: var(--ink); min-height: 100vh;
+    display: flex; align-items: center; justify-content: center; padding: 18px;
   }
   .app {
-    width: 100%; max-width: 460px; text-align: center;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px; padding: 24px 22px 28px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    width: 100%; max-width: 760px;
+    background: rgba(255,255,255,.82);
+    border: 2px solid var(--line);
+    border-radius: 8px; padding: 18px;
+    box-shadow: 0 18px 42px rgba(36,48,68,.18);
   }
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
   h1 {
-    font-size: 26px; letter-spacing: 1px; margin-bottom: 4px;
-    background: linear-gradient(90deg,#ffd86b,#ff7eb3,#7ee8ff);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-size: 24px; letter-spacing: 0; line-height: 1;
+    color: var(--ink);
   }
-  .subtitle { font-size: 12px; color: #8b90b0; margin-bottom: 18px; }
+  .subtitle { font-size: 13px; color: var(--muted); margin-top: 5px; }
+  .api-badge {
+    flex: 0 0 auto; font-size: 12px; font-weight: 800; color: #fff;
+    background: var(--red); border: 2px solid #b93232; border-radius: 999px;
+    padding: 7px 11px;
+  }
 
-  .stats { display: flex; gap: 10px; margin-bottom: 12px; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 18px; align-items: start; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
   .stat {
-    flex: 1; background: rgba(255,255,255,0.05); border-radius: 12px;
-    padding: 10px 6px;
+    background: #fff; border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 8px; text-align: center;
   }
   .stat .num { font-size: 22px; font-weight: 700; }
-  .stat .lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; }
+  .stat .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 
   .pity { margin-bottom: 18px; text-align: left; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #b9bdd8; margin-bottom: 6px; }
-  .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
+  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .pity-track { height: 10px; background: #e9e1d3; border-radius: 999px; overflow: hidden; }
   .pity-fill {
     height: 100%; width: 0%;
-    background: linear-gradient(90deg,#ffd86b,#ffb347);
+    background: linear-gradient(90deg,var(--yellow),#f08f36);
     transition: width 0.35s ease;
   }
 
   .stage { display: flex; justify-content: center; margin-bottom: 20px; }
   .card {
-    width: 180px; height: 230px; border-radius: 18px;
-    background: #171b30; border: 3px solid #2a2f4a;
+    width: min(100%, 330px); min-height: 430px; border-radius: 8px;
+    background: #fff; border: 3px solid #8d97a8;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative;
+    gap: 10px; position: relative; padding: 18px;
+    box-shadow: inset 0 0 0 6px #f2eadc;
   }
-  .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
-  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
-  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
+  .dex-no {
+    position: absolute; top: 12px; left: 14px; font-size: 12px; font-weight: 800;
+    color: var(--muted);
+  }
+  .sprite-frame {
+    width: 100%; aspect-ratio: 1 / .82; border-radius: 6px;
+    display: grid; place-items: center;
+    background:
+      linear-gradient(#eef6ff 1px, transparent 1px) 0 0 / 18px 18px,
+      linear-gradient(90deg, #eef6ff 1px, transparent 1px) 0 0 / 18px 18px,
+      #f8fbff;
+    border: 1px solid #d8e5f5;
+  }
+  .pokemon-img {
+    width: min(86%, 220px); height: auto;
+    image-rendering: auto;
+    filter: drop-shadow(0 12px 10px rgba(36,48,68,.18));
+  }
+  .card .emoji { font-size: 54px; line-height: 1; color: var(--muted); }
+  .card .name { font-size: 25px; font-weight: 800; padding: 0 8px; text-transform: capitalize; text-align: center; }
+  .card .rar { font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; opacity: .95; }
+  .type-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; min-height: 26px; }
+  .type-pill {
+    border-radius: 999px; padding: 5px 9px; font-size: 11px; font-weight: 800;
+    color: #fff; background: #7a8494; text-transform: uppercase;
+  }
+  .flavor {
+    min-height: 48px; font-size: 13px; line-height: 1.45; color: var(--muted);
+    text-align: center;
+  }
 
-  /* warna per rarity */
-  .card.common { border-color: #6b7280; }
-  .card.common .rar { color: #9aa3b2; }
-  .card.rare   { border-color: #4da6ff; box-shadow: 0 0 22px rgba(77,166,255,.45); }
-  .card.rare   .rar { color: #4da6ff; }
-  .card.epic   { border-color: #b06bff; box-shadow: 0 0 26px rgba(176,107,255,.55); }
-  .card.epic   .rar { color: #c88bff; }
-  .card.ssr    { border-color: #ffd24a; box-shadow: 0 0 40px rgba(255,210,74,.8); }
-  .card.ssr    .rar { color: #ffd24a; }
-  .card.ssr    .name { color: #ffe89a; }
+  .card.common { border-color: #8d97a8; }
+  .card.common .rar { color: #6f7787; }
+  .card.rare   { border-color: var(--blue); box-shadow: 0 12px 30px rgba(44,115,210,.24); }
+  .card.rare   .rar { color: var(--blue); }
+  .card.epic   { border-color: #7b55d9; box-shadow: 0 12px 34px rgba(123,85,217,.28); }
+  .card.epic   .rar { color: #7b55d9; }
+  .card.ssr    { border-color: #d99b24; box-shadow: 0 16px 42px rgba(217,155,36,.35); }
+  .card.ssr    .rar { color: #b57511; }
+  .card.ssr    .name { color: #9a5d00; }
 
-  /* animasi reveal */
   @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-  @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,210,74,.7)} 50%{box-shadow:0 0 55px rgba(255,210,74,1)} }
+  @keyframes glowpulse { 0%,100%{box-shadow:0 16px 42px rgba(217,155,36,.35)} 50%{box-shadow:0 18px 60px rgba(217,155,36,.62)} }
   .card.reveal { animation: pop .4s ease; }
   .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
 
   .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
   .btn {
-    flex: 1; padding: 15px 0; border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer;
-    color: #0a0d1c; background: linear-gradient(180deg,#8fd3ff,#4da6ff);
-    transition: transform .08s ease, filter .15s ease;
+    flex: 1; padding: 14px 0; border: 2px solid #1e579f; border-radius: 6px;
+    font-size: 15px; font-weight: 800; letter-spacing: 0; cursor: pointer;
+    color: #fff; background: var(--blue);
+    transition: transform .08s ease, filter .15s ease, opacity .15s ease;
   }
   .btn:hover { filter: brightness(1.08); }
   .btn:active { transform: scale(.95); }
-  .btn.gold { background: linear-gradient(180deg,#ffe58a,#ffb347); }
+  .btn.gold { background: var(--red); border-color: #b93232; }
+  .btn:disabled { cursor: wait; opacity: .62; }
 
-  .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
-  .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
-  .chip {
-    font-size: 20px; width: 34px; height: 34px; border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    background: #171b30; border: 2px solid #2a2f4a;
+  .panel {
+    background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 12px;
   }
-  .chip.rare { border-color: #4da6ff; }
-  .chip.epic { border-color: #b06bff; }
-  .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
+  .hist-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
+  .history { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; min-height: 34px; }
+  .chip {
+    width: 100%; aspect-ratio: 1; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    background: #f8fbff; border: 2px solid #8d97a8; overflow: hidden;
+  }
+  .chip img { width: 90%; height: 90%; object-fit: contain; }
+  .chip.rare { border-color: var(--blue); }
+  .chip.epic { border-color: #7b55d9; }
+  .chip.ssr  { border-color: #d99b24; box-shadow: 0 0 12px rgba(217,155,36,.28); }
+
+  @media (max-width: 720px) {
+    .layout { grid-template-columns: 1fr; }
+    .topbar { align-items: flex-start; }
+  }
 </style>
 </head>
 <body>
   <div class="app">
-    <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
-
-    <div class="stats">
-      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
-    </div>
-
-    <div class="pity">
-      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
-      <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-    </div>
-
-    <div class="stage">
-      <div class="card" id="card">
-        <div class="emoji" id="cardEmoji">?</div>
-        <div class="name" id="cardName">Tekan TARIK</div>
-        <div class="rar" id="cardRarity"></div>
+    <div class="topbar">
+      <div>
+        <h1>Pokemon Gacha</h1>
+        <div class="subtitle">Pull Pokemon directly from PokeAPI.</div>
       </div>
+      <div class="api-badge">PokeAPI</div>
     </div>
 
-    <div class="buttons">
-      <button class="btn" id="tarik1">TARIK 1x</button>
-      <button class="btn gold" id="tarik10">TARIK 10x</button>
-    </div>
+    <div class="layout">
+      <main>
+        <div class="stage">
+          <div class="card" id="card">
+            <div class="dex-no" id="dexNo">#---</div>
+            <div class="sprite-frame">
+              <img class="pokemon-img" id="pokemonImage" alt="" hidden>
+              <div class="emoji" id="cardEmoji">?</div>
+            </div>
+            <div class="name" id="cardName">Tekan TARIK</div>
+            <div class="rar" id="cardRarity"></div>
+            <div class="type-row" id="typeRow"></div>
+            <div class="flavor" id="flavorText">Pokemon akan muncul di sini setelah pull.</div>
+          </div>
+        </div>
+      </main>
 
-    <div class="hist-lbl">Riwayat Terakhir</div>
-    <div class="history" id="history"></div>
+      <aside class="panel">
+        <div class="stats">
+          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Pull</div></div>
+          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR</div></div>
+          <div class="stat"><div class="num" id="seenCount">0</div><div class="lbl">Seen</div></div>
+        </div>
+
+        <div class="pity">
+          <div class="pity-top"><span>Pity to SSR</span><span id="pityText">0 / 10</span></div>
+          <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
+        </div>
+
+        <div class="buttons">
+          <button class="btn" id="tarik1">Pull 1x</button>
+          <button class="btn gold" id="tarik10">Pull 10x</button>
+        </div>
+
+        <div class="hist-lbl">Last Pulls</div>
+        <div class="history" id="history"></div>
+      </aside>
+    </div>
   </div>
 
 <script>
