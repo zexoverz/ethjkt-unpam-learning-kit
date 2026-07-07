@@ -491,3 +491,5 @@ document.querySelectorAll(".tab").forEach(t => {
 loadState();
 updateStats();
 shownBadges = earnedBadgeIds(); // badge yang sudah diraih dari sesi lama, jangan toast ulang
+renderCollection();
+renderBadges();
