@@ -3,106 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gacha ETHJKT</title>
+<title>Yu-Gi-Oh! Gacha</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
-    color: #eaeaf0; min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
+    background: radial-gradient(circle at 50% 0%, #202742 0%, #090b12 72%);
+    color: #f4f1e8; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center; padding: 18px;
   }
   .app {
-    width: 100%; max-width: 460px; text-align: center;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px; padding: 24px 22px 28px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    width: 100%; max-width: 900px;
+    background: rgba(14,17,28,0.9);
+    border: 1px solid rgba(244,213,132,0.22);
+    border-radius: 16px; padding: 22px;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.55);
   }
+  .top { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
   h1 {
-    font-size: 26px; letter-spacing: 1px; margin-bottom: 4px;
-    background: linear-gradient(90deg,#ffd86b,#ff7eb3,#7ee8ff);
+    font-size: 28px; letter-spacing: 0; margin-bottom: 4px;
+    background: linear-gradient(90deg,#f8d46b,#f38b52,#6fc2ff);
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  .subtitle { font-size: 12px; color: #8b90b0; margin-bottom: 18px; }
+  .subtitle, .status { font-size: 12px; color: #a8adbf; }
+  .status { text-align: right; max-width: 260px; }
 
-  .stats { display: flex; gap: 10px; margin-bottom: 12px; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
   .stat {
-    flex: 1; background: rgba(255,255,255,0.05); border-radius: 12px;
-    padding: 10px 6px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 10px 8px; text-align: center;
   }
-  .stat .num { font-size: 22px; font-weight: 700; }
-  .stat .lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; }
+  .stat .num { font-size: 22px; font-weight: 800; }
+  .stat .lbl { font-size: 11px; color: #a8adbf; text-transform: uppercase; letter-spacing: 1px; }
 
-  .pity { margin-bottom: 18px; text-align: left; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #b9bdd8; margin-bottom: 6px; }
+  .pity { margin-bottom: 18px; }
+  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #d1d5e4; margin-bottom: 6px; }
   .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
   .pity-fill {
     height: 100%; width: 0%;
-    background: linear-gradient(90deg,#ffd86b,#ffb347);
+    background: linear-gradient(90deg,#f8d46b,#f38b52);
     transition: width 0.35s ease;
   }
 
-  .stage { display: flex; justify-content: center; margin-bottom: 20px; }
+  .board { display: grid; grid-template-columns: 280px 1fr; gap: 22px; align-items: start; }
+  .stage { display: flex; justify-content: center; }
   .card {
-    width: 180px; height: 230px; border-radius: 18px;
-    background: #171b30; border: 3px solid #2a2f4a;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative;
+    width: 240px; min-height: 410px; border-radius: 12px;
+    background: #151926; border: 3px solid #444b5f;
+    display: flex; flex-direction: column; align-items: stretch;
+    overflow: hidden; position: relative;
   }
-  .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
-  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
-  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
+  .card-art {
+    width: 100%; aspect-ratio: 421 / 614; object-fit: cover;
+    background: linear-gradient(180deg,#252b3a,#11141f);
+  }
+  .card-info { padding: 12px; display: grid; gap: 7px; }
+  .card .name { font-size: 17px; font-weight: 800; line-height: 1.2; min-height: 42px; }
+  .card .rar { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 11px; color: #dbe2f4; background: rgba(255,255,255,0.08);
+    border-radius: 999px; padding: 4px 7px;
+  }
+  .desc {
+    color: #c0c6d6; font-size: 12px; line-height: 1.35;
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+  }
 
-  /* warna per rarity */
-  .card.common { border-color: #6b7280; }
-  .card.common .rar { color: #9aa3b2; }
-  .card.rare   { border-color: #4da6ff; box-shadow: 0 0 22px rgba(77,166,255,.45); }
-  .card.rare   .rar { color: #4da6ff; }
-  .card.epic   { border-color: #b06bff; box-shadow: 0 0 26px rgba(176,107,255,.55); }
-  .card.epic   .rar { color: #c88bff; }
-  .card.ssr    { border-color: #ffd24a; box-shadow: 0 0 40px rgba(255,210,74,.8); }
-  .card.ssr    .rar { color: #ffd24a; }
-  .card.ssr    .name { color: #ffe89a; }
+  .card.common { border-color: #737b8e; }
+  .card.common .rar { color: #aeb6c8; }
+  .card.rare { border-color: #5ab2ff; box-shadow: 0 0 24px rgba(90,178,255,.35); }
+  .card.rare .rar { color: #74c0ff; }
+  .card.epic { border-color: #b077ff; box-shadow: 0 0 28px rgba(176,119,255,.45); }
+  .card.epic .rar { color: #c59aff; }
+  .card.ssr { border-color: #ffd44d; box-shadow: 0 0 44px rgba(255,212,77,.72); }
+  .card.ssr .rar, .card.ssr .name { color: #ffe59a; }
 
-  /* animasi reveal */
-  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes pop { 0% { transform: scale(.7); opacity: 0; } 60% { transform: scale(1.04); } 100% { transform: scale(1); opacity: 1; } }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-  @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,210,74,.7)} 50%{box-shadow:0 0 55px rgba(255,210,74,1)} }
-  .card.reveal { animation: pop .4s ease; }
-  .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
+  @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,212,77,.65)} 50%{box-shadow:0 0 58px rgba(255,212,77,1)} }
+  .card.reveal { animation: pop .36s ease; }
+  .card.ssr.reveal { animation: pop .36s ease, shake .5s ease .36s, glowpulse 1.2s ease-in-out .36s 2; }
 
-  .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
+  .side { display: flex; flex-direction: column; gap: 16px; }
+  .buttons { display: flex; gap: 12px; }
   .btn {
-    flex: 1; padding: 15px 0; border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer;
-    color: #0a0d1c; background: linear-gradient(180deg,#8fd3ff,#4da6ff);
-    transition: transform .08s ease, filter .15s ease;
+    flex: 1; padding: 15px 10px; border: none; border-radius: 10px;
+    font-size: 15px; font-weight: 900; letter-spacing: .5px; cursor: pointer;
+    color: #0a0d14; background: linear-gradient(180deg,#9bd8ff,#4faaff);
+    transition: transform .08s ease, filter .15s ease, opacity .15s ease;
   }
   .btn:hover { filter: brightness(1.08); }
-  .btn:active { transform: scale(.95); }
-  .btn.gold { background: linear-gradient(180deg,#ffe58a,#ffb347); }
+  .btn:active { transform: scale(.96); }
+  .btn:disabled { cursor: not-allowed; opacity: .45; }
+  .btn.gold { background: linear-gradient(180deg,#ffe58b,#f0a03d); }
 
-  .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
-  .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
+  .hist-lbl { font-size: 11px; color: #a8adbf; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .history { display: grid; grid-template-columns: repeat(6, 52px); gap: 8px; min-height: 76px; }
   .chip {
-    font-size: 20px; width: 34px; height: 34px; border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    background: #171b30; border: 2px solid #2a2f4a;
+    width: 52px; height: 76px; border-radius: 6px; overflow: hidden;
+    background: #151926; border: 2px solid #444b5f;
   }
-  .chip.rare { border-color: #4da6ff; }
-  .chip.epic { border-color: #b06bff; }
-  .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
+  .chip img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .chip.rare { border-color: #5ab2ff; }
+  .chip.epic { border-color: #b077ff; }
+  .chip.ssr { border-color: #ffd44d; box-shadow: 0 0 12px rgba(255,212,77,.65); }
+
+  @media (max-width: 720px) {
+    .top { flex-direction: column; }
+    .status { text-align: left; max-width: none; }
+    .board { grid-template-columns: 1fr; }
+    .history { grid-template-columns: repeat(4, 52px); }
+    .stats { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
   <div class="app">
-    <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
+    <div class="top">
+      <div>
+        <h1>YU-GI-OH! CARD GACHA</h1>
+        <div class="subtitle">tarik kartu dari database YGOPRODeck</div>
+      </div>
+      <div class="status" id="status">Memuat kartu dari API...</div>
+    </div>
 
     <div class="stats">
       <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
       <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
+      <div class="stat"><div class="num" id="poolCount">0</div><div class="lbl">Kartu API</div></div>
     </div>
 
     <div class="pity">
@@ -110,48 +139,36 @@
       <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
     </div>
 
-    <div class="stage">
-      <div class="card" id="card">
-        <div class="emoji" id="cardEmoji">?</div>
-        <div class="name" id="cardName">Tekan TARIK</div>
-        <div class="rar" id="cardRarity"></div>
+    <div class="board">
+      <div class="stage">
+        <div class="card" id="card">
+          <img class="card-art" id="cardImage" alt="Yu-Gi-Oh! card artwork">
+          <div class="card-info">
+            <div class="name" id="cardName">Memuat kartu...</div>
+            <div class="rar" id="cardRarity"></div>
+            <div class="meta" id="cardMeta"></div>
+            <div class="desc" id="cardDesc"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="buttons">
+          <button class="btn" id="tarik1" disabled>TARIK 1x</button>
+          <button class="btn gold" id="tarik10" disabled>TARIK 10x</button>
+        </div>
+
+        <div>
+          <div class="hist-lbl">Riwayat Terakhir</div>
+          <div class="history" id="history"></div>
+        </div>
       </div>
     </div>
-
-    <div class="buttons">
-      <button class="btn" id="tarik1">TARIK 1x</button>
-      <button class="btn gold" id="tarik10">TARIK 10x</button>
-    </div>
-
-    <div class="hist-lbl">Riwayat Terakhir</div>
-    <div class="history" id="history"></div>
   </div>
 
 <script>
-  // Daftar hadiah dipisah per rarity supaya peluang roll mudah dibaca.
-  const hadiah = {
-    ssr: [
-      { n: "Genesis NFT", e: "👑" },
-      { n: "ETH Whale", e: "🐋" },
-      { n: "Golden Wallet", e: "💰" }
-    ],
-    epic: [
-      { n: "Smart Contract", e: "📜" },
-      { n: "Layer 2 Boost", e: "🚀" },
-      { n: "Gas Saver", e: "⛽" }
-    ],
-    rare: [
-      { n: "Validator Badge", e: "🛡️" },
-      { n: "Crypto Key", e: "🔑" },
-      { n: "Block Miner", e: "⛏️" }
-    ],
-    common: [
-      { n: "Testnet ETH", e: "🧪" },
-      { n: "Paper Wallet", e: "📄" },
-      { n: "Seed Note", e: "📝" },
-      { n: "Coffee Token", e: "☕" }
-    ]
-  };
+  const API_URL = "https://db.ygoprodeck.com/api/v7/cardinfo.php?format=tcg&misc=yes";
+  const pools = { ssr: [], epic: [], rare: [], common: [] };
 
   // State utama game: pity reset setiap SSR, total dan SSR terus dihitung.
   let pity = 0;
@@ -159,14 +176,18 @@
   let ssrCount = 0;
 
   const card = document.getElementById("card");
-  const cardEmoji = document.getElementById("cardEmoji");
+  const cardImage = document.getElementById("cardImage");
   const cardName = document.getElementById("cardName");
   const cardRarity = document.getElementById("cardRarity");
+  const cardMeta = document.getElementById("cardMeta");
+  const cardDesc = document.getElementById("cardDesc");
   const totalText = document.getElementById("total");
   const ssrCountText = document.getElementById("ssrCount");
+  const poolCountText = document.getElementById("poolCount");
   const pityText = document.getElementById("pityText");
   const pityFill = document.getElementById("pityFill");
   const history = document.getElementById("history");
+  const statusText = document.getElementById("status");
   const tarik1 = document.getElementById("tarik1");
   const tarik10 = document.getElementById("tarik10");
 
@@ -174,6 +195,70 @@
   function pilihAcak(arr) {
     const index = Math.floor(Math.random() * arr.length);
     return arr[index];
+  }
+
+  // Rarity gacha dibuat dari rarity cetakan kartu di data YGOPRODeck.
+  function kelasDariSet(cardData) {
+    const setText = (cardData.card_sets || [])
+      .map(function (set) { return set.set_rarity || ""; })
+      .join(" ")
+      .toLowerCase();
+
+    if (/starlight|collector|ghost|quarter century|ultimate|prismatic/.test(setText)) return "ssr";
+    if (/secret|ultra|platinum|gold/.test(setText)) return "epic";
+    if (/super|rare/.test(setText)) return "rare";
+    return "common";
+  }
+
+  // Bentuk data API dibuat kecil supaya fungsi tampilan tetap sederhana.
+  function rapikanKartu(cardData) {
+    const image = (cardData.card_images && cardData.card_images[0]) || {};
+    return {
+      kelas: kelasDariSet(cardData),
+      nama: cardData.name,
+      type: cardData.type || "Unknown",
+      race: cardData.race || "",
+      attribute: cardData.attribute || "",
+      desc: cardData.desc || "",
+      image: image.image_url_small || image.image_url || "",
+      link: cardData.ygoprodeck_url || ""
+    };
+  }
+
+  // Load API sekali, lalu roll memakai data lokal agar tidak boros request.
+  async function muatKartu() {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error("API status " + response.status);
+
+      const json = await response.json();
+      const cards = json.data.map(rapikanKartu).filter(function (item) {
+        return item.nama && item.image;
+      });
+
+      cards.forEach(function (item) {
+        pools[item.kelas].push(item);
+      });
+
+      isiPoolKosong(cards);
+      poolCountText.textContent = cards.length;
+      statusText.textContent = "Siap: " + cards.length + " kartu TCG dimuat dari YGOPRODeck.";
+      tarik1.disabled = false;
+      tarik10.disabled = false;
+      cardName.textContent = "Tekan TARIK";
+      cardDesc.textContent = "Data kartu sudah siap.";
+    } catch (error) {
+      statusText.textContent = "Gagal memuat API. Coba refresh halaman.";
+      cardName.textContent = "API belum siap";
+      cardDesc.textContent = error.message;
+    }
+  }
+
+  // Jika satu rarity kosong dari API, pakai seluruh kartu supaya roll tidak error.
+  function isiPoolKosong(cards) {
+    Object.keys(pools).forEach(function (kelas) {
+      if (pools[kelas].length === 0) pools[kelas] = cards.slice();
+    });
   }
 
   // Jalankan satu tarikan dengan peluang rarity dan pity SSR di tarikan ke-10.
@@ -194,15 +279,25 @@
       kelas = "rare";
     }
 
-    const item = pilihAcak(hadiah[kelas]);
-    return { kelas, nama: item.n, emoji: item.e };
+    const item = pilihAcak(pools[kelas]);
+    return Object.assign({}, item, { kelas: kelas });
   }
 
   // Tampilkan hasil terakhir dan refresh angka statistik di layar.
   function tampilkan(hasil) {
-    cardEmoji.textContent = hasil.emoji;
+    cardImage.src = hasil.image;
+    cardImage.alt = hasil.nama;
     cardName.textContent = hasil.nama;
     cardRarity.textContent = hasil.kelas.toUpperCase();
+    cardDesc.textContent = hasil.desc;
+
+    cardMeta.innerHTML = "";
+    [hasil.type, hasil.race, hasil.attribute].filter(Boolean).forEach(function (text) {
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = text;
+      cardMeta.appendChild(tag);
+    });
 
     card.className = "card";
     card.offsetWidth;
@@ -217,8 +312,12 @@
   // Simpan riwayat singkat supaya pemain bisa lihat 12 hasil terakhir.
   function tambahRiwayat(hasil) {
     const chip = document.createElement("div");
+    const img = document.createElement("img");
     chip.className = "chip " + hasil.kelas;
-    chip.textContent = hasil.emoji;
+    img.src = hasil.image;
+    img.alt = hasil.nama;
+    chip.title = hasil.nama;
+    chip.appendChild(img);
     history.prepend(chip);
 
     if (history.children.length > 12) {
@@ -241,6 +340,8 @@
       tambahRiwayat(hasil);
     }
   });
+
+  muatKartu();
 </script>
 </body>
 </html>
