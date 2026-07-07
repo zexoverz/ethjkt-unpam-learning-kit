@@ -265,6 +265,14 @@ body {
   transform: scale(1.05);
 }
 
+.quantity-button:disabled {
+  opacity: 0.45;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
 .quantity-display {
   font-size: 0.95rem;
 
@@ -385,6 +393,24 @@ body {
   margin-bottom: 1rem;
 
   font-size: 1.05rem;
+}
+
+.cart-breakdown {
+  margin: 1rem 0;
+
+  padding-top: 0.8rem;
+
+  border-top: 1px solid var(--line);
+}
+
+.cart-breakdown .row {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 0.2rem 0;
+
+  color: var(--olive);
+  font-size: 0.9rem;
 }
 
 .checkout-button {
