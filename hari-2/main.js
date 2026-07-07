@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* TAMBAH BARANG */
-  function addToCart(id, price) {
+  function addToCart(id) {
     const product = products.find((item) => item.id == id);
     if (!product) return;
 
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!cart[id]) {
       cart[id] = { ...product, count: 0 };
     }
-    cart[id].price = price;   // pakai harga dari kartu di layar
+    cart[id].price = product.price;
     cart[id].count++;
     renderCart();
   }
@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = event.target;
 
     if (target.classList.contains("plus-button")) {
-      addToCart(target.dataset.id, Number(target.dataset.price));
+      addToCart(target.dataset.id);
     }
     if (target.classList.contains("minus-button")) {
       removeFromCart(target.dataset.id);

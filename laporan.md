@@ -39,3 +39,30 @@ Karena nilai `note` berasal langsung dari input pengguna, cara ini membuka risik
 Ganti `innerHTML` menjadi `textContent` agar semua isi catatan diperlakukan sebagai teks biasa.
 
 **Status:** Sudah diperbaiki di `hari-2/main.js`.
+
+## 3. Harga produk bisa dimanipulasi dari DevTools
+
+**Kategori:** Keamanan
+
+**Masalah:**
+Harga yang masuk ke keranjang berasal dari atribut `data-price` pada tombol `+`. Pengguna bisa membuka DevTools, mengubah nilai `data-price`, lalu menambahkan produk dengan harga palsu.
+
+**Penyebab:**
+Event tombol mengirim harga dari DOM ke fungsi `addToCart()`:
+
+```js
+addToCart(target.dataset.id, Number(target.dataset.price));
+```
+
+Lalu fungsi tersebut menyimpan harga dari parameter:
+
+```js
+cart[id].price = price;
+```
+
+DOM berada di sisi client dan bisa dimodifikasi pengguna, jadi tidak boleh dijadikan sumber kebenaran untuk harga.
+
+**Cara menyelesaikan:**
+`addToCart()` hanya menerima `id`, lalu mengambil harga resmi dari array `products`.
+
+**Status:** Sudah diperbaiki di `hari-2/main.js`.
