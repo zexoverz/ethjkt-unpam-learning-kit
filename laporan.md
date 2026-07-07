@@ -87,3 +87,26 @@ Di modal checkout juga total akhir langsung memakai `${total}`.
 Gunakan `toFixed(2)` saat menampilkan total di sidebar dan modal checkout.
 
 **Status:** Sudah diperbaiki di `hari-2/main.js`.
+
+## 5. Kupon rahasia tersimpan di kode client
+
+**Kategori:** Keamanan
+
+**Masalah:**
+Kode kupon internal tersimpan langsung di JavaScript:
+
+```js
+const KUPON_RAHASIA = "TEMANFARMER";
+```
+
+Karena file JavaScript dikirim ke browser, pengguna bisa membaca kode tersebut lewat DevTools atau file source, lalu memakai diskon 90%.
+
+**Penyebab:**
+Rahasia bisnis ditempatkan di sisi client. Semua data di sisi client harus dianggap bisa dilihat dan dimodifikasi pengguna.
+
+**Cara menyelesaikan:**
+- Hapus kupon rahasia/backdoor dari kode client.
+- Gunakan kupon publik dengan diskon wajar untuk demo.
+- Di aplikasi produksi, validasi kupon dan hitung diskon di server, bukan di browser.
+
+**Status:** Sudah diperbaiki di `hari-2/main.js` untuk versi demo statis.
