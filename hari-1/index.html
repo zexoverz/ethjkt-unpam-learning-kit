@@ -1,99 +1,150 @@
-<!DOCTYPE html>
-<html lang="id">
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poké Gacha ETHJKT</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokemon Gacha Simulator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://pokeapi.co">
+  <link rel="preconnect" href="https://raw.githubusercontent.com">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="pokedex">
-    <!-- Bagian atas ala perangkat Pokédex: lensa biru + 3 lampu indikator -->
-    <div class="pokedex-top">
-      <div class="lens"></div>
-      <div class="lights">
-        <span class="light red"></span>
-        <span class="light yellow"></span>
-        <span class="light green"></span>
-      </div>
-      <div class="brand">POKÉDEX</div>
-    </div>
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="brand-mark" data-view-link="home" aria-label="Go to home">
+        <span class="brand-ball"></span>
+        <span><strong>PokePack</strong><small>Gacha Simulator</small></span>
+      </button>
+      <nav class="nav-tabs" aria-label="Primary navigation">
+        <button class="nav-link active" data-view-link="home">Home</button>
+        <button class="nav-link" data-view-link="gacha">Gacha</button>
+        <button class="nav-link" data-view-link="collection">Collection</button>
+        <button class="nav-link" data-view-link="stats">Stats</button>
+      </nav>
+    </header>
 
-    <!-- Layar putih tempat semua konten tampil -->
-    <div class="screen">
-      <h1>POKÉ GACHA</h1>
-      <div class="subtitle">tarik Pokémon asli — data langsung dari PokeAPI</div>
-
-      <!-- Navigasi tab -->
-      <div class="tabs">
-        <button class="tab active" data-tab="gacha">Gacha</button>
-        <button class="tab" data-tab="koleksi">Koleksi</button>
-        <button class="tab" data-tab="badge">Badge</button>
-      </div>
-
-      <!-- ============ TAB: GACHA ============ -->
-      <div class="tab-panel" id="panel-gacha">
-        <div class="stats">
-          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
-        </div>
-
-        <div class="pity">
-          <div class="pity-top"><span>Pity ke Legendary gratis</span><span id="pityText">0 / 10</span></div>
-          <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-        </div>
-
-        <div class="stage">
-          <div class="card" id="card">
-            <div class="spinner" id="spinner"></div>
-            <img class="sprite" id="sprite" alt="">
-            <div class="shiny-badge" id="shinyBadge">✨ SHINY</div>
-            <div class="placeholder" id="placeholder">
-              <div class="pokeball"></div>
-              <div class="ph-text">Tekan PULL</div>
+    <main>
+      <section class="view active" id="view-home">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Live data from PokeAPI</p>
+            <h1>Open premium Pokemon packs.</h1>
+            <p class="hero-text">Five real Pokemon per booster, revealed one at a time with rarity effects, local collection tracking, and cached API requests.</p>
+            <div class="hero-actions">
+              <button class="primary-btn" data-open-pack>Open Pack</button>
+              <button class="secondary-btn" data-view-link="collection">View Collection</button>
             </div>
+          </div>
+          <div class="pack-stage hero-stage" aria-live="polite">
+            <div class="light-burst" id="lightBurst"></div>
+            <div class="booster-pack" id="boosterPack">
+              <div class="pack-foil"></div>
+              <div class="pack-label"><span>POKEPACK</span><strong>5</strong><small>Pokemon Booster</small></div>
+            </div>
+            <button class="open-pack-btn" data-open-pack>Open Pack</button>
           </div>
         </div>
 
-        <div class="poke-info">
-          <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
-          <div class="types" id="types"></div>
-          <div class="rar" id="rarity"></div>
-          <div class="stats-panel" id="statsPanel"></div>
+        <div class="dashboard-grid">
+          <article class="metric-card"><span>Packs Opened</span><strong id="homePacks">0</strong></article>
+          <article class="metric-card"><span>Total Collected</span><strong id="homeTotal">0</strong></article>
+          <article class="metric-card"><span>Collection Progress</span><strong id="homeProgress">0%</strong></article>
+          <article class="metric-card"><span>Highest Rarity</span><strong id="homeHighest">None</strong></article>
         </div>
 
-        <div class="err" id="err"></div>
+        <section class="section-block">
+          <div class="section-heading">
+            <div><p class="eyebrow">Featured pulls</p><h2>Recently discovered</h2></div>
+            <button class="text-link" data-view-link="gacha">Open more</button>
+          </div>
+          <div class="featured-grid" id="featuredGrid"></div>
+        </section>
+      </section>
 
-        <div class="buttons">
-          <button class="btn" id="tarik1">PULL 1x</button>
-          <button class="btn gold" id="tarik10">PULL 10x</button>
+      <section class="view" id="view-gacha">
+        <div class="gacha-layout">
+          <div class="pack-stage main-stage" aria-live="polite">
+            <div class="light-burst" id="gachaBurst"></div>
+            <div class="booster-pack large" id="gachaPack">
+              <div class="pack-foil"></div>
+              <div class="pack-label"><span>POKEPACK</span><strong>5</strong><small>Pokemon Booster</small></div>
+            </div>
+            <button class="open-pack-btn large" id="openPackButton">Open Pack</button>
+            <p class="stage-status" id="stageStatus">Ready for your next booster.</p>
+          </div>
+          <aside class="pull-panel">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">Current pack</p><h2>Reveal queue</h2></div>
+              <span class="pack-count" id="packCount">0 / 5</span>
+            </div>
+            <div class="reveal-grid" id="revealGrid"></div>
+          </aside>
         </div>
+      </section>
 
-        <div class="hist-lbl">Riwayat Terakhir</div>
-        <div class="history" id="history"></div>
-      </div>
-
-      <!-- ============ TAB: KOLEKSI ============ -->
-      <div class="tab-panel" id="panel-koleksi" hidden>
-        <div class="stats">
-          <div class="stat"><div class="num" id="uniqueCount">0</div><div class="lbl">Jenis Terkumpul</div></div>
-          <div class="stat"><div class="num" id="shinyCount">0</div><div class="lbl">Shiny</div></div>
+      <section class="view" id="view-collection">
+        <div class="section-heading">
+          <div><p class="eyebrow">Local storage</p><h2>Your collection</h2></div>
+          <button class="danger-btn" id="resetCollection">Reset</button>
         </div>
-        <div class="collection-empty" id="collectionEmpty">Belum ada Pokémon. Tarik dulu di tab Gacha! 🎣</div>
+        <div class="collection-tools">
+          <input id="searchInput" type="search" placeholder="Search Pokemon">
+          <select id="typeFilter" aria-label="Filter by type"><option value="all">All types</option></select>
+          <select id="sortSelect" aria-label="Sort collection">
+            <option value="newest">Newest</option>
+            <option value="dex">Pokedex number</option>
+            <option value="name">Name</option>
+            <option value="rarity">Rarity</option>
+            <option value="duplicates">Duplicates</option>
+            <option value="favorites">Favorites first</option>
+          </select>
+        </div>
+        <div class="progress-card">
+          <div><span>Completion</span><strong id="collectionProgressText">0 / 0</strong></div>
+          <div class="progress-track"><div id="collectionProgressBar"></div></div>
+        </div>
         <div class="collection-grid" id="collectionGrid"></div>
-      </div>
+        <div class="empty-state" id="collectionEmpty">Open a pack to start your collection.</div>
+      </section>
 
-      <!-- ============ TAB: BADGE ============ -->
-      <div class="tab-panel" id="panel-badge" hidden>
-        <p class="badge-intro">Kumpulkan Pokémon tiap tipe untuk menguasai gym Kanto dan meraih 8 badge-nya!</p>
-        <div class="champion" id="champion" hidden>👑 CHAMPION! Kamu menguasai semua 8 gym Kanto!</div>
-        <div class="badge-grid" id="badgeGrid"></div>
-      </div>
-    </div>
+      <section class="view" id="view-stats">
+        <div class="section-heading"><div><p class="eyebrow">Pull analytics</p><h2>Statistics</h2></div></div>
+        <div class="stats-grid">
+          <article class="metric-card"><span>Packs Opened</span><strong id="statPacks">0</strong></article>
+          <article class="metric-card"><span>Total Pokemon</span><strong id="statTotal">0</strong></article>
+          <article class="metric-card"><span>Duplicates</span><strong id="statDuplicates">0</strong></article>
+          <article class="metric-card"><span>Highest Rarity</span><strong id="statHighest">None</strong></article>
+        </div>
+        <div class="stats-columns">
+          <section class="section-block tight"><h3>Rarity distribution</h3><div id="rarityDistribution" class="rarity-bars"></div></section>
+          <section class="section-block tight"><h3>Pull history</h3><div id="pullHistory" class="history-list"></div></section>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <!-- Notifikasi kecil saat dapat badge baru -->
+  <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
   <div class="toast" id="toast" hidden></div>
+
+  <template id="pokemonCardTemplate">
+    <article class="pokemon-card">
+      <div class="card-inner">
+        <div class="card-face card-back"><div class="mini-ball"></div></div>
+        <div class="card-face card-front">
+          <button class="favorite-btn" type="button" aria-label="Toggle favorite">☆</button>
+          <div class="rarity-chip"></div>
+          <img loading="lazy" alt="">
+          <div class="card-title"><span class="dex-number"></span><h3></h3></div>
+          <div class="type-row"></div>
+          <dl class="detail-grid"></dl>
+          <div class="abilities"></div>
+          <div class="stats-list"></div>
+          <button class="delete-btn" type="button">Delete</button>
+        </div>
+      </div>
+    </article>
+  </template>
 
   <script src="app.js"></script>
 </body>
