@@ -1,152 +1,133 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pok√©Pack Studio - Pok√©mon Gacha Simulator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>PokÈPack Studio - PokÈmon Gacha Simulator</title>
+     <script src="https://cdn.tailwindcss.com"></script>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-  <div class="app-shell">
-    <header class="topbar glass-card">
-      <button class="brand" data-view-jump="home" aria-label="Go to home">
-        <span class="brand-ball" aria-hidden="true"></span>
-        <span>
-          <strong>Pok√©Pack Studio</strong>
-          <small>Powered by Pok√©API</small>
-        </span>
-      </button>
-      <nav class="nav-tabs" aria-label="Main navigation">
-        <button class="nav-link active" data-view="home">Home</button>
-        <button class="nav-link" data-view="gacha">Gacha</button>
-        <button class="nav-link" data-view="collection">Collection</button>
-        <button class="nav-link" data-view="stats">Stats</button>
-      </nav>
-    </header>
+     <div class="app-shell">
+          <header class="topbar glass-card">
+               <button class="brand" data-view-jump="gacha" aria-label="Go to gacha">
+                    <span class="brand-ball" aria-hidden="true"></span>
+                    <span>
+                         <strong>PokÈPack Studio</strong>
+                         <small>Powered by PokÈAPI</small>
+                    </span>
+               </button>
+               <nav class="nav-tabs">
+                    <button class="nav-link active" data-view="gacha">Gacha</button>
+                    <button class="nav-link" data-view="collection">Collection</button>
+                    <button class="nav-link" data-view="stats">Stats</button>
+               </nav>
+          </header>
 
-    <main>
-      <section id="home" class="view active-view">
-        <div class="hero-section">
-          <div class="hero-copy">
-            <p class="eyebrow">Digital booster experience</p>
-            <h1>Open a premium Pok√©mon pack.</h1>
-            <p class="hero-lede">A smooth five-card gacha simulator using live Pok√©mon, species, type, artwork, ability, and stat data from Pok√©API.</p>
-            <div class="hero-actions">
-              <button class="primary-btn" id="hero-open-pack">Open Pack</button>
-              <button class="ghost-btn" data-view-jump="collection">Collection</button>
-            </div>
-            <div class="quick-stats" id="home-stats"></div>
-          </div>
-          <div class="hero-stage">
-            <div class="orb orb-blue"></div>
-            <div class="center-pack preview-pack" aria-hidden="true">
-              <div class="pack-band">Pok√©Pack</div>
-              <div class="pack-ball"></div>
-              <div class="pack-title">Spark<br>Vault</div>
-              <div class="pack-footer">5 Pok√©mon</div>
-            </div>
-          </div>
-        </div>
+          <main>
+               <section id="gacha" class="view active-view">
+                    <div class="gacha-page">
+                         <section class="pack-arena glass-card" aria-label="Booster pack opening arena">
+                              <div class="studio-lockup">
+                                   <span class="brand-ball" aria-hidden="true"></span>
+                                   <div>
+                                        <p class="eyebrow">PokÈPack Studio</p>
+                                        <h1>Open one pack</h1>
+                                   </div>
+                              </div>
+                              <div class="arena-glow" id="arena-glow"></div>
+                              <div class="center-pack stage-pack" id="stage-pack">
+                                   <div class="pack-band">PokÈPack</div>
+                                   <div class="pack-ball"></div>
+                                   <div class="pack-title">Spark<br>Vault</div>
+                                   <div class="pack-footer">5 PokÈmon</div>
+                              </div>
+                              <div class="pack-controls">
+                                   <button class="primary-btn wide" id="open-pack">Open Pack</button>
+                                   <button class="ghost-btn wide" id="refresh-cache">Refresh Cache</button>
+                              </div>
+                              <div class="rate-table" id="rate-table"></div>
+                              <div class="flash" id="flash"></div>
+                              <div id="pull-results" class="pull-results"></div>
+                         </section>
+                    </div>
+               </section>
 
-        <section class="content-section">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Featured Pok√©mon</p>
-              <h2>Live cards from the archive</h2>
-            </div>
-            <span id="api-status" class="status-pill">Preparing Pok√©API cache...</span>
-          </div>
-          <div id="featured-grid" class="featured-grid loading-grid"></div>
-        </section>
-      </section>
+               <section id="collection" class="view">
+                    <div class="collection-hero glass-card">
+                         <div>
+                              <p class="eyebrow">Trainer vault</p>
+                              <h2>Your collection</h2>
+                         </div>
+                         <div class="progress-wrap">
+                              <span id="completion-label">0% complete</span>
+                              <div class="progress-track">
+                                   <div id="completion-bar"></div>
+                              </div>
+                         </div>
+                    </div>
 
-      <section id="gacha" class="view">
-        <div class="gacha-page">
-          <aside class="side-panel glass-card">
-            <p class="eyebrow">Booster terminal</p>
-            <h2>Open one pack</h2>
-            <p class="panel-copy">Each pack reveals five Pok√©mon. The final slot has a slightly boosted chance for exciting rare pulls.</p>
-            <button class="primary-btn wide" id="open-pack">Open Pack</button>
-            <button class="ghost-btn wide" id="refresh-cache">Refresh API Cache</button>
-            <div class="rate-table" id="rate-table"></div>
-          </aside>
+                    <div class="toolbar glass-card">
+                         <input class="input" id="search-input" placeholder="Search name, species, ability...">
+                         <select class="input" id="type-filter">
+                              <option value="all">All types</option>
+                         </select>
+                         <select class="input" id="rarity-filter">
+                              <option value="all">All rarities</option>
+                              <option>Common</option>
+                              <option>Uncommon</option>
+                              <option>Rare</option>
+                              <option>Epic</option>
+                              <option>Legendary</option>
+                         </select>
+                         <select class="input" id="sort-select">
+                              <option value="newest">Newest</option>
+                              <option value="number">PokÈdex number</option>
+                              <option value="name">Name A-Z</option>
+                              <option value="rarity">Rarity</option>
+                              <option value="dupes">Duplicates</option>
+                         </select>
+                         <button class="danger-btn" id="reset-collection">Reset</button>
+                    </div>
 
-          <section class="pack-arena glass-card" aria-label="Booster pack opening arena">
-            <div class="arena-glow" id="arena-glow"></div>
-            <div class="center-pack stage-pack" id="stage-pack">
-              <div class="pack-band">Ready</div>
-              <div class="pack-ball"></div>
-              <div class="pack-title">Spark<br>Vault</div>
-              <div class="pack-footer">Open Pack</div>
-            </div>
-            <div class="flash" id="flash"></div>
-            <div id="pull-results" class="pull-results"></div>
-          </section>
-        </div>
-      </section>
+                    <div id="collection-grid" class="collection-grid"></div>
+               </section>
 
-      <section id="collection" class="view">
-        <div class="collection-hero glass-card">
-          <div>
-            <p class="eyebrow">Trainer vault</p>
-            <h2>Your collection</h2>
-          </div>
-          <div class="progress-wrap">
-            <span id="completion-label">0% complete</span>
-            <div class="progress-track"><div id="completion-bar"></div></div>
-          </div>
-        </div>
+               <section id="stats" class="view">
+                    <div id="stats-grid" class="quick-stats stats-page-grid"></div>
+                    <div class="history-panel glass-card">
+                         <div class="section-heading compact">
+                              <div>
+                                   <p class="eyebrow">Recent pulls</p>
+                                   <h2>Pull history</h2>
+                              </div>
+                         </div>
+                         <div id="history-list" class="history-list"></div>
+                    </div>
+               </section>
+          </main>
+     </div>
 
-        <div class="toolbar glass-card">
-          <input class="input" id="search-input" placeholder="Search name, species, ability...">
-          <select class="input" id="type-filter"><option value="all">All types</option></select>
-          <select class="input" id="rarity-filter">
-            <option value="all">All rarities</option>
-            <option>Common</option>
-            <option>Uncommon</option>
-            <option>Rare</option>
-            <option>Epic</option>
-            <option>Legendary</option>
-          </select>
-          <select class="input" id="sort-select">
-            <option value="newest">Newest</option>
-            <option value="number">Pok√©dex number</option>
-            <option value="name">Name A-Z</option>
-            <option value="rarity">Rarity</option>
-            <option value="dupes">Duplicates</option>
-          </select>
-          <button class="danger-btn" id="reset-collection">Reset</button>
-        </div>
+     <dialog id="pokemon-dialog" class="pokemon-dialog">
+          <button id="dialog-close" class="dialog-close" aria-label="Close details">◊</button>
+          <div id="dialog-content"></div>
+     </dialog>
 
-        <div id="collection-grid" class="collection-grid"></div>
-      </section>
-
-      <section id="stats" class="view">
-        <div id="stats-grid" class="quick-stats stats-page-grid"></div>
-        <div class="history-panel glass-card">
-          <div class="section-heading compact">
-            <div>
-              <p class="eyebrow">Recent pulls</p>
-              <h2>Pull history</h2>
-            </div>
-          </div>
-          <div id="history-list" class="history-list"></div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <dialog id="pokemon-dialog" class="pokemon-dialog">
-    <button id="dialog-close" class="dialog-close" aria-label="Close details">√ó</button>
-    <div id="dialog-content"></div>
-  </dialog>
-
-  <div id="toast" class="toast"></div>
-  <canvas id="confetti" aria-hidden="true"></canvas>
-  <script src="app.js"></script>
+     <div id="toast" class="toast"></div>
+     <canvas id="confetti" aria-hidden="true"></canvas>
+     <div class="js-compat" hidden>
+          <button id="hero-open-pack" type="button">Open Pack</button>
+          <span id="api-status">Preparing PokÈAPI cache...</span>
+          <div id="home-stats"></div>
+          <div id="featured-grid" class="loading-grid"></div>
+     </div>
+     <script src="app.js"></script>
 </body>
+
 </html>
