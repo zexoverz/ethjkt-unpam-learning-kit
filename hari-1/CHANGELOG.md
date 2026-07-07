@@ -33,3 +33,43 @@ node --check .\ethjkt-unpam-learning-kit\hari-1\app.js
 ```
 
 Result: passed with no syntax errors.
+
+## Rich PokeAPI scan
+
+This update makes the simulator use more of the real PokeAPI response instead
+of only showing artwork, type, and stats.
+
+What changed:
+
+1. The app now combines three API resources:
+   - `/pokemon/{id}` for stats, types, abilities, moves, sprites, cry, height,
+     weight, and base experience.
+   - `/pokemon-species/{id}` for flavor text, genus, capture rate, habitat,
+     generation, and legendary/mythical flags.
+   - `evolution_chain.url` from species data for the evolution line.
+
+2. The result view now shows:
+   - genus
+   - flavor text
+   - height and weight
+   - capture rate
+   - habitat and generation
+   - abilities
+   - sample moves
+   - evolution line
+   - Pokemon cry button when the API provides one
+
+3. The layout was tightened so the result feels more like a Pokedex scan and
+   less like a generic generated card.
+
+Tests run:
+
+```powershell
+node --check .\ethjkt-unpam-learning-kit\hari-1\app.js
+node -e "fetch('https://pokeapi.co/api/v2/pokemon/ditto').then(r=>r.json()).then(j=>console.log([j.id,j.name,j.types.length,j.stats.length].join(',')))"
+```
+
+Result:
+
+- Syntax check passed.
+- Live PokeAPI check returned `132,ditto,1,6`.
