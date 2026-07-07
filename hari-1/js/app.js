@@ -4,6 +4,11 @@ const collectionIds = new Set();
 const collectionCards = [];
 const unlockedBadges = new Set();
 const allHistory = [];
+const PITY_LIMIT = 1000;
+const HISTORY_PREVIEW_LIMIT = 4;
+const SSR_RATE = 0.0085;
+const EPIC_RATE = 0.03;
+const RARE_RATE = 0.20;
 const badges = [
   { id: "first", name: "First Pull", rule: "Dapatkan 1 kartu.", test: function () { return collectionCards.length >= 1; } },
   { id: "five", name: "Binder Start", rule: "Koleksi 5 kartu unik.", test: function () { return collectionCards.length >= 5; } },
@@ -174,7 +179,7 @@ function isiPoolKosong(cards) {
   });
 }
 
-// Jalankan satu tarikan dengan peluang rarity dan pity SSR di tarikan ke-10.
+// Jalankan satu tarikan dengan peluang rarity dan pity SSR di batas gratis.
 function rollSatu() {
   total += 1;
   pity += 1;
@@ -182,13 +187,13 @@ function rollSatu() {
   const acak = Math.random();
   let kelas = "common";
 
-  if (pity >= 10 || acak < 0.03) {
+  if (pity >= PITY_LIMIT || acak < SSR_RATE) {
     kelas = "ssr";
     pity = 0;
     ssrCount += 1;
-  } else if (acak < 0.10) {
+  } else if (acak < SSR_RATE + EPIC_RATE) {
     kelas = "epic";
-  } else if (acak < 0.30) {
+  } else if (acak < SSR_RATE + EPIC_RATE + RARE_RATE) {
     kelas = "rare";
   }
 
@@ -255,8 +260,8 @@ function tampilkan(hasil) {
   totalText.textContent = total;
   ssrCountText.textContent = ssrCount;
   collectionCountText.textContent = collectionCards.length;
-  pityText.textContent = pity + " / 10";
-  pityFill.style.width = (pity * 10) + "%";
+  pityText.textContent = pity + " / " + PITY_LIMIT;
+  pityFill.style.width = Math.min((pity / PITY_LIMIT) * 100, 100) + "%";
 }
 
 // Buat chip gambar kecil untuk preview dan panel riwayat.
@@ -271,13 +276,13 @@ function buatChip(hasil) {
   return chip;
 }
 
-// Simpan semua riwayat, lalu tampilkan 10 terakhir di layar utama.
+// Simpan semua riwayat, lalu tampilkan beberapa terakhir di layar utama.
 function tambahRiwayat(hasil) {
   allHistory.unshift(hasil);
   history.innerHTML = "";
   fullHistory.innerHTML = "";
 
-  allHistory.slice(0, 10).forEach(function (item) {
+  allHistory.slice(0, HISTORY_PREVIEW_LIMIT).forEach(function (item) {
     history.appendChild(buatChip(item));
   });
 

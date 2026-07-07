@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Yu-Gi-Oh! Gacha</title>
+<title>Yu-Gi-Oh! Card Gacha</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <main class="app">
     <header class="top">
       <div>
+        <div class="eyebrow">Duel draw simulator</div>
         <h1>YU-GI-OH! CARD GACHA</h1>
         <p class="subtitle">tarik kartu dari database YGOPRODeck</p>
       </div>
@@ -24,14 +25,14 @@
     </section>
 
     <section class="pity" aria-label="Progress pity SSR">
-      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
+      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 1000</span></div>
       <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
     </section>
 
     <section class="board" aria-label="Area gacha utama">
       <div class="stage">
         <article class="card" id="card">
-          <img class="card-art" id="cardImage" alt="Yu-Gi-Oh! card artwork">
+          <img class="card-art" id="cardImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Yu-Gi-Oh! card artwork">
           <div class="card-info">
             <div class="name" id="cardName">Memuat kartu...</div>
             <div class="rar" id="cardRarity"></div>
@@ -51,7 +52,7 @@
 
     <section class="panel history-panel" id="historyPreview" aria-label="Riwayat gacha terakhir">
       <div class="panel-head">
-        <div class="hist-lbl">Riwayat Terakhir 10 Kartu</div>
+        <div class="hist-lbl">Riwayat Terakhir 4 Kartu</div>
         <button class="btn secondary close-btn" id="historyToggle" type="button">LIHAT SEMUA</button>
       </div>
       <div class="history" id="history"></div>
