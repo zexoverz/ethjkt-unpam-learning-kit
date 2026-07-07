@@ -18,3 +18,24 @@ Nilai stok hanya dibuat sebagai teks tampilan dari `Math.random()` di `renderPro
 - Nonaktifkan tombol `+` saat jumlah produk di keranjang sudah mencapai stok.
 
 **Status:** Sudah diperbaiki di `hari-2/main.js` dan `hari-2/style.css`.
+
+## 2. Catatan pesanan bisa menyisipkan HTML berbahaya
+
+**Kategori:** Keamanan
+
+**Masalah:**
+Input pada kolom "Catatan buat petani" ditampilkan kembali di preview keranjang. Jika pengguna memasukkan teks seperti tag HTML, browser bisa membacanya sebagai markup, bukan sebagai teks biasa.
+
+**Penyebab:**
+Preview catatan memakai `innerHTML`:
+
+```js
+preview.innerHTML = "Catatan: " + note;
+```
+
+Karena nilai `note` berasal langsung dari input pengguna, cara ini membuka risiko XSS atau manipulasi tampilan.
+
+**Cara menyelesaikan:**
+Ganti `innerHTML` menjadi `textContent` agar semua isi catatan diperlakukan sebagai teks biasa.
+
+**Status:** Sudah diperbaiki di `hari-2/main.js`.
