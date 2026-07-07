@@ -1,100 +1,1382 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poké Gacha ETHJKT</title>
-<link rel="stylesheet" href="styles.css">
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>POKÉMON GACHA - Nebula Gacha Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Geist:wght@600&amp;family=Inter:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;family=Plus+Jakarta+Sans:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdad7",
+                        "on-primary-fixed-variant": "#094a76",
+                        "primary-fixed-dim": "#9acbff",
+                        "on-error": "#690005",
+                        "surface": "#10131a",
+                        "on-primary": "#003355",
+                        "ssr-gold": "#e9c400",
+                        "surface-container-high": "#272a31",
+                        "surface-container-highest": "#32353c",
+                        "surface-container": "#1d2026",
+                        "primary": "#d0e5ff",
+                        "surface-bright": "#363940",
+                        "inverse-on-surface": "#2d3038",
+                        "on-secondary": "#3a3000",
+                        "secondary": "#ffe16e",
+                        "glow-gold": "rgba(233, 196, 0, 0.6)",
+                        "background": "#10131a",
+                        "secondary-fixed": "#ffe16e",
+                        "on-primary-fixed": "#001d34",
+                        "on-tertiary": "#66060f",
+                        "on-background": "#e0e2ec",
+                        "on-secondary-fixed-variant": "#544600",
+                        "secondary-container": "#e9c400",
+                        "primary-fixed": "#cfe5ff",
+                        "tertiary-container": "#ffb4af",
+                        "secondary-fixed-dim": "#e9c400",
+                        "on-surface-variant": "#c2c7d0",
+                        "on-error-container": "#ffdad6",
+                        "outline": "#8c919a",
+                        "inverse-primary": "#2d6290",
+                        "surface-container-low": "#191b23",
+                        "on-primary-container": "#1e5683",
+                        "on-secondary-fixed": "#221b00",
+                        "outline-variant": "#42474f",
+                        "surface-tint": "#9acbff",
+                        "on-tertiary-fixed": "#410005",
+                        "on-tertiary-container": "#962d2d",
+                        "tertiary": "#ffdbd8",
+                        "inverse-surface": "#e0e2ec",
+                        "surface-container-lowest": "#0b0e15",
+                        "on-surface": "#e0e2ec",
+                        "sr-pink": "#ff7b76",
+                        "surface-variant": "#32353c",
+                        "primary-container": "#9acbff",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "glow-primary": "rgba(64, 169, 255, 0.4)",
+                        "on-tertiary-fixed-variant": "#862123",
+                        "surface-dim": "#10131a",
+                        "on-secondary-container": "#625100",
+                        "error": "#ffb4ab",
+                        "error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "container-max": "540px",
+                        "lg": "48px",
+                        "sm": "12px",
+                        "gutter": "20px",
+                        "xs": "4px",
+                        "base": "8px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "label-caps": ["Geist"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "headline-xl-mobile": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-caps": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "headline-lg": ["24px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-xl-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0b0e15;
+            color: #e0e2ec;
+            min-height: 100vh;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #32353c;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8c919a;
+        }
+        
+        .gacha-glow-ssr {
+            box-shadow: 0 0 40px -10px #e9c400;
+        }
+        .btn-glow-gold {
+            box-shadow: 0 0 20px -5px rgba(233, 196, 0, 0.6);
+        }
+        .btn-glow-primary {
+            box-shadow: 0 0 20px -5px rgba(64, 169, 255, 0.4);
+        }
+        .bg-gradient-radial {
+            background: radial-gradient(circle, var(--tw-gradient-stops));
+        }
+        
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #9acbff 0%, #d0e5ff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: translateX(-100%);
+            animation: sweep 2s infinite linear;
+        }
+        @keyframes sweep {
+            100% { transform: translateX(100%); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pop { 
+            0% { transform: scale(.5); opacity: 0; } 
+            60% { transform: scale(1.08); } 
+            100% { transform: scale(1); opacity: 1; } 
+        }
+        @keyframes shake { 
+            0%,100%{transform:translateX(0)} 
+            20%{transform:translateX(-6px)} 
+            40%{transform:translateX(6px)} 
+            60%{transform:translateX(-4px)} 
+            80%{transform:translateX(4px)} 
+        }
+        @keyframes glowpulse { 
+            0%,100%{box-shadow:0 0 30px rgba(245,158,11,.6)} 
+            50%{box-shadow:0 0 50px rgba(245,158,11,1)} 
+        }
+        
+        .card.reveal { animation: pop .4s ease; }
+        .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
+        .pokeball-loading {
+            animation: spin 0.8s linear infinite;
+        }
+    </style>
 </head>
-<body>
-  <div class="pokedex">
-    <!-- Bagian atas ala perangkat Pokédex: lensa biru + 3 lampu indikator -->
-    <div class="pokedex-top">
-      <div class="lens"></div>
-      <div class="lights">
-        <span class="light red"></span>
-        <span class="light yellow"></span>
-        <span class="light green"></span>
-      </div>
-      <div class="brand">POKÉDEX</div>
+<body class="flex bg-surface-container-lowest antialiased">
+<!-- TopNavBar (Mobile Only) -->
+<nav class="md:hidden fixed top-0 w-full h-16 bg-surface-container/80 backdrop-blur-xl border-b border-white/10 z-50 flex justify-between items-center px-gutter">
+<div class="font-headline-xl-mobile font-extrabold text-primary tracking-tighter">NEBULA GACHA</div>
+<div class="flex gap-4 items-center">
+<div class="flex items-center gap-1 text-secondary font-bold text-xs bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
+<span class="material-symbols-outlined text-sm">account_balance_wallet</span>
+<span id="wallet-mob">1,000</span>
+</div>
+<img class="w-8 h-8 rounded-full border border-white/10" data-alt="A stylized, neon-lit digital avatar of a trainer, featuring a glowing visor and sleek cyberpunk jacket." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmqMfjOEo0GBYFk53LbzGFDJ2ATY2GJ92vKc9aT1c_39ibvM8jMd4m1152FDTuKJpWS2HbXejXs6hHCi9wya_zMohel6KHiBd0Y3bV_d_Wkw0HvLILl2qSIVRY-FSs__tZa-Tp-YzNIb-gMc5LAOU6JCI-GM0OzIz4fyk84Luuce5Hm8NjeLV3lf6MWxze5ZzAavVfjwQTvT04SA5y05cZCbTrlYxBIIUiPqgTMC_wuTN1MFVp40iFOrYmFZCX--dRKMQ_gXiJBw">
+</div>
+</nav>
+<!-- SideNavBar (Desktop Only) -->
+<nav class="fixed left-0 top-0 h-screen w-64 hidden lg:flex flex-col bg-surface-container-lowest border-r border-white/5 py-md gap-base z-50">
+<div class="px-md mb-8 flex flex-col gap-sm">
+  <div class="flex items-center gap-sm">
+    <img class="w-10 h-10 rounded-full border border-primary/30" data-alt="A premium trainer profile avatar in a digital neon style, wearing high-tech gear." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaXX6MX84yZY-xJEuaisSGCi1ZgUXFzMfqTpIvFvYBCRypeSGZc4GAWS32aMdjp8GNetPBFnGz4TclN_2UO1jherCWVW2M-EMwdR1fGamGco-mdS7Yr1_r5ms6tGfW6FG12oe4AJbU_4JOx135f5Drhq1M6NH4iHlHPbEos_YwKzWn9NAB7XHqvRogbThfUPlOnReceeGnE20XYmrd_XCGAVeARDy23Ezd7emB5upSLaYThTcfM8M-XmeFyb_ZPamODzWEZsAuog">
+    <div>
+      <div class="font-label-caps text-on-surface font-bold">Master Trainer</div>
+      <div class="font-label-caps text-primary/70 text-[10px]">Elite Rank</div>
     </div>
+  </div>
+  <!-- Wallet Desktop -->
+  <div class="flex items-center gap-2 mt-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg w-full">
+    <span class="material-symbols-outlined text-secondary text-sm">account_balance_wallet</span>
+    <span class="font-label-caps text-secondary font-bold text-xs" id="wallet-desk">1,000 Dust</span>
+  </div>
+</div>
+<div class="flex-1 px-sm flex flex-col gap-sm">
+<button onclick="switchTab('home')" id="nav-desk-home" class="nav-btn-desk bg-primary/10 text-primary border-r-4 border-primary font-label-caps flex items-center gap-sm p-sm rounded-l-lg hover:bg-surface-container-highest transition-all duration-150 w-full text-left">
+<span class="material-symbols-outlined">home</span> Home
+            </button>
+<button onclick="switchTab('pokedex')" id="nav-desk-pokedex" class="nav-btn-desk text-on-surface-variant font-label-caps flex items-center gap-sm p-sm rounded-lg hover:bg-white/5 hover:text-primary transition-colors duration-200 w-full text-left">
+<span class="material-symbols-outlined">charging_station</span> Pokedex
+            </button>
+<button onclick="switchTab('inventory')" id="nav-desk-inventory" class="nav-btn-desk text-on-surface-variant font-label-caps flex items-center gap-sm p-sm rounded-lg hover:bg-white/5 hover:text-primary transition-colors duration-200 w-full text-left">
+<span class="material-symbols-outlined">inventory_2</span> Inventory
+            </button>
+<button onclick="switchTab('shop')" id="nav-desk-shop" class="nav-btn-desk text-on-surface-variant font-label-caps flex items-center gap-sm p-sm rounded-lg hover:bg-white/5 hover:text-primary transition-colors duration-200 w-full text-left">
+<span class="material-symbols-outlined">shopping_cart</span> Shop
+            </button>
+</div>
 
-    <!-- Layar putih tempat semua konten tampil -->
-    <div class="screen">
-      <h1>POKÉ GACHA</h1>
-      <div class="subtitle">tarik Pokémon asli — data langsung dari PokeAPI</div>
+<div class="px-sm flex flex-col gap-sm border-t border-white/5 pt-md">
+<button onclick="switchTab('settings')" id="nav-desk-settings" class="nav-btn-desk text-on-surface-variant font-label-caps flex items-center gap-sm p-sm rounded-lg hover:bg-white/5 hover:text-primary transition-colors duration-200 w-full text-left">
+<span class="material-symbols-outlined">settings</span> Settings
+            </button>
+<button onclick="switchTab('support')" id="nav-desk-support" class="nav-btn-desk text-on-surface-variant font-label-caps flex items-center gap-sm p-sm rounded-lg hover:bg-white/5 hover:text-primary transition-colors duration-200 w-full text-left">
+<span class="material-symbols-outlined">help_outline</span> Support
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-64 mt-16 md:mt-0 mb-16 md:mb-0 relative min-h-screen flex justify-center pb-xl">
+<!-- Nebula Background Effect -->
+<div class="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+<div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[100px]"></div>
+</div>
+<!-- Central Gacha Container -->
+<div class="w-full max-w-container-max px-md pt-lg md:pt-xl">
+<!-- Header -->
+<div class="text-center mb-lg">
+<h1 class="font-headline-xl md:font-headline-xl text-primary flex justify-center items-center gap-2">
+<span class="text-secondary">POKÉMON</span> GACHA
+                </h1>
+<p class="font-body-md text-on-surface-variant mt-2">tarik Pokémon impianmu secara live dari PokeAPI</p>
+</div>
 
-      <!-- Navigasi tab -->
-      <div class="tabs">
-        <button class="tab active" data-tab="gacha">Gacha</button>
-        <button class="tab" data-tab="koleksi">Koleksi</button>
-        <button class="tab" data-tab="badge">Badge</button>
+<!-- SECTION 1: HOME (GACHA) -->
+<section id="tab-content-home" class="tab-content">
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-2 gap-md mb-md">
+  <div class="bg-surface-container/60 backdrop-blur-md rounded-xl p-md border border-white/5 flex flex-col items-center justify-center">
+  <div class="font-headline-lg text-on-surface" id="total">0</div>
+  <div class="font-label-caps text-on-surface-variant mt-1">TOTAL TARIK</div>
+  </div>
+  <div class="bg-surface-container/60 backdrop-blur-md rounded-xl p-md border border-white/5 flex flex-col items-center justify-center">
+  <div class="font-headline-lg text-on-surface" id="ssrCount">0</div>
+  <div class="font-label-caps text-on-surface-variant mt-1">SSR DIDAPAT</div>
+  </div>
+  </div>
+  <!-- Pity Bar -->
+  <div class="bg-surface-container/80 backdrop-blur-xl rounded-xl p-md border border-white/5 mb-lg">
+  <div class="flex justify-between items-center mb-sm">
+  <span class="font-label-caps text-on-surface">Pity ke SSR gratis</span>
+  <span class="font-label-caps text-on-surface font-bold" id="pityText">0 / 10</span>
+  </div>
+  <div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+  <div class="h-full progress-bar-fill rounded-full" id="pityFill" style="width: 0%;"></div>
+  </div>
+  <!-- Dynamic Buff Indicator -->
+  <div id="buff-indicator" class="mt-3 text-center hidden">
+    <span class="inline-block font-label-caps text-[10px] bg-secondary/20 text-secondary border border-secondary/50 px-3 py-1 rounded-full animate-pulse" id="buff-text">BUFF AKTIF</span>
+  </div>
+  </div>
+  <!-- Main Feature Card -->
+  <div class="relative group cursor-pointer mb-lg">
+  <div class="absolute inset-0 bg-gradient-radial from-ssr-gold/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl blur-xl"></div>
+  <div class="relative bg-surface-container/80 backdrop-blur-2xl rounded-xl border-2 border-white/10 p-xl flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]" id="card">
+  <div class="absolute top-4 left-4 font-label-caps bg-white/5 text-on-surface-variant px-2 py-1 rounded border border-white/10" id="cardRarity">START</div>
+  <div class="w-48 h-48 mb-8 relative flex items-center justify-center" id="cardEmoji">
+  ❓
+  </div>
+  <h2 class="font-headline-lg text-on-surface mb-4 text-center" id="cardName">Tekan TARIK</h2>
+  <div class="flex gap-2" id="cardTypes">
+  </div>
+  </div>
+  </div>
+  <!-- Stats Section -->
+  <div class="bg-surface-container/60 backdrop-blur-xl rounded-xl p-md border border-white/5 mb-xl" id="statsContainer" style="display: none;">
+  <div class="grid gap-sm">
+  <!-- HP -->
+  <div class="flex items-center gap-4">
+  <span class="font-label-caps text-on-surface-variant w-8">HP</span>
+  <span class="font-label-caps text-on-surface w-8 text-right" id="stat-hp">0</span>
+  <div class="flex-1 h-2 bg-surface-container-highest rounded-full overflow-hidden">
+  <div class="h-full progress-bar-fill rounded-full" id="fill-hp" style="width: 0%;"></div>
+  </div>
+  </div>
+  <!-- ATK -->
+  <div class="flex items-center gap-4">
+  <span class="font-label-caps text-on-surface-variant w-8">ATK</span>
+  <span class="font-label-caps text-on-surface w-8 text-right" id="stat-atk">0</span>
+  <div class="flex-1 h-2 bg-surface-container-highest rounded-full overflow-hidden">
+  <div class="h-full progress-bar-fill rounded-full" id="fill-atk" style="width: 0%;"></div>
+  </div>
+  </div>
+  <!-- DEF -->
+  <div class="flex items-center gap-4">
+  <span class="font-label-caps text-on-surface-variant w-8">DEF</span>
+  <span class="font-label-caps text-on-surface w-8 text-right" id="stat-def">0</span>
+  <div class="flex-1 h-2 bg-surface-container-highest rounded-full overflow-hidden">
+  <div class="h-full progress-bar-fill rounded-full" id="fill-def" style="width: 0%;"></div>
+  </div>
+  </div>
+  <!-- SPA -->
+  <div class="flex items-center gap-4">
+  <span class="font-label-caps text-on-surface-variant w-8">SPA</span>
+  <span class="font-label-caps text-on-surface w-8 text-right" id="stat-spa">0</span>
+  <div class="flex-1 h-2 bg-surface-container-highest rounded-full overflow-hidden">
+  <div class="h-full progress-bar-fill rounded-full" id="fill-spa" style="width: 0%;"></div>
+  </div>
+  </div>
+  <!-- SPD -->
+  <div class="flex items-center gap-4">
+  <span class="font-label-caps text-on-surface-variant w-8">SPD</span>
+  <span class="font-label-caps text-on-surface w-8 text-right" id="stat-spd">0</span>
+  <div class="flex-1 h-2 bg-surface-container-highest rounded-full overflow-hidden">
+  <div class="h-full progress-bar-fill rounded-full" id="fill-spd" style="width: 0%;"></div>
+  </div>
+  </div>
+  <!-- SPE -->
+  <div class="flex items-center gap-4">
+  <span class="font-label-caps text-on-surface-variant w-8">SPE</span>
+  <span class="font-label-caps text-on-surface w-8 text-right" id="stat-spe">0</span>
+  <div class="flex-1 h-2 bg-surface-container-highest rounded-full overflow-hidden">
+  <div class="h-full progress-bar-fill rounded-full" id="fill-spe" style="width: 0%;"></div>
+  </div>
+  </div>
+  </div>
+  </div>
+  <!-- Action Buttons -->
+  <div class="grid grid-cols-2 gap-md mb-xl">
+  <button class="bg-[#3B82F6] text-white font-headline-lg py-4 rounded-xl hover:bg-[#2563EB] transition-all duration-200 active:scale-95 btn-glow-primary" id="tarik1">
+                      TARIK 1x
+                  </button>
+  <button class="bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white font-headline-lg py-4 rounded-xl hover:from-[#D97706] hover:to-[#B45309] transition-all duration-200 active:scale-95 btn-glow-gold" id="tarik10">
+                      TARIK 10x
+                  </button>
+  </div>
+  <!-- Recent History -->
+  <div class="border-t border-white/5 pt-lg">
+  <h3 class="font-label-caps text-on-surface-variant mb-4 uppercase">RIWAYAT TERAKHIR</h3>
+  <div class="flex flex-wrap gap-2" id="history">
+  </div>
+  </div>
+</section>
+
+<!-- SECTION 2: POKEDEX -->
+<section id="tab-content-pokedex" class="tab-content hidden">
+  <div class="bg-surface-container/60 backdrop-blur-xl rounded-xl p-md border border-white/5 mb-xl">
+    <div class="flex justify-between items-center mb-4 pb-2 border-b border-white/5">
+      <h3 class="font-label-caps text-primary font-bold text-sm">POKÉDEX CATALOG</h3>
+      <span class="font-label-caps text-on-surface-variant text-xs" id="pokedex-progress">0 / 21 Didapat</span>
+    </div>
+    <div class="grid grid-cols-3 sm:grid-cols-4 gap-sm" id="pokedex-grid">
+      <!-- Will be populated dynamically -->
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: INVENTORY -->
+<section id="tab-content-inventory" class="tab-content hidden">
+  <div class="bg-surface-container/60 backdrop-blur-xl rounded-xl p-md border border-white/5 mb-xl">
+    <div class="flex justify-between items-center mb-4 pb-2 border-b border-white/5">
+      <h3 class="font-label-caps text-primary font-bold text-sm">INVENTORY</h3>
+      <div>
+        <select id="inventory-sort" class="bg-surface-container-highest border border-white/10 rounded px-2 py-1 font-label-caps text-[10px] text-on-surface focus:outline-none focus:border-primary" onchange="renderInventory()">
+          <option value="rarity">Urutan Kelangkaan</option>
+          <option value="name">Urutan Nama</option>
+        </select>
       </div>
+    </div>
+    <div class="grid grid-cols-3 sm:grid-cols-4 gap-sm" id="inventory-grid">
+      <!-- Will be populated dynamically -->
+    </div>
+  </div>
+</section>
 
-      <!-- ============ TAB: GACHA ============ -->
-      <div class="tab-panel" id="panel-gacha">
-        <div class="stats">
-          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
+<!-- SECTION 4: SHOP -->
+<section id="tab-content-shop" class="tab-content hidden">
+  <div class="bg-surface-container/60 backdrop-blur-xl rounded-xl p-md border border-white/5 mb-xl">
+    <div class="flex justify-between items-center mb-4 pb-2 border-b border-white/5">
+      <h3 class="font-label-caps text-primary font-bold text-sm">NEBULA DUST SHOP</h3>
+      <span class="font-label-caps bg-white/5 border border-white/10 px-3 py-1 rounded-full text-secondary font-bold text-xs" id="shop-wallet">0 Dust</span>
+    </div>
+    
+    <div class="grid gap-md">
+      <!-- Item 1: Lucky Charm -->
+      <div class="bg-surface-container-high/40 p-md rounded-xl border border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-sm">
+        <div>
+          <h4 class="font-label-caps text-primary text-xs font-bold">LUCKY CHARM</h4>
+          <p class="font-body-md text-[11px] text-on-surface-variant mt-1">Menggandakan rate SSR (2x peluang) untuk tarikan berikutnya.</p>
         </div>
-
-        <div class="pity">
-          <div class="pity-top"><span>Pity ke Legendary gratis</span><span id="pityText">0 / 10</span></div>
-          <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
+        <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+          <span class="font-label-caps text-secondary font-bold text-xs">300 Dust</span>
+          <button onclick="buyItem('lucky_charm', 300)" class="bg-[#3B82F6] hover:bg-[#2563EB] text-white font-label-caps px-4 py-2 rounded-lg text-[10px] transition-all duration-200 active:scale-95">BELI</button>
         </div>
-
-        <div class="stage">
-          <div class="card" id="card">
-            <div class="spinner" id="spinner"></div>
-            <img class="sprite" id="sprite" alt="">
-            <div class="shiny-badge" id="shinyBadge">✨ SHINY</div>
-            <div class="placeholder" id="placeholder">
-              <div class="pokeball"></div>
-              <div class="ph-text">Tekan PULL</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="poke-info">
-          <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
-          <div class="types" id="types"></div>
-          <div class="rar" id="rarity"></div>
-          <div class="stats-panel" id="statsPanel"></div>
-        </div>
-
-        <div class="err" id="err"></div>
-
-        <div class="buttons">
-          <button class="btn" id="tarik1">PULL 1x</button>
-          <button class="btn gold" id="tarik10">PULL 10x</button>
-        </div>
-
-        <div class="hist-lbl">Riwayat Terakhir</div>
-        <div class="history" id="history"></div>
       </div>
-
-      <!-- ============ TAB: KOLEKSI ============ -->
-      <div class="tab-panel" id="panel-koleksi" hidden>
-        <div class="stats">
-          <div class="stat"><div class="num" id="uniqueCount">0</div><div class="lbl">Jenis Terkumpul</div></div>
-          <div class="stat"><div class="num" id="shinyCount">0</div><div class="lbl">Shiny</div></div>
+      
+      <!-- Item 2: Pity Booster -->
+      <div class="bg-surface-container-high/40 p-md rounded-xl border border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-sm">
+        <div>
+          <h4 class="font-label-caps text-primary text-xs font-bold">PITY BOOSTER (+3 PITY)</h4>
+          <p class="font-body-md text-[11px] text-on-surface-variant mt-1">Menambah pity gacha instan sebesar 3 poin.</p>
         </div>
-        <div class="collection-empty" id="collectionEmpty">Belum ada Pokémon. Tarik dulu di tab Gacha! 🎣</div>
-        <div class="collection-grid" id="collectionGrid"></div>
+        <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+          <span class="font-label-caps text-secondary font-bold text-xs">500 Dust</span>
+          <button onclick="buyItem('pity_booster', 500)" class="bg-[#3B82F6] hover:bg-[#2563EB] text-white font-label-caps px-4 py-2 rounded-lg text-[10px] transition-all duration-200 active:scale-95">BELI</button>
+        </div>
       </div>
-
-      <!-- ============ TAB: BADGE ============ -->
-      <div class="tab-panel" id="panel-badge" hidden>
-        <p class="badge-intro">Kumpulkan Pokémon tiap tipe untuk menguasai gym Kanto dan meraih 8 badge-nya!</p>
-        <div class="champion" id="champion" hidden>👑 CHAMPION! Kamu menguasai semua 8 gym Kanto!</div>
-        <div class="badge-grid" id="badgeGrid"></div>
+      
+      <!-- Item 3: Instant SSR Ticket -->
+      <div class="bg-surface-container-high/40 p-md rounded-xl border border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-sm">
+        <div>
+          <h4 class="font-label-caps text-ssr-gold text-xs font-bold">INSTANT SSR TICKET</h4>
+          <p class="font-body-md text-[11px] text-on-surface-variant mt-1">Jaminan 100% mendapatkan Pokémon SSR pada tarikan berikutnya.</p>
+        </div>
+        <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+          <span class="font-label-caps text-secondary font-bold text-xs">2000 Dust</span>
+          <button onclick="buyItem('ssr_ticket', 2000)" class="bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white font-label-caps px-4 py-2 rounded-lg text-[10px] transition-all duration-200 active:scale-95 btn-glow-gold">BELI</button>
+        </div>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- Notifikasi kecil saat dapat badge baru -->
-  <div class="toast" id="toast" hidden></div>
+<!-- SECTION 5: SETTINGS -->
+<section id="tab-content-settings" class="tab-content hidden">
+  <div class="bg-surface-container/60 backdrop-blur-xl rounded-xl p-md border border-white/5 mb-xl">
+    <div class="flex items-center mb-4 pb-2 border-b border-white/5">
+      <h3 class="font-label-caps text-primary font-bold text-sm">SETTINGS</h3>
+    </div>
+    <div class="grid gap-md">
+      <div class="flex items-center justify-between p-sm bg-surface-container-high/20 rounded-lg">
+        <div>
+          <h4 class="font-label-caps text-on-surface font-bold text-xs">Retro Sound Effects</h4>
+          <p class="font-body-md text-[11px] text-on-surface-variant mt-1">Mainkan efek suara 8-bit retro saat menarik gacha dan berbelanja.</p>
+        </div>
+        <button id="sound-toggle-btn" onclick="toggleSound()" class="bg-[#3B82F6] hover:bg-[#2563EB] text-white font-label-caps px-4 py-2 rounded-lg text-[10px] transition-colors">AKTIF</button>
+      </div>
+      
+      <div class="flex items-center justify-between p-sm bg-surface-container-high/20 rounded-lg">
+        <div>
+          <h4 class="font-label-caps text-on-surface font-bold text-xs">Reset Save Data</h4>
+          <p class="font-body-md text-[11px] text-on-surface-variant mt-1">Mereset semua koleksi Pokedex, koin Nebula Dust, dan progress pity kembali ke awal.</p>
+        </div>
+        <button onclick="resetGame()" class="bg-red-600 hover:bg-red-700 text-white font-label-caps px-4 py-2 rounded-lg text-[10px] transition-colors">RESET DATA</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <script src="app.js"></script>
-</body>
-</html>
+<!-- SECTION 6: SUPPORT -->
+<section id="tab-content-support" class="tab-content hidden">
+  <div class="bg-surface-container/60 backdrop-blur-xl rounded-xl p-md border border-white/5 mb-xl text-center py-lg">
+    <span class="material-symbols-outlined text-5xl text-primary mb-4 animate-bounce">help_outline</span>
+    <h3 class="font-headline-lg text-primary mb-2">NEBULA CONSOLE SUPPORT</h3>
+    <p class="font-body-md text-xs text-on-surface-variant max-w-sm mx-auto mb-6">Butuh bantuan Trainer? Hubungi tim support kami melalui sistem terminal transmisi terenkripsi.</p>
+    
+    <div class="max-w-sm mx-auto bg-surface-container-lowest p-md rounded-xl border border-white/10 text-left font-mono text-[10px] text-[#10b981]">
+      <div>[TRANSMISI NEBULA v1.0.4]</div>
+      <div class="mt-2">> Status: Koneksi Aman</div>
+      <div>> IP: 127.0.0.1:8080</div>
+      <div>> Trainer Rank: Master Elite</div>
+      <div class="mt-4 text-on-surface-variant font-sans">Jika mengalami kendala teknis atau menemukan bug gacha, hubungi tim pengembang via Telegram @EthJKT atau email support@nebulagacha.io.</div>
+    </div>
+  </div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 w-full h-16 lg:hidden bg-surface-container/90 backdrop-blur-2xl border-t border-white/10 z-50 flex justify-around items-center px-2 pb-safe shadow-lg">
+<button onclick="switchTab('home')" id="nav-mob-home" class="nav-btn-mob flex flex-col items-center justify-center text-primary font-bold active:scale-90 transition-transform">
+<span class="material-symbols-outlined font-variation-settings-'FILL'-1">home</span>
+<span class="font-label-caps mt-1">Home</span>
+</button>
+<button onclick="switchTab('pokedex')" id="nav-mob-pokedex" class="nav-btn-mob flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">charging_station</span>
+<span class="font-label-caps mt-1">Dex</span>
+</button>
+<button onclick="switchTab('inventory')" id="nav-mob-inventory" class="nav-btn-mob flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-caps mt-1">Items</span>
+</button>
+<button onclick="switchTab('shop')" id="nav-mob-shop" class="nav-btn-mob flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-caps mt-1">Shop</span>
+</button>
+</nav>
+
+<!-- Pokedex Detail Modal -->
+<div id="pokedex-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-md bg-black/70 backdrop-blur-md">
+  <div class="relative w-full max-w-sm bg-[#1d2026]/95 border-2 border-white/10 rounded-xl p-md flex flex-col items-center shadow-2xl">
+    <button onclick="closePokedexModal()" class="absolute top-3 right-3 text-on-surface-variant hover:text-white transition-colors">
+      <span class="material-symbols-outlined text-sm">close</span>
+    </button>
+    <div id="modal-content" class="w-full flex flex-col items-center">
+      <!-- Will be populated dynamically -->
+    </div>
+  </div>
+</div>
+
+<script>
+  // Pokémon Gacha Simulator logic with PokeAPI, sound synthesiser & SPA navigations
+  const hadiah = {
+    ssr: ["mewtwo", "mew", "rayquaza", "lugia", "arceus"],
+    epic: ["charizard", "blastoise", "venusaur", "dragonite", "gyarados"],
+    rare: ["pikachu", "eevee", "charmeleon", "wartortle", "ivysaur"],
+    common: ["ditto", "bulbasaur", "charmander", "squirtle", "rattata", "pidgey"]
+  };
+
+  const pokemonRarities = {};
+  Object.keys(hadiah).forEach(rarity => {
+    hadiah[rarity].forEach(name => {
+      const capName = name.charAt(0).toUpperCase() + name.slice(1);
+      pokemonRarities[capName] = rarity;
+    });
+  });
+
+  const pokemonCache = {};
+  
+  // Game State
+  const defaultState = {
+    pity: 0,
+    total: 0,
+    ssrCount: 0,
+    nebulaDust: 1000,
+    inventory: {}, // format: { Mewtwo: 1, Bulbasaur: 2 }
+    unlocked: [],  // format: ["Mewtwo", "Bulbasaur"]
+    activeBuff: null // 'lucky_charm' or 'ssr_ticket'
+  };
+
+  let state = { ...defaultState };
+
+  // Sound Synthesizer (Web Audio API)
+  let audioCtx = null;
+  let isSoundEnabled = true;
+
+  function initAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  function playSound(type) {
+    if (!isSoundEnabled) return;
+    try {
+      initAudio();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      const now = audioCtx.currentTime;
+      
+      if (type === 'click') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(300, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        osc.start(now);
+        osc.stop(now + 0.1);
+      } else if (type === 'spin') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.linearRampToValueAtTime(800, now + 0.6);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.005, now + 0.6);
+        osc.start(now);
+        osc.stop(now + 0.6);
+      } else if (type === 'success') {
+        osc.type = 'square';
+        const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+        notes.forEach((freq, idx) => {
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+        });
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.setValueAtTime(0.15, now + 0.24);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+        osc.start(now);
+        osc.stop(now + 0.45);
+      } else if (type === 'ssr') {
+        osc.type = 'square';
+        const notes = [392.00, 523.25, 659.25, 783.99, 1046.50]; // G4, C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+        });
+        
+        const vibrato = audioCtx.createOscillator();
+        const vibratoGain = audioCtx.createGain();
+        vibrato.frequency.setValueAtTime(12, now);
+        vibratoGain.gain.setValueAtTime(15, now);
+        vibrato.connect(vibratoGain);
+        vibratoGain.connect(osc.frequency);
+        
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.setValueAtTime(0.2, now + 0.3);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+        
+        vibrato.start(now);
+        osc.start(now);
+        vibrato.stop(now + 0.7);
+        osc.stop(now + 0.7);
+      } else if (type === 'shop') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(987.77, now); // B5
+        osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      } else if (type === 'error') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(130, now);
+        osc.frequency.setValueAtTime(110, now + 0.12);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      }
+    } catch (e) {
+      console.warn("Audio error:", e);
+    }
+  }
+
+  function toggleSound() {
+    isSoundEnabled = !isSoundEnabled;
+    const btn = document.getElementById("sound-toggle-btn");
+    if (isSoundEnabled) {
+      btn.textContent = "AKTIF";
+      btn.className = "bg-[#3B82F6] hover:bg-[#2563EB] text-white font-label-caps px-4 py-2 rounded-lg text-[10px] transition-colors";
+      playSound('click');
+    } else {
+      btn.textContent = "NON-AKTIF";
+      btn.className = "bg-white/10 hover:bg-white/20 text-on-surface-variant font-label-caps px-4 py-2 rounded-lg text-[10px] transition-colors";
+    }
+    localStorage.setItem("gacha_sound_enabled", isSoundEnabled);
+  }
+
+  // State Management
+  function loadGameState() {
+    const saved = localStorage.getItem("pokemon_gacha_state");
+    if (saved) {
+      try {
+        state = JSON.parse(saved);
+        state = { ...defaultState, ...state };
+      } catch (e) {
+        state = { ...defaultState };
+      }
+    } else {
+      state = { ...defaultState };
+    }
+    
+    // Load sound state
+    const savedSound = localStorage.getItem("gacha_sound_enabled");
+    if (savedSound !== null) {
+      isSoundEnabled = savedSound === "true";
+      const btn = document.getElementById("sound-toggle-btn");
+      if (btn) {
+        btn.textContent = isSoundEnabled ? "AKTIF" : "NON-AKTIF";
+        btn.className = isSoundEnabled 
+          ? "bg-[#3B82F6] hover:bg-[#2563EB] text-white font-label-caps px-4 py-2 rounded-lg text-[10px] transition-colors"
+          : "bg-white/10 hover:bg-white/20 text-on-surface-variant font-label-caps px-4 py-2 rounded-lg text-[10px] transition-colors";
+      }
+    }
+    
+    updateUI();
+  }
+
+  function saveGameState() {
+    localStorage.setItem("pokemon_gacha_state", JSON.stringify(state));
+    updateUI();
+  }
+
+  function updateUI() {
+    document.getElementById("total").textContent = state.total;
+    document.getElementById("ssrCount").textContent = state.ssrCount;
+    
+    document.getElementById("pityText").textContent = `${state.pity} / 10`;
+    document.getElementById("pityFill").style.width = `${(state.pity / 10) * 100}%`;
+    
+    // Wallets update
+    const dustTextDesk = document.getElementById("wallet-desk");
+    const dustTextMob = document.getElementById("wallet-mob");
+    const shopWallet = document.getElementById("shop-wallet");
+    
+    if (dustTextDesk) dustTextDesk.textContent = `${state.nebulaDust.toLocaleString()} Dust`;
+    if (dustTextMob) dustTextMob.textContent = state.nebulaDust.toLocaleString();
+    if (shopWallet) shopWallet.textContent = `${state.nebulaDust.toLocaleString()} Dust`;
+
+    // Dynamic Buff Indicator
+    const buffIndicator = document.getElementById("buff-indicator");
+    const buffText = document.getElementById("buff-text");
+    if (buffIndicator && buffText) {
+      if (state.activeBuff === 'lucky_charm') {
+        buffIndicator.classList.remove('hidden');
+        buffText.textContent = "⚡ BUFF AKTIF: 2x SSR RATE (6%)";
+        buffText.className = "inline-block font-label-caps text-[10px] bg-[#3B82F6]/20 text-[#60a5fa] border border-[#3b82f6]/50 px-3 py-1 rounded-full animate-pulse";
+      } else if (state.activeBuff === 'ssr_ticket') {
+        buffIndicator.classList.remove('hidden');
+        buffText.textContent = "👑 BUFF AKTIF: JAMINAN 100% SSR";
+        buffText.className = "inline-block font-label-caps text-[10px] bg-ssr-gold/20 text-ssr-gold border border-ssr-gold/50 px-3 py-1 rounded-full animate-pulse";
+      } else {
+        buffIndicator.classList.add('hidden');
+      }
+    }
+  }
+
+  // Tab Navigation Routing
+  function switchTab(tabId) {
+    playSound('click');
+    
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(section => {
+      section.classList.add('hidden');
+    });
+    
+    // Show selected tab content
+    const targetSection = document.getElementById(`tab-content-${tabId}`);
+    if (targetSection) {
+      targetSection.classList.remove('hidden');
+    }
+    
+    // Update Desktop Navigation Styling
+    document.querySelectorAll('.nav-btn-desk').forEach(btn => {
+      btn.className = "nav-btn-desk text-on-surface-variant font-label-caps flex items-center gap-sm p-sm rounded-lg hover:bg-white/5 hover:text-primary transition-colors duration-200 w-full text-left";
+    });
+    const activeDeskBtn = document.getElementById(`nav-desk-${tabId}`);
+    if (activeDeskBtn) {
+      activeDeskBtn.className = "nav-btn-desk bg-primary/10 text-primary border-r-4 border-primary font-label-caps flex items-center gap-sm p-sm rounded-l-lg hover:bg-surface-container-highest transition-all duration-150 w-full text-left";
+    }
+    
+    // Update Mobile Navigation Styling
+    document.querySelectorAll('.nav-btn-mob').forEach(btn => {
+      btn.className = "nav-btn-mob flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors";
+    });
+    const activeMobBtn = document.getElementById(`nav-mob-${tabId}`);
+    if (activeMobBtn) {
+      activeMobBtn.className = "nav-btn-mob flex flex-col items-center justify-center text-primary font-bold active:scale-90 transition-transform";
+    }
+    
+    // Render dynamic tabs
+    if (tabId === 'pokedex') {
+      renderPokedex();
+    } else if (tabId === 'inventory') {
+      renderInventory();
+    }
+  }
+
+  // Pokedex View Renderer
+  async function renderPokedex() {
+    const grid = document.getElementById("pokedex-grid");
+    grid.innerHTML = "";
+    
+    let unlockedCount = 0;
+    let totalCount = 0;
+    
+    for (const rarity of ['ssr', 'epic', 'rare', 'common']) {
+      for (const nameKey of hadiah[rarity]) {
+        totalCount++;
+        const capName = nameKey.charAt(0).toUpperCase() + nameKey.slice(1);
+        const isUnlocked = state.unlocked.includes(capName);
+        
+        if (isUnlocked) unlockedCount++;
+        
+        const card = document.createElement("div");
+        
+        let borderClass = "border-white/5";
+        let textClass = "text-on-surface/50";
+        let cardBg = "bg-surface-container-high/20";
+        
+        if (isUnlocked) {
+          borderClass = rarity === 'ssr' ? 'border-ssr-gold shadow-[0_0_10px_rgba(233,196,0,0.2)]'
+                      : rarity === 'epic' ? 'border-[#8b5cf6] shadow-[0_0_10px_rgba(139,92,246,0.2)]'
+                      : rarity === 'rare' ? 'border-[#3b82f6] shadow-[0_0_10px_rgba(59,130,246,0.2)]'
+                      : 'border-white/20';
+          textClass = rarity === 'ssr' ? 'text-ssr-gold'
+                    : rarity === 'epic' ? 'text-[#a78bfa]'
+                    : rarity === 'rare' ? 'text-[#60a5fa]'
+                    : 'text-on-surface';
+          cardBg = "bg-[#1d2026]/80 hover:scale-[1.05] transition-all cursor-pointer";
+        }
+        
+        card.className = `p-3 rounded-lg border ${borderClass} ${cardBg} flex flex-col items-center justify-center relative min-h-[96px]`;
+        
+        let imgContent = `❓`;
+        if (isUnlocked) {
+          const cached = pokemonCache[nameKey];
+          if (cached && cached.sprite) {
+            imgContent = `<img class="w-12 h-12 object-contain" src="${cached.sprite}" alt="${capName}">`;
+          } else {
+            fetchPokemonData(nameKey).then(() => {
+              const activeTab = document.getElementById("tab-content-pokedex");
+              if (activeTab && !activeTab.classList.contains('hidden')) {
+                renderPokedex();
+              }
+            });
+            imgContent = `<div class="pokeball-loading w-6 h-6 rounded-full border-2 border-white/20 border-t-primary"></div>`;
+          }
+        }
+        
+        card.innerHTML = `
+          <div class="w-12 h-12 flex items-center justify-center mb-1.5 ${!isUnlocked ? 'filter grayscale opacity-30' : ''}">
+            ${imgContent}
+          </div>
+          <span class="font-label-caps text-[9px] ${textClass} text-center font-bold">${capName}</span>
+          ${!isUnlocked ? '<span class="material-symbols-outlined text-[10px] absolute top-1 right-1 opacity-40">lock</span>' : ''}
+        `;
+        
+        if (isUnlocked) {
+          card.addEventListener("click", () => {
+            openPokedexModal(nameKey);
+          });
+        }
+        
+        grid.appendChild(card);
+      }
+    }
+    
+    document.getElementById("pokedex-progress").textContent = `${unlockedCount} / ${totalCount} Didapat`;
+  }
+
+  // Modal Detailed Panel
+  function openPokedexModal(nameKey) {
+    playSound('click');
+    const modal = document.getElementById("pokedex-modal");
+    const content = document.getElementById("modal-content");
+    const cached = pokemonCache[nameKey];
+    
+    if (!cached) return;
+    
+    const capName = nameKey.charAt(0).toUpperCase() + nameKey.slice(1);
+    const rarity = pokemonRarities[capName];
+    
+    let textClass = rarity === 'ssr' ? 'text-ssr-gold'
+                  : rarity === 'epic' ? 'text-[#a78bfa]'
+                  : rarity === 'rare' ? 'text-[#60a5fa]'
+                  : 'text-on-surface';
+                  
+    content.innerHTML = `
+      <div class="w-28 h-28 flex items-center justify-center mb-2 relative">
+        <div class="absolute inset-0 bg-primary/5 rounded-full blur-xl"></div>
+        <img class="w-full h-full object-contain relative z-10 drop-shadow-2xl" src="${cached.sprite}" alt="${capName}">
+      </div>
+      <h3 class="font-headline-lg ${textClass} mb-1">${capName} #${cached.id}</h3>
+      <span class="font-label-caps text-[9px] text-on-surface-variant bg-white/5 px-2.5 py-0.5 rounded border border-white/10 mb-4">${rarity.toUpperCase()}</span>
+      
+      <div class="flex gap-1.5 mb-5">
+        ${cached.types.map(t => {
+          const typeColors = {
+            normal: 'bg-[#9ca3af]', fire: 'bg-[#ef4444]', water: 'bg-[#3b82f6]',
+            grass: 'bg-[#10b981]', electric: 'bg-[#f59e0b]', ice: 'bg-[#60a5fa]',
+            fighting: 'bg-[#dc2626]', poison: 'bg-[#8b5cf6]', ground: 'bg-[#b45309]',
+            flying: 'bg-[#818cf8]', psychic: 'bg-[#ec4899]', bug: 'bg-[#84cc16]',
+            rock: 'bg-[#78350f]', ghost: 'bg-[#6366f1]', dragon: 'bg-[#4f46e5]',
+            dark: 'bg-[#374151]', steel: 'bg-[#6b7280]', fairy: 'bg-[#f472b6]'
+          };
+          return `<span class="${typeColors[t] || 'bg-white/10'} text-white font-label-caps px-2.5 py-0.5 rounded-full text-[8px]">${t.toUpperCase()}</span>`;
+        }).join('')}
+      </div>
+      
+      <div class="w-full grid gap-2.5 font-label-caps text-[10px] border-t border-white/5 pt-4">
+        <div class="flex items-center justify-between">
+          <span class="text-on-surface-variant">HP</span>
+          <span class="text-on-surface font-bold">${cached.stats.hp}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-on-surface-variant">ATK</span>
+          <span class="text-on-surface font-bold">${cached.stats.atk}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-on-surface-variant">DEF</span>
+          <span class="text-on-surface font-bold">${cached.stats.def}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-on-surface-variant">SPA</span>
+          <span class="text-on-surface font-bold">${cached.stats.spa}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-on-surface-variant">SPD</span>
+          <span class="text-on-surface font-bold">${cached.stats.spd}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-on-surface-variant">SPE</span>
+          <span class="text-on-surface font-bold">${cached.stats.spe}</span>
+        </div>
+      </div>
+    `;
+    
+    modal.classList.remove("hidden");
+  }
+
+  function closePokedexModal() {
+    playSound('click');
+    document.getElementById("pokedex-modal").classList.add("hidden");
+  }
+
+  // Inventory View Renderer
+  function renderInventory() {
+    const grid = document.getElementById("inventory-grid");
+    grid.innerHTML = "";
+    
+    const sortVal = document.getElementById("inventory-sort").value;
+    const owned = Object.keys(state.inventory).filter(name => state.inventory[name] > 0);
+    
+    if (owned.length === 0) {
+      grid.className = "flex flex-col items-center justify-center py-10 w-full col-span-full";
+      grid.innerHTML = `
+        <span class="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-2">inventory_2</span>
+        <p class="font-body-md text-xs text-on-surface-variant">Inventory kosong. Tarik Pokémon untuk mengisinya!</p>
+      `;
+      return;
+    }
+    
+    grid.className = "grid grid-cols-3 sm:grid-cols-4 gap-sm";
+    
+    owned.sort((a, b) => {
+      if (sortVal === 'name') {
+        return a.localeCompare(b);
+      } else {
+        const raritiesOrder = { ssr: 0, epic: 1, rare: 2, common: 3 };
+        const rarityA = raritiesOrder[pokemonRarities[a]];
+        const rarityB = raritiesOrder[pokemonRarities[b]];
+        if (rarityA !== rarityB) {
+          return rarityA - rarityB;
+        }
+        return a.localeCompare(b);
+      }
+    });
+    
+    owned.forEach(name => {
+      const count = state.inventory[name];
+      const nameKey = name.toLowerCase();
+      const rarity = pokemonRarities[name];
+      
+      const card = document.createElement("div");
+      
+      const borderClass = rarity === 'ssr' ? 'border-ssr-gold shadow-[0_0_10px_rgba(233,196,0,0.2)]'
+                        : rarity === 'epic' ? 'border-[#8b5cf6] shadow-[0_0_10px_rgba(139,92,246,0.2)]'
+                        : rarity === 'rare' ? 'border-[#3b82f6] shadow-[0_0_10px_rgba(59,130,246,0.2)]'
+                        : 'border-white/20';
+      const textClass = rarity === 'ssr' ? 'text-ssr-gold'
+                      : rarity === 'epic' ? 'text-[#a78bfa]'
+                      : rarity === 'rare' ? 'text-[#60a5fa]'
+                      : 'text-on-surface';
+                      
+      card.className = "p-3 rounded-lg border " + borderClass + " bg-[#1d2026]/80 hover:scale-[1.05] transition-all cursor-pointer flex flex-col items-center justify-center relative min-h-[96px]";
+      
+      let imgContent = `❓`;
+      const cached = pokemonCache[nameKey];
+      if (cached && cached.sprite) {
+        imgContent = `<img class="w-12 h-12 object-contain" src="${cached.sprite}" alt="${name}">`;
+      }
+      
+      card.innerHTML = `
+        <div class="absolute top-1 left-1 bg-primary/20 text-primary font-bold font-label-caps px-1.5 py-0.5 rounded text-[8px] leading-none z-20">
+          x${count}
+        </div>
+        <div class="w-12 h-12 flex items-center justify-center mb-1.5">
+          ${imgContent}
+        </div>
+        <span class="font-label-caps text-[9px] ${textClass} text-center font-bold">${name}</span>
+      `;
+      
+      card.addEventListener("click", () => {
+        openPokedexModal(nameKey);
+      });
+      
+      grid.appendChild(card);
+    });
+  }
+
+  // Shop Purchases
+  function buyItem(itemId, price) {
+    if (state.nebulaDust < price) {
+      playSound('error');
+      alert(`Nebula Dust tidak cukup! Anda butuh ${price} Dust.`);
+      return;
+    }
+    
+    if (itemId === 'lucky_charm' && state.activeBuff === 'lucky_charm') {
+      playSound('error');
+      alert("Anda sudah memiliki Lucky Charm aktif!");
+      return;
+    }
+    if (itemId === 'ssr_ticket' && state.activeBuff === 'ssr_ticket') {
+      playSound('error');
+      alert("Anda sudah memiliki Instant SSR Ticket aktif!");
+      return;
+    }
+    
+    playSound('shop');
+    state.nebulaDust -= price;
+    
+    if (itemId === 'pity_booster') {
+      state.pity = Math.min(10, state.pity + 3);
+      alert("Pity Booster berhasil dibeli! Pity Anda bertambah +3.");
+    } else if (itemId === 'lucky_charm') {
+      state.activeBuff = 'lucky_charm';
+      alert("Lucky Charm berhasil dibeli! Rate SSR menjadi 2x lipat (6%) pada tarikan berikutnya.");
+    } else if (itemId === 'ssr_ticket') {
+      state.activeBuff = 'ssr_ticket';
+      alert("Instant SSR Ticket berhasil dibeli! Jaminan 100% SSR pada tarikan berikutnya.");
+    }
+    
+    saveGameState();
+  }
+
+  // Game Reset
+  function resetGame() {
+    if (confirm("Apakah Anda yakin ingin mereset seluruh data game? Pokedex, Dust, dan Inventory Anda akan terhapus.")) {
+      playSound('error');
+      state = {
+        pity: 0,
+        total: 0,
+        ssrCount: 0,
+        nebulaDust: 1000,
+        inventory: {},
+        unlocked: [],
+        activeBuff: null
+      };
+      saveGameState();
+      alert("Seluruh data game telah direset!");
+      switchTab('home');
+    }
+  }
+
+  function pilihAcak(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  async function fetchPokemonData(name) {
+    if (pokemonCache[name]) {
+      return pokemonCache[name];
+    }
+    
+    try {
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+      if (!response.ok) throw new Error("Gagal mengambil data");
+      const data = await response.json();
+      
+      let spriteUrl = data.sprites.front_default || "";
+      if (spriteUrl.includes("raw.githubusercontent.com/PokeAPI/sprites/master")) {
+        spriteUrl = spriteUrl.replace("raw.githubusercontent.com/PokeAPI/sprites/master", "cdn.jsdelivr.net/gh/PokeAPI/sprites@master");
+      }
+      
+      const pokemon = {
+        id: data.id,
+        name: data.name.charAt(0).toUpperCase() + data.name.slice(1),
+        sprite: spriteUrl,
+        types: data.types.map(t => t.type.name),
+        stats: {
+          hp: data.stats[0].base_stat,
+          atk: data.stats[1].base_stat,
+          def: data.stats[2].base_stat,
+          spa: data.stats[3].base_stat,
+          spd: data.stats[4].base_stat,
+          spe: data.stats[5].base_stat
+        }
+      };
+      
+      pokemonCache[name] = pokemon;
+      return pokemon;
+    } catch (error) {
+      console.error(error);
+      return {
+        id: 0,
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        sprite: "",
+        types: ["normal"],
+        stats: { hp: 50, atk: 50, def: 50, spa: 50, spd: 50, spe: 50 }
+      };
+    }
+  }
+
+  function tampilkanLoading() {
+    const cardEmoji = document.getElementById("cardEmoji");
+    const cardName = document.getElementById("cardName");
+    const cardRarity = document.getElementById("cardRarity");
+    const cardTypes = document.getElementById("cardTypes");
+    const card = document.getElementById("card");
+
+    card.className = "relative bg-surface-container/80 backdrop-blur-2xl rounded-xl border-2 border-white/10 p-xl flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]";
+    cardRarity.className = "absolute top-4 left-4 font-label-caps bg-white/5 text-on-surface-variant px-2 py-1 rounded border border-white/10";
+    cardName.className = "font-headline-lg mb-4 text-center text-on-surface-variant";
+    
+    cardTypes.innerHTML = "";
+    
+    cardEmoji.innerHTML = `
+      <svg class="pokeball-loading w-24 h-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 0.8s linear infinite;">
+        <circle cx="12" cy="12" r="10" stroke="#eaeaf0" stroke-width="1.5" fill="#f3f4f6"/>
+        <path d="M2 12H22" stroke="#eaeaf0" stroke-width="1.5"/>
+        <circle cx="12" cy="12" r="3" fill="#fff" stroke="#eaeaf0" stroke-width="1.5"/>
+        <path d="M2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12" fill="#ef4444"/>
+        <circle cx="12" cy="12" r="1" fill="#1f2937"/>
+      </svg>
+    `;
+    cardName.textContent = "Memanggil...";
+    cardRarity.textContent = "SEARCHING";
+  }
+
+  function tentukanHasilRarity() {
+    state.total++;
+    state.pity++;
+    
+    let kelas;
+    const acak = Math.random();
+    
+    let ssrChance = 0.03;
+    if (state.activeBuff === 'lucky_charm') {
+      ssrChance = 0.06;
+    }
+    
+    const isSSRGuaranteed = state.pity >= 10 || state.activeBuff === 'ssr_ticket';
+    
+    if (isSSRGuaranteed || acak < ssrChance) {
+      kelas = 'ssr';
+      state.pity = 0;
+      state.ssrCount++;
+      if (state.activeBuff === 'ssr_ticket') {
+        state.activeBuff = null;
+      }
+    } else if (acak < 0.10) {
+      kelas = 'epic';
+    } else if (acak < 0.30) {
+      kelas = 'rare';
+    } else {
+      kelas = 'common';
+    }
+    
+    if (state.activeBuff === 'lucky_charm') {
+      state.activeBuff = null;
+    }
+    
+    // Nebula Dust earnings
+    let dustEarned = 10;
+    if (kelas === 'rare') dustEarned = 30;
+    else if (kelas === 'epic') dustEarned = 50;
+    else if (kelas === 'ssr') dustEarned = 100;
+    
+    state.nebulaDust += dustEarned;
+    
+    const namaPokemon = pilihAcak(hadiah[kelas]);
+    return { kelas, nameKey: namaPokemon };
+  }
+
+  function tampilkan(hasil) {
+    const card = document.getElementById("card");
+    const cardEmoji = document.getElementById("cardEmoji");
+    const cardName = document.getElementById("cardName");
+    const cardTypes = document.getElementById("cardTypes");
+    const cardRarity = document.getElementById("cardRarity");
+
+    let cardClasses = "relative bg-surface-container/80 backdrop-blur-2xl rounded-xl p-xl flex flex-col items-center transition-transform duration-300 hover:scale-[1.02] reveal";
+    let labelClasses = "absolute top-4 left-4 font-label-caps px-2 py-1 rounded border";
+    let nameClasses = "font-headline-lg mb-4 text-center";
+
+    if (hasil.kelas === 'ssr') {
+      cardClasses += " border-2 border-ssr-gold gacha-glow-ssr";
+      labelClasses += " bg-ssr-gold/20 text-ssr-gold border-ssr-gold/50";
+      nameClasses += " text-ssr-gold shadow-ssr-gold";
+    } else if (hasil.kelas === 'epic') {
+      cardClasses += " border-2 border-[#8b5cf6] shadow-[0_0_30px_rgba(139,92,246,0.45)]";
+      labelClasses += " bg-[#8b5cf6]/20 text-[#a78bfa] border-[#8b5cf6]/50";
+      nameClasses += " text-[#a78bfa]";
+    } else if (hasil.kelas === 'rare') {
+      cardClasses += " border-2 border-[#3b82f6] shadow-[0_0_25px_rgba(59,130,246,0.35)]";
+      labelClasses += " bg-[#3b82f6]/20 text-[#60a5fa] border-[#3b82f6]/50";
+      nameClasses += " text-[#60a5fa]";
+    } else {
+      cardClasses += " border-2 border-white/10";
+      labelClasses += " bg-white/5 text-on-surface-variant border-white/10";
+      nameClasses += " text-on-surface";
+    }
+
+    card.className = cardClasses;
+    cardRarity.className = labelClasses;
+    cardName.className = nameClasses;
+
+    void card.offsetWidth;
+
+    if (hasil.sprite) {
+      cardEmoji.innerHTML = `
+        <div class="absolute inset-0 ${hasil.kelas === 'ssr' ? 'bg-ssr-gold/10' : 'bg-primary/5'} rounded-full blur-2xl"></div>
+        <img class="w-full h-full object-contain relative z-10 drop-shadow-2xl ${hasil.kelas === 'ssr' ? 'filter drop-shadow-[0_0_15px_rgba(233,196,0,0.5)]' : ''}" src="${hasil.sprite}" alt="${hasil.nama}" onerror="this.style.display='none'; this.parentElement.textContent='❓';">
+      `;
+    } else {
+      cardEmoji.textContent = `❓`;
+    }
+    
+    cardName.textContent = hasil.nama;
+    cardRarity.textContent = hasil.kelas.toUpperCase();
+
+    cardTypes.innerHTML = "";
+    if (hasil.types) {
+      hasil.types.forEach(t => {
+        const typeColors = {
+          normal: 'bg-[#9ca3af]', fire: 'bg-[#ef4444]', water: 'bg-[#3b82f6]',
+          grass: 'bg-[#10b981]', electric: 'bg-[#f59e0b]', ice: 'bg-[#60a5fa]',
+          fighting: 'bg-[#dc2626]', poison: 'bg-[#8b5cf6]', ground: 'bg-[#b45309]',
+          flying: 'bg-[#818cf8]', psychic: 'bg-[#ec4899]', bug: 'bg-[#84cc16]',
+          rock: 'bg-[#78350f]', ghost: 'bg-[#6366f1]', dragon: 'bg-[#4f46e5]',
+          dark: 'bg-[#374151]', steel: 'bg-[#6b7280]', fairy: 'bg-[#f472b6]'
+        };
+        const colorClass = typeColors[t] || 'bg-white/10';
+        
+        const badge = document.createElement("span");
+        badge.className = `${colorClass} text-white font-label-caps px-3 py-1 rounded-full text-[10px]`;
+        badge.textContent = t.toUpperCase();
+        cardTypes.appendChild(badge);
+      });
+    }
+
+    if (hasil.stats) {
+      document.getElementById("statsContainer").style.display = "block";
+      document.getElementById("stat-hp").textContent = hasil.stats.hp;
+      document.getElementById("stat-atk").textContent = hasil.stats.atk;
+      document.getElementById("stat-def").textContent = hasil.stats.def;
+      document.getElementById("stat-spa").textContent = hasil.stats.spa;
+      document.getElementById("stat-spd").textContent = hasil.stats.spd;
+      document.getElementById("stat-spe").textContent = hasil.stats.spe;
+
+      document.getElementById("fill-hp").style.width = `${(hasil.stats.hp / 255) * 100}%`;
+      document.getElementById("fill-atk").style.width = `${(hasil.stats.atk / 255) * 100}%`;
+      document.getElementById("fill-def").style.width = `${(hasil.stats.def / 255) * 100}%`;
+      document.getElementById("fill-spa").style.width = `${(hasil.stats.spa / 255) * 100}%`;
+      document.getElementById("fill-spd").style.width = `${(hasil.stats.spd / 255) * 100}%`;
+      document.getElementById("fill-spe").style.width = `${(hasil.stats.spe / 255) * 100}%`;
+    }
+
+    updateUI();
+  }
+
+  function tambahRiwayat(hasil) {
+    const historyContainer = document.getElementById("history");
+    const chip = document.createElement("div");
+    
+    let chipClasses = "w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center p-1 relative transition-all duration-200 hover:scale-110";
+    if (hasil.kelas === 'ssr') {
+      chipClasses += " border border-ssr-gold shadow-[0_0_10px_rgba(233,196,0,0.3)]";
+    } else if (hasil.kelas === 'epic') {
+      chipClasses += " border border-[#8b5cf6] shadow-[0_0_10px_rgba(139,92,246,0.3)]";
+    } else if (hasil.kelas === 'rare') {
+      chipClasses += " border border-[#3b82f6] shadow-[0_0_10px_rgba(59,130,246,0.3)]";
+    } else {
+      chipClasses += " border border-white/10 opacity-70 hover:opacity-100";
+    }
+    
+    chip.className = chipClasses;
+    
+    if (hasil.sprite) {
+      chip.innerHTML = `<img class="w-full h-full object-contain" src="${hasil.sprite}" alt="${hasil.nama}" onerror="this.style.display='none'; this.parentElement.textContent='❓';">`;
+    } else {
+      chip.textContent = "❓";
+    }
+
+    historyContainer.insertBefore(chip, historyContainer.firstChild);
+
+    while (historyContainer.children.length > 12) {
+      historyContainer.removeChild(historyContainer.lastChild);
+    }
+  }
+
+  function setButtonsDisabled(disabled) {
+    document.getElementById("tarik1").disabled = disabled;
+    document.getElementById("tarik10").disabled = disabled;
+    document.getElementById("tarik1").style.opacity = disabled ? 0.6 : 1;
+    document.getElementById("tarik10").style.opacity = disabled ? 0.6 : 1;
+  }
+
+  // Events
+  document.getElementById("tarik1").addEventListener("click", async () => {
+    setButtonsDisabled(true);
+    playSound('spin');
+    tampilkanLoading();
+    
+    const { kelas, nameKey } = tentukanHasilRarity();
+    const pokemonData = await fetchPokemonData(nameKey);
+    
+    const hasil = {
+      kelas: kelas,
+      id: pokemonData.id,
+      nama: pokemonData.name,
+      sprite: pokemonData.sprite,
+      types: pokemonData.types,
+      stats: pokemonData.stats
+    };
+    
+    tampilkan(hasil);
+    tambahRiwayat(hasil);
+    
+    // Save to inventory & unlock lists
+    if (!state.inventory[hasil.nama]) {
+      state.inventory[hasil.nama] = 0;
+    }
+    state.inventory[hasil.nama]++;
+    if (!state.unlocked.includes(hasil.nama)) {
+      state.unlocked.push(hasil.nama);
+    }
+    
+    playSound(kelas === 'ssr' ? 'ssr' : 'success');
+    saveGameState();
+    
+    setButtonsDisabled(false);
+  });
+
+  document.getElementById("tarik10").addEventListener("click", async () => {
+    setButtonsDisabled(true);
+    playSound('spin');
+    tampilkanLoading();
+    
+    const tarikanList = [];
+    for (let i = 0; i < 10; i++) {
+      tarikanList.push(tentukanHasilRarity());
+    }
+    
+    const fetchPromises = tarikanList.map(async (item) => {
+      const data = await fetchPokemonData(item.nameKey);
+      return {
+        kelas: item.kelas,
+        id: data.id,
+        nama: data.name,
+        sprite: data.sprite,
+        types: data.types,
+        stats: data.stats
+      };
+    });
+    
+    const hasilList = await Promise.all(fetchPromises);
+    
+    hasilList.forEach((hasil, index) => {
+      tambahRiwayat(hasil);
+      
+      if (!state.inventory[hasil.nama]) {
+        state.inventory[hasil.nama] = 0;
+      }
+      state.inventory[hasil.nama]++;
+      if (!state.unlocked.includes(hasil.nama)) {
+        state.unlocked.push(hasil.nama);
+      }
+      
+      if (index === 9) {
+        tampilkan(hasil);
+      }
+    });
+    
+    const containsSSR = hasilList.some(h => h.kelas === 'ssr');
+    playSound(containsSSR ? 'ssr' : 'success');
+    saveGameState();
+    
+    setButtonsDisabled(false);
+  });
+
+  window.addEventListener("DOMContentLoaded", () => {
+    loadGameState();
+    // Warm up cache
+    Object.keys(hadiah).forEach(rarity => {
+      hadiah[rarity].forEach(name => {
+        fetchPokemonData(name);
+      });
+    });
+  });
+</script>
+</body></html>
