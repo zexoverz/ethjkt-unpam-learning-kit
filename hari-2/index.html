@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasar Pagi</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <p class="eyebrow">buah segar / pagi yang tenang</p>
+      <h1>Pasar Pagi</h1>
+    </div>
+
+    <div class="cart-summary">
+      <span class="cart-label">keranjang</span>
+      <div class="cart-pill" aria-live="polite">
+        <span class="cart-icon" aria-hidden="true">Item</span>
+        <span id="cart-count" aria-label="Jumlah item di keranjang">0</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="store-layout">
+    <section class="products-area">
+      <div class="market-note">
+        <p>
+          Jam pasar yang tenang. Buah musiman ditata pelan-pelan, dengan
+          keterikatan emosional yang patut dipertanyakan.
+        </p>
+      </div>
+
+      <section id="product-section" class="product-section" aria-label="Daftar produk"></section>
+    </section>
+
+    <aside class="cart-sidebar" aria-labelledby="cart-title">
+      <div class="cart-header">
+        <h2 id="cart-title">Keranjang Kamu</h2>
+        <p>barang pilihan yang kebanyakan</p>
+      </div>
+
+      <div id="cart-details" class="cart-details"></div>
+
+      <div class="cart-footer">
+        <label class="field-label" for="note">Catatan buat petani</label>
+        <textarea id="note" class="note-input" rows="3" maxlength="200" placeholder="mis. titip di depan pintu biru ya :)"></textarea>
+
+        <div class="coupon-row">
+          <label class="sr-only" for="coupon">Kode kupon</label>
+          <input id="coupon" class="coupon-input" type="text" autocomplete="off" spellcheck="false" placeholder="kode kupon, mis. FARM10">
+          <button id="apply-coupon" class="coupon-btn" type="button">Pakai</button>
+        </div>
+        <div id="coupon-msg" class="coupon-msg" aria-live="polite"></div>
+
+        <div class="fee-row">
+          <span>Biaya penanganan tetap</span>
+          <strong id="handling-fee">$0.00</strong>
+        </div>
+        <p class="fee-note">
+          Biaya $0.30 hanya ditambahkan saat keranjang berisi untuk packing dan pemrosesan pesanan.
+        </p>
+
+        <div class="total-row">
+          <span>Total</span>
+          <strong id="cart-total-price">$0.00</strong>
+        </div>
+
+        <button id="checkout-button" class="checkout-button" type="button">
+          Lanjut ke Pembayaran
+        </button>
+      </div>
+    </aside>
+  </main>
+
+  <div class="modal-overlay" id="review-modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="review-title" aria-describedby="review-subtitle">
+      <h3 id="review-title">Cek Pesanan Kamu</h3>
+      <p class="modal-sub" id="review-subtitle">Lihat sekali lagi sebelum dikirim ke petani.</p>
+      <div id="review-items"></div>
+      <div id="review-note-wrap"></div>
+      <div class="review-breakdown" id="review-breakdown"></div>
+      <div class="modal-actions">
+        <button class="btn-back" id="review-back" type="button">Kembali</button>
+        <button class="btn-confirm" id="review-confirm" type="button">Konfirmasi Pesanan</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>
