@@ -3,6 +3,812 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
+<title>Pokemon Gacha Simulator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #090b14;
+    --panel: rgba(255, 255, 255, 0.075);
+    --line: rgba(255, 255, 255, 0.15);
+    --muted: #a6b0c3;
+    --text: #f8fafc;
+    --red: #ef4444;
+    --blue: #38bdf8;
+    --gold: #facc15;
+    --violet: #a855f7;
+  }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 80px),
+      radial-gradient(circle at 18% 12%, rgba(239, 68, 68, 0.3), transparent 30%),
+      radial-gradient(circle at 82% 3%, rgba(56, 189, 248, 0.24), transparent 28%),
+      radial-gradient(circle at 50% 100%, rgba(250, 204, 21, 0.13), transparent 34%),
+      var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .app {
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(22, 26, 43, 0.92), rgba(9, 11, 20, 0.9));
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px 22px 28px;
+    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .app::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 0 38%, rgba(255, 255, 255, 0.08) 48%, transparent 58% 100%);
+    pointer-events: none;
+    transform: translateX(-55%);
+    animation: bannerSweep 8s ease-in-out infinite;
+  }
+  .app > * {
+    position: relative;
+    z-index: 1;
+  }
+  h1 {
+    font-size: 28px;
+    line-height: 1.05;
+    letter-spacing: 0;
+    margin-bottom: 6px;
+    text-shadow: 0 0 22px rgba(56, 189, 248, 0.28);
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .stat {
+    background: var(--panel);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 10px 6px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  .stat .num {
+    font-size: 21px;
+    font-weight: 800;
+  }
+  .stat .lbl {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .pity {
+    margin-bottom: 18px;
+    text-align: left;
+  }
+  .pity-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    color: #cbd5e1;
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+  .pity-track {
+    height: 12px;
+    background: rgba(255, 255, 255, 0.09);
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.36);
+  }
+  .pity-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--blue), var(--violet), var(--gold));
+    box-shadow: 0 0 18px rgba(250, 204, 21, 0.45);
+    transition: width 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .stage {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+    min-height: 330px;
+    perspective: 1000px;
+    position: relative;
+  }
+  .card {
+    width: min(100%, 240px);
+    min-height: 310px;
+    background:
+      linear-gradient(160deg, rgba(255, 255, 255, 0.08), transparent 34%),
+      radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.12), transparent 28%),
+      #171b2c;
+    border: 3px solid #2f374f;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 14px 14px auto auto;
+    width: 52px;
+    height: 52px;
+    border: 8px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+  }
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: -40% -80%;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.22), transparent 65%);
+    opacity: 0;
+    transform: translateX(-45%) rotate(12deg);
+    pointer-events: none;
+  }
+  .sprite-wrap {
+    width: 164px;
+    height: 164px;
+    align-self: center;
+    display: grid;
+    place-items: center;
+    margin-top: 8px;
+  }
+  .sprite {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.42));
+    transform: translateZ(28px);
+  }
+  .placeholder {
+    color: var(--muted);
+    font-size: 64px;
+    font-weight: 900;
+  }
+  .card-name {
+    font-size: 20px;
+    font-weight: 900;
+    text-transform: capitalize;
+  }
+  .rarity {
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .types {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    min-height: 27px;
+  }
+  .type {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    color: #dce5f2;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 9px;
+    text-transform: uppercase;
+  }
+  .card.common { border-color: #6b7280; }
+  .card.common .rarity { color: #cbd5e1; }
+  .card.rare { border-color: var(--blue); box-shadow: 0 0 26px rgba(56, 189, 248, 0.38); }
+  .card.rare .rarity { color: #67e8f9; }
+  .card.epic { border-color: var(--violet); box-shadow: 0 0 34px rgba(168, 85, 247, 0.5); }
+  .card.epic .rarity { color: #d8b4fe; }
+  .card.ssr {
+    border-color: var(--gold);
+    box-shadow: 0 0 54px rgba(250, 204, 21, 0.74), inset 0 0 38px rgba(250, 204, 21, 0.12);
+  }
+  .card.ssr .rarity, .card.ssr .card-name { color: #fde68a; }
+  @keyframes bannerSweep {
+    0%, 72%, 100% { transform: translateX(-65%); }
+    86% { transform: translateX(65%); }
+  }
+  @keyframes cardReveal {
+    0% { transform: rotateY(92deg) scale(0.86); opacity: 0; filter: blur(8px); }
+    55% { transform: rotateY(-10deg) scale(1.04); opacity: 1; filter: blur(0); }
+    100% { transform: rotateY(0) scale(1); opacity: 1; filter: blur(0); }
+  }
+  @keyframes flash {
+    50% { filter: brightness(1.45); }
+  }
+  @keyframes ssrAura {
+    0%, 100% { box-shadow: 0 0 46px rgba(250, 204, 21, 0.62), inset 0 0 28px rgba(250, 204, 21, 0.1); }
+    50% { box-shadow: 0 0 76px rgba(250, 204, 21, 0.98), inset 0 0 44px rgba(250, 204, 21, 0.18); }
+  }
+  .card.reveal::after {
+    animation: cardShine 0.9s ease 0.2s;
+  }
+  .card.reveal { animation: cardReveal 0.62s cubic-bezier(0.22, 1, 0.36, 1); }
+  .card.ssr.reveal { animation: cardReveal 0.62s cubic-bezier(0.22, 1, 0.36, 1), flash 0.75s ease 0.3s 2, ssrAura 1.4s ease-in-out 0.25s 2; }
+  @keyframes cardShine {
+    0% { opacity: 0; transform: translateX(-48%) rotate(12deg); }
+    45% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(48%) rotate(12deg); }
+  }
+  .buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .btn {
+    flex: 1;
+    min-height: 52px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #60a5fa, #2563eb);
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 0.7px;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.24);
+    transition: transform 0.16s ease, filter 0.15s ease, box-shadow 0.16s ease;
+  }
+  .btn.gold {
+    background: linear-gradient(180deg, #fde047, #f59e0b);
+    color: #201a05;
+    box-shadow: 0 10px 26px rgba(245, 158, 11, 0.28);
+  }
+  .btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 14px 32px rgba(56, 189, 248, 0.26);
+  }
+  .btn.gold:hover { box-shadow: 0 14px 34px rgba(250, 204, 21, 0.34); }
+  .btn:active { transform: scale(0.96); }
+  .btn:disabled {
+    cursor: wait;
+    filter: grayscale(0.5) brightness(0.72);
+  }
+  .status {
+    color: #cbd5e1;
+    font-size: 12px;
+    min-height: 18px;
+    margin-bottom: 16px;
+  }
+  .hist-lbl {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  .history {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 7px;
+    min-height: 46px;
+  }
+  .chip {
+    aspect-ratio: 1;
+    background: #171b2c;
+    border: 2px solid #2f374f;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .chip:hover {
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.32);
+    z-index: 2;
+  }
+  .chip img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+  .chip .placeholder {
+    font-size: 18px;
+  }
+  .chip.rare { border-color: #38bdf8; }
+  .chip.epic { border-color: #a855f7; }
+  .chip.ssr { border-color: var(--gold); box-shadow: 0 0 12px rgba(250, 204, 21, 0.55); }
+  .effects {
+    position: absolute;
+    inset: -20px;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .particle {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--particle-color, var(--gold));
+    box-shadow: 0 0 14px var(--particle-color, var(--gold));
+    animation: particleBurst 900ms ease-out forwards;
+  }
+  @keyframes particleBurst {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.4); }
+    100% {
+      opacity: 0;
+      transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  @media (max-width: 420px) {
+    .app { padding: 20px 16px 24px; }
+    .buttons { flex-direction: column; }
+    .stats { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <main class="app">
+    <h1>Pokemon Gacha Simulator</h1>
+    <p class="subtitle">Data Pokemon diambil dari PokeAPI, pity target dibuat acak setiap SSR.</p>
+
+    <section class="stats" aria-label="Statistik gacha">
+      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Pull</div></div>
+      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR</div></div>
+      <div class="stat"><div class="num" id="pityTargetText">?</div><div class="lbl">Target Pity</div></div>
+    </section>
+
+    <section class="pity" aria-label="Progress pity">
+      <div class="pity-top"><span>Progress menuju SSR pasti</span><span id="pityText">0 / ?</span></div>
+      <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
+    </section>
+
+    <section class="stage" aria-live="polite">
+      <div class="effects" id="effects"></div>
+      <article class="card" id="card">
+        <div class="sprite-wrap" id="spriteWrap"><span class="placeholder">?</span></div>
+        <div>
+          <div class="card-name" id="cardName">Tekan Pull</div>
+          <div class="rarity" id="cardRarity">Pokemon</div>
+        </div>
+        <div class="types" id="cardTypes"></div>
+      </article>
+    </section>
+
+    <div class="buttons">
+      <button class="btn" id="pull1" type="button">PULL 1x</button>
+      <button class="btn gold" id="pull10" type="button">PULL 10x</button>
+    </div>
+
+    <p class="status" id="status">Siap menarik Pokemon dari Kanto Pokedex.</p>
+
+    <div class="hist-lbl">Riwayat Terakhir</div>
+    <div class="history" id="history"></div>
+  </main>
+
+<script>
+  const API_ROOT = "https://pokeapi.co/api/v2";
+  const HISTORY_LIMIT = 12;
+  const CACHE_PREFIX = "pokemon-gacha:";
+  const MAX_RETRIES = 3;
+  const REQUEST_TIMEOUT_MS = 6000;
+  const requestCache = new Map();
+  const pendingRequests = new Map();
+
+  const rarityPools = {
+    ssr: [144, 145, 146, 150, 151],
+    epic: [3, 6, 9, 31, 34, 59, 65, 68, 94, 103, 130, 131, 143, 149],
+    rare: [2, 5, 8, 26, 28, 36, 38, 45, 51, 53, 57, 62, 71, 76, 78, 80, 89, 91, 95, 97, 101, 110, 121, 123, 127, 128, 134, 135, 136, 137, 139, 141, 142, 148],
+    common: [1, 4, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 29, 30, 32, 33, 35, 37, 39, 40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 52, 54, 55, 56, 58, 60, 61, 63, 64, 66, 67, 69, 70, 72, 73, 74, 75, 77, 79, 81, 82, 83, 84, 85, 86, 87, 88, 90, 92, 93, 96, 98, 99, 100, 102, 104, 105, 106, 107, 108, 109, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 122, 124, 125, 126, 129, 132, 133, 138, 140, 147]
+  };
+
+  const rarityRules = {
+    ssr: { label: "SSR", chance: 0.03 },
+    epic: { label: "Epic", chance: 0.12 },
+    rare: { label: "Rare", chance: 0.35 },
+    common: { label: "Common", chance: 1 }
+  };
+
+  const state = {
+    total: 0,
+    ssrCount: 0,
+    pity: 0,
+    pityTarget: randomPityTarget(),
+    isPulling: false,
+    hasShownFirstSsrBurst: false,
+    audioContext: null
+  };
+
+  const el = {
+    total: document.querySelector("#total"),
+    ssrCount: document.querySelector("#ssrCount"),
+    pityTargetText: document.querySelector("#pityTargetText"),
+    pityText: document.querySelector("#pityText"),
+    pityFill: document.querySelector("#pityFill"),
+    card: document.querySelector("#card"),
+    spriteWrap: document.querySelector("#spriteWrap"),
+    cardName: document.querySelector("#cardName"),
+    cardRarity: document.querySelector("#cardRarity"),
+    cardTypes: document.querySelector("#cardTypes"),
+    effects: document.querySelector("#effects"),
+    status: document.querySelector("#status"),
+    history: document.querySelector("#history"),
+    pull1: document.querySelector("#pull1"),
+    pull10: document.querySelector("#pull10")
+  };
+
+  function randomPityTarget() {
+    return randomInt(8, 14);
+  }
+
+  function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function wait(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  function pickRandom(items) {
+    return items[randomInt(0, items.length - 1)];
+  }
+
+  function capitalize(text) {
+    return text
+      .split("-")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+  }
+
+  function readCachedJson(cacheKey) {
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      return cached ? JSON.parse(cached) : null;
+    } catch (error) {
+      localStorage.removeItem(cacheKey);
+      return null;
+    }
+  }
+
+  function writeCachedJson(cacheKey, data) {
+    try {
+      localStorage.setItem(cacheKey, JSON.stringify(data));
+    } catch (error) {
+      console.warn("Cache write skipped", error);
+    }
+  }
+
+  async function fetchJson(url, label) {
+    const cacheKey = CACHE_PREFIX + url;
+    const memoryCached = requestCache.get(url);
+    const cached = readCachedJson(cacheKey);
+
+    if (memoryCached) {
+      return memoryCached;
+    }
+
+    if (cached) {
+      const data = JSON.parse(cached);
+      requestCache.set(url, data);
+      return data;
+    }
+
+    if (pendingRequests.has(url)) {
+      return pendingRequests.get(url);
+    }
+
+    const request = fetchJsonWithRetry(url, label)
+      .then((data) => {
+        requestCache.set(url, data);
+        writeCachedJson(cacheKey, data);
+        return data;
+      })
+      .finally(() => pendingRequests.delete(url));
+
+    pendingRequests.set(url, request);
+    return request;
+  }
+
+  async function fetchJsonWithRetry(url, label) {
+    let lastError;
+
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
+      try {
+        const response = await fetchWithTimeout(url);
+
+        if (!response.ok) {
+          throw new Error(`PokeAPI ${response.status}`);
+        }
+
+        return await response.json();
+      } catch (error) {
+        lastError = error;
+
+        if (attempt < MAX_RETRIES) {
+          await wait(350 * 2 ** attempt + randomInt(0, 150));
+        }
+      }
+    }
+
+    const reason = lastError.name === "AbortError" ? "request timeout" : lastError.message;
+    throw new Error(`Gagal memuat ${label}: ${reason}`);
+  }
+
+  async function fetchWithTimeout(url) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    try {
+      return await fetch(url, { signal: controller.signal });
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  async function getPokemon(id) {
+    const label = `Pokemon #${id}`;
+    const [pokemon, species] = await Promise.all([
+      fetchJson(`${API_ROOT}/pokemon/${id}`, label),
+      fetchJson(`${API_ROOT}/pokemon-species/${id}`, `${label} species`)
+    ]);
+
+    return {
+      id: pokemon.id,
+      name: capitalize(pokemon.name),
+      sprites: [
+        pokemon.sprites.other?.["official-artwork"]?.front_default,
+        pokemon.sprites.other?.home?.front_default,
+        pokemon.sprites.front_default
+      ].filter(Boolean),
+      types: pokemon.types.map((entry) => entry.type.name),
+      statsTotal: pokemon.stats.reduce((sum, entry) => sum + entry.base_stat, 0),
+      captureRate: species.capture_rate,
+      isLegendary: species.is_legendary,
+      isMythical: species.is_mythical
+    };
+  }
+
+  function classifyPokemon(pokemon) {
+    if (pokemon.isLegendary || pokemon.isMythical) return "ssr";
+    if (pokemon.captureRate <= 45 || pokemon.statsTotal >= 520) return "epic";
+    if (pokemon.captureRate <= 120 || pokemon.statsTotal >= 420) return "rare";
+    return "common";
+  }
+
+  function chooseRarity() {
+    if (state.pity + 1 >= state.pityTarget || Math.random() < rarityRules.ssr.chance) {
+      return "ssr";
+    }
+
+    const roll = Math.random();
+    if (roll < rarityRules.epic.chance) return "epic";
+    if (roll < rarityRules.rare.chance) return "rare";
+    return "common";
+  }
+
+  function commitSuccessfulPull(rarity) {
+    state.total += 1;
+    state.pity += 1;
+
+    if (rarity === "ssr") {
+      state.pity = 0;
+      state.ssrCount += 1;
+      state.pityTarget = randomPityTarget();
+    }
+  }
+
+  async function rollPokemon() {
+    const wantedRarity = chooseRarity();
+    const pokemonId = pickRandom(rarityPools[wantedRarity]);
+    const pokemon = await getPokemon(pokemonId);
+    const apiRarity = classifyPokemon(pokemon);
+
+    commitSuccessfulPull(wantedRarity);
+
+    return {
+      ...pokemon,
+      // The pool controls gacha odds; API data still controls details and acts as a sanity check.
+      rarity: wantedRarity,
+      apiRarity
+    };
+  }
+
+  function createSpriteImage(result, className) {
+    const image = document.createElement("img");
+    image.className = className;
+    image.alt = result.name;
+    image.dataset.spriteIndex = "0";
+    image.src = result.sprites[0] || "";
+
+    image.addEventListener("error", () => {
+      const nextIndex = Number(image.dataset.spriteIndex) + 1;
+
+      if (result.sprites[nextIndex]) {
+        image.dataset.spriteIndex = String(nextIndex);
+        image.src = result.sprites[nextIndex];
+        return;
+      }
+
+      image.replaceWith(createSpritePlaceholder());
+    });
+
+    return image;
+  }
+
+  function createSpritePlaceholder() {
+    const placeholder = document.createElement("span");
+    placeholder.className = "placeholder";
+    placeholder.textContent = "?";
+    return placeholder;
+  }
+
+  function playSsrSound() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+
+    state.audioContext ??= new AudioContext();
+    if (state.audioContext.state === "suspended") {
+      state.audioContext.resume();
+    }
+
+    const now = state.audioContext.currentTime;
+    const notes = [523.25, 659.25, 783.99];
+
+    notes.forEach((frequency, index) => {
+      const oscillator = state.audioContext.createOscillator();
+      const gain = state.audioContext.createGain();
+
+      oscillator.type = "triangle";
+      oscillator.frequency.setValueAtTime(frequency, now + index * 0.08);
+      gain.gain.setValueAtTime(0.0001, now + index * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.08, now + index * 0.08 + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.08 + 0.28);
+
+      oscillator.connect(gain);
+      gain.connect(state.audioContext.destination);
+      oscillator.start(now + index * 0.08);
+      oscillator.stop(now + index * 0.08 + 0.3);
+    });
+  }
+
+  function createParticleBurst(isFirstSsr) {
+    const particleCount = isFirstSsr ? 46 : 26;
+    const colors = ["#facc15", "#fde68a", "#38bdf8", "#ffffff"];
+
+    for (let i = 0; i < particleCount; i += 1) {
+      const particle = document.createElement("span");
+      const angle = Math.random() * Math.PI * 2;
+      const distance = randomInt(isFirstSsr ? 90 : 58, isFirstSsr ? 180 : 120);
+
+      particle.className = "particle";
+      particle.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
+      particle.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
+      particle.style.setProperty("--particle-color", colors[i % colors.length]);
+      particle.style.animationDelay = `${Math.random() * 120}ms`;
+
+      el.effects.append(particle);
+      particle.addEventListener("animationend", () => particle.remove());
+    }
+  }
+
+  function renderPokemon(result) {
+    el.card.className = "card";
+    void el.card.offsetWidth;
+    el.card.className = `card ${result.rarity} reveal`;
+
+    el.spriteWrap.replaceChildren(
+      result.sprites.length ? createSpriteImage(result, "sprite") : createSpritePlaceholder()
+    );
+    el.cardName.textContent = result.name;
+    el.cardRarity.textContent = rarityRules[result.rarity].label;
+    el.cardTypes.innerHTML = result.types.map((type) => `<span class="type">${type}</span>`).join("");
+
+    if (result.rarity === "ssr") {
+      const isFirstSsr = !state.hasShownFirstSsrBurst;
+      state.hasShownFirstSsrBurst = true;
+      playSsrSound();
+      createParticleBurst(isFirstSsr);
+    }
+
+    updateStats();
+  }
+
+  function addHistory(result) {
+    const chip = document.createElement("div");
+    chip.className = `chip ${result.rarity}`;
+    chip.title = `${result.name} - ${rarityRules[result.rarity].label}`;
+    chip.append(result.sprites.length ? createSpriteImage(result, "") : createSpritePlaceholder());
+    el.history.prepend(chip);
+
+    while (el.history.children.length > HISTORY_LIMIT) {
+      el.history.lastElementChild.remove();
+    }
+  }
+
+  function updateStats() {
+    el.total.textContent = state.total;
+    el.ssrCount.textContent = state.ssrCount;
+    el.pityTargetText.textContent = state.pityTarget;
+    el.pityText.textContent = `${state.pity} / ${state.pityTarget}`;
+    el.pityFill.style.width = `${Math.min((state.pity / state.pityTarget) * 100, 100)}%`;
+  }
+
+  function setPulling(isPulling) {
+    state.isPulling = isPulling;
+    el.pull1.disabled = isPulling;
+    el.pull10.disabled = isPulling;
+  }
+
+  async function pull(count) {
+    if (state.isPulling) return;
+
+    setPulling(true);
+    el.status.textContent = `Mengambil data dari PokeAPI untuk ${count} pull...`;
+
+    try {
+      let lastResult;
+      let failedCount = 0;
+      let lastError = "";
+
+      for (let i = 0; i < count; i += 1) {
+        try {
+          lastResult = await rollPokemon();
+          renderPokemon(lastResult);
+          addHistory(lastResult);
+        } catch (error) {
+          failedCount += 1;
+          lastError = error.message;
+          console.error(error);
+        }
+
+        if (i < count - 1) {
+          await wait(170);
+        }
+      }
+
+      if (lastResult && failedCount > 0) {
+        el.status.textContent = `${count - failedCount} pull berhasil, ${failedCount} gagal. ${lastError}, coba pull lagi.`;
+      } else if (lastResult) {
+        el.status.textContent = `${count} pull selesai. Terakhir dapat ${lastResult.name}.`;
+      } else {
+        el.status.textContent = `${lastError}, coba pull lagi.`;
+      }
+    } catch (error) {
+      el.status.textContent = "Gagal mengambil data PokeAPI. Cek internet lalu coba lagi.";
+      console.error(error);
+    } finally {
+      setPulling(false);
+    }
+  }
+
+  el.pull1.addEventListener("click", () => pull(1));
+  el.pull10.addEventListener("click", () => pull(10));
+
+  updateStats();
+</script>
+=======
 <title>Poké Gacha ETHJKT</title>
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -96,5 +902,6 @@
   <div class="toast" id="toast" hidden></div>
 
   <script src="app.js"></script>
+>>>>>>> upstream/master
 </body>
 </html>
