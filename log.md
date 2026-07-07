@@ -47,3 +47,10 @@
 - Menambahkan panel floating untuk melihat semua riwayat gacha dengan area scroll jika hasil sudah banyak.
 - Mengubah badge menjadi panel floating scrollable yang dibuka lewat tombol `BADGES`.
 - Menambahkan komentar sederhana pada fungsi riwayat dan panel floating agar alur kode lebih mudah dipahami.
+
+## 2026-07-07
+
+- Mengubah statistik `Total Tarik`, `SSR Didapat`, `Koleksi Unik`, dan `Kartu API` menjadi grid 2 baris agar area tengah lebih terisi.
+- Membatasi lebar statistik agar sejajar dengan kartu gacha dan tombol utama.
+- Mengubah preview riwayat menjadi 10 kartu dalam 2 baris, dengan 5 kartu per baris.
+- Membatasi lebar preview riwayat agar tampil lebih rapi di bawah kartu gacha.
