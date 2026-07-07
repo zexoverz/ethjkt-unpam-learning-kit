@@ -7,139 +7,193 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: "Segoe UI", system-ui, sans-serif;
-    background: #f4f4f1;
-    color: #222; min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
+    font-family: Inter, "Segoe UI", system-ui, sans-serif;
+    background:
+      linear-gradient(90deg, rgba(38, 38, 38, .035) 1px, transparent 1px),
+      linear-gradient(rgba(38, 38, 38, .035) 1px, transparent 1px),
+      #f3f0e8;
+    background-size: 28px 28px;
+    color: #24221f;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center; padding: 28px;
   }
   .app {
-    width: 100%; max-width: 460px; text-align: center;
-    background: #fff;
-    border: 1px solid #ddd8cf;
-    border-radius: 8px; padding: 24px 22px 28px;
-    box-shadow: 0 12px 32px rgba(40,34,28,0.12);
+    width: 100%; max-width: 860px;
+    background: #fffdf8;
+    border: 1px solid #d6d0c3;
+    border-radius: 6px;
+    padding: 22px;
+    box-shadow: 0 18px 44px rgba(43, 36, 27, .16);
+  }
+  .topbar {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; padding-bottom: 18px; margin-bottom: 20px;
+    border-bottom: 1px solid #ded7ca;
   }
   h1 {
-    font-size: 26px; letter-spacing: 0; margin-bottom: 4px;
-    color: #1f1f1f;
+    font-size: 30px; line-height: 1; margin-bottom: 7px;
+    color: #20201e; font-weight: 850;
   }
-  .subtitle { font-size: 13px; color: #6f675f; margin-bottom: 18px; }
-
-  .stats { display: flex; gap: 10px; margin-bottom: 12px; }
-  .stat {
-    flex: 1; background: #f8f7f5; border: 1px solid #ebe7df; border-radius: 8px;
-    padding: 10px 6px;
+  .subtitle { font-size: 13px; color: #6a6258; max-width: 340px; }
+  .tag {
+    border: 1px solid #262626; border-radius: 999px;
+    padding: 7px 11px; font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: .08em;
+    white-space: nowrap; background: #eef3f0;
   }
-  .stat .num { font-size: 22px; font-weight: 700; }
-  .stat .lbl { font-size: 11px; color: #7b746c; text-transform: uppercase; letter-spacing: 1px; }
-
-  .pity { margin-bottom: 18px; text-align: left; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #625b54; margin-bottom: 6px; }
-  .pity-track { height: 10px; background: #eee9e2; border-radius: 6px; overflow: hidden; }
-  .pity-fill {
-    height: 100%; width: 0%;
-    background: #c84b61;
-    transition: width 0.35s ease;
+  .layout {
+    display: grid; grid-template-columns: minmax(270px, 330px) 1fr;
+    gap: 22px; align-items: start;
   }
-
-  .stage { display: flex; justify-content: center; margin-bottom: 20px; }
+  .stage { display: flex; justify-content: center; margin-bottom: 14px; }
   .card {
-    width: 230px; height: 310px; border-radius: 8px;
-    background: #f8f7f5; border: 2px solid #d9d3cb;
+    width: 100%; max-width: 310px; aspect-ratio: 3 / 4; border-radius: 6px;
+    background: #f8f3e9; border: 2px solid #cfc6b8;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative; overflow: hidden;
+    gap: 0; position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ""; position: absolute; inset: 10px;
+    border: 1px solid rgba(36, 34, 31, .16);
+    pointer-events: none; z-index: 1;
   }
   .card .photo {
-    width: 100%; height: 238px; background: #e9e5df;
+    width: 100%; flex: 1; min-height: 0; background: #e8dfd0;
     display: flex; align-items: center; justify-content: center;
   }
-  .card img {
-    width: 100%; height: 100%; object-fit: cover; display: block;
+  .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card .name {
+    width: 100%; min-height: 42px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 850; padding: 0 14px; color: #222; background: #fffdf8;
+    border-top: 1px solid #d8d0c2; text-align: center;
   }
-  .card .name { width: 100%; font-size: 16px; font-weight: 700; padding: 0 12px; color: #222; }
-  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; opacity: .9; padding-bottom: 10px; }
+  .card .rar {
+    font-size: 11px; font-weight: 850; letter-spacing: .11em; text-transform: uppercase;
+    opacity: .9; padding: 0 0 12px; background: #fffdf8; width: 100%; text-align: center;
+  }
   .status {
-    min-height: 18px; margin-top: -10px; margin-bottom: 16px;
-    color: #7b746c; font-size: 12px;
+    min-height: 18px; margin-bottom: 16px;
+    color: #6d655b; font-size: 12px; text-align: center;
   }
-  .api-url {
-    display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis;
-    white-space: nowrap; color: #8f5a9d;
+  .api-url { display: none; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .stat {
+    background: #f7f3ea; border: 1px solid #e1d9ca; border-radius: 6px;
+    padding: 12px 10px; text-align: left;
   }
-
-  /* warna per rarity */
-  .card.common { border-color: #9b958d; }
-  .card.common .rar { color: #6f6a64; }
-  .card.rare   { border-color: #4c7ea8; }
-  .card.rare   .rar { color: #356b96; }
-  .card.epic   { border-color: #8f5a9d; }
-  .card.epic   .rar { color: #7d468d; }
-  .card.ssr    { border-color: #c84b61; box-shadow: 0 8px 24px rgba(200,75,97,.18); }
-  .card.ssr    .rar, .card.ssr .name { color: #b0364d; }
-
-  /* animasi reveal */
-  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-  @keyframes glowpulse { 0%,100%{box-shadow:0 8px 24px rgba(200,75,97,.18)} 50%{box-shadow:0 10px 34px rgba(200,75,97,.35)} }
-  .card.reveal { animation: pop .4s ease; }
-  .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
-
-  .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
+  .stat .num { font-size: 25px; line-height: 1; font-weight: 850; }
+  .stat .lbl {
+    margin-top: 5px; font-size: 10px; color: #756d62;
+    text-transform: uppercase; letter-spacing: .08em;
+  }
+  .pity { margin-bottom: 18px; text-align: left; }
+  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #625b54; margin-bottom: 6px; }
+  .pity-track { height: 9px; background: #ece3d6; border-radius: 999px; overflow: hidden; }
+  .pity-fill {
+    height: 100%; width: 0%;
+    background: #d74b3f;
+    transition: width 0.35s ease;
+  }
+  .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
   .btn {
-    flex: 1; padding: 14px 0; border: 1px solid #1f1f1f; border-radius: 8px;
-    font-size: 15px; font-weight: 800; letter-spacing: 0; cursor: pointer;
+    min-height: 48px; padding: 0 14px; border: 1px solid #1f1f1f; border-radius: 6px;
+    font-size: 14px; font-weight: 850; letter-spacing: 0; cursor: pointer;
     color: #fff; background: #1f1f1f;
     transition: transform .08s ease, filter .15s ease;
   }
   .btn:hover { filter: brightness(1.08); }
   .btn:active { transform: scale(.95); }
   .btn:disabled { opacity: .55; }
-  .btn.gold { background: #c84b61; border-color: #c84b61; }
-
-  .hist-lbl { font-size: 11px; color: #7b746c; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
-  .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
+  .btn.gold { background: #d74b3f; border-color: #d74b3f; }
+  .panel { border-left: 1px solid #ded7ca; padding-left: 22px; }
+  .note {
+    background: #eef3f0; border: 1px solid #cfdbd3; border-radius: 6px;
+    padding: 13px 14px; margin-bottom: 14px; color: #3b4a40; font-size: 13px;
+  }
+  .hist-lbl {
+    font-size: 11px; color: #7b746c; text-transform: uppercase;
+    letter-spacing: .08em; text-align: left; margin-bottom: 8px;
+  }
+  .history { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; min-height: 94px; }
   .chip {
-    width: 42px; height: 42px; border-radius: 8px; overflow: hidden;
+    aspect-ratio: 1; border-radius: 6px; overflow: hidden;
     display: flex; align-items: center; justify-content: center;
-    background: #f8f7f5; border: 2px solid #d9d3cb;
+    background: #f8f3e9; border: 2px solid #d9d0c1;
   }
   .chip img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .chip.rare { border-color: #4c7ea8; }
-  .chip.epic { border-color: #8f5a9d; }
-  .chip.ssr  { border-color: #c84b61; }
+
+  .card.common { border-color: #948e84; }
+  .card.common .rar { color: #6f6a64; }
+  .card.rare, .chip.rare { border-color: #2e7092; }
+  .card.rare .rar { color: #235e7d; }
+  .card.epic, .chip.epic { border-color: #7f5a9b; }
+  .card.epic .rar { color: #6e478b; }
+  .card.ssr, .chip.ssr { border-color: #d74b3f; }
+  .card.ssr { box-shadow: 0 10px 26px rgba(183, 63, 51, .2); }
+  .card.ssr .rar, .card.ssr .name { color: #b8362d; }
+
+  @keyframes pop { 0% { transform: scale(.72); opacity: 0; } 70% { transform: scale(1.03); } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+  @keyframes glowpulse { 0%,100%{box-shadow:0 10px 26px rgba(183,63,51,.2)} 50%{box-shadow:0 12px 34px rgba(183,63,51,.38)} }
+  .card.reveal { animation: pop .34s ease; }
+  .card.ssr.reveal { animation: pop .34s ease, shake .45s ease .34s, glowpulse 1.1s ease-in-out .34s 2; }
+
+  @media (max-width: 720px) {
+    body { padding: 14px; align-items: flex-start; }
+    .app { padding: 18px; }
+    .topbar { align-items: flex-start; flex-direction: column; gap: 12px; }
+    h1 { font-size: 27px; }
+    .layout { grid-template-columns: 1fr; }
+    .panel { border-left: 0; padding-left: 0; border-top: 1px solid #ded7ca; padding-top: 18px; }
+    .card { max-width: 290px; }
+    .history { grid-template-columns: repeat(6, minmax(38px, 1fr)); }
+  }
 </style>
 </head>
 <body>
   <div class="app">
-    <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
-
-    <div class="stats">
-      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
-    </div>
-
-    <div class="pity">
-      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
-      <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-    </div>
-
-    <div class="stage">
-      <div class="card" id="card">
-        <div class="photo"><img id="cardImage" alt="Hasil gacha waifu"></div>
-        <div class="name" id="cardName">Tekan TARIK</div>
-        <div class="rar" id="cardRarity"></div>
+    <div class="topbar">
+      <div>
+        <h1>Gacha ETHJKT</h1>
+        <div class="subtitle">Tarik karakter, simpan hasil terakhir, dan kejar pity SSR tiap 10 tarikan.</div>
       </div>
-    </div>
-    <div class="status" id="statusText">Siap tarik waifu.</div>
-
-    <div class="buttons">
-      <button class="btn" id="tarik1">TARIK 1x</button>
-      <button class="btn gold" id="tarik10">TARIK 10x</button>
+      <div class="tag">Hari 1 Demo</div>
     </div>
 
-    <div class="hist-lbl">Riwayat Terakhir</div>
-    <div class="history" id="history"></div>
+    <div class="layout">
+      <main>
+        <div class="stage">
+          <div class="card" id="card">
+            <div class="photo"><img id="cardImage" alt="Hasil gacha karakter"></div>
+            <div class="name" id="cardName">Belum ada hasil</div>
+            <div class="rar" id="cardRarity"></div>
+          </div>
+        </div>
+        <div class="status" id="statusText">Siap mulai. Ambil 1 atau 10 tarikan.</div>
+      </main>
+
+      <section class="panel">
+        <div class="stats">
+          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
+          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
+        </div>
+
+        <div class="pity">
+          <div class="pity-top"><span>Pity SSR</span><span id="pityText">0 / 10</span></div>
+          <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
+        </div>
+
+        <div class="buttons">
+          <button class="btn" id="tarik1">Tarik 1x</button>
+          <button class="btn gold" id="tarik10">Tarik 10x</button>
+        </div>
+
+        <div class="note">SSR dijamin saat pity menyentuh 10. Riwayat menampilkan 12 hasil terakhir.</div>
+
+        <div class="hist-lbl">Riwayat Terakhir</div>
+        <div class="history" id="history"></div>
+      </section>
+    </div>
   </div>
 
 <script>
@@ -171,15 +225,18 @@
   function buatSvgData(teks) {
     const svg = `
       <svg xmlns="http://www.w3.org/2000/svg" width="460" height="620" viewBox="0 0 460 620">
-        <rect width="460" height="620" fill="#f1eee9"/>
-        <rect x="86" y="86" width="288" height="448" rx="18" fill="#e4ded5" stroke="#d2c8bd" stroke-width="4"/>
-        <text x="230" y="295" font-size="28" text-anchor="middle" fill="#625b54" font-family="Arial">${teks}</text>
+        <rect width="460" height="620" fill="#f8f3e9"/>
+        <rect x="52" y="48" width="356" height="462" rx="10" fill="#efe5d6" stroke="#cfc6b8" stroke-width="4"/>
+        <path d="M90 126h280M90 478h280" stroke="#24221f" stroke-opacity=".18" stroke-width="3"/>
+        <circle cx="230" cy="270" r="74" fill="#fffdf8" stroke="#cfc6b8" stroke-width="4"/>
+        <path d="M191 280c20-42 58-42 78 0M190 316h80" stroke="#756d62" stroke-width="12" stroke-linecap="round" fill="none"/>
+        <text x="230" y="558" font-size="28" text-anchor="middle" fill="#625b54" font-family="Arial" font-weight="700">${teks}</text>
       </svg>`;
 
     return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
   }
 
-  const gambarFallback = buatSvgData("Tarik untuk mulai");
+  const gambarFallback = buatSvgData("Mulai tarik");
 
   cardImage.src = gambarFallback;
   cardImage.onerror = () => {
@@ -245,7 +302,7 @@
     cardImage.alt = `${hasil.nama} - ${hasil.kelas.toUpperCase()}`;
     cardName.textContent = hasil.nama;
     cardRarity.textContent = hasil.kelas.toUpperCase();
-    statusText.innerHTML = `Gambar dari API waifu.im:<span class="api-url">${hasil.gambar}</span>`;
+    statusText.innerHTML = `Dapat ${hasil.nama}. Sumber gambar aktif.<span class="api-url">${hasil.gambar}</span>`;
 
     card.className = "card";
     card.offsetWidth;
@@ -286,7 +343,7 @@
     if (sedangMenarik) return;
 
     setTombolAktif(false);
-    cardName.textContent = "Memuat...";
+    cardName.textContent = "Mengambil hasil...";
 
     try {
       const hasil = await rollSatu();
@@ -307,7 +364,7 @@
     setTombolAktif(false);
 
     for (let i = 0; i < 10; i += 1) {
-      cardName.textContent = "Memuat...";
+      cardName.textContent = "Mengambil hasil...";
       try {
         const hasil = await rollSatu();
         tampilkan(hasil);
