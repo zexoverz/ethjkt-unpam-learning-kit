@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600&display=swap");
-
 :root {
   --cream: #f5efe6;
   --paper: #fffaf4;
@@ -22,7 +20,7 @@ body {
   background: var(--cream);
   color: var(--brown);
 
-  font-family: "Manrope", sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
 /* HEADER */
@@ -56,7 +54,7 @@ body {
 
   line-height: 1;
 
-  font-family: "Cormorant Garamond", serif;
+  font-family: Georgia, "Times New Roman", serif;
 
   font-weight: 600;
 }
@@ -96,8 +94,11 @@ body {
   box-shadow: 0 8px 20px var(--shadow);
 }
 
-.cart-pill i {
-  font-size: 1rem;
+.cart-icon {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 #cart-count {
@@ -148,6 +149,79 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 
   gap: 1rem;
+}
+
+.product-section.carousel-mode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 0.8rem;
+}
+
+.carousel-frame {
+  width: min(100%, 520px);
+
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.carousel-stage {
+  min-width: 0;
+}
+
+.carousel-stage .product {
+  min-height: 420px;
+
+  animation: slideSettle 0.28s ease;
+}
+
+.carousel-btn,
+.expand-products {
+  border: none;
+
+  background: var(--olive);
+  color: white;
+
+  cursor: pointer;
+
+  font-family: inherit;
+  font-weight: 700;
+}
+
+.carousel-btn {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+
+  font-size: 1.25rem;
+}
+
+.expand-products {
+  min-width: 160px;
+
+  padding: 0.85rem 1.2rem;
+
+  border-radius: 999px;
+}
+
+.carousel-indicator {
+  margin: 0;
+
+  color: var(--olive);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.carousel-frame.bursting {
+  animation: shakeBreak 0.5s ease both;
+}
+
+.product-section.expanded .product {
+  animation: scatterIn 0.34s ease both;
 }
 
 .product {
@@ -211,7 +285,7 @@ body {
 
   font-size: 1.08rem;
 
-  font-family: "Cormorant Garamond", serif;
+  font-family: Georgia, "Times New Roman", serif;
 }
 
 .price {
@@ -300,7 +374,7 @@ body {
 
   font-size: 2rem;
 
-  font-family: "Cormorant Garamond", serif;
+  font-family: Georgia, "Times New Roman", serif;
 }
 
 .cart-header p {
@@ -360,9 +434,14 @@ body {
 }
 
 .delete-icon {
+  border: none;
+  background: transparent;
   color: #b96f5c;
 
   cursor: pointer;
+
+  font-family: inherit;
+  font-weight: 700;
 }
 
 .empty-cart {
@@ -385,6 +464,31 @@ body {
   margin-bottom: 1rem;
 
   font-size: 1.05rem;
+}
+
+.cart-breakdown {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.3rem;
+
+  padding: 0.8rem 0;
+
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.cart-breakdown .row {
+  display: flex;
+  justify-content: space-between;
+
+  color: var(--olive);
+  font-size: 0.9rem;
+}
+
+.cart-breakdown .row:last-child {
+  color: var(--brown);
+  font-weight: 700;
 }
 
 .checkout-button {
@@ -450,7 +554,7 @@ body {
 
   background: #faf7f2;
 
-  font-family: "Manrope", sans-serif;
+  font-family: inherit;
   font-size: 0.9rem;
 
   resize: vertical;
@@ -485,7 +589,7 @@ body {
 
   background: #faf7f2;
 
-  font-family: "Manrope", sans-serif;
+  font-family: inherit;
 }
 
 .coupon-btn {
@@ -499,7 +603,7 @@ body {
 
   cursor: pointer;
 
-  font-family: "Manrope", sans-serif;
+  font-family: inherit;
   font-weight: 600;
 }
 
@@ -509,6 +613,14 @@ body {
   margin-top: 0.4rem;
 
   font-size: 0.85rem;
+}
+
+.coupon-msg.success {
+  color: #6e7b61;
+}
+
+.coupon-msg.error {
+  color: #b96f5c;
 }
 
 /* MODAL REVIEW */
@@ -551,7 +663,7 @@ body {
 .modal-card h3 {
   margin: 0;
 
-  font-family: "Cormorant Garamond", serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 1.9rem;
 }
 
@@ -632,7 +744,7 @@ body {
 
   cursor: pointer;
 
-  font-family: "Manrope", sans-serif;
+  font-family: inherit;
 }
 
 .btn-confirm {
@@ -648,7 +760,7 @@ body {
 
   cursor: pointer;
 
-  font-family: "Manrope", sans-serif;
+  font-family: inherit;
   font-size: 0.95rem;
 }
 
@@ -708,5 +820,73 @@ body {
 
   .cart-summary {
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .carousel-frame {
+    grid-template-columns: 40px 1fr 40px;
+    gap: 0.45rem;
+  }
+
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .carousel-stage .product {
+    min-height: 390px;
+  }
+}
+
+@keyframes slideSettle {
+  from {
+    opacity: 0;
+    transform: translateX(18px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes shakeBreak {
+  0% {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg) scale(1);
+  }
+
+  20% {
+    transform: translateX(-8px) rotate(-1.5deg) scale(1.01);
+  }
+
+  40% {
+    transform: translateX(8px) rotate(1.5deg) scale(1.01);
+  }
+
+  60% {
+    transform: translateX(-6px) rotate(-1deg) scale(0.98);
+  }
+
+  80% {
+    transform: translateX(6px) rotate(1deg) scale(1.03);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.86);
+  }
+}
+
+@keyframes scatterIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
