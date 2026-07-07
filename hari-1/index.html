@@ -51,6 +51,11 @@
     gap: 8px; position: relative;
   }
   .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
+  .card .emoji img, .chip img {
+    display: block;
+    object-fit: cover;
+    border-radius: 10px;
+  }
   .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
   .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
 
@@ -131,28 +136,20 @@
   const MAX_PITY = 10;
   const MAX_HISTORY = 12;
 
-  const hadiah = {
-    ssr: [
-      { n: "Genesis Mentor", e: "👑" },
-      { n: "Wallet Wizard", e: "🧙" },
-      { n: "Smart Contract Hero", e: "💎" }
-    ],
-    epic: [
-      { n: "Gas Saver", e: "⛽" },
-      { n: "Node Runner", e: "🖥️" },
-      { n: "Airdrop Hunter", e: "🪂" }
-    ],
-    rare: [
-      { n: "NFT Artist", e: "🎨" },
-      { n: "Block Explorer", e: "🔎" },
-      { n: "Token Analyst", e: "📊" }
-    ],
-    common: [
-      { n: "Fresh Wallet", e: "👛" },
-      { n: "Testnet Learner", e: "🧪" },
-      { n: "Discord Grinder", e: "💬" },
-      { n: "Coffee Coder", e: "☕" }
-    ]
+const waifuPool = [
+  { name: "Bayonetta", tier: "SSR", imageUrl: "images/bayonetta.jpg" },
+  { name: "Mayu Hanyu", tier: "SSR", imageUrl: "images/mayuri-hanyu.jpg" },
+  { name: "Makima", tier: "SR", imageUrl: "images/makima.jpg" },
+  { name: "Kafka", tier: "SR", imageUrl: "images/kafka.jpg" },
+  { name: "Mei-Mei", tier: "R", imageUrl: "images/MeiMei.jpg" },
+  { name: "mas amba", tier: "R", imageUrl: "images/amba.jpg" },
+  { name: "lucilla", tier: "R", imageUrl: "images/lucilla.jpg" }
+];
+
+  const tierConfig = {
+    SSR: { chance: 0.05, kelas: "ssr" },
+    SR: { chance: 0.25, kelas: "epic" },
+    R: { chance: 0.70, kelas: "rare" }
   };
 
   let pity = 0;
@@ -176,12 +173,42 @@
     return arr[index];
   }
 
-  function buatHasil(kelas) {
-    const item = pilihAcak(hadiah[kelas]);
+  function buatPlaceholder(nama) {
+    return nama
+      .split(" ")
+      .map((kata) => kata[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  }
+
+  function renderGambar(target, hasil, ukuran) {
+    target.textContent = "";
+
+    if (!hasil.imageUrl) {
+      target.textContent = buatPlaceholder(hasil.nama);
+      return;
+    }
+
+    const img = document.createElement("img");
+    img.src = hasil.imageUrl;
+    img.alt = hasil.nama;
+    img.width = ukuran;
+    img.height = ukuran;
+    img.onerror = () => {
+      target.textContent = buatPlaceholder(hasil.nama);
+    };
+    target.appendChild(img);
+  }
+
+  function buatHasil(tier) {
+    const item = pilihAcak(waifuPool.filter((waifu) => waifu.tier === tier));
+
     return {
-      kelas,
-      nama: item.n,
-      emoji: item.e
+      kelas: tierConfig[tier].kelas,
+      tier,
+      nama: item.name,
+      imageUrl: item.imageUrl
     };
   }
 
@@ -190,26 +217,24 @@
     pity += 1;
 
     const acak = Math.random();
-    let kelas = "common";
+    let tier = "R";
 
     // Pity menjamin SSR pada tarikan ke-10 jika belum dapat SSR sebelumnya.
-    if (pity >= MAX_PITY || acak < 0.03) {
-      kelas = "ssr";
+    if (pity >= MAX_PITY || acak < tierConfig.SSR.chance) {
+      tier = "SSR";
       pity = 0;
       ssrCount += 1;
-    } else if (acak < 0.10) {
-      kelas = "epic";
-    } else if (acak < 0.30) {
-      kelas = "rare";
+    } else if (acak < tierConfig.SSR.chance + tierConfig.SR.chance) {
+      tier = "SR";
     }
 
-    return buatHasil(kelas);
+    return buatHasil(tier);
   }
 
   function tampilkan(hasil) {
-    cardEmoji.textContent = hasil.emoji;
+    renderGambar(cardEmoji, hasil, 96);
     cardName.textContent = hasil.nama;
-    cardRarity.textContent = hasil.kelas.toUpperCase();
+    cardRarity.textContent = hasil.tier;
 
     card.className = "card";
     card.offsetWidth;
@@ -224,8 +249,8 @@
   function tambahRiwayat(hasil) {
     const chip = document.createElement("div");
     chip.className = `chip ${hasil.kelas}`;
-    chip.textContent = hasil.emoji;
-    chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
+    chip.title = `${hasil.nama} (${hasil.tier})`;
+    renderGambar(chip, hasil, 28);
 
     history.prepend(chip);
 
