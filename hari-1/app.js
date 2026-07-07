@@ -94,6 +94,38 @@ function randomPityTarget() {
   return acakAntara(PITY_MIN, PITY_MAX);
 }
 
+function idFromUrl(url) {
+  const match = String(url || "").match(/\/(\d+)\/?$/);
+  return match ? Number(match[1]) : null;
+}
+
+async function fetchJson(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Gagal ambil data dari PokeAPI");
+  return res.json();
+}
+
+function englishName(items, fallback) {
+  const found = (items || []).find(item => item.language && item.language.name === "en");
+  return found ? found.name : fallback;
+}
+
+function englishFlavor(entries) {
+  const found = (entries || []).find(entry => entry.language && entry.language.name === "en");
+  return found ? found.flavor_text.replace(/\s+/g, " ") : "";
+}
+
+function shortMoves(moves) {
+  return (moves || []).slice(0, 4).map(move => rapikanNama(move.move.name));
+}
+
+function flattenEvolution(chain, out = []) {
+  if (!chain) return out;
+  out.push(rapikanNama(chain.species.name));
+  chain.evolves_to.forEach(next => flattenEvolution(next, out));
+  return out;
+}
+
 // Pilih ID Pokémon sesuai tier hasil roll.
 function pickId(kelas) {
   if (kelas === "ssr") return pilihAcak(SSR_IDS);
@@ -115,25 +147,39 @@ function rapikanNama(nama) {
 async function getPokemon(id) {
   if (cache.has(id)) return cache.get(id);
 
-  const [pRes, sRes] = await Promise.all([
-    fetch(API + "/pokemon/" + id),
-    fetch(API + "/pokemon-species/" + id),
+  const [p, s] = await Promise.all([
+    fetchJson(API + "/pokemon/" + id),
+    fetchJson(API + "/pokemon-species/" + id),
   ]);
-  if (!pRes.ok || !sRes.ok) throw new Error("Gagal ambil data Pokémon #" + id);
-
-  const p = await pRes.json();
-  const s = await sRes.json();
+  const evo = s.evolution_chain ? await fetchJson(s.evolution_chain.url) : null;
   const art = p.sprites.other["official-artwork"];
 
   const mon = {
     id: p.id,
+    speciesId: idFromUrl(s.url),
     name: rapikanNama(p.name),
+    genus: englishName(s.genera, "Pokemon"),
+    flavorText: englishFlavor(s.flavor_text_entries),
     artwork: lewatCDN(art.front_default),
     shinyArtwork: lewatCDN(art.front_shiny),
     fallbackArt: lewatCDN(p.sprites.front_default), // sprite piksel klasik, jaring pengaman
+    cry: p.cries ? p.cries.latest || p.cries.legacy : "",
+    heightM: p.height / 10,
+    weightKg: p.weight / 10,
+    baseExperience: p.base_experience || 0,
+    captureRate: s.capture_rate,
+    baseHappiness: s.base_happiness,
+    generation: s.generation ? rapikanNama(s.generation.name) : "",
+    habitat: s.habitat ? rapikanNama(s.habitat.name) : "Unknown",
+    abilities: p.abilities.map(a => ({
+      name: rapikanNama(a.ability.name),
+      hidden: a.is_hidden,
+    })),
     types: p.types.map(t => t.type.name),
     stats: p.stats.map(st => ({ name: st.stat.name, value: st.base_stat })),
     bst: p.stats.reduce((sum, st) => sum + st.base_stat, 0),
+    moves: shortMoves(p.moves),
+    evolutionLine: flattenEvolution(evo && evo.chain),
     isLegendary: s.is_legendary,
     isMythical: s.is_mythical,
   };
@@ -155,13 +201,27 @@ function localPokemon(kelas) {
   const p = pilihAcak(pool.length ? pool : FALLBACK_POKEMON);
   return {
     id: p.id,
+    speciesId: p.id,
     name: p.name,
+    genus: kelas === "ssr" ? "Legendary Pokemon" : "Pokemon",
+    flavorText: "Data cadangan lokal dipakai saat PokeAPI tidak tersedia.",
     artwork: artworkUrl(p.id, false),
     shinyArtwork: artworkUrl(p.id, true),
     fallbackArt: spriteUrl(p.id),
+    cry: "",
+    heightM: 0,
+    weightKg: 0,
+    baseExperience: 0,
+    captureRate: 0,
+    baseHappiness: 0,
+    generation: "Unknown",
+    habitat: "Unknown",
+    abilities: [],
     types: p.types,
     stats: Object.keys(STAT_LABELS).map((name, i) => ({ name, value: p.stats[i] })),
     bst: p.stats.reduce((sum, value) => sum + value, 0),
+    moves: [],
+    evolutionLine: [p.name],
     isLegendary: kelas === "ssr",
     isMythical: false,
     offline: true,
