@@ -303,6 +303,21 @@
     box-shadow: 0 8px 0 #9f2456, 0 16px 28px rgba(0,0,0,.34);
   }
   .bouquet-button:active { box-shadow: 0 3px 0 #9f2456, 0 8px 18px rgba(0,0,0,.28); }
+  .reset-button {
+    width: 100%;
+    min-height: 42px;
+    color: var(--ink);
+    background: rgba(255,255,255,.08);
+    border-color: rgba(255,255,255,.18);
+    box-shadow: none;
+  }
+  .reset-button:hover {
+    background: rgba(255,255,255,.13);
+  }
+  .reset-button:active {
+    transform: scale(.98);
+    box-shadow: none;
+  }
   button, .file-label {
     border: 1px solid rgba(255,255,255,.18);
     border-radius: 8px;
@@ -714,6 +729,7 @@
             <div class="bouquet-hint">U can create a virtual bouquet flowers when u get 5 types of flowers.</div>
             <button class="bouquet-button" id="buatBuket" disabled>Buat Buket</button>
           </div>
+          <button class="reset-button" id="resetGame">Reset Progress</button>
           <div>
             <div class="lbl" style="margin-bottom:8px;">Riwayat Terakhir</div>
             <div class="history" id="history"></div>
@@ -811,6 +827,7 @@
   const bouquetWrap = document.getElementById("bouquetWrap");
   const bouquetList = document.getElementById("bouquetList");
   const bouquetClose = document.getElementById("bouquetClose");
+  const resetGame = document.getElementById("resetGame");
   const petalRain = document.getElementById("petalRain");
   const overlay = document.getElementById("overlay");
   const modalTitle = document.getElementById("modalTitle");
@@ -990,6 +1007,23 @@
     overlay.setAttribute("aria-hidden", "true");
   }
 
+  function resetProgress() {
+    pity = 0;
+    total = 0;
+    ssrCount = 0;
+    collection = [];
+    localStorage.removeItem("flowerGachaPity");
+    localStorage.removeItem("flowerGachaTotal");
+    localStorage.removeItem("flowerGachaSSR");
+    localStorage.removeItem("flowerGachaCollection");
+    tutupPopup();
+    tutupBuket();
+    bouquetWrap.querySelectorAll(".bouquet-flower").forEach((flower) => flower.remove());
+    bouquetList.innerHTML = "";
+    renderCollection();
+    tampilkan({ kelas: "common", nama: "Tekan Tarik", warna: "#e56b8b" }, false);
+  }
+
   function tambahRiwayatLama(hasil) {
     const chip = document.createElement("div");
     chip.className = `chip ${hasil.kelas}`;
@@ -1010,6 +1044,7 @@
   document.getElementById("tarik1").addEventListener("click", () => tarik(1));
   document.getElementById("tarik10").addEventListener("click", () => tarik(10));
   buatBuket.addEventListener("click", bukaBuket);
+  resetGame.addEventListener("click", resetProgress);
   modalClose.addEventListener("click", tutupPopup);
   bouquetClose.addEventListener("click", tutupBuket);
   overlay.addEventListener("click", (event) => {
