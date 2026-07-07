@@ -35,6 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const productSection = document.getElementById("product-section");
   const cartDetailsEl = document.getElementById("cart-details");
+  const subtotalPriceEl = document.getElementById("cart-subtotal-price");
+  const handlingFeeEl = document.getElementById("cart-handling-fee");
   const totalPriceEl = document.getElementById("modal-total-price");
   const cartCountEl = document.getElementById("cart-count");
   const reviewModal = document.getElementById("review-modal");
@@ -80,6 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (Object.keys(cart).length === 0) {
       cartDetailsEl.innerHTML = `<p class="empty-cart">Keranjang kamu masih kosong.</p>`;
+      subtotalPriceEl.textContent = "0.00";
+      handlingFeeEl.textContent = "0.00";
       totalPriceEl.textContent = "0.00";
       updateCartCount();
       renderProducts();
@@ -121,6 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let total = totalPrice + HANDLING_FEE;
     total = total - total * diskon;
 
+    subtotalPriceEl.textContent = totalPrice.toFixed(2);
+    handlingFeeEl.textContent = HANDLING_FEE.toFixed(2);
     totalPriceEl.textContent = total.toFixed(2);
     updateCartCount();
     renderProducts();

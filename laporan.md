@@ -110,3 +110,24 @@ Rahasia bisnis ditempatkan di sisi client. Semua data di sisi client harus diang
 - Di aplikasi produksi, validasi kupon dan hitung diskon di server, bukan di browser.
 
 **Status:** Sudah diperbaiki di `hari-2/main.js` untuk versi demo statis.
+
+## 6. Biaya penanganan tidak terlihat sebelum checkout
+
+**Kategori:** Etika
+
+**Masalah:**
+Sidebar hanya menampilkan total akhir, tetapi tidak menjelaskan bahwa total sudah ditambah `HANDLING_FEE`. Rincian biaya baru terlihat di modal checkout. Ini bisa menjadi dark pattern karena biaya tambahan tidak transparan sejak awal.
+
+**Penyebab:**
+Perhitungan sidebar menambahkan biaya penanganan:
+
+```js
+let total = totalPrice + HANDLING_FEE;
+```
+
+Namun UI sidebar sebelumnya hanya punya baris "Total", tanpa baris subtotal dan biaya penanganan.
+
+**Cara menyelesaikan:**
+Tambahkan rincian subtotal dan biaya penanganan di sidebar sebelum total akhir.
+
+**Status:** Sudah diperbaiki di `hari-2/index.html`, `hari-2/main.js`, dan `hari-2/style.css`.
