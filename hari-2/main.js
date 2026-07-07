@@ -140,6 +140,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const totalPriceEl = document.getElementById("modal-total-price");
   const cartCountEl = document.getElementById("cart-count");
   const reviewModal = document.getElementById("review-modal");
+  // [FIX-NEW] BUG-06: Cache referensi overlay order-confirm di sini
+  // Sebelumnya: re-query document.getElementById setiap event klik → tidak efisien
+  const orderConfirmEl = document.getElementById("order-confirm");
 
   // [FIX-10] CODE-02: Simpan state keranjang ke localStorage setiap ada perubahan
   function saveCart() {
@@ -152,8 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     products.forEach((product) => {
       const quantity = cart[product.id] ? cart[product.id].count : 0;
-      // [FIX-09] DARK-01: Ambil stok dari stockMap — bukan random
-      const sisa = stockMap[product.id] ?? 5;
+      // [FIX-NEW] BUG-03 lanjutan: Kurangi stok visual dengan jumlah di keranjang
+      const sisa = (stockMap[product.id] ?? 5) - quantity;
 
       const productCard = document.createElement("article");
       productCard.classList.add("product");
@@ -164,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <h3>${product.name}</h3>
           <p class="price">$${product.price.toFixed(2)}</p>
         </div>
-        <p class="stock">stok hari ini: ${sisa}</p>
+        <p class="stock" id="stock-${product.id}">stok hari ini: ${sisa}</p>
         <div class="quantity-controls">
           <button class="quantity-button minus-button" data-id="${product.id}">−</button>
           <span class="quantity-display" id="quantity-${product.id}">${quantity}</span>
@@ -181,9 +184,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // keranjang berubah → stok "berubah-ubah" setiap aksi user.
   function updateProductQtyDisplay() {
     products.forEach((product) => {
+      const quantity = cart[product.id] ? cart[product.id].count : 0;
+      
       const qEl = document.getElementById(`quantity-${product.id}`);
       if (qEl) {
-        qEl.textContent = cart[product.id] ? cart[product.id].count : 0;
+        qEl.textContent = quantity;
+      }
+
+      // [FIX-NEW] BUG-03 lanjutan: Update juga sisa stok di UI setiap keranjang berubah
+      const sisa = (stockMap[product.id] ?? 5) - quantity;
+      const stockEl = document.getElementById(`stock-${product.id}`);
+      if (stockEl) {
+        stockEl.textContent = `stok hari ini: ${sisa}`;
       }
     });
   }
@@ -244,9 +256,9 @@ document.addEventListener("DOMContentLoaded", () => {
       cartDetailsEl.appendChild(preview);
     }
 
-    // Total akhir = barang + biaya penanganan, lalu potong diskon.
-    let total = totalPrice + HANDLING_FEE;
-    total = total - total * diskon;
+    // [FIX-NEW] BUG-02: Diskon HANYA ke subtotal — handling fee tidak didiskon
+    // Sebelumnya: total = (subtotal + fee) * (1 - diskon) → fee ikut terpotong
+    let total = totalPrice * (1 - diskon) + HANDLING_FEE;
 
     // [FIX-04] BUG-01: Tambahkan .toFixed(2) — cegah floating point aneh
     // Sebelumnya: totalPriceEl.textContent = total
@@ -267,6 +279,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!cart[id]) {
       cart[id] = { ...product, count: 0 };
     }
+
+    // [FIX-NEW] BUG-04 lanjutan: Cek MAX_QUANTITY di addToCart (tombol +)
+    // Sebelumnya: hanya dicek di updateQuantity() — spam klik + bisa melebihi 99
+    if (cart[id].count >= MAX_QUANTITY) {
+      showToast(`Maksimum ${MAX_QUANTITY} item per produk.`);
+      return;
+    }
+
+    // [FIX-NEW] BUG-03 lanjutan: Cek stok — jangan izinkan melebihi stok tersedia
+    // Sebelumnya: stockMap tidak pernah divalidasi saat addToCart
+    const maxStock = stockMap[id] ?? 5;
+    if (cart[id].count >= maxStock) {
+      showToast(`Stok ${product.name} hanya ${maxStock} — tidak bisa tambah lagi.`);
+      return;
+    }
+
     // [FIX-02] SEC-02: Gunakan harga dari katalog products[], BUKAN dari atribut DOM
     // Sebelumnya: cart[id].price = price  ← price diambil dari data-price di HTML
     // Serangan: ubah data-price="5" → data-price="0.01" di DevTools → harga $0.01
@@ -303,7 +331,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (isNaN(quantity) || quantity <= 0) {
       delete cart[id];
     } else {
-      cart[id].count = Math.min(quantity, MAX_QUANTITY);
+      // [FIX-NEW] BUG-03 lanjutan: Batasi input quantity agar tidak melebihi stok yang ada
+      const maxStock = stockMap[id] ?? 5;
+      cart[id].count = Math.min(quantity, MAX_QUANTITY, maxStock);
     }
     saveCart(); // [FIX-10]
     renderCart();
@@ -394,9 +424,9 @@ document.addEventListener("DOMContentLoaded", () => {
       noteWrap.appendChild(n);
     }
 
-    let total = subtotal + HANDLING_FEE;
-    total = total - total * diskon;
-    const potongan = (subtotal + HANDLING_FEE) * diskon;
+    // [FIX-NEW] BUG-02: Diskon hanya ke subtotal — handling fee tidak didiskon
+    const potongan = subtotal * diskon;
+    let total = subtotal * (1 - diskon) + HANDLING_FEE;
 
     // [FIX-04] BUG-01: Tambah .toFixed(2) pada grand total di modal
     // Sebelumnya: `$${total}` tanpa toFixed → bisa "3.0000000000000004"
@@ -422,7 +452,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const orderNote = document.getElementById("note").value;
     const subtotal = orderItems.reduce((sum, i) => sum + i.count * i.price, 0);
     const currentDiskon = diskon;
-    const orderTotal = (subtotal + HANDLING_FEE) * (1 - currentDiskon);
+    // [FIX-NEW] BUG-02: Diskon hanya ke subtotal, bukan handling fee
+    const orderTotal = subtotal * (1 - currentDiskon) + HANDLING_FEE;
 
     closeReview();
     cart = {};
@@ -444,12 +475,21 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("oc-id").textContent = orderId;
     document.getElementById("oc-total").textContent = total.toFixed(2);
 
-    document.getElementById("oc-items").innerHTML = items
-      .map(
-        (item) =>
-          `<div class="oc-line"><span>${item.name} × ${item.count}</span><span>$${(item.count * item.price).toFixed(2)}</span></div>`
-      )
-      .join("");
+    // [FIX-NEW] XSS: Ganti innerHTML → DOM API untuk konsistensi dengan FIX-01
+    // Sebelumnya: innerHTML dengan template literal — pola berbahaya meski data dari katalog
+    const ocItemsEl = document.getElementById("oc-items");
+    ocItemsEl.innerHTML = "";
+    items.forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "oc-line";
+      const spanName = document.createElement("span");
+      spanName.textContent = `${item.name} × ${item.count}`;
+      const spanPrice = document.createElement("span");
+      spanPrice.textContent = `$${(item.count * item.price).toFixed(2)}`;
+      div.appendChild(spanName);
+      div.appendChild(spanPrice);
+      ocItemsEl.appendChild(div);
+    });
 
     const noteEl = document.getElementById("oc-note");
     if (note) {
@@ -487,10 +527,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (target.id === "review-back" || target === reviewModal) {
       closeReview();
     }
-    // [FIX-16] CODE-03: Tutup overlay konfirmasi pesanan
-    const orderConfirmOverlay = document.getElementById("order-confirm");
-    if (target.id === "oc-close" || target === orderConfirmOverlay) {
-      orderConfirmOverlay.classList.remove("open");
+    // [FIX-NEW] BUG-06: Gunakan orderConfirmEl yang sudah di-cache — tidak re-query tiap klik
+    if (target.id === "oc-close" || target === orderConfirmEl) {
+      orderConfirmEl.classList.remove("open");
     }
   });
 
@@ -505,6 +544,10 @@ document.addEventListener("DOMContentLoaded", () => {
       renderCart();
     }
   });
+
+  // [FIX-NEW] BUG-01: Sinkronisasi tampilan handling fee di sidebar dengan konstanta JS
+  // Sebelumnya: "$0.30" hardcoded di HTML — desync jika HANDLING_FEE diubah di sini
+  document.getElementById("handling-fee-display").textContent = `$${HANDLING_FEE.toFixed(2)}`;
 
   /* MULAI */
   renderProducts();

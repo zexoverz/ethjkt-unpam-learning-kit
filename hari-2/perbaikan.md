@@ -11,6 +11,7 @@
 |-------|-----|-----------------|--------|
 | Batch 1 | FIX-01 s/d FIX-10 | `main.js`, `index.html`, `style.css` | ✅ Selesai |
 | Batch 2 | FIX-11 s/d FIX-17 | `main.js`, `index.html`, `style.css` | ✅ Selesai |
+| Batch 3 | FIX-18 s/d FIX-23 | `main.js`, `index.html` | ✅ Selesai |
 
 ---
 
@@ -107,6 +108,19 @@ Fungsi ini dipanggil di awal `openReview()` sebelum modal terbuka.
 
 **Kenapa?**  
 Sebagai lapisan pertahanan tambahan: jika ada harga yang sudah termanipulasi di object `cart`, fungsi ini mendeteksi dan memperbaikinya sekaligus membatalkan alur checkout agar user melihat harga yang benar dulu.
+
+---
+
+### [FIX-18] SEC-05 — XSS: DOM API untuk Konfirmasi Pesanan
+**File:** `main.js` | **Fungsi:** `showOrderConfirmation()`
+
+**Sebelum (❌ Rentan):**
+```js
+ocItemsEl.innerHTML = items.map(item => `...${item.name}...`).join("");
+```
+
+**Sesudah (✅ Aman):**
+Diganti sepenuhnya dengan perulangan `document.createElement("div")` dan `textContent` agar nama barang dirender sebagai teks murni, konsisten dengan perbaikan `SEC-01`.
 
 ---
 
@@ -225,6 +239,60 @@ Biaya $0.30 baru terlihat ketika pengguna sudah menekan "Lanjut ke Pembayaran".
 ```
 
 CSS `.fee-row` ditambahkan dengan warna olive dan ukuran font lebih kecil agar tidak mendominasi visual namun tetap terlihat.
+
+---
+
+### [FIX-19] BUG-06 — Handling Fee Hardcoded Disinkronisasi
+**File:** `index.html`, `main.js`
+
+**Sebelum (❌ Hardcoded):**
+```html
+<span>$0.30</span>
+```
+
+**Sesudah (✅ Dinamis):**
+```html
+<span id="handling-fee-display">$0.30</span>
+```
+Ditambah `document.getElementById("handling-fee-display").textContent = ...` di JS agar selalu tersinkronisasi dengan konstanta `HANDLING_FEE`.
+
+---
+
+### [FIX-20] BUG-07 — Perbaikan Logika Diskon (Mengecualikan Fee)
+**File:** `main.js` | **Fungsi:** `renderCart()`, `openReview()`, `placeOrder()`
+
+**Sebelum (❌ Fee didiskon):**
+```js
+let total = (subtotal + HANDLING_FEE) * (1 - diskon);
+```
+
+**Sesudah (✅ Subtotal saja yang didiskon):**
+```js
+let total = (subtotal * (1 - diskon)) + HANDLING_FEE;
+```
+Biaya penanganan mutlak harus dibayar 100%, sehingga diskon hanya memotong subtotal produk.
+
+---
+
+### [FIX-21] BUG-08 — Stok Visual Real-Time Berkurang
+**File:** `main.js` | **Fungsi:** `renderProducts()`, `updateProductQtyDisplay()`
+
+**Sebelum (❌ Stok visual kaku):**
+Hanya merender ulang jumlah di keranjang, tapi indikator sisa stok di layar tidak berubah meskipun barang ditambahkan.
+
+**Sesudah (✅ Dinamis):**
+Ditambahkan kalkulasi `const sisa = (stockMap[product.id] ?? 5) - quantity;` dan ID `<p class="stock" id="stock-${product.id}">` pada elemen untuk memungkinkan pembaruan teks sisa stok secara real-time saat keranjang berubah.
+
+---
+
+### [FIX-22] BUG-09 — Proteksi Limit di addToCart()
+**File:** `main.js` | **Fungsi:** `addToCart()`
+
+**Sebelum (❌ Bypass via Tombol +):**
+Tombol `+` bebas diklik sampai jumlah tak terbatas (999+) tanpa mempedulikan `MAX_QUANTITY` atau ketersediaan stok.
+
+**Sesudah (✅ Terlindungi):**
+Ditambahkan pengecekan `if (cart[id].count >= MAX_QUANTITY)` dan perbandingan dengan `maxStock`, memunculkan peringatan `showToast()` jika melampaui limit. Perbaikan serupa untuk `maxStock` juga diterapkan di fungsi manual `updateQuantity()`.
 
 ---
 
@@ -369,14 +437,25 @@ Di `style.css`: `.product h2` → `.product h3`
 
 ---
 
+### [FIX-23] CODE-05 — Caching DOM untuk Event Listener
+**File:** `main.js`
+
+**Sebelum (❌ Boros Memori):**
+Pencarian `.getElementById("order-confirm")` di dalam event listener click yang dieksekusi terus-menerus setiap kali layar diklik.
+
+**Sesudah (✅ Efisien):**
+Deklarasi elemen ke dalam variabel konstan di lingkup atas file: `const orderConfirmEl = document.getElementById("order-confirm");`.
+
+---
+
 ## Daftar File yang Diubah
 
 | File | Jumlah Perubahan | Fix yang Diterapkan |
 |------|-----------------|-------------------|
-| `main.js` | 15 perubahan | FIX-01, 02, 03, 04, 05, 06, 07, 09, 10, 11, 12, 13 (partial), 16, 17 |
-| `index.html` | 4 perubahan | FIX-08, 13, 16, 17 (partial) |
+| `main.js` | 21 perubahan | FIX-01..12, 13, 16..18, 20..23 |
+| `index.html` | 5 perubahan | FIX-08, 13, 16, 17, 19 |
 | `style.css` | 3 perubahan | FIX-08, 16, 17 |
-| `temuan.md` | — | Dokumen audit (tidak diubah) |
+| `temuan.md` | — | Dokumen audit (diperbarui dengan temuan Batch 3) |
 
 ---
 
@@ -385,19 +464,20 @@ Di `style.css`: `.product h2` → `.product h3`
 | Aspek | Sebelum | Sesudah |
 |-------|---------|---------|
 | XSS via catatan | ❌ Rentan (`innerHTML`) | ✅ Aman (`textContent`) |
+| XSS via konfirmasi pesanan | ❌ Rentan (`innerHTML`) | ✅ Aman (DOM API) |
 | Manipulasi harga | ❌ Bisa via DevTools | ✅ Harga dari katalog |
 | Kupon terekspos | ❌ Plaintext di source | ⚠️ Disamarkan (TODO: server) |
 | Validasi checkout | ❌ Tidak ada | ✅ `validateCartIntegrity()` |
 | Tampilan total | ❌ Floating point aneh | ✅ `.toFixed(2)` konsisten |
-| Stok produk | ❌ Random, berubah-ubah | ✅ Tetap dari `stockMap` |
+| Handling fee display | ❌ Tersembunyi & hardcoded | ✅ Muncul sejak awal & terikat ke JS |
+| Stok produk | ❌ Random, kaku | ✅ Nyata, berkurang real-time |
 | Input quantity | ❌ Menerima NaN | ✅ `isNaN()` guard |
-| Batas quantity | ❌ Tidak ada | ✅ Max 99 |
-| Handling fee | ❌ Tersembunyi | ✅ Terlihat di sidebar |
-| Diskon kupon | ❌ 90% (hampir gratis) | ✅ 10% (wajar) |
+| Batas quantity | ❌ Bisa tembus limit via klik `+` | ✅ Terproteksi max 99 & max stok |
+| Perhitungan diskon | ❌ Memotong harga total | ✅ Hanya memotong harga barang |
 | Teks manipulatif | ❌ 3 elemen dark pattern | ✅ Copy netral & informatif |
 | Keranjang refresh | ❌ Hilang | ✅ `localStorage` |
 | Konfirmasi pesanan | ❌ Hanya toast 3 detik | ✅ Overlay + nomor order |
-| Heading hierarchy | ❌ h2 bertumpuk | ✅ h1 > h2 > h3 |
+| DOM Event Listener | ❌ DOM traversal terus-menerus | ✅ DOM di-cache |
 
 ---
 

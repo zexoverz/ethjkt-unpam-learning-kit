@@ -69,7 +69,8 @@
                Sebelumnya: fee hanya muncul di modal checkout (hidden fee / dark pattern) -->
           <div class="fee-row">
             <span>Biaya penanganan</span>
-            <span>$0.30</span>
+            <!-- [FIX-NEW] BUG-01: ID ditambah agar nilai diisi dari konstanta HANDLING_FEE di JS -->
+            <span id="handling-fee-display">$0.30</span>
           </div>
 
           <div class="total-row">

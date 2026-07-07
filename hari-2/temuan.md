@@ -15,11 +15,11 @@
 
 | Kategori | Jumlah | Severity |
 |----------|--------|----------|
-| 🔴 Celah Keamanan (Security) | 4 | Critical / High |
-| 🟠 Bug Logika Bisnis | 5 | High / Medium |
+| 🔴 Celah Keamanan (Security) | 5 | Critical / High / Medium |
+| 🟠 Bug Logika Bisnis | 9 | High / Medium |
 | 🟡 Dark Pattern (UX Manipulatif) | 4 | Medium |
-| 🔵 Kualitas Kode | 4 | Low |
-| **Total** | **17** | |
+| 🔵 Kualitas Kode | 5 | Low |
+| **Total** | **23** | |
 
 ---
 
@@ -111,6 +111,15 @@ Seluruh logika — harga, kupon, stok, perhitungan total — hanya ada di **clie
 - Semua temuan SEC-01 sampai SEC-03 langsung bisa dieksploitasi
 - Tidak ada audit trail pesanan yang sesungguhnya
 - "Pesanan" yang dikonfirmasi tidak tersimpan di mana pun
+
+---
+
+### [SEC-05] XSS pada Order Confirmation via innerHTML
+**Severity:** 🔴 Medium  
+**File:** `main.js` | **Baris:** 467
+
+**Penjelasan:**  
+Penggunaan `innerHTML` dengan template literal saat merender daftar barang pesanan di `showOrderConfirmation` berisiko jika data nama produk termanipulasi. Walaupun saat ini mengambil dari `products[]`, pola ini tidak aman dan inkonsisten dengan perbaikan `SEC-01`.
 
 ---
 
@@ -229,6 +238,42 @@ Biaya penanganan $0.30 ditambahkan ke total di sidebar **tanpa rincian terpisah*
 
 ---
 
+### [BUG-06] Handling Fee Hardcoded HTML vs Konstanta JS
+**Severity:** 🟠 High  
+**File:** `index.html` dan `main.js`
+
+**Penjelasan:**  
+Nilai `HANDLING_FEE` diset `0.3` di JS, tetapi di HTML sidebar nilainya ditulis hardcode `$0.30`. Jika nilai operasional dinaikkan di JS, tampilan di layar tidak sinkron dan menyebabkan selisih total harga.
+
+---
+
+### [BUG-07] Kupon Diskon Memotong Handling Fee
+**Severity:** 🟠 High  
+**File:** `main.js`
+
+**Penjelasan:**  
+Kalkulasi total saat kupon aktif `total = total - total * diskon` dilakukan SETELAH handling fee ditambahkan. Artinya, biaya operasional toko ikut didiskon (merugikan bisnis). Logika yang benar: diskon hanya berlaku untuk subtotal barang.
+
+---
+
+### [BUG-08] Sisa Stok di Layar Tidak Berkurang Secara Visual
+**Severity:** 🟠 High  
+**File:** `main.js`
+
+**Penjelasan:**  
+Meskipun stok sudah menggunakan data tetap (berkat FIX-09), angka stok yang ditampilkan ke pengguna (`<p class="stock">`) tidak pernah berkurang secara visual saat item ditambahkan ke keranjang.
+
+---
+
+### [BUG-09] Limit Stok dan MAX_QUANTITY Bisa Di-bypass via Tombol +
+**Severity:** 🟠 Medium  
+**File:** `main.js` | **Baris:** 263
+
+**Penjelasan:**  
+Validasi `MAX_QUANTITY` (BUG-04) dan ketersediaan stok hanya dilakukan saat menginput angka manual di keranjang (`updateQuantity`). Tombol `+` di produk (`addToCart`) tidak memiliki proteksi sama sekali sehingga pengguna bisa terus mengeklik hingga melampaui stok yang ada atau melebihi batas 99.
+
+---
+
 ## 🟡 Dark Pattern (Pola UX Manipulatif)
 
 ---
@@ -327,6 +372,13 @@ Struktur heading tidak hierarkis — membingungkan screen reader dan merusak SEO
 
 ---
 
+### [CODE-05] Inefisiensi DOM Query pada Event Listener
+**File:** `main.js` | **Baris:** 519
+
+Setiap kali pengguna mengeklik *bagian manapun* di layar, aplikasi melakukan pencarian `document.getElementById("order-confirm")`. Ini boros memori dan memperlambat interaksi. Referensi DOM ini seharusnya di-cache satu kali saja di awal file.
+
+---
+
 ## Matriks Prioritas Perbaikan
 
 | Prioritas | ID | Masalah | Effort Perbaikan |
@@ -337,9 +389,15 @@ Struktur heading tidak hierarkis — membingungkan screen reader dan merusak SEO
 | 🟠 P1 | BUG-01 | Tambahkan `.toFixed(2)` di semua tampilan total | Rendah |
 | 🟠 P1 | BUG-03 | Validasi `NaN` dan batas angka di `updateQuantity()` | Rendah |
 | 🟠 P1 | BUG-02 | Pisahkan `renderProducts()` dari `renderCart()` | Medium |
+| 🟠 P1 | BUG-06 | Sinkronisasi handling fee dari JS ke HTML | Rendah |
+| 🟠 P1 | BUG-07 | Perbaiki kalkulasi diskon agar fee terpisah | Rendah |
+| 🟠 P1 | BUG-08 | Tampilkan kalkulasi stok sisa yang dinamis | Medium |
+| 🟠 P1 | BUG-09 | Terapkan proteksi stok dan kuantitas di tombol + | Rendah |
 | 🟡 P2 | DARK-01 | Hapus stok random, gunakan data stok nyata | Medium |
 | 🟡 P2 | DARK-04 | Tampilkan handling fee sejak awal di sidebar | Rendah |
+| 🔴 P2 | SEC-05 | Ganti innerHTML dengan DOM API di konfirmasi pesanan | Medium |
 | 🔵 P3 | CODE-02 | Tambahkan `localStorage` untuk persistensi keranjang | Medium |
+| 🔵 P3 | CODE-05 | Cache referensi DOM untuk overlay order confirmation | Rendah |
 
 ---
 
