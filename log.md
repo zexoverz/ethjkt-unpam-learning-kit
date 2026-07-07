@@ -38,3 +38,12 @@
 - Badge koleksi dipindahkan ke drawer tersembunyi yang dibuka lewat tombol `BADGES x / 27`.
 - Tombol badge selalu menampilkan jumlah badge yang sudah terbuka dibanding total badge.
 - Visual dibuat lebih sederhana dengan warna netral, border biasa, dan efek dekoratif yang lebih sedikit.
+
+## 2026-07-07
+
+- Mengubah desain gacha menjadi satu kolom dengan kartu gacha di tengah layar.
+- Memindahkan tombol `TARIK 1x`, `TARIK 10x`, dan `BADGES` ke area dekat kartu utama.
+- Memindahkan riwayat gacha ke bagian bawah layar dan membatasi preview utama menjadi 10 kartu terakhir.
+- Menambahkan panel floating untuk melihat semua riwayat gacha dengan area scroll jika hasil sudah banyak.
+- Mengubah badge menjadi panel floating scrollable yang dibuka lewat tombol `BADGES`.
+- Menambahkan komentar sederhana pada fungsi riwayat dan panel floating agar alur kode lebih mudah dipahami.

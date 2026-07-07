@@ -10,16 +10,18 @@
     font-family: "Segoe UI", system-ui, sans-serif;
     background: #151515;
     color: #f3efe4; min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 18px;
+    display: flex; align-items: center; justify-content: center; padding: 14px;
   }
   .app {
     width: 100%; max-width: 980px;
+    min-height: calc(100vh - 28px);
     background: #202020;
     border: 1px solid #3a3a3a;
     border-radius: 8px; padding: 22px;
     box-shadow: 0 18px 42px rgba(0,0,0,0.38);
+    display: flex; flex-direction: column; gap: 16px;
   }
-  .top { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+  .top { display: flex; justify-content: space-between; gap: 16px; }
   h1 {
     font-size: 28px; letter-spacing: 0; margin-bottom: 4px;
     color: #f3efe4;
@@ -27,7 +29,7 @@
   .subtitle, .status { font-size: 12px; color: #aaa; }
   .status { text-align: right; max-width: 260px; }
 
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   .stat {
     background: #262626; border: 1px solid #3b3b3b;
     border-radius: 6px; padding: 10px 8px; text-align: center;
@@ -35,7 +37,7 @@
   .stat .num { font-size: 22px; font-weight: 800; }
   .stat .lbl { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
 
-  .pity { margin-bottom: 18px; }
+  .pity { width: min(100%, 520px); margin: 0 auto; }
   .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #d7d0bf; margin-bottom: 6px; }
   .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
   .pity-fill {
@@ -44,8 +46,8 @@
     transition: width 0.35s ease;
   }
 
-  .board { display: grid; grid-template-columns: minmax(300px, 360px) 1fr; gap: 22px; align-items: start; }
-  .stage { display: flex; justify-content: center; }
+  .board { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+  .stage { width: 100%; display: flex; justify-content: center; }
   .card {
     width: min(100%, 320px); min-height: 520px; border-radius: 8px;
     background: #171717; border: 2px solid #555;
@@ -85,10 +87,12 @@
   .card.reveal { animation: pop .36s ease; }
   .card.ssr.reveal { animation: pop .36s ease, shake .5s ease .36s, glowpulse 1.2s ease-in-out .36s 2; }
 
-  .side { display: flex; flex-direction: column; gap: 16px; }
-  .buttons { display: flex; gap: 12px; }
+  .actions {
+    width: min(100%, 520px);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
   .btn {
-    flex: 1; padding: 15px 10px; border: none; border-radius: 10px;
+    padding: 14px 10px; border: none; border-radius: 8px;
     font-size: 15px; font-weight: 900; letter-spacing: .5px; cursor: pointer;
     color: #10131a; background: #8ac8f0;
     transition: transform .08s ease, filter .15s ease, opacity .15s ease;
@@ -98,25 +102,23 @@
   .btn:disabled { cursor: not-allowed; opacity: .45; }
   .btn.gold { background: #d6a94c; }
   .btn.secondary { background: #333; color: #f3efe4; border: 1px solid #4a4a4a; }
-  .tools { display: grid; grid-template-columns: 1fr; gap: 10px; }
 
   .panel {
     background: #262626; border: 1px solid #3b3b3b;
     border-radius: 6px; padding: 12px;
   }
-  .panel-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+  .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
   .hist-lbl { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
-  .history { display: grid; grid-template-columns: repeat(6, 52px); gap: 8px; min-height: 76px; }
+  .history-panel { width: 100%; cursor: pointer; }
+  .history { display: grid; grid-template-columns: repeat(10, minmax(42px, 1fr)); gap: 8px; min-height: 76px; }
   .chip {
-    width: 52px; height: 76px; border-radius: 6px; overflow: hidden;
+    width: 100%; aspect-ratio: 52 / 76; border-radius: 6px; overflow: hidden;
     background: #171717; border: 2px solid #4a4a4a;
   }
   .chip img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .chip.rare { border-color: #5ab2ff; }
   .chip.epic { border-color: #b077ff; }
   .chip.ssr { border-color: #ffd44d; box-shadow: 0 0 12px rgba(255,212,77,.65); }
-  .badge-drawer { display: none; }
-  .badge-drawer.open { display: block; }
   .badges { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .badge {
     min-height: 58px; border: 1px solid #444; border-radius: 6px;
@@ -126,13 +128,32 @@
   .badge-name { font-size: 13px; font-weight: 800; margin-bottom: 3px; }
   .badge-rule { font-size: 11px; color: #aaa; line-height: 1.35; }
   .badge.unlocked .badge-rule { color: #dfc777; }
+  .modal {
+    position: fixed; inset: 0; z-index: 10;
+    display: none; align-items: center; justify-content: center;
+    padding: 18px; background: rgba(0,0,0,.62);
+  }
+  .modal.open { display: flex; }
+  .floating-panel {
+    width: min(100%, 760px); max-height: min(82vh, 720px);
+    background: #222; border: 1px solid #4a4a4a; border-radius: 8px;
+    padding: 14px; box-shadow: 0 22px 54px rgba(0,0,0,.55);
+    overflow: auto;
+  }
+  .modal-history {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+    gap: 10px;
+  }
+  .close-btn { flex: 0 0 auto; padding: 8px 10px; font-size: 12px; }
 
   @media (max-width: 720px) {
     .top { flex-direction: column; }
     .status { text-align: left; max-width: none; }
-    .board { grid-template-columns: 1fr; }
-    .history { grid-template-columns: repeat(4, 52px); }
-    .stats, .badges { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .actions { grid-template-columns: 1fr; }
+    .history { grid-template-columns: repeat(5, minmax(42px, 1fr)); }
+    .badges { grid-template-columns: 1fr; }
+    .card { min-height: auto; }
   }
 </style>
 </head>
@@ -172,31 +193,42 @@
         </div>
       </div>
 
-      <div class="side">
-        <div class="buttons">
-          <button class="btn" id="tarik1" disabled>TARIK 1x</button>
-          <button class="btn gold" id="tarik10" disabled>TARIK 10x</button>
-        </div>
-
-        <div class="tools">
-          <button class="btn secondary" id="badgeToggle" type="button">BADGES 0 / 0</button>
-        </div>
-
-        <div class="panel">
-          <div class="panel-head">
-            <div class="hist-lbl">Riwayat Terakhir</div>
-          </div>
-          <div class="history" id="history"></div>
-        </div>
-
-        <div class="panel badge-drawer" id="badgePanel">
-          <div class="panel-head">
-            <div class="hist-lbl">Badge Koleksi</div>
-            <div class="hist-lbl" id="badgeCount">0 / 0</div>
-          </div>
-          <div class="badges" id="badgeList"></div>
-        </div>
+      <div class="actions">
+        <button class="btn" id="tarik1" disabled>TARIK 1x</button>
+        <button class="btn gold" id="tarik10" disabled>TARIK 10x</button>
+        <button class="btn secondary" id="badgeToggle" type="button">BADGES 0 / 0</button>
       </div>
+    </div>
+
+    <div class="panel history-panel" id="historyPreview">
+      <div class="panel-head">
+        <div class="hist-lbl">Riwayat Terakhir 10 Kartu</div>
+        <button class="btn secondary close-btn" id="historyToggle" type="button">LIHAT SEMUA</button>
+      </div>
+      <div class="history" id="history"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="historyPanel" aria-hidden="true">
+    <div class="floating-panel">
+      <div class="panel-head">
+        <div class="hist-lbl">Semua Riwayat Gacha</div>
+        <button class="btn secondary close-btn" data-close="historyPanel" type="button">TUTUP</button>
+      </div>
+      <div class="modal-history" id="fullHistory"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="badgePanel" aria-hidden="true">
+    <div class="floating-panel">
+      <div class="panel-head">
+        <div>
+          <div class="hist-lbl">Badge Koleksi</div>
+          <div class="hist-lbl" id="badgeCount">0 / 0</div>
+        </div>
+        <button class="btn secondary close-btn" data-close="badgePanel" type="button">TUTUP</button>
+      </div>
+      <div class="badges" id="badgeList"></div>
     </div>
   </div>
 
@@ -206,6 +238,7 @@
   const collectionIds = new Set();
   const collectionCards = [];
   const unlockedBadges = new Set();
+  const allHistory = [];
   const badges = [
     { id: "first", name: "First Pull", rule: "Dapatkan 1 kartu.", test: function () { return collectionCards.length >= 1; } },
     { id: "five", name: "Binder Start", rule: "Koleksi 5 kartu unik.", test: function () { return collectionCards.length >= 5; } },
@@ -255,6 +288,10 @@
   const pityText = document.getElementById("pityText");
   const pityFill = document.getElementById("pityFill");
   const history = document.getElementById("history");
+  const fullHistory = document.getElementById("fullHistory");
+  const historyPreview = document.getElementById("historyPreview");
+  const historyToggle = document.getElementById("historyToggle");
+  const historyPanel = document.getElementById("historyPanel");
   const badgeList = document.getElementById("badgeList");
   const badgeCount = document.getElementById("badgeCount");
   const badgeToggle = document.getElementById("badgeToggle");
@@ -457,8 +494,8 @@
     pityFill.style.width = (pity * 10) + "%";
   }
 
-  // Simpan riwayat singkat supaya pemain bisa lihat 12 hasil terakhir.
-  function tambahRiwayat(hasil) {
+  // Buat chip gambar kecil untuk preview dan panel riwayat.
+  function buatChip(hasil) {
     const chip = document.createElement("div");
     const img = document.createElement("img");
     chip.className = "chip " + hasil.kelas;
@@ -466,11 +503,22 @@
     img.alt = hasil.nama;
     chip.title = hasil.nama;
     chip.appendChild(img);
-    history.prepend(chip);
+    return chip;
+  }
 
-    if (history.children.length > 12) {
-      history.lastElementChild.remove();
-    }
+  // Simpan semua riwayat, lalu tampilkan 10 terakhir di layar utama.
+  function tambahRiwayat(hasil) {
+    allHistory.unshift(hasil);
+    history.innerHTML = "";
+    fullHistory.innerHTML = "";
+
+    allHistory.slice(0, 10).forEach(function (item) {
+      history.appendChild(buatChip(item));
+    });
+
+    allHistory.forEach(function (item) {
+      fullHistory.appendChild(buatChip(item));
+    });
   }
 
   // Tarik satu kali lalu tampilkan hasilnya.
@@ -491,10 +539,43 @@
     }
   });
 
-  // Badge disimpan di drawer agar fokus utama tetap ke kartu hasil roll.
+  // Badge dibuka sebagai floating panel supaya kartu tetap jadi fokus utama.
   badgeToggle.addEventListener("click", function () {
-    badgePanel.classList.toggle("open");
+    bukaPanel(badgePanel);
   });
+
+  // Riwayat lengkap bisa discroll saat jumlah pull sudah banyak.
+  historyToggle.addEventListener("click", function () {
+    bukaPanel(historyPanel);
+  });
+
+  historyPreview.addEventListener("click", function () {
+    bukaPanel(historyPanel);
+  });
+
+  // Panel floating bisa ditutup lewat tombol Tutup, area gelap, atau Escape.
+  document.addEventListener("click", function (event) {
+    const targetId = event.target.getAttribute("data-close");
+    if (targetId) tutupPanel(document.getElementById(targetId));
+    if (event.target.classList.contains("modal")) tutupPanel(event.target);
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      tutupPanel(historyPanel);
+      tutupPanel(badgePanel);
+    }
+  });
+
+  function bukaPanel(panel) {
+    panel.classList.add("open");
+    panel.setAttribute("aria-hidden", "false");
+  }
+
+  function tutupPanel(panel) {
+    panel.classList.remove("open");
+    panel.setAttribute("aria-hidden", "true");
+  }
 
   muatKartu();
 </script>
