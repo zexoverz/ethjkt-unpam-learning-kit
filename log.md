@@ -54,3 +54,9 @@
 - Membatasi lebar statistik agar sejajar dengan kartu gacha dan tombol utama.
 - Mengubah preview riwayat menjadi 10 kartu dalam 2 baris, dengan 5 kartu per baris.
 - Membatasi lebar preview riwayat agar tampil lebih rapi di bawah kartu gacha.
+
+## 2026-07-07
+
+- Mengecilkan lebar utama `.app` dari layout besar menjadi container compact agar area kosong kanan-kiri berkurang.
+- Menyamakan lebar panel riwayat bawah dengan area kartu, statistik, dan tombol utama.
+- Menambahkan penyesuaian mobile supaya container tetap penuh di layar kecil tanpa membuat desktop terlalu lebar.

@@ -13,7 +13,7 @@
     display: flex; align-items: center; justify-content: center; padding: 14px;
   }
   .app {
-    width: 100%; max-width: 980px;
+    width: min(100%, 620px);
     min-height: calc(100vh - 28px);
     background: #202020;
     border: 1px solid #3a3a3a;
@@ -113,7 +113,7 @@
   }
   .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
   .hist-lbl { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
-  .history-panel { width: 100%; cursor: pointer; }
+  .history-panel { width: min(100%, 520px); margin: 0 auto; cursor: pointer; }
   .history {
     width: min(100%, 520px);
     margin: 0 auto;
@@ -158,9 +158,11 @@
   @media (max-width: 720px) {
     .top { flex-direction: column; }
     .status { text-align: left; max-width: none; }
+    .app { width: 100%; padding: 16px; }
     .stats { width: 100%; }
     .actions { grid-template-columns: 1fr; }
-    .history { width: 100%; grid-template-columns: repeat(5, minmax(42px, 1fr)); }
+    .history-panel, .history { width: 100%; }
+    .history { grid-template-columns: repeat(5, minmax(42px, 1fr)); }
     .badges { grid-template-columns: 1fr; }
     .card { min-height: auto; }
   }
