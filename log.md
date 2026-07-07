@@ -60,3 +60,11 @@
 - Mengecilkan lebar utama `.app` dari layout besar menjadi container compact agar area kosong kanan-kiri berkurang.
 - Menyamakan lebar panel riwayat bawah dengan area kartu, statistik, dan tombol utama.
 - Menambahkan penyesuaian mobile supaya container tetap penuh di layar kecil tanpa membuat desktop terlalu lebar.
+
+## 2026-07-07
+
+- Merapikan struktur `hari-1` dengan memisahkan CSS ke `hari-1/css/style.css`.
+- Memisahkan JavaScript gacha ke `hari-1/js/app.js` agar `index.html` lebih pendek dan mudah dibaca.
+- Mengubah markup utama menjadi lebih semantic memakai `main`, `header`, `section`, `article`, dan `aside`.
+- Menambahkan label aksesibilitas sederhana pada area statistik, pity, gacha, riwayat, dan panel floating.
+- Membersihkan indentasi file CSS dan JavaScript hasil pemisahan supaya kode lebih rapi.

@@ -1,207 +1,45 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Yu-Gi-Oh! Gacha</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: "Segoe UI", system-ui, sans-serif;
-    background: #151515;
-    color: #f3efe4; min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 14px;
-  }
-  .app {
-    width: min(100%, 620px);
-    min-height: calc(100vh - 28px);
-    background: #202020;
-    border: 1px solid #3a3a3a;
-    border-radius: 8px; padding: 22px;
-    box-shadow: 0 18px 42px rgba(0,0,0,0.38);
-    display: flex; flex-direction: column; gap: 16px;
-  }
-  .top { display: flex; justify-content: space-between; gap: 16px; }
-  h1 {
-    font-size: 28px; letter-spacing: 0; margin-bottom: 4px;
-    color: #f3efe4;
-  }
-  .subtitle, .status { font-size: 12px; color: #aaa; }
-  .status { text-align: right; max-width: 260px; }
-
-  .stats {
-    width: min(100%, 520px);
-    margin: 0 auto;
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
-  }
-  .stat {
-    background: #262626; border: 1px solid #3b3b3b;
-    border-radius: 6px; padding: 10px 8px; text-align: center;
-  }
-  .stat .num { font-size: 22px; font-weight: 800; }
-  .stat .lbl { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
-
-  .pity { width: min(100%, 520px); margin: 0 auto; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #d7d0bf; margin-bottom: 6px; }
-  .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
-  .pity-fill {
-    height: 100%; width: 0%;
-    background: #d6a94c;
-    transition: width 0.35s ease;
-  }
-
-  .board { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
-  .stage { width: 100%; display: flex; justify-content: center; }
-  .card {
-    width: min(100%, 320px); min-height: 520px; border-radius: 8px;
-    background: #171717; border: 2px solid #555;
-    display: flex; flex-direction: column; align-items: stretch;
-    overflow: hidden; position: relative;
-  }
-  .card-art {
-    width: 100%; aspect-ratio: 421 / 614; object-fit: cover;
-    background: #252525;
-  }
-  .card-info { padding: 14px; display: grid; gap: 8px; }
-  .card .name { font-size: 20px; font-weight: 800; line-height: 1.2; min-height: 48px; }
-  .card .rar { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
-  .owned-note { color: #d6a94c; font-size: 11px; font-weight: 800; min-height: 14px; text-transform: uppercase; }
-  .meta { display: flex; flex-wrap: wrap; gap: 6px; }
-  .tag {
-    font-size: 11px; color: #e6e1d5; background: #292929;
-    border: 1px solid #454545; border-radius: 999px; padding: 4px 7px;
-  }
-  .desc {
-    color: #c0c6d6; font-size: 12px; line-height: 1.35;
-    display: -webkit-box; line-clamp: 4; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
-  }
-
-  .card.common { border-color: #737b8e; }
-  .card.common .rar { color: #aeb6c8; }
-  .card.rare { border-color: #5ab2ff; }
-  .card.rare .rar { color: #74c0ff; }
-  .card.epic { border-color: #b077ff; }
-  .card.epic .rar { color: #c59aff; }
-  .card.ssr { border-color: #ffd44d; box-shadow: 0 0 28px rgba(255,212,77,.34); }
-  .card.ssr .rar, .card.ssr .name { color: #ffe59a; }
-
-  @keyframes pop { 0% { transform: scale(.7); opacity: 0; } 60% { transform: scale(1.04); } 100% { transform: scale(1); opacity: 1; } }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-  @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,212,77,.65)} 50%{box-shadow:0 0 58px rgba(255,212,77,1)} }
-  .card.reveal { animation: pop .36s ease; }
-  .card.ssr.reveal { animation: pop .36s ease, shake .5s ease .36s, glowpulse 1.2s ease-in-out .36s 2; }
-
-  .actions {
-    width: min(100%, 520px);
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-  }
-  .btn {
-    padding: 14px 10px; border: none; border-radius: 8px;
-    font-size: 15px; font-weight: 900; letter-spacing: .5px; cursor: pointer;
-    color: #10131a; background: #8ac8f0;
-    transition: transform .08s ease, filter .15s ease, opacity .15s ease;
-  }
-  .btn:hover { filter: brightness(1.08); }
-  .btn:active { transform: scale(.96); }
-  .btn:disabled { cursor: not-allowed; opacity: .45; }
-  .btn.gold { background: #d6a94c; }
-  .btn.secondary { background: #333; color: #f3efe4; border: 1px solid #4a4a4a; }
-
-  .panel {
-    background: #262626; border: 1px solid #3b3b3b;
-    border-radius: 6px; padding: 12px;
-  }
-  .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .hist-lbl { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
-  .history-panel { width: min(100%, 520px); margin: 0 auto; cursor: pointer; }
-  .history {
-    width: min(100%, 520px);
-    margin: 0 auto;
-    display: grid; grid-template-columns: repeat(5, minmax(42px, 1fr));
-    gap: 8px; min-height: 152px;
-  }
-  .chip {
-    width: 100%; aspect-ratio: 52 / 76; border-radius: 6px; overflow: hidden;
-    background: #171717; border: 2px solid #4a4a4a;
-  }
-  .chip img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .chip.rare { border-color: #5ab2ff; }
-  .chip.epic { border-color: #b077ff; }
-  .chip.ssr { border-color: #ffd44d; box-shadow: 0 0 12px rgba(255,212,77,.65); }
-  .badges { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .badge {
-    min-height: 58px; border: 1px solid #444; border-radius: 6px;
-    padding: 9px; background: #202020;
-  }
-  .badge.unlocked { border-color: #d6a94c; background: #2a2619; }
-  .badge-name { font-size: 13px; font-weight: 800; margin-bottom: 3px; }
-  .badge-rule { font-size: 11px; color: #aaa; line-height: 1.35; }
-  .badge.unlocked .badge-rule { color: #dfc777; }
-  .modal {
-    position: fixed; inset: 0; z-index: 10;
-    display: none; align-items: center; justify-content: center;
-    padding: 18px; background: rgba(0,0,0,.62);
-  }
-  .modal.open { display: flex; }
-  .floating-panel {
-    width: min(100%, 760px); max-height: min(82vh, 720px);
-    background: #222; border: 1px solid #4a4a4a; border-radius: 8px;
-    padding: 14px; box-shadow: 0 22px 54px rgba(0,0,0,.55);
-    overflow: auto;
-  }
-  .modal-history {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
-    gap: 10px;
-  }
-  .close-btn { flex: 0 0 auto; padding: 8px 10px; font-size: 12px; }
-
-  @media (max-width: 720px) {
-    .top { flex-direction: column; }
-    .status { text-align: left; max-width: none; }
-    .app { width: 100%; padding: 16px; }
-    .stats { width: 100%; }
-    .actions { grid-template-columns: 1fr; }
-    .history-panel, .history { width: 100%; }
-    .history { grid-template-columns: repeat(5, minmax(42px, 1fr)); }
-    .badges { grid-template-columns: 1fr; }
-    .card { min-height: auto; }
-  }
-</style>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="app">
-    <div class="top">
+  <main class="app">
+    <header class="top">
       <div>
         <h1>YU-GI-OH! CARD GACHA</h1>
-        <div class="subtitle">tarik kartu dari database YGOPRODeck</div>
+        <p class="subtitle">tarik kartu dari database YGOPRODeck</p>
       </div>
-      <div class="status" id="status">Memuat kartu dari API...</div>
-    </div>
+      <p class="status" id="status">Memuat kartu dari API...</p>
+    </header>
 
-    <div class="stats">
-      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
-      <div class="stat"><div class="num" id="collectionCount">0</div><div class="lbl">Koleksi Unik</div></div>
-      <div class="stat"><div class="num" id="poolCount">0</div><div class="lbl">Kartu API</div></div>
-    </div>
+    <section class="stats" aria-label="Statistik gacha">
+      <article class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></article>
+      <article class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></article>
+      <article class="stat"><div class="num" id="collectionCount">0</div><div class="lbl">Koleksi Unik</div></article>
+      <article class="stat"><div class="num" id="poolCount">0</div><div class="lbl">Kartu API</div></article>
+    </section>
 
-    <div class="pity">
+    <section class="pity" aria-label="Progress pity SSR">
       <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
       <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-    </div>
+    </section>
 
-    <div class="board">
+    <section class="board" aria-label="Area gacha utama">
       <div class="stage">
-        <div class="card" id="card">
+        <article class="card" id="card">
           <img class="card-art" id="cardImage" alt="Yu-Gi-Oh! card artwork">
           <div class="card-info">
             <div class="name" id="cardName">Memuat kartu...</div>
             <div class="rar" id="cardRarity"></div>
             <div class="owned-note" id="ownedNote"></div>
             <div class="meta" id="cardMeta"></div>
-            <div class="desc" id="cardDesc"></div>
+            <p class="desc" id="cardDesc"></p>
           </div>
-        </div>
+        </article>
       </div>
 
       <div class="actions">
@@ -209,18 +47,18 @@
         <button class="btn gold" id="tarik10" disabled>TARIK 10x</button>
         <button class="btn secondary" id="badgeToggle" type="button">BADGES 0 / 0</button>
       </div>
-    </div>
+    </section>
 
-    <div class="panel history-panel" id="historyPreview">
+    <section class="panel history-panel" id="historyPreview" aria-label="Riwayat gacha terakhir">
       <div class="panel-head">
         <div class="hist-lbl">Riwayat Terakhir 10 Kartu</div>
         <button class="btn secondary close-btn" id="historyToggle" type="button">LIHAT SEMUA</button>
       </div>
       <div class="history" id="history"></div>
-    </div>
-  </div>
+    </section>
+  </main>
 
-  <div class="modal" id="historyPanel" aria-hidden="true">
+  <aside class="modal" id="historyPanel" aria-hidden="true" role="dialog" aria-label="Semua riwayat gacha">
     <div class="floating-panel">
       <div class="panel-head">
         <div class="hist-lbl">Semua Riwayat Gacha</div>
@@ -228,9 +66,9 @@
       </div>
       <div class="modal-history" id="fullHistory"></div>
     </div>
-  </div>
+  </aside>
 
-  <div class="modal" id="badgePanel" aria-hidden="true">
+  <aside class="modal" id="badgePanel" aria-hidden="true" role="dialog" aria-label="Badge koleksi">
     <div class="floating-panel">
       <div class="panel-head">
         <div>
@@ -241,354 +79,8 @@
       </div>
       <div class="badges" id="badgeList"></div>
     </div>
-  </div>
+  </aside>
 
-<script>
-  const API_URL = "https://db.ygoprodeck.com/api/v7/cardinfo.php?format=tcg&misc=yes";
-  const pools = { ssr: [], epic: [], rare: [], common: [] };
-  const collectionIds = new Set();
-  const collectionCards = [];
-  const unlockedBadges = new Set();
-  const allHistory = [];
-  const badges = [
-    { id: "first", name: "First Pull", rule: "Dapatkan 1 kartu.", test: function () { return collectionCards.length >= 1; } },
-    { id: "five", name: "Binder Start", rule: "Koleksi 5 kartu unik.", test: function () { return collectionCards.length >= 5; } },
-    { id: "ten", name: "Deck Builder", rule: "Koleksi 10 kartu unik.", test: function () { return collectionCards.length >= 10; } },
-    { id: "twenty_five", name: "Local Collector", rule: "Koleksi 25 kartu unik.", test: function () { return collectionCards.length >= 25; } },
-    { id: "fifty", name: "Binder Page 50", rule: "Koleksi 50 kartu unik.", test: function () { return collectionCards.length >= 50; } },
-    { id: "hundred", name: "Century Binder", rule: "Koleksi 100 kartu unik.", test: function () { return collectionCards.length >= 100; } },
-    { id: "two_fifty", name: "Archive Keeper", rule: "Koleksi 250 kartu unik.", test: function () { return collectionCards.length >= 250; } },
-    { id: "five_hundred", name: "Museum Shelf", rule: "Koleksi 500 kartu unik.", test: function () { return collectionCards.length >= 500; } },
-    { id: "ssr", name: "Shiny Hunter", rule: "Dapatkan minimal 1 SSR.", test: function () { return ssrCount >= 1; } },
-    { id: "three_ssr", name: "Triple Shine", rule: "Dapatkan 3 SSR.", test: function () { return ssrCount >= 3; } },
-    { id: "ten_ssr", name: "Golden Binder", rule: "Dapatkan 10 SSR.", test: function () { return ssrCount >= 10; } },
-    { id: "epic_five", name: "Epic Stack", rule: "Koleksi 5 kartu Epic unik.", test: function () { return hitungRarity("epic") >= 5; } },
-    { id: "rare_ten", name: "Rare Row", rule: "Koleksi 10 kartu Rare unik.", test: function () { return hitungRarity("rare") >= 10; } },
-    { id: "monster", name: "Monster Slot", rule: "Koleksi 1 kartu Monster.", test: function () { return punyaTipe("Monster"); } },
-    { id: "spell", name: "Spell Slot", rule: "Koleksi 1 kartu Spell.", test: function () { return punyaTipe("Spell Card"); } },
-    { id: "trap", name: "Trap Slot", rule: "Koleksi 1 kartu Trap.", test: function () { return punyaTipe("Trap Card"); } },
-    { id: "all_slots", name: "Main Deck Basics", rule: "Punya Monster, Spell, dan Trap.", test: function () { return punyaTipe("Monster") && punyaTipe("Spell Card") && punyaTipe("Trap Card"); } },
-    { id: "dragon", name: "Dragon Caller", rule: "Koleksi 1 Dragon.", test: function () { return punyaRace("Dragon"); } },
-    { id: "spellcaster", name: "Spellcaster Desk", rule: "Koleksi 1 Spellcaster.", test: function () { return punyaRace("Spellcaster"); } },
-    { id: "warrior", name: "Warrior Line", rule: "Koleksi 1 Warrior.", test: function () { return punyaRace("Warrior"); } },
-    { id: "machine", name: "Machine Bay", rule: "Koleksi 1 Machine.", test: function () { return punyaRace("Machine"); } },
-    { id: "light", name: "Light Album", rule: "Koleksi 1 atribut LIGHT.", test: function () { return punyaAttribute("LIGHT"); } },
-    { id: "dark", name: "Dark Album", rule: "Koleksi 1 atribut DARK.", test: function () { return punyaAttribute("DARK"); } },
-    { id: "elements_four", name: "Four Elements", rule: "Koleksi 4 atribut berbeda.", test: function () { return hitungAttributeUnik() >= 4; } },
-    { id: "pull_50", name: "50 Pulls", rule: "Lakukan 50 tarikan.", test: function () { return total >= 50; } },
-    { id: "pull_100", name: "100 Pulls", rule: "Lakukan 100 tarikan.", test: function () { return total >= 100; } },
-    { id: "pull_250", name: "250 Pulls", rule: "Lakukan 250 tarikan.", test: function () { return total >= 250; } }
-  ];
-
-  // State utama game: pity reset setiap SSR, total dan SSR terus dihitung.
-  let pity = 0;
-  let total = 0;
-  let ssrCount = 0;
-
-  const card = document.getElementById("card");
-  const cardImage = document.getElementById("cardImage");
-  const cardName = document.getElementById("cardName");
-  const cardRarity = document.getElementById("cardRarity");
-  const ownedNote = document.getElementById("ownedNote");
-  const cardMeta = document.getElementById("cardMeta");
-  const cardDesc = document.getElementById("cardDesc");
-  const totalText = document.getElementById("total");
-  const ssrCountText = document.getElementById("ssrCount");
-  const collectionCountText = document.getElementById("collectionCount");
-  const poolCountText = document.getElementById("poolCount");
-  const pityText = document.getElementById("pityText");
-  const pityFill = document.getElementById("pityFill");
-  const history = document.getElementById("history");
-  const fullHistory = document.getElementById("fullHistory");
-  const historyPreview = document.getElementById("historyPreview");
-  const historyToggle = document.getElementById("historyToggle");
-  const historyPanel = document.getElementById("historyPanel");
-  const badgeList = document.getElementById("badgeList");
-  const badgeCount = document.getElementById("badgeCount");
-  const badgeToggle = document.getElementById("badgeToggle");
-  const badgePanel = document.getElementById("badgePanel");
-  const statusText = document.getElementById("status");
-  const tarik1 = document.getElementById("tarik1");
-  const tarik10 = document.getElementById("tarik10");
-
-  // Ambil satu item acak dari array hadiah.
-  function pilihAcak(arr) {
-    const index = Math.floor(Math.random() * arr.length);
-    return arr[index];
-  }
-
-  // Rarity gacha dibuat dari rarity cetakan kartu di data YGOPRODeck.
-  function kelasDariSet(cardData) {
-    const setText = (cardData.card_sets || [])
-      .map(function (set) { return set.set_rarity || ""; })
-      .join(" ")
-      .toLowerCase();
-
-    if (/starlight|collector|ghost|quarter century|ultimate|prismatic/.test(setText)) return "ssr";
-    if (/secret|ultra|platinum|gold/.test(setText)) return "epic";
-    if (/super|rare/.test(setText)) return "rare";
-    return "common";
-  }
-
-  // Bentuk data API dibuat kecil supaya fungsi tampilan tetap sederhana.
-  function rapikanKartu(cardData) {
-    const image = (cardData.card_images && cardData.card_images[0]) || {};
-    return {
-      kelas: kelasDariSet(cardData),
-      id: String(cardData.id || cardData.name),
-      nama: cardData.name,
-      type: cardData.type || "Unknown",
-      race: cardData.race || "",
-      attribute: cardData.attribute || "",
-      desc: cardData.desc || "",
-      image: image.image_url_small || image.image_url || "",
-      link: cardData.ygoprodeck_url || ""
-    };
-  }
-
-  // Load API sekali, lalu roll memakai data lokal agar tidak boros request.
-  async function muatKartu() {
-    try {
-      const response = await fetch(API_URL);
-      if (!response.ok) throw new Error("API status " + response.status);
-
-      const json = await response.json();
-      const cards = json.data.map(rapikanKartu).filter(function (item) {
-        return item.nama && item.image;
-      });
-
-      cards.forEach(function (item) {
-        pools[item.kelas].push(item);
-      });
-
-      isiPoolKosong(cards);
-      poolCountText.textContent = cards.length;
-      statusText.textContent = "Siap: " + cards.length + " kartu TCG dimuat dari YGOPRODeck.";
-      tarik1.disabled = false;
-      tarik10.disabled = false;
-      cardName.textContent = "Tekan TARIK";
-      cardDesc.textContent = "Data kartu sudah siap.";
-      tampilkanBadge();
-    } catch (error) {
-      statusText.textContent = "Gagal memuat API. Coba refresh halaman.";
-      cardName.textContent = "API belum siap";
-      cardDesc.textContent = error.message;
-    }
-  }
-
-  // Cek apakah koleksi sudah punya tipe kartu tertentu.
-  function punyaTipe(text) {
-    return collectionCards.some(function (item) {
-      return item.type.indexOf(text) !== -1;
-    });
-  }
-
-  // Hitung kartu unik dari rarity tertentu di koleksi.
-  function hitungRarity(kelas) {
-    return collectionCards.filter(function (item) {
-      return item.kelas === kelas;
-    }).length;
-  }
-
-  // Cek race kartu seperti Dragon, Warrior, atau Spellcaster.
-  function punyaRace(text) {
-    return collectionCards.some(function (item) {
-      return item.race === text;
-    });
-  }
-
-  // Cek attribute monster seperti LIGHT atau DARK.
-  function punyaAttribute(text) {
-    return collectionCards.some(function (item) {
-      return item.attribute === text;
-    });
-  }
-
-  // Hitung jumlah attribute berbeda yang sudah dimiliki.
-  function hitungAttributeUnik() {
-    const attributes = new Set();
-    collectionCards.forEach(function (item) {
-      if (item.attribute) attributes.add(item.attribute);
-    });
-    return attributes.size;
-  }
-
-  // Jika satu rarity kosong dari API, pakai seluruh kartu supaya roll tidak error.
-  function isiPoolKosong(cards) {
-    Object.keys(pools).forEach(function (kelas) {
-      if (pools[kelas].length === 0) pools[kelas] = cards.slice();
-    });
-  }
-
-  // Jalankan satu tarikan dengan peluang rarity dan pity SSR di tarikan ke-10.
-  function rollSatu() {
-    total += 1;
-    pity += 1;
-
-    const acak = Math.random();
-    let kelas = "common";
-
-    if (pity >= 10 || acak < 0.03) {
-      kelas = "ssr";
-      pity = 0;
-      ssrCount += 1;
-    } else if (acak < 0.10) {
-      kelas = "epic";
-    } else if (acak < 0.30) {
-      kelas = "rare";
-    }
-
-    const item = pilihAcak(pools[kelas]);
-    return Object.assign({}, item, { kelas: kelas });
-  }
-
-  // Catat kartu unik ke koleksi dan tandai apakah hasil ini kartu baru.
-  function catatKoleksi(hasil) {
-    hasil.baru = !collectionIds.has(hasil.id);
-    if (hasil.baru) {
-      collectionIds.add(hasil.id);
-      collectionCards.push(hasil);
-    }
-    perbaruiBadge();
-  }
-
-  // Buka badge yang syaratnya sudah terpenuhi.
-  function perbaruiBadge() {
-    badges.forEach(function (badge) {
-      if (badge.test()) unlockedBadges.add(badge.id);
-    });
-    tampilkanBadge();
-  }
-
-  // Render badge koleksi sebagai checklist permanen selama halaman aktif.
-  function tampilkanBadge() {
-    badgeList.innerHTML = "";
-    badges.forEach(function (badge) {
-      const item = document.createElement("div");
-      const unlocked = unlockedBadges.has(badge.id);
-      item.className = "badge" + (unlocked ? " unlocked" : "");
-      item.innerHTML =
-        "<div class=\"badge-name\">" + (unlocked ? "Unlocked: " : "Locked: ") + badge.name + "</div>" +
-        "<div class=\"badge-rule\">" + badge.rule + "</div>";
-      badgeList.appendChild(item);
-    });
-    badgeCount.textContent = unlockedBadges.size + " / " + badges.length;
-    badgeToggle.textContent = "BADGES " + unlockedBadges.size + " / " + badges.length;
-    collectionCountText.textContent = collectionCards.length;
-  }
-
-  // Tampilkan hasil terakhir dan refresh angka statistik di layar.
-  function tampilkan(hasil) {
-    cardImage.src = hasil.image;
-    cardImage.alt = hasil.nama;
-    cardName.textContent = hasil.nama;
-    cardRarity.textContent = hasil.kelas.toUpperCase();
-    ownedNote.textContent = hasil.baru ? "Kartu baru masuk koleksi" : "Sudah ada di koleksi";
-    cardDesc.textContent = hasil.desc;
-
-    cardMeta.innerHTML = "";
-    [hasil.type, hasil.race, hasil.attribute].filter(Boolean).forEach(function (text) {
-      const tag = document.createElement("span");
-      tag.className = "tag";
-      tag.textContent = text;
-      cardMeta.appendChild(tag);
-    });
-
-    card.className = "card";
-    card.offsetWidth;
-    card.className = "card " + hasil.kelas + " reveal";
-
-    totalText.textContent = total;
-    ssrCountText.textContent = ssrCount;
-    collectionCountText.textContent = collectionCards.length;
-    pityText.textContent = pity + " / 10";
-    pityFill.style.width = (pity * 10) + "%";
-  }
-
-  // Buat chip gambar kecil untuk preview dan panel riwayat.
-  function buatChip(hasil) {
-    const chip = document.createElement("div");
-    const img = document.createElement("img");
-    chip.className = "chip " + hasil.kelas;
-    img.src = hasil.image;
-    img.alt = hasil.nama;
-    chip.title = hasil.nama;
-    chip.appendChild(img);
-    return chip;
-  }
-
-  // Simpan semua riwayat, lalu tampilkan 10 terakhir di layar utama.
-  function tambahRiwayat(hasil) {
-    allHistory.unshift(hasil);
-    history.innerHTML = "";
-    fullHistory.innerHTML = "";
-
-    allHistory.slice(0, 10).forEach(function (item) {
-      history.appendChild(buatChip(item));
-    });
-
-    allHistory.forEach(function (item) {
-      fullHistory.appendChild(buatChip(item));
-    });
-  }
-
-  // Tarik satu kali lalu tampilkan hasilnya.
-  tarik1.addEventListener("click", function () {
-    const hasil = rollSatu();
-    catatKoleksi(hasil);
-    tampilkan(hasil);
-    tambahRiwayat(hasil);
-  });
-
-  // Tarik sepuluh kali; kartu utama menampilkan hasil terakhir.
-  tarik10.addEventListener("click", function () {
-    for (let i = 0; i < 10; i += 1) {
-      const hasil = rollSatu();
-      catatKoleksi(hasil);
-      tampilkan(hasil);
-      tambahRiwayat(hasil);
-    }
-  });
-
-  // Badge dibuka sebagai floating panel supaya kartu tetap jadi fokus utama.
-  badgeToggle.addEventListener("click", function () {
-    bukaPanel(badgePanel);
-  });
-
-  // Riwayat lengkap bisa discroll saat jumlah pull sudah banyak.
-  historyToggle.addEventListener("click", function () {
-    bukaPanel(historyPanel);
-  });
-
-  historyPreview.addEventListener("click", function () {
-    bukaPanel(historyPanel);
-  });
-
-  // Panel floating bisa ditutup lewat tombol Tutup, area gelap, atau Escape.
-  document.addEventListener("click", function (event) {
-    const targetId = event.target.getAttribute("data-close");
-    if (targetId) tutupPanel(document.getElementById(targetId));
-    if (event.target.classList.contains("modal")) tutupPanel(event.target);
-  });
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-      tutupPanel(historyPanel);
-      tutupPanel(badgePanel);
-    }
-  });
-
-  function bukaPanel(panel) {
-    panel.classList.add("open");
-    panel.setAttribute("aria-hidden", "false");
-  }
-
-  function tutupPanel(panel) {
-    panel.classList.remove("open");
-    panel.setAttribute("aria-hidden", "true");
-  }
-
-  muatKartu();
-</script>
+<script src="js/app.js"></script>
 </body>
 </html>
