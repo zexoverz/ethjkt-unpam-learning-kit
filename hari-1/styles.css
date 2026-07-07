@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --blue: #2563eb;
   --deep-blue: #1e3a8a;
   --sky: #38bdf8;
@@ -160,6 +160,21 @@ h1 { margin: 0; font-size: clamp(42px, 8vw, 76px); line-height: .95; letter-spac
 @keyframes rareGlow { 50% { box-shadow: 0 0 46px rgba(245,158,11,.68), 0 24px 78px rgba(245,158,11,.28); } }
 @keyframes finalPop { 0% { transform: scale(.86); filter: brightness(1); } 40% { transform: scale(1.08); filter: brightness(1.25); } 100% { transform: scale(1); filter: brightness(1); } }
 
+.sparkle {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #facc15;
+  box-shadow: 0 0 12px #facc15;
+  pointer-events: none;
+  animation: sparklePop .9s ease-out forwards;
+}
+@keyframes sparklePop {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(.3); }
+  35% { opacity: 1; }
+  to { opacity: 0; transform: translate(var(--spark-x), var(--spark-y)) scale(1.35); }
+}
 .collection-tools { display: grid; grid-template-columns: minmax(0, 1fr) 170px 190px; gap: 12px; margin-bottom: 14px; }
 .collection-tools input, .collection-tools select {
   width: 100%; border: 1px solid rgba(37,99,235,.18); border-radius: 16px; background: rgba(255,255,255,.82); padding: 13px 14px; color: var(--ink); outline: none;
@@ -203,6 +218,7 @@ h1 { margin: 0; font-size: clamp(42px, 8vw, 76px); line-height: .95; letter-spac
   .nav-link { padding: 9px 10px; font-size: 13px; }
   .hero-actions, .primary-btn, .secondary-btn { width: 100%; }
   .dashboard-grid, .stats-grid, .featured-grid, .collection-grid, .reveal-grid, .collection-tools { grid-template-columns: 1fr; }
+
   .pack-stage { min-height: 390px; padding: 20px; }
   .metric-card strong { font-size: 26px; }
   .card-inner { min-height: 370px; }

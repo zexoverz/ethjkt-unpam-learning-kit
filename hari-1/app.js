@@ -1,4 +1,4 @@
-﻿const API_BASE = "https://pokeapi.co/api/v2";
+const API_BASE = "https://pokeapi.co/api/v2";
 const STATE_KEY = "pokepack_state_v2";
 const CACHE_KEY = "pokepack_api_cache_v2";
 const PACK_SIZE = 5;
@@ -251,7 +251,7 @@ async function openPack() {
       el.revealGrid.appendChild(card);
       await wait(120);
       card.classList.remove("is-hidden");
-      if (RARITIES[mon.rarity].rank >= RARITIES.epic.rank) pulseRare(mon);
+      if (RARITIES[mon.rarity].rank >= RARITIES.epic.rank) pulseRare(mon, card);
       el.packCount.textContent = `${index + 1} / ${PACK_SIZE}`;
       renderAll();
       await wait(finalCard ? 900 : 520);
@@ -291,7 +291,7 @@ function createPokemonCard(mon, options = {}) {
 
   const favorite = node.querySelector(".favorite-btn");
   favorite.classList.toggle("active", !!mon.favorite);
-  favorite.textContent = mon.favorite ? "★" : "☆";
+  favorite.textContent = mon.favorite ? "â˜…" : "â˜†";
   favorite.addEventListener("click", () => toggleFavorite(mon.id));
 
   const deleteButton = node.querySelector(".delete-btn");
@@ -457,10 +457,27 @@ function resetCollection() {
   renderAll();
 }
 
-function pulseRare(mon) {
+function pulseRare(mon, card) {
   const rank = RARITIES[mon.rarity].rank;
+  addSparkles(card, rank >= RARITIES.legendary.rank ? 24 : 14);
   if (rank >= RARITIES.legendary.rank) launchConfetti();
   showToast(`${RARITIES[mon.rarity].label} pull: ${mon.name}`);
+}
+
+function addSparkles(card, amount) {
+  const face = card.querySelector(".card-front");
+  if (!face) return;
+  for (let i = 0; i < amount; i += 1) {
+    const sparkle = document.createElement("span");
+    sparkle.className = "sparkle";
+    sparkle.style.left = `${20 + Math.random() * 60}%`;
+    sparkle.style.top = `${14 + Math.random() * 54}%`;
+    sparkle.style.setProperty("--spark-x", `${(Math.random() - .5) * 140}px`);
+    sparkle.style.setProperty("--spark-y", `${(Math.random() - .5) * 120}px`);
+    sparkle.style.animationDelay = `${Math.random() * .18}s`;
+    face.appendChild(sparkle);
+    setTimeout(() => sparkle.remove(), 1200);
+  }
 }
 
 function launchConfetti() {
