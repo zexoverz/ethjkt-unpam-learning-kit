@@ -66,3 +66,24 @@ DOM berada di sisi client dan bisa dimodifikasi pengguna, jadi tidak boleh dijad
 `addToCart()` hanya menerima `id`, lalu mengambil harga resmi dari array `products`.
 
 **Status:** Sudah diperbaiki di `hari-2/main.js`.
+
+## 4. Total pembayaran tidak diformat konsisten
+
+**Kategori:** Bug
+
+**Masalah:**
+Total pembayaran bisa tampil sebagai angka mentah JavaScript, bukan format uang dua desimal. Contohnya total berpotensi muncul seperti `1.7999999999999998`, sementara harga item lain tampil rapi seperti `$1.50`.
+
+**Penyebab:**
+Nilai total langsung dimasukkan ke tampilan:
+
+```js
+totalPriceEl.textContent = total;
+```
+
+Di modal checkout juga total akhir langsung memakai `${total}`.
+
+**Cara menyelesaikan:**
+Gunakan `toFixed(2)` saat menampilkan total di sidebar dan modal checkout.
+
+**Status:** Sudah diperbaiki di `hari-2/main.js`.
