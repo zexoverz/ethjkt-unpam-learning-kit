@@ -12,8 +12,13 @@
     color: #eaeaf0; min-height: 100vh;
     display: flex; align-items: center; justify-content: center; padding: 20px;
   }
+  .layout {
+    width: 100%; max-width: 900px;
+    display: grid; grid-template-columns: minmax(320px, 460px) minmax(260px, 360px);
+    gap: 18px; align-items: start; justify-content: center;
+  }
   .app {
-    width: 100%; max-width: 460px; text-align: center;
+    width: 100%; text-align: center;
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 20px; padding: 24px 22px 28px;
@@ -93,38 +98,142 @@
   .chip.rare { border-color: #4da6ff; }
   .chip.epic { border-color: #b06bff; }
   .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
+
+  .collection {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  }
+  .collection h2 {
+    font-size: 18px; margin-bottom: 4px;
+    color: #f5f7ff;
+  }
+  .collection-subtitle {
+    font-size: 12px; color: #8b90b0; margin-bottom: 16px;
+  }
+  .collection-group { margin-bottom: 16px; }
+  .collection-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .collection-title {
+    font-size: 12px; font-weight: 800; letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .collection-title.ssr { color: #ffd24a; }
+  .collection-title.rare { color: #4da6ff; }
+  .collection-count {
+    font-size: 12px; color: #b9bdd8;
+  }
+  .collection-list {
+    display: grid; gap: 8px; min-height: 46px; max-height: 240px;
+    overflow-y: auto; padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: #ffd24a rgba(255,255,255,0.06);
+  }
+  .collection-list::-webkit-scrollbar {
+    width: 8px;
+  }
+  .collection-list::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.06);
+    border-radius: 999px;
+  }
+  .collection-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg,#ffd24a,#4da6ff);
+    border-radius: 999px;
+    border: 2px solid #171b30;
+  }
+  .collection-list::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg,#ffe58a,#7ee8ff);
+  }
+  .collection-empty {
+    font-size: 12px; color: #686e8d;
+    border: 1px dashed rgba(255,255,255,0.12);
+    border-radius: 12px; padding: 14px 10px; text-align: center;
+  }
+  .collection-item {
+    display: grid; grid-template-columns: 42px 1fr; gap: 10px; align-items: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 8px;
+  }
+  .collection-item.ssr { border-color: rgba(255,210,74,.55); }
+  .collection-item.rare { border-color: rgba(77,166,255,.5); }
+  .collection-emoji {
+    width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
+    background: #171b30; border-radius: 10px; font-size: 24px;
+  }
+  .collection-name {
+    font-size: 13px; font-weight: 700; line-height: 1.25;
+  }
+  .collection-meta {
+    font-size: 11px; color: #8b90b0; margin-top: 2px;
+  }
+
+  @media (max-width: 780px) {
+    .layout { grid-template-columns: 1fr; max-width: 460px; }
+  }
 </style>
 </head>
 <body>
-  <div class="app">
-    <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
+  <div class="layout">
+    <div class="app">
+      <h1>GACHA ETHJKT</h1>
+      <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
 
-    <div class="stats">
-      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
-    </div>
-
-    <div class="pity">
-      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
-      <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-    </div>
-
-    <div class="stage">
-      <div class="card" id="card">
-        <div class="emoji" id="cardEmoji">?</div>
-        <div class="name" id="cardName">Tekan TARIK</div>
-        <div class="rar" id="cardRarity"></div>
+      <div class="stats">
+        <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
+        <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
       </div>
+
+      <div class="pity">
+        <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
+        <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
+      </div>
+
+      <div class="stage">
+        <div class="card" id="card">
+          <div class="emoji" id="cardEmoji">?</div>
+          <div class="name" id="cardName">Tekan TARIK</div>
+          <div class="rar" id="cardRarity"></div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn" id="tarik1">TARIK 1x</button>
+        <button class="btn gold" id="tarik10">TARIK 10x</button>
+      </div>
+
+      <div class="hist-lbl">Riwayat Terakhir</div>
+      <div class="history" id="history"></div>
     </div>
 
-    <div class="buttons">
-      <button class="btn" id="tarik1">TARIK 1x</button>
-      <button class="btn gold" id="tarik10">TARIK 10x</button>
-    </div>
+    <aside class="collection">
+      <h2>Koleksi Hadiah</h2>
+      <div class="collection-subtitle">SSR dan RARE yang berhasil kamu dapatkan</div>
 
-    <div class="hist-lbl">Riwayat Terakhir</div>
-    <div class="history" id="history"></div>
+      <div class="collection-group">
+        <div class="collection-head">
+          <div class="collection-title ssr">SSR Collection</div>
+          <div class="collection-count" id="ssrCollectionCount">0 item</div>
+        </div>
+        <div class="collection-list" id="ssrCollection">
+          <div class="collection-empty">Belum ada SSR</div>
+        </div>
+      </div>
+
+      <div class="collection-group">
+        <div class="collection-head">
+          <div class="collection-title rare">RARE Collection</div>
+          <div class="collection-count" id="rareCollectionCount">0 item</div>
+        </div>
+        <div class="collection-list" id="rareCollection">
+          <div class="collection-empty">Belum ada RARE</div>
+        </div>
+      </div>
+    </aside>
   </div>
 
 <script>
@@ -139,27 +248,216 @@
   // ==========================================================
 
   // CHECKPOINT 1 - Data & acak
-  //   TODO: bikin object `hadiah` berisi 4 array (ssr, epic, rare, common),
-  //         tiap item { n: "nama", e: "emoji" }.
-  //   TODO: bikin variabel pity=0, total=0, ssrCount=0.
-  //   TODO: fungsi pilihAcak(arr) -> balikin 1 item acak dari array.
+  // Object hadiah menyimpan daftar item berdasarkan tingkat kelangkaannya.
+  const hadiah = {
+    ssr: [
+      { n: "Raja Blockchain", e: "\uD83E\uDD34" },
+      { n: "Penyihir Smart Contract", e: "\uD83E\uDDD9" },
+      { n: "Wajah Auto Sultan", e: "\uD83E\uDD29" }
+    ],
+    epic: [
+      { n: "Coder Fokus", e: "\uD83E\uDDD1\u200D\uD83D\uDCBB" },
+      { n: "Si Paling Keren", e: "\uD83D\uDE0E" },
+      { n: "Mode Ngegas", e: "\uD83D\uDE24" }
+    ],
+    rare: [
+      { n: "Nerd Pintar", e: "\uD83E\uDD13" },
+      { n: "Senyum Menang", e: "\uD83D\uDE04" },
+      { n: "Mikir Dulu", e: "\uD83E\uDD14" }
+    ],
+    common: [
+      { n: "Senyum Biasa", e: "\uD83D\uDE42" },
+      { n: "Ketawa Gugup", e: "\uD83D\uDE05" },
+      { n: "Muka Datar", e: "\uD83D\uDE10" },
+      { n: "Nangis Karena Error", e: "\uD83D\uDE2D" }
+    ]
+  };
+
+  // Variabel state untuk menyimpan kondisi permainan saat ini.
+  let pity = 0;
+  let total = 0;
+  let ssrCount = 0;
+  let koleksiSSR = [];
+  let koleksiRare = [];
+
+  // Fungsi ini mengambil satu item random dari array yang diberikan.
+  function pilihAcak(arr) {
+    const indexAcak = Math.floor(Math.random() * arr.length);
+    return arr[indexAcak];
+  }
 
   // CHECKPOINT 2 - Logika tarikan
-  //   TODO: fungsi rollSatu() -> total & pity nambah 1, pakai Math.random():
-  //         pity>=10 ATAU acak<0.03 -> SSR (pity balik 0, ssrCount nambah)
-  //         acak<0.10 -> EPIC, acak<0.30 -> RARE, selain itu -> COMMON.
-  //         balikin { kelas, nama, emoji }.
+  // Fungsi ini menjalankan satu kali gacha dan menentukan rarity hasilnya.
+  function rollSatu() {
+    total++;
+    pity++;
+
+    // Math.random() menghasilkan angka dari 0 sampai kurang dari 1.
+    const acak = Math.random();
+    let kelas;
+
+    // Jika pity sudah 10 atau random masuk 3%, pemain mendapat SSR.
+    if (pity >= 10 || acak < 0.03) {
+      kelas = "ssr";
+      pity = 0;
+      ssrCount++;
+    } else if (acak < 0.10) {
+      // Angka 0.03 sampai kurang dari 0.10 berarti peluang EPIC sekitar 7%.
+      kelas = "epic";
+    } else if (acak < 0.30) {
+      // Angka 0.10 sampai kurang dari 0.30 berarti peluang RARE sekitar 20%.
+      kelas = "rare";
+    } else {
+      // Sisanya menjadi COMMON, peluang paling besar sekitar 70%.
+      kelas = "common";
+    }
+
+    // Ambil hadiah sesuai rarity yang terpilih.
+    const item = pilihAcak(hadiah[kelas]);
+
+    // Hasil dikembalikan dalam format yang mudah dipakai fungsi tampilan.
+    return {
+      kelas: kelas,
+      nama: item.n,
+      emoji: item.e
+    };
+  }
 
   // CHECKPOINT 3 - Tampilkan + animasi
-  //   TODO: fungsi tampilkan(hasil) -> isi #cardEmoji, #cardName, #cardRarity,
-  //         set className kartu jadi "card <kelas> reveal" (trik reset animasi:
-  //         set "card", baca card.offsetWidth, baru set kelas+reveal).
-  //         Update #total, #ssrCount, #pityText, dan lebar #pityFill.
+  // Simpan elemen HTML yang sering dipakai agar kode lebih rapi.
+  const card = document.getElementById("card");
+  const cardEmoji = document.getElementById("cardEmoji");
+  const cardName = document.getElementById("cardName");
+  const cardRarity = document.getElementById("cardRarity");
+  const totalEl = document.getElementById("total");
+  const ssrCountEl = document.getElementById("ssrCount");
+  const pityText = document.getElementById("pityText");
+  const pityFill = document.getElementById("pityFill");
+  const history = document.getElementById("history");
+  const tarik1 = document.getElementById("tarik1");
+  const tarik10 = document.getElementById("tarik10");
+  const ssrCollection = document.getElementById("ssrCollection");
+  const rareCollection = document.getElementById("rareCollection");
+  const ssrCollectionCount = document.getElementById("ssrCollectionCount");
+  const rareCollectionCount = document.getElementById("rareCollectionCount");
+
+  // Fungsi ini menampilkan hasil gacha ke kartu utama dan statistik.
+  function tampilkan(hasil) {
+    cardEmoji.textContent = hasil.emoji;
+    cardName.textContent = hasil.nama;
+    cardRarity.textContent = hasil.kelas.toUpperCase();
+
+    // Reset class lebih dulu agar animasi reveal bisa berjalan setiap roll.
+    card.className = "card";
+    card.offsetWidth;
+    card.className = "card " + hasil.kelas + " reveal";
+
+    // Update angka total tarikan dan jumlah SSR yang sudah didapat.
+    totalEl.textContent = total;
+    ssrCountEl.textContent = ssrCount;
+
+    // Update teks dan progress bar pity menuju jaminan SSR.
+    pityText.textContent = pity + " / 10";
+    pityFill.style.width = (pity / 10 * 100) + "%";
+  }
 
   // CHECKPOINT 4 - Riwayat + tombol
-  //   TODO: fungsi tambahRiwayat(hasil) -> bikin div .chip <kelas>, isi emoji,
-  //         taruh paling depan di #history, batasi maks 12 chip.
-  //   TODO: tombol #tarik1 -> tarik 1x. tombol #tarik10 -> ulang 10x.
+  // Fungsi ini menambahkan emoji hasil terbaru ke riwayat tarikan.
+  function tambahRiwayat(hasil) {
+    const chip = document.createElement("div");
+    chip.className = "chip " + hasil.kelas;
+    chip.textContent = hasil.emoji;
+    chip.title = hasil.nama + " - " + hasil.kelas.toUpperCase();
+
+    // Hasil terbaru ditaruh di depan agar mudah dilihat.
+    history.prepend(chip);
+
+    // Batasi riwayat maksimal 12 item supaya tampilan tetap rapi.
+    while (history.children.length > 12) {
+      history.removeChild(history.lastElementChild);
+    }
+  }
+
+  // Fungsi ini membuat tampilan item kecil untuk panel koleksi.
+  function buatItemKoleksi(hasil, urutan) {
+    const item = document.createElement("div");
+    item.className = "collection-item " + hasil.kelas;
+
+    const emoji = document.createElement("div");
+    emoji.className = "collection-emoji";
+    emoji.textContent = hasil.emoji;
+
+    const info = document.createElement("div");
+
+    const nama = document.createElement("div");
+    nama.className = "collection-name";
+    nama.textContent = hasil.nama;
+
+    const meta = document.createElement("div");
+    meta.className = "collection-meta";
+    meta.textContent = hasil.kelas.toUpperCase() + " #" + urutan;
+
+    info.appendChild(nama);
+    info.appendChild(meta);
+    item.appendChild(emoji);
+    item.appendChild(info);
+
+    return item;
+  }
+
+  // Fungsi ini menggambar ulang daftar koleksi SSR atau RARE.
+  function renderKoleksi(list, target, counter, teksKosong) {
+    target.innerHTML = "";
+    counter.textContent = list.length + " item";
+
+    // Jika belum ada item, tampilkan teks kosong sebagai placeholder.
+    if (list.length === 0) {
+      const kosong = document.createElement("div");
+      kosong.className = "collection-empty";
+      kosong.textContent = teksKosong;
+      target.appendChild(kosong);
+      return;
+    }
+
+    // Item terbaru ditampilkan di atas supaya hadiah terakhir mudah dilihat.
+    list.forEach(function (hasil, index) {
+      const urutan = list.length - index;
+      target.appendChild(buatItemKoleksi(hasil, urutan));
+    });
+  }
+
+  // Fungsi ini menyimpan hanya hadiah SSR dan RARE ke panel koleksi.
+  function tambahKoleksi(hasil) {
+    if (hasil.kelas === "ssr") {
+      koleksiSSR.unshift(hasil);
+      renderKoleksi(koleksiSSR, ssrCollection, ssrCollectionCount, "Belum ada SSR");
+    }
+
+    if (hasil.kelas === "rare") {
+      koleksiRare.unshift(hasil);
+      renderKoleksi(koleksiRare, rareCollection, rareCollectionCount, "Belum ada RARE");
+    }
+  }
+
+  // Fungsi pembantu untuk menjalankan satu roll lengkap.
+  function tarikSekali() {
+    const hasil = rollSatu();
+    tampilkan(hasil);
+    tambahRiwayat(hasil);
+    tambahKoleksi(hasil);
+  }
+
+  // Tombol TARIK 1x menjalankan satu kali gacha.
+  tarik1.addEventListener("click", function () {
+    tarikSekali();
+  });
+
+  // Tombol TARIK 10x menjalankan gacha sepuluh kali berurutan.
+  tarik10.addEventListener("click", function () {
+    for (let i = 0; i < 10; i++) {
+      tarikSekali();
+    }
+  });
 
   // >> Buka Codex, kerjain checkpoint SATU PER SATU. Baca hasilnya.
   // >> Kamu PILOT-nya, bukan penonton.
