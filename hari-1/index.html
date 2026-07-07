@@ -8,91 +8,105 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
-    color: #eaeaf0; min-height: 100vh;
+    background: #f4f4f1;
+    color: #222; min-height: 100vh;
     display: flex; align-items: center; justify-content: center; padding: 20px;
   }
   .app {
     width: 100%; max-width: 460px; text-align: center;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px; padding: 24px 22px 28px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    background: #fff;
+    border: 1px solid #ddd8cf;
+    border-radius: 8px; padding: 24px 22px 28px;
+    box-shadow: 0 12px 32px rgba(40,34,28,0.12);
   }
   h1 {
-    font-size: 26px; letter-spacing: 1px; margin-bottom: 4px;
-    background: linear-gradient(90deg,#ffd86b,#ff7eb3,#7ee8ff);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-size: 26px; letter-spacing: 0; margin-bottom: 4px;
+    color: #1f1f1f;
   }
-  .subtitle { font-size: 12px; color: #8b90b0; margin-bottom: 18px; }
+  .subtitle { font-size: 13px; color: #6f675f; margin-bottom: 18px; }
 
   .stats { display: flex; gap: 10px; margin-bottom: 12px; }
   .stat {
-    flex: 1; background: rgba(255,255,255,0.05); border-radius: 12px;
+    flex: 1; background: #f8f7f5; border: 1px solid #ebe7df; border-radius: 8px;
     padding: 10px 6px;
   }
   .stat .num { font-size: 22px; font-weight: 700; }
-  .stat .lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; }
+  .stat .lbl { font-size: 11px; color: #7b746c; text-transform: uppercase; letter-spacing: 1px; }
 
   .pity { margin-bottom: 18px; text-align: left; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #b9bdd8; margin-bottom: 6px; }
-  .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
+  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #625b54; margin-bottom: 6px; }
+  .pity-track { height: 10px; background: #eee9e2; border-radius: 6px; overflow: hidden; }
   .pity-fill {
     height: 100%; width: 0%;
-    background: linear-gradient(90deg,#ffd86b,#ffb347);
+    background: #c84b61;
     transition: width 0.35s ease;
   }
 
   .stage { display: flex; justify-content: center; margin-bottom: 20px; }
   .card {
-    width: 180px; height: 230px; border-radius: 18px;
-    background: #171b30; border: 3px solid #2a2f4a;
+    width: 230px; height: 310px; border-radius: 8px;
+    background: #f8f7f5; border: 2px solid #d9d3cb;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative;
+    gap: 8px; position: relative; overflow: hidden;
   }
-  .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
-  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
-  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
+  .card .photo {
+    width: 100%; height: 238px; background: #e9e5df;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .card .name { width: 100%; font-size: 16px; font-weight: 700; padding: 0 12px; color: #222; }
+  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; opacity: .9; padding-bottom: 10px; }
+  .status {
+    min-height: 18px; margin-top: -10px; margin-bottom: 16px;
+    color: #7b746c; font-size: 12px;
+  }
+  .api-url {
+    display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; color: #8f5a9d;
+  }
 
   /* warna per rarity */
-  .card.common { border-color: #6b7280; }
-  .card.common .rar { color: #9aa3b2; }
-  .card.rare   { border-color: #4da6ff; box-shadow: 0 0 22px rgba(77,166,255,.45); }
-  .card.rare   .rar { color: #4da6ff; }
-  .card.epic   { border-color: #b06bff; box-shadow: 0 0 26px rgba(176,107,255,.55); }
-  .card.epic   .rar { color: #c88bff; }
-  .card.ssr    { border-color: #ffd24a; box-shadow: 0 0 40px rgba(255,210,74,.8); }
-  .card.ssr    .rar { color: #ffd24a; }
-  .card.ssr    .name { color: #ffe89a; }
+  .card.common { border-color: #9b958d; }
+  .card.common .rar { color: #6f6a64; }
+  .card.rare   { border-color: #4c7ea8; }
+  .card.rare   .rar { color: #356b96; }
+  .card.epic   { border-color: #8f5a9d; }
+  .card.epic   .rar { color: #7d468d; }
+  .card.ssr    { border-color: #c84b61; box-shadow: 0 8px 24px rgba(200,75,97,.18); }
+  .card.ssr    .rar, .card.ssr .name { color: #b0364d; }
 
   /* animasi reveal */
   @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-  @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,210,74,.7)} 50%{box-shadow:0 0 55px rgba(255,210,74,1)} }
+  @keyframes glowpulse { 0%,100%{box-shadow:0 8px 24px rgba(200,75,97,.18)} 50%{box-shadow:0 10px 34px rgba(200,75,97,.35)} }
   .card.reveal { animation: pop .4s ease; }
   .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
 
   .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
   .btn {
-    flex: 1; padding: 15px 0; border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer;
-    color: #0a0d1c; background: linear-gradient(180deg,#8fd3ff,#4da6ff);
+    flex: 1; padding: 14px 0; border: 1px solid #1f1f1f; border-radius: 8px;
+    font-size: 15px; font-weight: 800; letter-spacing: 0; cursor: pointer;
+    color: #fff; background: #1f1f1f;
     transition: transform .08s ease, filter .15s ease;
   }
   .btn:hover { filter: brightness(1.08); }
   .btn:active { transform: scale(.95); }
-  .btn.gold { background: linear-gradient(180deg,#ffe58a,#ffb347); }
+  .btn:disabled { opacity: .55; }
+  .btn.gold { background: #c84b61; border-color: #c84b61; }
 
-  .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
+  .hist-lbl { font-size: 11px; color: #7b746c; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
   .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
   .chip {
-    font-size: 20px; width: 34px; height: 34px; border-radius: 9px;
+    width: 42px; height: 42px; border-radius: 8px; overflow: hidden;
     display: flex; align-items: center; justify-content: center;
-    background: #171b30; border: 2px solid #2a2f4a;
+    background: #f8f7f5; border: 2px solid #d9d3cb;
   }
-  .chip.rare { border-color: #4da6ff; }
-  .chip.epic { border-color: #b06bff; }
-  .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
+  .chip img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .chip.rare { border-color: #4c7ea8; }
+  .chip.epic { border-color: #8f5a9d; }
+  .chip.ssr  { border-color: #c84b61; }
 </style>
 </head>
 <body>
@@ -112,11 +126,12 @@
 
     <div class="stage">
       <div class="card" id="card">
-        <div class="emoji" id="cardEmoji">?</div>
+        <div class="photo"><img id="cardImage" alt="Hasil gacha waifu"></div>
         <div class="name" id="cardName">Tekan TARIK</div>
         <div class="rar" id="cardRarity"></div>
       </div>
     </div>
+    <div class="status" id="statusText">Siap tarik waifu.</div>
 
     <div class="buttons">
       <button class="btn" id="tarik1">TARIK 1x</button>
@@ -128,41 +143,190 @@
   </div>
 
 <script>
-  // ==========================================================
-  // MISI HARI 1 - GACHA SIMULATOR (STARTER)
-  //
-  // Tampilan (HTML + CSS) udah jadi. TUGAS kamu: bikin LOGIKA-nya.
-  // JANGAN ketik manual. SURUH Codex yang nulis tiap CHECKPOINT,
-  // kamu BACA & VERIFIKASI. Save file -> refresh browser buat lihat.
-  //
-  // Ikutin urutan checkpoint di README.md. Contoh prompt ada di sana.
-  // ==========================================================
+  const namaWaifu = {
+    ssr: ["Aurora", "Celestia", "Hikari", "Miyuki"],
+    epic: ["Akari", "Yuna", "Sakura", "Reina"],
+    rare: ["Nana", "Aoi", "Rika", "Mei"],
+    common: ["Mika", "Sora", "Hana", "Rin"]
+  };
 
-  // CHECKPOINT 1 - Data & acak
-  //   TODO: bikin object `hadiah` berisi 4 array (ssr, epic, rare, common),
-  //         tiap item { n: "nama", e: "emoji" }.
-  //   TODO: bikin variabel pity=0, total=0, ssrCount=0.
-  //   TODO: fungsi pilihAcak(arr) -> balikin 1 item acak dari array.
+  let pity = 0;
+  let total = 0;
+  let ssrCount = 0;
+  let sedangMenarik = false;
 
-  // CHECKPOINT 2 - Logika tarikan
-  //   TODO: fungsi rollSatu() -> total & pity nambah 1, pakai Math.random():
-  //         pity>=10 ATAU acak<0.03 -> SSR (pity balik 0, ssrCount nambah)
-  //         acak<0.10 -> EPIC, acak<0.30 -> RARE, selain itu -> COMMON.
-  //         balikin { kelas, nama, emoji }.
+  const card = document.getElementById("card");
+  const cardImage = document.getElementById("cardImage");
+  const cardName = document.getElementById("cardName");
+  const cardRarity = document.getElementById("cardRarity");
+  const statusText = document.getElementById("statusText");
+  const totalEl = document.getElementById("total");
+  const ssrCountEl = document.getElementById("ssrCount");
+  const pityText = document.getElementById("pityText");
+  const pityFill = document.getElementById("pityFill");
+  const historyEl = document.getElementById("history");
+  const tarik1 = document.getElementById("tarik1");
+  const tarik10 = document.getElementById("tarik10");
 
-  // CHECKPOINT 3 - Tampilkan + animasi
-  //   TODO: fungsi tampilkan(hasil) -> isi #cardEmoji, #cardName, #cardRarity,
-  //         set className kartu jadi "card <kelas> reveal" (trik reset animasi:
-  //         set "card", baca card.offsetWidth, baru set kelas+reveal).
-  //         Update #total, #ssrCount, #pityText, dan lebar #pityFill.
+  function buatSvgData(teks) {
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="460" height="620" viewBox="0 0 460 620">
+        <rect width="460" height="620" fill="#f1eee9"/>
+        <rect x="86" y="86" width="288" height="448" rx="18" fill="#e4ded5" stroke="#d2c8bd" stroke-width="4"/>
+        <text x="230" y="295" font-size="28" text-anchor="middle" fill="#625b54" font-family="Arial">${teks}</text>
+      </svg>`;
 
-  // CHECKPOINT 4 - Riwayat + tombol
-  //   TODO: fungsi tambahRiwayat(hasil) -> bikin div .chip <kelas>, isi emoji,
-  //         taruh paling depan di #history, batasi maks 12 chip.
-  //   TODO: tombol #tarik1 -> tarik 1x. tombol #tarik10 -> ulang 10x.
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+  }
 
-  // >> Buka Codex, kerjain checkpoint SATU PER SATU. Baca hasilnya.
-  // >> Kamu PILOT-nya, bukan penonton.
+  const gambarFallback = buatSvgData("Tarik untuk mulai");
+
+  cardImage.src = gambarFallback;
+  cardImage.onerror = () => {
+    if (cardImage.src !== gambarFallback) {
+      cardImage.src = gambarFallback;
+    }
+  };
+
+  function pilihAcak(arr) {
+    const index = Math.floor(Math.random() * arr.length);
+    return arr[index];
+  }
+
+  async function ambilGambarWaifu() {
+    const response = await fetch("https://api.waifu.im/images");
+
+    if (!response.ok) {
+      throw new Error("Gagal mengambil gambar waifu");
+    }
+
+    const data = await response.json();
+    const url = data.url
+      || data.images?.[0]?.url
+      || data.items?.[0]?.url
+      || data[0]?.url
+      || data.images?.[0]?.image?.url;
+
+    if (!url) {
+      throw new Error("Response API tidak berisi URL gambar");
+    }
+
+    return url;
+  }
+
+  async function rollSatu() {
+    const gambar = await ambilGambarWaifu();
+
+    total += 1;
+    pity += 1;
+
+    const acak = Math.random();
+    let kelas = "common";
+
+    if (pity >= 10 || acak < 0.03) {
+      kelas = "ssr";
+      pity = 0;
+      ssrCount += 1;
+    } else if (acak < 0.10) {
+      kelas = "epic";
+    } else if (acak < 0.30) {
+      kelas = "rare";
+    }
+
+    return {
+      kelas,
+      nama: pilihAcak(namaWaifu[kelas]),
+      gambar
+    };
+  }
+
+  function tampilkan(hasil) {
+    cardImage.src = hasil.gambar;
+    cardImage.alt = `${hasil.nama} - ${hasil.kelas.toUpperCase()}`;
+    cardName.textContent = hasil.nama;
+    cardRarity.textContent = hasil.kelas.toUpperCase();
+    statusText.innerHTML = `Gambar dari API waifu.im:<span class="api-url">${hasil.gambar}</span>`;
+
+    card.className = "card";
+    card.offsetWidth;
+    card.className = `card ${hasil.kelas} reveal`;
+
+    totalEl.textContent = total;
+    ssrCountEl.textContent = ssrCount;
+    pityText.textContent = `${pity} / 10`;
+    pityFill.style.width = `${(pity / 10) * 100}%`;
+  }
+
+  function tambahRiwayat(hasil) {
+    const chip = document.createElement("div");
+    chip.className = `chip ${hasil.kelas}`;
+    chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
+
+    const img = document.createElement("img");
+    img.src = hasil.gambar;
+    img.alt = hasil.nama;
+    chip.appendChild(img);
+
+    historyEl.prepend(chip);
+
+    while (historyEl.children.length > 12) {
+      historyEl.lastElementChild.remove();
+    }
+  }
+
+  function setTombolAktif(aktif) {
+    sedangMenarik = !aktif;
+    tarik1.disabled = !aktif;
+    tarik10.disabled = !aktif;
+    tarik1.style.cursor = aktif ? "pointer" : "wait";
+    tarik10.style.cursor = aktif ? "pointer" : "wait";
+  }
+
+  async function tarikSekali() {
+    if (sedangMenarik) return;
+
+    setTombolAktif(false);
+    cardName.textContent = "Memuat...";
+
+    try {
+      const hasil = await rollSatu();
+      tampilkan(hasil);
+      tambahRiwayat(hasil);
+    } catch (error) {
+      cardName.textContent = "Gagal memuat";
+      cardRarity.textContent = "";
+      statusText.textContent = `Gagal mengambil data dari https://api.waifu.im/images. Detail: ${error.message}`;
+    }
+
+    setTombolAktif(true);
+  }
+
+  async function tarikSepuluh() {
+    if (sedangMenarik) return;
+
+    setTombolAktif(false);
+
+    for (let i = 0; i < 10; i += 1) {
+      cardName.textContent = "Memuat...";
+      try {
+        const hasil = await rollSatu();
+        tampilkan(hasil);
+        tambahRiwayat(hasil);
+      } catch (error) {
+        cardName.textContent = "Gagal memuat";
+        cardRarity.textContent = "";
+        statusText.textContent = `Tarikan dihentikan karena API waifu.im gagal. Detail: ${error.message}`;
+        break;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 180));
+    }
+
+    setTombolAktif(true);
+  }
+
+  tarik1.addEventListener("click", tarikSekali);
+  tarik10.addEventListener("click", tarikSepuluh);
 </script>
 </body>
 </html>
