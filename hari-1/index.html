@@ -57,8 +57,24 @@
 
         <div class="poke-info">
           <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
+          <div class="genus" id="genus">Waiting for scan</div>
           <div class="types" id="types"></div>
           <div class="rar" id="rarity"></div>
+          <p class="flavor" id="flavorText">Press PULL to scan a Pokemon from PokeAPI.</p>
+          <div class="data-grid" id="dataGrid"></div>
+          <div class="detail-block">
+            <div class="detail-title">Abilities</div>
+            <div class="pill-list" id="abilities"></div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-title">Moves</div>
+            <div class="pill-list" id="moves"></div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-title">Evolution</div>
+            <div class="evolution-line" id="evolutionLine"></div>
+          </div>
+          <button class="cry-btn" id="cryBtn" type="button" hidden>Play cry</button>
           <div class="stats-panel" id="statsPanel"></div>
         </div>
 

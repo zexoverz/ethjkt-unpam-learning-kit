@@ -296,8 +296,15 @@ const el = {
   placeholder: document.getElementById("placeholder"),
   pokeName: document.getElementById("pokeName"),
   dexNum: document.getElementById("dexNum"),
+  genus: document.getElementById("genus"),
   types: document.getElementById("types"),
   rarity: document.getElementById("rarity"),
+  flavorText: document.getElementById("flavorText"),
+  dataGrid: document.getElementById("dataGrid"),
+  abilities: document.getElementById("abilities"),
+  moves: document.getElementById("moves"),
+  evolutionLine: document.getElementById("evolutionLine"),
+  cryBtn: document.getElementById("cryBtn"),
   statsPanel: document.getElementById("statsPanel"),
   total: document.getElementById("total"),
   ssrCount: document.getElementById("ssrCount"),
@@ -388,6 +395,51 @@ function buildStats(stats) {
   });
 }
 
+function buildDataGrid(result) {
+  const rows = [
+    ["Height", result.heightM ? result.heightM.toFixed(1) + " m" : "Unknown"],
+    ["Weight", result.weightKg ? result.weightKg.toFixed(1) + " kg" : "Unknown"],
+    ["Capture", result.captureRate || "Unknown"],
+    ["Base EXP", result.baseExperience || "Unknown"],
+    ["Habitat", result.habitat || "Unknown"],
+    ["Generation", result.generation || "Unknown"],
+  ];
+  el.dataGrid.innerHTML = rows.map(([label, value]) =>
+    '<div class="data-cell"><span>' + label + '</span><strong>' + value + '</strong></div>'
+  ).join("");
+}
+
+function buildPills(container, items, emptyText) {
+  container.innerHTML = "";
+  const list = items && items.length ? items : [emptyText];
+  list.forEach(item => {
+    const pill = document.createElement("span");
+    pill.className = "info-pill";
+    pill.textContent = typeof item === "string" ? item : item.name + (item.hidden ? " (hidden)" : "");
+    container.appendChild(pill);
+  });
+}
+
+function buildEvolution(line) {
+  const chain = line && line.length ? line : ["Unknown"];
+  el.evolutionLine.innerHTML = "";
+  chain.forEach((name, index) => {
+    const item = document.createElement("span");
+    item.textContent = name;
+    el.evolutionLine.appendChild(item);
+    if (index < chain.length - 1) {
+      const arrow = document.createElement("b");
+      arrow.textContent = ">";
+      el.evolutionLine.appendChild(arrow);
+    }
+  });
+}
+
+function wireCry(src) {
+  el.cryBtn.hidden = !src;
+  el.cryBtn.onclick = src ? () => new Audio(src).play() : null;
+}
+
 // Gambar mana yang dipakai: shiny kalau lagi hoki, kalau tidak yang biasa.
 function artOf(result) {
   return result.shiny && result.shinyArtwork ? result.shinyArtwork : result.artwork;
@@ -408,12 +460,19 @@ function render(result) {
 
   el.pokeName.textContent = result.name;
   el.dexNum.textContent = "#" + String(result.id).padStart(3, "0");
+  el.genus.textContent = result.genus || "Pokemon";
 
   buildTypes(result.types);
+  buildDataGrid(result);
+  buildPills(el.abilities, result.abilities, "Unknown");
+  buildPills(el.moves, result.moves, "No move data");
+  buildEvolution(result.evolutionLine);
   buildStats(result.stats);
+  wireCry(result.cry);
 
   el.rarity.textContent = result.kelas + (result.shiny ? " ✨ shiny" : "");
   el.rarity.className = "rar " + result.kelas;
+  el.flavorText.textContent = result.flavorText || "No species description available.";
 
   // Trik reset animasi: hapus kelas, paksa reflow, pasang lagi.
   el.card.className = "card";
