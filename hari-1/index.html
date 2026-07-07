@@ -136,7 +136,7 @@
 
 <script>
   const apiBase = "https://pokeapi.co/api/v2";
-  const cachePrefix = "ethjkt-pokemon-v2-";
+  const cachePrefix = "ethjkt-pokemon-v3-";
   const pokemonPools = {
     ssr: [144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251, 382, 383, 384, 385, 386],
     epic: [3, 6, 9, 65, 94, 130, 131, 143, 149, 181, 196, 197, 248, 282, 289, 373],
@@ -177,6 +177,10 @@
 
   function spriteUrlsDari(pokemon) {
     const urls = [
+      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`,
+      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemon.id}.png`,
+      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`,
+      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
       pokemon.sprites.other?.["official-artwork"]?.front_default,
       pokemon.sprites.other?.home?.front_default,
       pokemon.sprites.other?.dream_world?.front_default,
@@ -186,17 +190,28 @@
     return [...new Set(urls.filter(Boolean))];
   }
 
+  function urlSpriteCocokId(url, id) {
+    try {
+      const path = new URL(url).pathname;
+      return path.endsWith(`/${id}.png`) || path.endsWith(`/${id}.svg`);
+    } catch (error) {
+      return false;
+    }
+  }
+
   function bacaCachePokemon(cacheKey, id) {
     try {
       const cached = JSON.parse(localStorage.getItem(cacheKey));
+      const spriteUrlsCocok = Array.isArray(cached?.spriteUrls)
+        && cached.spriteUrls.every((url) => urlSpriteCocokId(url, id));
 
-      if (cached?.id === id && cached?.name && cached?.spriteUrls?.length) {
+      if (cached?.id === id && cached?.name && cached?.spriteUrls?.length && spriteUrlsCocok) {
         return cached;
       }
     } catch (error) {
-      localStorage.removeItem(cacheKey);
     }
 
+    localStorage.removeItem(cacheKey);
     return null;
   }
 

@@ -1,5 +1,10 @@
 # Catatan Perubahan Hari 1
 
+## Perbaikan gambar Pokemon salah
+
+- Masalah: beberapa cache gambar masih bisa menyimpan URL sprite yang tidak sesuai dengan ID Pokemon hasil pull.
+- Solusi: URL gambar sekarang dibuat dari ID Pokemon yang sedang ditampilkan, cache dinaikkan ke versi baru, dan cache lama/aneh otomatis dibuang kalau URL sprite tidak cocok dengan ID.
+
 ## Pull gacha + pity
 
 - Tombol `TARIK 1x` sekarang melakukan satu pull.
