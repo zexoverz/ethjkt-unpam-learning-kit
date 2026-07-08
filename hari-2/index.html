@@ -53,7 +53,19 @@
         </div>
         <div id="coupon-msg" class="coupon-msg"></div>
 
-        <div class="cart-breakdown" id="cart-summary-breakdown"></div>
+        <!-- [FIX #7] rincian biaya ditampilkan sejak awal (transparansi, anti drip-pricing) -->
+        <div class="total-row" id="cart-subtotal-row" style="display:none">
+          <span>Subtotal</span>
+          <strong>$0.00</strong>
+        </div>
+        <div class="total-row" id="cart-fee-row" style="display:none">
+          <span>Biaya penanganan</span>
+          <strong>$0.00</strong>
+        </div>
+        <div class="total-row">
+          <span>Total</span>
+          <strong>$<span id="modal-total-price">0.00</span></strong>
+        </div>
 
         <button id="checkout-button" class="checkout-button">
           Lanjut ke Pembayaran

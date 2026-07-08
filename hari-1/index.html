@@ -3,98 +3,246 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poké Gacha ETHJKT</title>
-<link rel="stylesheet" href="styles.css">
+<title>Gacha ETHJKT</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
+    color: #eaeaf0; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .app {
+    width: 100%; max-width: 460px; text-align: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 24px 22px 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  h1 {
+    font-size: 26px; letter-spacing: 1px; margin-bottom: 4px;
+    background: linear-gradient(90deg,#ffd86b,#ff7eb3,#7ee8ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .subtitle { font-size: 12px; color: #8b90b0; margin-bottom: 18px; }
+
+  .stats { display: flex; gap: 10px; margin-bottom: 12px; }
+  .stat {
+    flex: 1; background: rgba(255,255,255,0.05); border-radius: 12px;
+    padding: 10px 6px;
+  }
+  .stat .num { font-size: 22px; font-weight: 700; }
+  .stat .lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; }
+
+  .pity { margin-bottom: 18px; text-align: left; }
+  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #b9bdd8; margin-bottom: 6px; }
+  .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
+  .pity-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg,#ffd86b,#ffb347);
+    transition: width 0.35s ease;
+  }
+
+  .stage { display: flex; justify-content: center; margin-bottom: 20px; }
+  .card {
+    width: 180px; height: 230px; border-radius: 18px;
+    background: #171b30; border: 3px solid #2a2f4a;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; position: relative;
+  }
+  .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
+  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
+  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
+
+  /* warna per rarity */
+  .card.common { border-color: #6b7280; }
+  .card.common .rar { color: #9aa3b2; }
+  .card.rare   { border-color: #4da6ff; box-shadow: 0 0 22px rgba(77,166,255,.45); }
+  .card.rare   .rar { color: #4da6ff; }
+  .card.epic   { border-color: #b06bff; box-shadow: 0 0 26px rgba(176,107,255,.55); }
+  .card.epic   .rar { color: #c88bff; }
+  .card.ssr    { border-color: #ffd24a; box-shadow: 0 0 40px rgba(255,210,74,.8); }
+  .card.ssr    .rar { color: #ffd24a; }
+  .card.ssr    .name { color: #ffe89a; }
+
+  /* animasi reveal */
+  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+  @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,210,74,.7)} 50%{box-shadow:0 0 55px rgba(255,210,74,1)} }
+  .card.reveal { animation: pop .4s ease; }
+  .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
+
+  .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
+  .btn {
+    flex: 1; padding: 15px 0; border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer;
+    color: #0a0d1c; background: linear-gradient(180deg,#8fd3ff,#4da6ff);
+    transition: transform .08s ease, filter .15s ease;
+  }
+  .btn:hover { filter: brightness(1.08); }
+  .btn:active { transform: scale(.95); }
+  .btn.gold { background: linear-gradient(180deg,#ffe58a,#ffb347); }
+
+  .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
+  .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
+  .chip {
+    font-size: 20px; width: 34px; height: 34px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    background: #171b30; border: 2px solid #2a2f4a;
+  }
+  .chip.rare { border-color: #4da6ff; }
+  .chip.epic { border-color: #b06bff; }
+  .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
+</style>
 </head>
 <body>
-  <div class="pokedex">
-    <!-- Bagian atas ala perangkat Pokédex: lensa biru + 3 lampu indikator -->
-    <div class="pokedex-top">
-      <div class="lens"></div>
-      <div class="lights">
-        <span class="light red"></span>
-        <span class="light yellow"></span>
-        <span class="light green"></span>
-      </div>
-      <div class="brand">POKÉDEX</div>
+  <div class="app">
+    <h1>GACHA ETHJKT</h1>
+    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
+
+    <div class="stats">
+      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
+      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
     </div>
 
-    <!-- Layar putih tempat semua konten tampil -->
-    <div class="screen">
-      <h1>POKÉ GACHA</h1>
-      <div class="subtitle">tarik Pokémon asli — data langsung dari PokeAPI</div>
+    <div class="pity">
+      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
+      <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
+    </div>
 
-      <!-- Navigasi tab -->
-      <div class="tabs">
-        <button class="tab active" data-tab="gacha">Gacha</button>
-        <button class="tab" data-tab="koleksi">Koleksi</button>
-        <button class="tab" data-tab="badge">Badge</button>
-      </div>
-
-      <!-- ============ TAB: GACHA ============ -->
-      <div class="tab-panel" id="panel-gacha">
-        <div class="stats">
-          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
-        </div>
-
-        <div class="pity">
-          <div class="pity-top"><span>Pity ke Legendary gratis</span><span id="pityText">0 / 10</span></div>
-          <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-        </div>
-
-        <div class="stage">
-          <div class="card" id="card">
-            <div class="spinner" id="spinner"></div>
-            <img class="sprite" id="sprite" alt="">
-            <div class="shiny-badge" id="shinyBadge">✨ SHINY</div>
-            <div class="placeholder" id="placeholder">
-              <div class="pokeball"></div>
-              <div class="ph-text">Tekan PULL</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="poke-info">
-          <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
-          <div class="types" id="types"></div>
-          <div class="rar" id="rarity"></div>
-          <div class="stats-panel" id="statsPanel"></div>
-        </div>
-
-        <div class="err" id="err"></div>
-
-        <div class="buttons">
-          <button class="btn" id="tarik1">PULL 1x</button>
-          <button class="btn gold" id="tarik10">PULL 10x</button>
-        </div>
-
-        <div class="hist-lbl">Riwayat Terakhir</div>
-        <div class="history" id="history"></div>
-      </div>
-
-      <!-- ============ TAB: KOLEKSI ============ -->
-      <div class="tab-panel" id="panel-koleksi" hidden>
-        <div class="stats">
-          <div class="stat"><div class="num" id="uniqueCount">0</div><div class="lbl">Jenis Terkumpul</div></div>
-          <div class="stat"><div class="num" id="shinyCount">0</div><div class="lbl">Shiny</div></div>
-        </div>
-        <div class="collection-empty" id="collectionEmpty">Belum ada Pokémon. Tarik dulu di tab Gacha! 🎣</div>
-        <div class="collection-grid" id="collectionGrid"></div>
-      </div>
-
-      <!-- ============ TAB: BADGE ============ -->
-      <div class="tab-panel" id="panel-badge" hidden>
-        <p class="badge-intro">Kumpulkan Pokémon tiap tipe untuk menguasai gym Kanto dan meraih 8 badge-nya!</p>
-        <div class="champion" id="champion" hidden>👑 CHAMPION! Kamu menguasai semua 8 gym Kanto!</div>
-        <div class="badge-grid" id="badgeGrid"></div>
+    <div class="stage">
+      <div class="card" id="card">
+        <div class="emoji" id="cardEmoji">?</div>
+        <div class="name" id="cardName">Tekan TARIK</div>
+        <div class="rar" id="cardRarity"></div>
       </div>
     </div>
+
+    <div class="buttons">
+      <button class="btn" id="tarik1">TARIK 1x</button>
+      <button class="btn gold" id="tarik10">TARIK 10x</button>
+    </div>
+
+    <div class="hist-lbl">Riwayat Terakhir</div>
+    <div class="history" id="history"></div>
   </div>
 
-  <!-- Notifikasi kecil saat dapat badge baru -->
-  <div class="toast" id="toast" hidden></div>
+<script>
+  // ==========================================================
+  // MISI HARI 1 - GACHA SIMULATOR (STARTER)
+  //
+  // Tampilan (HTML + CSS) udah jadi. TUGAS kamu: bikin LOGIKA-nya.
+  // JANGAN ketik manual. SURUH Codex yang nulis tiap CHECKPOINT,
+  // kamu BACA & VERIFIKASI. Save file -> refresh browser buat lihat.
+  //
+  // Ikutin urutan checkpoint di README.md. Contoh prompt ada di sana.
+  // ==========================================================
 
-  <script src="app.js"></script>
+  // ----- CHECKPOINT 1 - Data & acak -----
+  const hadiah = {
+    ssr:     [ { n: "Drago Emas",    e: "🐉" }, { n: "Kristal Kematian", e: "💎" }, { n: "Mahkota Dewa", e: "👑" } ],
+    epic:    [ { n: "Pedang Bunga",  e: "🌸" }, { n: "Buku Sihir",      e: "📕" }, { n: "Kalung Bulan", e: "🌙" } ],
+    rare:    [ { n: "Ramuan Biru",   e: "🧪" }, { n: "Batu Apung",      e: "🪨" }, { n: "Lilin Ajaib",  e: "🕯️" } ],
+    common:  [ { n: "Kayu Bekas",    e: "🪵" }, { n: "Daun Kering",     e: "🍂" }, { n: "Kerang Tua",   e: "🐚" } ]
+  };
+
+  let pity = 0;        // penghitung tarikan sejak SSR terakhir
+  let total = 0;       // total tarikan
+  let ssrCount = 0;    // jumlah SSR yang didapat
+
+  // ambil 1 item acak dari sebuah array
+  function pilihAcak(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  // ----- CHECKPOINT 2 - Logika tarikan -----
+  function rollSatu() {
+    total++;
+    pity++;
+
+    const acak = Math.random();
+    let kelas;
+
+    // SSR: dijamin tiap 10 tarikan (pity) ATAU peluang 3% tiap tarik
+    if (pity >= 10 || acak < 0.03) {
+      kelas = "ssr";
+      pity = 0;
+      ssrCount++;
+    } else if (acak < 0.10) {       // 0.03 - 0.10 -> EPIC
+      kelas = "epic";
+    } else if (acak < 0.30) {       // 0.10 - 0.30 -> RARE
+      kelas = "rare";
+    } else {                        // selainnya -> COMMON
+      kelas = "common";
+    }
+
+    const item = pilihAcak(hadiah[kelas]);
+    return { kelas, nama: item.n, emoji: item.e };
+  }
+
+  // ----- CHECKPOINT 3 - Tampilkan + animasi -----
+  const cardEl     = document.getElementById("card");
+  const cardEmoji  = document.getElementById("cardEmoji");
+  const cardName   = document.getElementById("cardName");
+  const cardRarity = document.getElementById("cardRarity");
+  const totalEl    = document.getElementById("total");
+  const ssrCountEl = document.getElementById("ssrCount");
+  const pityTextEl = document.getElementById("pityText");
+  const pityFillEl = document.getElementById("pityFill");
+
+  function tampilkan(hasil) {
+    // isi kartu
+    cardEmoji.textContent  = hasil.emoji;
+    cardName.textContent   = hasil.nama;
+    cardRarity.textContent = hasil.kelas.toUpperCase();
+
+    // trik reset animasi: balikin ke "card", paksa reflow, baru pasang kelas+reveal
+    cardEl.className = "card";
+    void cardEl.offsetWidth;
+    cardEl.className = "card " + hasil.kelas + " reveal";
+
+    // update statistik
+    totalEl.textContent    = total;
+    ssrCountEl.textContent = ssrCount;
+    pityTextEl.textContent = pity + " / 10";
+    pityFillEl.style.width = (pity / 10 * 100) + "%";
+  }
+
+  // ----- CHECKPOINT 4 - Riwayat + tombol -----
+  const historyEl = document.getElementById("history");
+
+  function tambahRiwayat(hasil) {
+    const chip = document.createElement("div");
+    chip.className = "chip " + hasil.kelas;
+    chip.textContent = hasil.emoji;
+    historyEl.insertBefore(chip, historyEl.firstChild); // paling depan
+    while (historyEl.children.length > 12) {
+      historyEl.removeChild(historyEl.lastChild);       // batasi maks 12 chip
+    }
+  }
+
+  // satu kali tarik
+  function tarik1x() {
+    const hasil = rollSatu();
+    tampilkan(hasil);
+    tambahRiwayat(hasil);
+  }
+
+  // sepuluh kali tarik: jalankan rollSatu() 10x, kartu terakhir yang ditampilkan
+  function tarik10x() {
+    let hasil;
+    for (let i = 0; i < 10; i++) {
+      hasil = rollSatu();
+      tambahRiwayat(hasil);
+    }
+    tampilkan(hasil);
+  }
+
+  document.getElementById("tarik1").addEventListener("click", tarik1x);
+  document.getElementById("tarik10").addEventListener("click", tarik10x);
+
+  // >> Buka Codex, kerjain checkpoint SATU PER SATU. Baca hasilnya.
+  // >> Kamu PILOT-nya, bukan penonton.
+</script>
 </body>
 </html>

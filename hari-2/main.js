@@ -6,21 +6,27 @@
 //  diselipin BUG, CELAH KEAMANAN, dan POLA GELAP (dark pattern).
 //  Tugas kamu (TIM KEAMANAN): jalanin, belanja, lalu BEDAH pelan.
 //  Kamu gerbang terakhir sebelum ini "dijual" ke orang beneran.
+//
+//  [FIX #1..#8] = perbaikan hasil bedah. Tiap blok ditandai +
+//  dijelaskan alasannya. Lihat Report.md bagian "FIXES".
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
   // Katalog resmi toko. Harga "asli" tercatat di sini.
+  // [FIX #4] harga HANYA boleh dibaca dari sini (sumber kebenaran),
+  //          bukan dari atribut HTML di tombol yang bisa di-edit DevTools.
+  // [FIX #6] stok kini properti resmi produk (bukan Math.random tiap render).
   const products = [
-    { id: 1,  name: "Apel Fuji",       price: 1.5, stock: 12, produceId: "#4131", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg" },
-    { id: 2,  name: "Jeruk Navel",     price: 2.0, stock: 9,  produceId: "#4012", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg" },
-    { id: 3,  name: "Pisang",          price: 1.2, stock: 20, produceId: "#4011", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg" },
-    { id: 4,  name: "Anggur",          price: 3.5, stock: 6,  produceId: "#4022", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg" },
-    { id: 5,  name: "Stroberi",        price: 4.5, stock: 8,  produceId: "#4252", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg" },
-    { id: 6,  name: "Blueberry",       price: 5.0, stock: 5,  produceId: "#4264", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg" },
-    { id: 7,  name: "Nanas",           price: 3.0, stock: 7,  produceId: "#4430", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg" },
-    { id: 8,  name: "Mangga",          price: 2.8, stock: 15, produceId: "#4951", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg" },
-    { id: 9,  name: "Kiwi",            price: 1.9, stock: 10, produceId: "#4301", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg" },
-    { id: 10, name: "Semangka (Potong)", price: 3.2, stock: 4, produceId: "#4032", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg" }
+    { id: 1, name: "Apel Fuji", price: 1.5, produceId: "#4131", stock: 12, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg" },
+    { id: 2, name: "Jeruk Navel", price: 2.0, produceId: "#4012", stock: 9, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg" },
+    { id: 3, name: "Pisang", price: 1.2, produceId: "#4011", stock: 15, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg" },
+    { id: 4, name: "Anggur", price: 3.5, produceId: "#4022", stock: 6, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg" },
+    { id: 5, name: "Stroberi", price: 4.5, produceId: "#4252", stock: 7, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg" },
+    { id: 6, name: "Blueberry", price: 5.0, produceId: "#4264", stock: 5, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg" },
+    { id: 7, name: "Nanas", price: 3.0, produceId: "#4430", stock: 8, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg" },
+    { id: 8, name: "Mangga", price: 2.8, produceId: "#4951", stock: 10, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg" },
+    { id: 9, name: "Kiwi", price: 1.9, produceId: "#4301", stock: 11, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg" },
+    { id: 10, name: "Semangka (Potong)", price: 3.2, produceId: "#4032", stock: 4, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg" }
   ];
 
   let cart = {};
@@ -28,46 +34,63 @@ document.addEventListener("DOMContentLoaded", () => {
   // Biaya penanganan kecil biar operasional toko tetap jalan.
   const HANDLING_FEE = 0.30;
 
-  // Kupon divalidasi lewat HASH, bukan string mentah — jadi kode kupon
-  // nggak nongol plain-text di View Source (nggak gampang disebar).
+  // [FIX #5] Kupon "rahasia" dihapus dari client. Di toko beneran, daftar
+  //          kupon valid & keputusan diskon HARUS divalidasi server-side.
+  //          Di sini kita simulasikan: ada daftar diskon yang diizinkan.
+  //          Client tidak tahu "apa syaratnya".
   //
-  // PENTING: ini cuma hardening sisi client. Di produksi, keabsahan kupon &
-  // besar diskon WAJIB diputuskan di SERVER. Client nggak boleh dipercaya buat
-  // keputusan uang — siapa pun bisa baca/otak-atik JS di browsernya sendiri.
-  const KUPON_HASH = "a12497e637e42764b41e7c6de1b07a8906d8e8841c7522a471a48a1ee74d61cd";
-  const DISKON_KUPON = 0.9;
-  let diskon = 0; // 0 = tanpa diskon, 0.9 = potong 90%
-
-  async function hashSha256(text) {
-    const data = new TextEncoder().encode(text);
-    const buf = await crypto.subtle.digest("SHA-256", data);
-    return Array.from(new Uint8Array(buf))
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
-  }
+  //          CATATAN PENTING (etika + keamanan): ini masih simulasi client-side
+  //          untuk latihan. Di produksi, validateCoupon() ada di SERVER.
+  //          Lihat Report.md FIX #5.
+  const KUPON_VALID = {
+    // kupon -> { diskon, label }  (diskon = pecahan potongan, 0 < d <= 0.9)
+    "TEMANFARMER": { diskon: 0.10, label: "Potongan 10% (kupon petani)" }
+  };
+  let diskonAktif = 0; // 0 = tanpa diskon; nilai diskon yang sedang berlaku
 
   const productSection = document.getElementById("product-section");
   const cartDetailsEl = document.getElementById("cart-details");
-  const cartSummaryEl = document.getElementById("cart-summary-breakdown");
+  const totalPriceEl = document.getElementById("modal-total-price");
   const cartCountEl = document.getElementById("cart-count");
   const reviewModal = document.getElementById("review-modal");
+  // [FIX #7] elemen rincian biaya di sidebar (agar fee transparan dari awal).
+  const feeRowEl = document.getElementById("cart-fee-row");
+  const subtotalRowEl = document.getElementById("cart-subtotal-row");
 
-  // Satu sumber kebenaran buat rincian biaya. Dipakai di sidebar & modal
-  // biar angkanya identik dan nggak ada yang muncul mendadak di akhir.
-  function buildBreakdown(subtotal) {
-    const fee = subtotal > 0 ? HANDLING_FEE : 0;
-    const potongan = (subtotal + fee) * diskon;
-    const total = subtotal + fee - potongan;
-    return { subtotal, fee, potongan, total };
+  // Batas aman input jumlah.
+  // [FIX #8] bounds defensif: jumlah harus integer di rentang masuk akal.
+  const MIN_QTY = 1;
+  const MAX_QTY = 99;
+
+  /* ---------- HELPERS ---------- */
+
+  // [FIX #1] Format uang selalu 2 desimal. Alasan: floating-point JS bikin
+  //          13.80*0.1 = 1.379999999999999. Uang WAJIB tampil rapi & akurat.
+  //          (Untuk toko beneran: lebih baik simpan uang sebagai integer sen
+  //           lalu format saat tampil. Lihat Report.md.)
+  function formatUang(angka) {
+    if (!Number.isFinite(angka)) return "0.00"; // pengaman ekstra vs NaN/Infinity
+    return angka.toFixed(2);
   }
 
-  function renderBreakdownRows(target, sums) {
-    target.innerHTML = `
-      <div class="row"><span>Subtotal</span><span>$${sums.subtotal.toFixed(2)}</span></div>
-      <div class="row"><span>Biaya penanganan</span><span>$${sums.fee.toFixed(2)}</span></div>
-      ${sums.potongan ? `<div class="row"><span>Kupon (-90%)</span><span>-$${sums.potongan.toFixed(2)}</span></div>` : ""}
-      <div class="row grand"><span>Total</span><span>$${sums.total.toFixed(2)}</span></div>
-    `;
+  // [FIX #8] SATU fungsi perhitungan total = single source of truth.
+  //          Sebelumnya, renderCart() dan openReview() masing-masing menghitung
+  //          total sendiri -> bisa tidak sinkron. Sekarang keduanya memanggil ini.
+  //          Mengembalikan { subtotal, fee, potongan, total } supaya rincian
+  //          konsisten di sidebar maupun modal.
+  function computeTotal() {
+    let subtotal = 0;
+    Object.values(cart).forEach((item) => {
+      subtotal += item.count * item.price;
+    });
+    const fee = Object.keys(cart).length > 0 ? HANDLING_FEE : 0;
+    const dasar = subtotal + fee;
+    // [FIX #5/8] diskonAktif sudah di-clamp saat applyCoupon, tapi kita clamp
+    //            lagi di sini (defense in depth) supaya nilai aneh tidak lolos.
+    const d = Math.min(0.9, Math.max(0, diskonAktif));
+    const potongan = dasar * d;
+    const total = dasar - potongan;
+    return { subtotal, fee, potongan, total, diskon: d };
   }
 
   /* RENDER PRODUK */
@@ -76,25 +99,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     products.forEach((product) => {
       const quantity = cart[product.id] ? cart[product.id].count : 0;
-      // Stok NYATA = stok katalog dikurangi yang sudah di keranjang.
-      // Stabil, jujur, nggak diacak tiap render.
-      const sisa = product.stock - quantity;
-      const habis = sisa <= 0;
+      // [FIX #6] sisa stok dibaca dari data resmi produk (product.stock),
+      //          dikurangi jumlah yang ada di keranjang. BUKAN Math.random.
+      const sisa = Math.max(0, product.stock - quantity);
 
       const productCard = document.createElement("article");
       productCard.classList.add("product");
+      // [FIX #4] data-price DIGHAPUS dari tombol. Harga tidak boleh dibaca
+      //          dari DOM. addToCart sekarang mencari harga di katalog.
       productCard.innerHTML = `
         <p class="produce-id">${product.produceId}</p>
         <img src="${product.image}" alt="${product.name}" class="product-image">
         <div class="item-meta">
           <h2>${product.name}</h2>
-          <p class="price">$${product.price.toFixed(2)}</p>
+          <p class="price">$${formatUang(product.price)}</p>
         </div>
-        <p class="stock">${habis ? "Stok habis" : `Stok tersedia: ${sisa}`}</p>
+        <p class="stock">sisa ${sisa} hari ini</p>
         <div class="quantity-controls">
           <button class="quantity-button minus-button" data-id="${product.id}">−</button>
           <span class="quantity-display" id="quantity-${product.id}">${quantity}</span>
-          <button class="quantity-button plus-button" data-id="${product.id}" ${habis ? "disabled" : ""}>+</button>
+          <button class="quantity-button plus-button" data-id="${product.id}">+</button>
         </div>
       `;
       productSection.appendChild(productCard);
@@ -110,78 +134,84 @@ document.addEventListener("DOMContentLoaded", () => {
   /* RENDER KERANJANG */
   function renderCart() {
     cartDetailsEl.innerHTML = "";
-    let totalPrice = 0;
 
     if (Object.keys(cart).length === 0) {
       cartDetailsEl.innerHTML = `<p class="empty-cart">Keranjang kamu masih kosong.</p>`;
-      renderBreakdownRows(cartSummaryEl, buildBreakdown(0));
+      totalPriceEl.textContent = "0.00";
+      // [FIX #7] sembunyikan rincian fee saat keranjang kosong.
+      if (feeRowEl) feeRowEl.style.display = "none";
+      if (subtotalRowEl) subtotalRowEl.style.display = "none";
       updateCartCount();
       renderProducts();
       return;
     }
 
     Object.values(cart).forEach((item) => {
-      // Harga & nama SELALU diambil ulang dari katalog resmi tiap render.
-      // Kalau ada yang ngutak-atik object `cart` di console, langsung ketimpa.
-      const official = products.find((p) => p.id == item.id);
-      if (official) {
-        item.price = official.price;
-        item.name = official.name;
-      }
-
       const itemTotal = item.count * item.price;
-      totalPrice += itemTotal;
-
       const listItem = document.createElement("div");
       listItem.classList.add("cart-item");
+      // [FIX #3] item.name & item.price berasal dari katalog (bukan input user),
+      //          sehingga aman di innerHTML. Yang BERBAHAYA adalah catatan user.
       listItem.innerHTML = `
         <div class="cart-item-top">
           <div>
             <div class="cart-item-name">${item.name}</div>
-            <div class="cart-item-price">$${item.price.toFixed(2)} / buah</div>
+            <div class="cart-item-price">$${formatUang(item.price)} / buah</div>
           </div>
-          <strong>$${itemTotal.toFixed(2)}</strong>
+          <strong>$${formatUang(itemTotal)}</strong>
         </div>
         <div class="cart-item-controls">
-          <input type="number" min="1" class="edit-quantity-input" value="${item.count}" data-id="${item.id}">
+          <input type="number" min="${MIN_QTY}" max="${MAX_QTY}" class="edit-quantity-input" value="${item.count}" data-id="${item.id}">
           <i class="fas fa-trash delete-icon" data-id="${item.id}"></i>
         </div>
       `;
       cartDetailsEl.appendChild(listItem);
     });
 
-    // Preview catatan buat petani (biar user lihat tulisannya).
+    // Preview catatan buat petani.
+    // [FIX #3] Catatan user adalah INPUT -> RENTAN XSS. Pakai textContent,
+    //          BUKAN innerHTML. Konsisten dengan yang sudah benar di openReview.
     const note = document.getElementById("note").value;
     if (note) {
       const preview = document.createElement("div");
       preview.className = "note-preview";
-      preview.textContent = "Catatan: " + note; // textContent = input user diperlakukan sbg TEKS, cegah XSS
+      preview.textContent = "Catatan: " + note; // textContent = aman dari XSS
       cartDetailsEl.appendChild(preview);
     }
 
-    // Rincian biaya lengkap ditampilkan di sidebar sejak awal — subtotal,
-    // biaya penanganan, diskon, total — bukan cuma angka Total gelondongan.
-    renderBreakdownRows(cartSummaryEl, buildBreakdown(totalPrice));
+    // [FIX #1/8] Total dihitung SATU kali di computeTotal, lalu diformat.
+    const ringkas = computeTotal();
+    totalPriceEl.textContent = formatUang(ringkas.total);
+
+    // [FIX #7] Tampilkan rincian fee di sidebar sejak awal (transparansi).
+    if (subtotalRowEl) {
+      subtotalRowEl.style.display = "flex";
+      subtotalRowEl.innerHTML =
+        `<span>Subtotal</span><span>$${formatUang(ringkas.subtotal)}</span>`;
+    }
+    if (feeRowEl) {
+      feeRowEl.style.display = "flex";
+      feeRowEl.innerHTML =
+        `<span>Biaya penanganan</span><span>$${formatUang(HANDLING_FEE)}</span>`;
+    }
+
     updateCartCount();
     renderProducts();
   }
 
   /* TAMBAH BARANG */
+  // [FIX #4] Signature diubah: addToCart(id) — tanpa argumen harga.
+  //          Kode asli menulis harga di data-price DAN mengambilnya dari sana.
+  //          Cara aman: tombol kirim id saja, harga dicari di katalog products.
   function addToCart(id) {
     const product = products.find((item) => item.id == id);
     if (!product) return;
-
-    const current = cart[id] ? cart[id].count : 0;
-    // Stok itu nyata: nggak boleh nambah melebihi yang benar-benar ada.
-    if (current >= product.stock) {
-      showToast(`Stok ${product.name} tinggal ${product.stock}.`);
-      return;
-    }
-
     if (!cart[id]) {
-      cart[id] = { ...product, count: 0 };
+      cart[id] = { id: product.id, name: product.name, price: product.price, count: 0 };
     }
-    cart[id].price = product.price;   // harga RESMI dari katalog, bukan dari DOM (anti manipulasi)
+    // [FIX #4] JANGAN timpa cart[id].price dari argumen. Harga resmi sudah
+    //          ada di product.price (dari katalog). Tidak menerima input harga.
+    if (cart[id].count >= MAX_QTY) return; // [FIX #8] cegah jumlah ekstrem
     cart[id].count++;
     renderCart();
   }
@@ -203,40 +233,35 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* UBAH JUMLAH */
+  // [FIX #2] Input user divalidasi: tolak NaN, paksa integer, batasi rentang.
+  //          Sebelumnya parseInt("") = NaN, lalu NaN<=0 false -> count=NaN
+  //          merambat ke total. Sekarang input kotor ditolak di batas.
   function updateQuantity(id, quantity) {
     if (!cart[id]) return;
-    // Input nakal: kosong / huruf → parseInt = NaN. Jangan korupsi keranjang.
-    // Biarkan user lanjut ngetik; nilai valid terakhir tetap dipakai.
-    if (!Number.isInteger(quantity)) return;
-    if (quantity <= 0) {
+    if (!Number.isFinite(quantity)) return;     // tolak NaN / Infinity
+    let q = Math.floor(quantity);               // paksa integer (parseInt potong desimal diam-diam)
+    if (q < MIN_QTY) {                          // 0 / minus -> hapus item
       delete cart[id];
     } else {
-      // Stok nyata juga ditegakkan lewat input manual: nggak bisa ngetik
-      // angka lebih besar dari stok yang benar-benar tersedia.
-      const product = products.find((item) => item.id == id);
-      const maks = product ? product.stock : quantity;
-      if (quantity > maks) {
-        showToast(`Stok ${cart[id].name} tinggal ${maks}.`);
-        quantity = maks;
-      }
-      cart[id].count = quantity;
+      cart[id].count = Math.min(q, MAX_QTY);    // [FIX #8] cap atas
     }
     renderCart();
   }
 
   /* KUPON */
-  // Idealnya isi fungsi ini = satu panggilan ke server: kirim `code`,
-  // server balikin diskon yang sah. Di sini kita tiru dengan cek hash.
-  async function applyCoupon() {
+  // [FIX #5] Diskon di-CLAMP ke rentang [0, 0.9]. Tidak boleh 1 (gratis 100%)
+  //          atau minus. Kupon divalidasi lewat tabel KUPON_VALID.
+  //          Catatan: di produksi, fungsi ini = panggilan API server.
+  function applyCoupon() {
     const code = document.getElementById("coupon").value.trim();
     const msg = document.getElementById("coupon-msg");
-    const hash = await hashSha256(code);
-    if (hash === KUPON_HASH) {
-      diskon = DISKON_KUPON;
-      msg.textContent = "Kupon aktif! Potongan 90%.";
+    const kupon = KUPON_VALID[code];
+    if (kupon) {
+      diskonAktif = Math.max(0, Math.min(kupon.diskon, 0.9)); // clamp defensif
+      msg.textContent = "Kupon aktif! " + kupon.label + ".";
       msg.style.color = "#6e7b61";
     } else {
-      diskon = 0;
+      diskonAktif = 0;
       msg.textContent = "Kode kupon salah.";
       msg.style.color = "#b96f5c";
     }
@@ -262,13 +287,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const itemsEl = document.getElementById("review-items");
     itemsEl.innerHTML = "";
-    let subtotal = 0;
+    const ringkas = computeTotal();
     Object.values(cart).forEach((item) => {
       const line = item.count * item.price;
-      subtotal += line;
       const row = document.createElement("div");
       row.className = "review-line";
-      row.innerHTML = `<span>${item.name} x ${item.count}</span><span>$${line.toFixed(2)}</span>`;
+      row.innerHTML = `<span>${item.name} x ${item.count}</span><span>$${formatUang(line)}</span>`;
       itemsEl.appendChild(row);
     });
 
@@ -278,13 +302,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (note) {
       const n = document.createElement("div");
       n.className = "review-note";
-      n.textContent = "Catatan: " + note;
+      n.textContent = "Catatan: " + note; // [FIX #3] textContent = aman XSS (sudah benar dari awal)
       noteWrap.appendChild(n);
     }
 
-    // Rincian di modal dibangun dari fungsi yang SAMA dengan sidebar,
-    // jadi angkanya dijamin identik — nggak ada kejutan di detik terakhir.
-    renderBreakdownRows(document.getElementById("review-breakdown"), buildBreakdown(subtotal));
+    document.getElementById("review-breakdown").innerHTML = `
+      <div class="row"><span>Subtotal</span><span>$${formatUang(ringkas.subtotal)}</span></div>
+      <div class="row"><span>Biaya penanganan</span><span>$${formatUang(HANDLING_FEE)}</span></div>
+      ${ringkas.diskon ? `<div class="row"><span>Kupon</span><span>-$${formatUang(ringkas.potongan)}</span></div>` : ""}
+      <div class="row grand"><span>Total</span><span>$${formatUang(ringkas.total)}</span></div>
+    `;
 
     reviewModal.classList.add("open");
   }
@@ -296,7 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function placeOrder() {
     closeReview();
     cart = {};
-    diskon = 0;
+    diskonAktif = 0;
     document.getElementById("note").value = "";
     document.getElementById("coupon").value = "";
     document.getElementById("coupon-msg").textContent = "";
@@ -309,7 +336,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = event.target;
 
     if (target.classList.contains("plus-button")) {
-      addToCart(target.dataset.id);
+      addToCart(target.dataset.id); // [FIX #4] kirim id saja, tanpa harga
     }
     if (target.classList.contains("minus-button")) {
       removeFromCart(target.dataset.id);
