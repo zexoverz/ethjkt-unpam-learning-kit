@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="quantity-controls">
           <button class="quantity-button minus-button" data-id="${product.id}">−</button>
           <span class="quantity-display" id="quantity-${product.id}">${quantity}</span>
-          <button class="quantity-button plus-button" data-id="${product.id}" data-price="${product.price}">+</button>
+          <button class="quantity-button plus-button" data-id="${product.id}">+</button>
         </div>
       `;
       productSection.appendChild(productCard);
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (note) {
       const preview = document.createElement("div");
       preview.className = "note-preview";
-      preview.innerHTML = "Catatan: " + note; // innerHTML biar tulisannya rapi
+      preview.textContent = "Catatan: " + note;
       cartDetailsEl.appendChild(preview);
     }
 
@@ -120,20 +120,20 @@ document.addEventListener("DOMContentLoaded", () => {
     let total = totalPrice + HANDLING_FEE;
     total = total - total * diskon;
 
-    totalPriceEl.textContent = total;
+    totalPriceEl.textContent = total.toFixed(2);
     updateCartCount();
     renderProducts();
   }
 
   /* TAMBAH BARANG */
-  function addToCart(id, price) {
+  function addToCart(id) {
     const product = products.find((item) => item.id == id);
     if (!product) return;
 
     if (!cart[id]) {
       cart[id] = { ...product, count: 0 };
     }
-    cart[id].price = price;   // pakai harga dari kartu di layar
+    cart[id].price = product.price;
     cart[id].count++;
     renderCart();
   }
@@ -157,6 +157,10 @@ document.addEventListener("DOMContentLoaded", () => {
   /* UBAH JUMLAH */
   function updateQuantity(id, quantity) {
     if (!cart[id]) return;
+    if (!Number.isInteger(quantity)) {
+      renderCart();
+      return;
+    }
     if (quantity <= 0) {
       delete cart[id];
     } else {
@@ -228,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
       <div class="row"><span>Biaya penanganan</span><span>$${HANDLING_FEE.toFixed(2)}</span></div>
       ${diskon ? `<div class="row"><span>Kupon (-90%)</span><span>-$${potongan.toFixed(2)}</span></div>` : ""}
-      <div class="row grand"><span>Total</span><span>$${total}</span></div>
+      <div class="row grand"><span>Total</span><span>$${total.toFixed(2)}</span></div>
     `;
 
     reviewModal.classList.add("open");
@@ -254,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = event.target;
 
     if (target.classList.contains("plus-button")) {
-      addToCart(target.dataset.id, Number(target.dataset.price));
+      addToCart(target.dataset.id);
     }
     if (target.classList.contains("minus-button")) {
       removeFromCart(target.dataset.id);
