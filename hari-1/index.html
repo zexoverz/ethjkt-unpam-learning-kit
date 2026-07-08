@@ -1,375 +1,112 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pokemon Gacha ETHJKT</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
-    color: #eaeaf0; min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
-  }
-  .app {
-    width: 100%; max-width: 460px; text-align: center;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px; padding: 24px 22px 28px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-  h1 {
-    font-size: 26px; letter-spacing: 1px; margin-bottom: 4px;
-    background: linear-gradient(90deg,#ffd86b,#ff7eb3,#7ee8ff);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .subtitle { font-size: 12px; color: #8b90b0; margin-bottom: 18px; }
-
-  .stats { display: flex; gap: 10px; margin-bottom: 12px; }
-  .stat {
-    flex: 1; background: rgba(255,255,255,0.05); border-radius: 12px;
-    padding: 10px 6px;
-  }
-  .stat .num { font-size: 22px; font-weight: 700; }
-  .stat .lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; }
-
-  .pity { margin-bottom: 18px; text-align: left; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #b9bdd8; margin-bottom: 6px; }
-  .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
-  .pity-fill {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg,#ffd86b,#ffb347);
-    transition: width 0.35s ease;
-  }
-
-  .stage { display: flex; justify-content: center; margin-bottom: 20px; }
-  .card {
-    width: 210px; min-height: 270px; border-radius: 18px;
-    background: #171b30; border: 3px solid #2a2f4a;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative; padding: 14px;
-  }
-  .card .pokemon-art {
-    width: 132px; height: 132px; object-fit: contain;
-    image-rendering: auto; filter: drop-shadow(0 8px 14px rgba(0,0,0,.5));
-  }
-  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
-  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
-  .card .meta { color: #b9bdd8; font-size: 12px; text-transform: capitalize; }
-
-  /* warna per rarity */
-  .card.common { border-color: #6b7280; }
-  .card.common .rar { color: #9aa3b2; }
-  .card.rare   { border-color: #4da6ff; box-shadow: 0 0 22px rgba(77,166,255,.45); }
-  .card.rare   .rar { color: #4da6ff; }
-  .card.epic   { border-color: #b06bff; box-shadow: 0 0 26px rgba(176,107,255,.55); }
-  .card.epic   .rar { color: #c88bff; }
-  .card.ssr    { border-color: #ffd24a; box-shadow: 0 0 40px rgba(255,210,74,.8); }
-  .card.ssr    .rar { color: #ffd24a; }
-  .card.ssr    .name { color: #ffe89a; }
-
-  /* animasi reveal */
-  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-  @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,210,74,.7)} 50%{box-shadow:0 0 55px rgba(255,210,74,1)} }
-  .card.reveal { animation: pop .4s ease; }
-  .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
-
-  .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
-  .btn {
-    flex: 1; padding: 15px 0; border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer;
-    color: #0a0d1c; background: linear-gradient(180deg,#8fd3ff,#4da6ff);
-    transition: transform .08s ease, filter .15s ease;
-  }
-  .btn:hover { filter: brightness(1.08); }
-  .btn:active { transform: scale(.95); }
-  .btn:disabled { cursor: wait; filter: grayscale(.25) brightness(.8); }
-  .btn.gold { background: linear-gradient(180deg,#ffe58a,#ffb347); }
-
-  .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
-  .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
-  .chip {
-    width: 34px; height: 34px; border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    background: #171b30; border: 2px solid #2a2f4a;
-  }
-  .chip img { width: 30px; height: 30px; object-fit: contain; }
-  .chip.rare { border-color: #4da6ff; }
-  .chip.epic { border-color: #b06bff; }
-  .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poke Gacha ETHJKT</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app">
-    <h1>POKEMON GACHA</h1>
-    <div class="subtitle">pull Pokemon asli dari PokeAPI, pity tetap jalan</div>
-
-    <div class="stats">
-      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
-    </div>
-
-    <div class="pity">
-      <div class="pity-top"><span>Pity ke SSR Pokemon</span><span id="pityText">0 / 10</span></div>
-      <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-    </div>
-
-    <div class="stage">
-      <div class="card" id="card">
-        <img class="pokemon-art" id="cardArt" alt="" hidden>
-        <div class="name" id="cardName">Tekan TARIK</div>
-        <div class="rar" id="cardRarity"></div>
-        <div class="meta" id="cardMeta"></div>
+  <div class="pokedex">
+    <div class="pokedex-top">
+      <div class="lens"></div>
+      <div class="lights">
+        <span class="light red"></span>
+        <span class="light yellow"></span>
+        <span class="light green"></span>
       </div>
+      <div class="brand">POKEDEX</div>
     </div>
 
-    <div class="buttons">
-      <button class="btn" id="tarik1">TARIK 1x</button>
-      <button class="btn gold" id="tarik10">TARIK 10x</button>
-    </div>
+    <main class="screen">
+      <h1>POKE GACHA</h1>
+      <div class="subtitle">tarik Pokemon asli dari PokeAPI</div>
 
-    <div class="hist-lbl">Riwayat Terakhir</div>
-    <div class="history" id="history"></div>
+      <div class="tabs" aria-label="Navigasi aplikasi">
+        <button class="tab active" type="button" data-tab="gacha">Gacha</button>
+        <button class="tab" type="button" data-tab="koleksi">Koleksi</button>
+        <button class="tab" type="button" data-tab="badge">Badge</button>
+      </div>
+
+      <section class="tab-panel" id="panel-gacha">
+        <div class="stats">
+          <div class="stat">
+            <div class="num" id="total">0</div>
+            <div class="lbl">Total Tarik</div>
+          </div>
+          <div class="stat">
+            <div class="num" id="ssrCount">0</div>
+            <div class="lbl">Legendary</div>
+          </div>
+        </div>
+
+        <div class="pity">
+          <div class="pity-top">
+            <span>Pity ke Legendary gratis</span>
+            <span id="pityText">0 / 10</span>
+          </div>
+          <div class="pity-track">
+            <div class="pity-fill" id="pityFill"></div>
+          </div>
+        </div>
+
+        <div class="stage">
+          <div class="card" id="card">
+            <div class="spinner" id="spinner"></div>
+            <img class="sprite" id="sprite" alt="">
+            <div class="shiny-badge" id="shinyBadge">SHINY</div>
+            <div class="placeholder" id="placeholder">
+              <div class="pokeball"></div>
+              <div class="ph-text">Tekan PULL</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="poke-info">
+          <div class="poke-name">
+            <span id="pokeName">-</span>
+            <span class="dex" id="dexNum"></span>
+          </div>
+          <div class="types" id="types"></div>
+          <div class="rar" id="rarity"></div>
+          <div class="stats-panel" id="statsPanel"></div>
+        </div>
+
+        <div class="err" id="err"></div>
+
+        <div class="buttons">
+          <button class="btn" id="tarik1" type="button">PULL 1x</button>
+          <button class="btn gold" id="tarik10" type="button">PULL 10x</button>
+        </div>
+
+        <div class="hist-lbl">Riwayat Terakhir</div>
+        <div class="history" id="history"></div>
+      </section>
+
+      <section class="tab-panel" id="panel-koleksi" hidden>
+        <div class="stats">
+          <div class="stat">
+            <div class="num" id="uniqueCount">0</div>
+            <div class="lbl">Jenis Terkumpul</div>
+          </div>
+          <div class="stat">
+            <div class="num" id="shinyCount">0</div>
+            <div class="lbl">Shiny</div>
+          </div>
+        </div>
+        <div class="collection-empty" id="collectionEmpty">Belum ada Pokemon. Tarik dulu di tab Gacha.</div>
+        <div class="collection-grid" id="collectionGrid"></div>
+      </section>
+
+      <section class="tab-panel" id="panel-badge" hidden>
+        <p class="badge-intro">Kumpulkan Pokemon tiap tipe untuk menguasai gym Kanto dan meraih 8 badge-nya.</p>
+        <div class="champion" id="champion" hidden>CHAMPION! Kamu menguasai semua 8 gym Kanto.</div>
+        <div class="badge-grid" id="badgeGrid"></div>
+      </section>
+    </main>
   </div>
 
-<script>
-  const apiBase = "https://pokeapi.co/api/v2";
-  const cachePrefix = "ethjkt-pokemon-v3-";
-  const pokemonPools = {
-    ssr: [144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251, 382, 383, 384, 385, 386],
-    epic: [3, 6, 9, 65, 94, 130, 131, 143, 149, 181, 196, 197, 248, 282, 289, 373],
-    rare: [2, 5, 8, 25, 26, 37, 38, 58, 59, 64, 93, 123, 125, 126, 133, 135, 136, 147, 148],
-    common: [1, 4, 7, 10, 13, 16, 19, 21, 23, 27, 29, 32, 41, 43, 46, 48, 50, 52, 54, 56]
-  };
-
-  const pityTarget = 10;
-  const maxHistory = 12;
-  let pity = 0;
-  let total = 0;
-  let ssrCount = 0;
-  let isPulling = false;
-
-  const card = document.getElementById("card");
-  const cardArt = document.getElementById("cardArt");
-  const cardName = document.getElementById("cardName");
-  const cardRarity = document.getElementById("cardRarity");
-  const cardMeta = document.getElementById("cardMeta");
-  const totalText = document.getElementById("total");
-  const ssrCountText = document.getElementById("ssrCount");
-  const pityText = document.getElementById("pityText");
-  const pityFill = document.getElementById("pityFill");
-  const history = document.getElementById("history");
-  const tarik1Button = document.getElementById("tarik1");
-  const tarik10Button = document.getElementById("tarik10");
-
-  function pilihAcak(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
-
-  function formatNama(name) {
-    return name
-      .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  }
-
-  function spriteUrlsDari(pokemon) {
-    const urls = [
-      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`,
-      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemon.id}.png`,
-      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`,
-      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
-      pokemon.sprites.other?.["official-artwork"]?.front_default,
-      pokemon.sprites.other?.home?.front_default,
-      pokemon.sprites.other?.dream_world?.front_default,
-      pokemon.sprites.front_default
-    ];
-
-    return [...new Set(urls.filter(Boolean))];
-  }
-
-  function urlSpriteCocokId(url, id) {
-    try {
-      const path = new URL(url).pathname;
-      return path.endsWith(`/${id}.png`) || path.endsWith(`/${id}.svg`);
-    } catch (error) {
-      return false;
-    }
-  }
-
-  function bacaCachePokemon(cacheKey, id) {
-    try {
-      const cached = JSON.parse(localStorage.getItem(cacheKey));
-      const spriteUrlsCocok = Array.isArray(cached?.spriteUrls)
-        && cached.spriteUrls.every((url) => urlSpriteCocokId(url, id));
-
-      if (cached?.id === id && cached?.name && cached?.spriteUrls?.length && spriteUrlsCocok) {
-        return cached;
-      }
-    } catch (error) {
-    }
-
-    localStorage.removeItem(cacheKey);
-    return null;
-  }
-
-  function pilihRarity() {
-    total += 1;
-    pity += 1;
-
-    const chance = Math.random();
-
-    if (pity >= pityTarget || chance < 0.03) {
-      pity = 0;
-      ssrCount += 1;
-      return "ssr";
-    } else if (chance < 0.10) {
-      return "epic";
-    } else if (chance < 0.30) {
-      return "rare";
-    }
-
-    return "common";
-  }
-
-  async function ambilPokemon(id) {
-    const cacheKey = `${cachePrefix}${id}`;
-    const cached = bacaCachePokemon(cacheKey, id);
-
-    if (cached) {
-      return cached;
-    }
-
-    const response = await fetch(`${apiBase}/pokemon/${id}`);
-
-    if (!response.ok) {
-      throw new Error(`PokeAPI gagal: ${response.status}`);
-    }
-
-    const pokemon = await response.json();
-    const spriteUrls = spriteUrlsDari(pokemon);
-
-    if (!spriteUrls.length) {
-      throw new Error(`Sprite Pokemon #${pokemon.id} kosong`);
-    }
-
-    const simplePokemon = {
-      id: pokemon.id,
-      name: pokemon.name,
-      spriteUrls,
-      types: pokemon.types.map((entry) => entry.type.name),
-      height: pokemon.height,
-      weight: pokemon.weight
-    };
-
-    // PokeAPI fair-use policy asks clients to cache requested resources.
-    localStorage.setItem(cacheKey, JSON.stringify(simplePokemon));
-    return simplePokemon;
-  }
-
-  async function rollSatu() {
-    const kelas = pilihRarity();
-    const id = pilihAcak(pokemonPools[kelas]);
-    const pokemon = await ambilPokemon(id);
-
-    return {
-      kelas,
-      nama: formatNama(pokemon.name),
-      spriteUrls: pokemon.spriteUrls,
-      types: pokemon.types,
-      id: pokemon.id,
-      height: pokemon.height,
-      weight: pokemon.weight
-    };
-  }
-
-  function pasangGambarPokemon(image, hasil) {
-    let spriteIndex = 0;
-    const urls = hasil.spriteUrls;
-
-    image.alt = hasil.nama;
-    image.hidden = false;
-    image.onerror = () => {
-      spriteIndex += 1;
-
-      if (spriteIndex < urls.length) {
-        image.src = urls[spriteIndex];
-        return;
-      }
-
-      image.hidden = true;
-      image.onerror = null;
-    };
-    image.src = urls[spriteIndex];
-  }
-
-  function tampilkan(hasil) {
-    pasangGambarPokemon(cardArt, hasil);
-    cardName.textContent = hasil.nama;
-    cardRarity.textContent = `${hasil.kelas.toUpperCase()} #${hasil.id}`;
-    cardMeta.textContent = `${hasil.types.join(" / ")} | ${hasil.height / 10}m | ${hasil.weight / 10}kg`;
-
-    // Reset class sebentar supaya animasi reveal tetap jalan di pull berikutnya.
-    card.className = "card";
-    card.offsetWidth;
-    card.className = `card ${hasil.kelas} reveal`;
-
-    totalText.textContent = total;
-    ssrCountText.textContent = ssrCount;
-    pityText.textContent = `${pity} / ${pityTarget}`;
-    pityFill.style.width = `${(pity / pityTarget) * 100}%`;
-  }
-
-  function tambahRiwayat(hasil) {
-    const chip = document.createElement("div");
-    const image = document.createElement("img");
-
-    chip.className = `chip ${hasil.kelas}`;
-    chip.title = `${hasil.nama} (${hasil.kelas.toUpperCase()})`;
-    pasangGambarPokemon(image, hasil);
-
-    chip.appendChild(image);
-    history.prepend(chip);
-
-    while (history.children.length > maxHistory) {
-      history.lastElementChild.remove();
-    }
-  }
-
-  function setLoading(loading) {
-    isPulling = loading;
-    tarik1Button.disabled = loading;
-    tarik10Button.disabled = loading;
-    tarik1Button.textContent = loading ? "LOADING" : "TARIK 1x";
-    tarik10Button.textContent = loading ? "LOADING" : "TARIK 10x";
-  }
-
-  async function tarik(jumlah) {
-    if (isPulling) return;
-
-    setLoading(true);
-    let hasilTerakhir;
-
-    try {
-      for (let i = 0; i < jumlah; i += 1) {
-        hasilTerakhir = await rollSatu();
-        tambahRiwayat(hasilTerakhir);
-      }
-
-      tampilkan(hasilTerakhir);
-    } catch (error) {
-      cardName.textContent = "PokeAPI gagal dimuat";
-      cardRarity.textContent = "COBA LAGI";
-      cardMeta.textContent = error.message;
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  tarik1Button.addEventListener("click", () => tarik(1));
-  tarik10Button.addEventListener("click", () => tarik(10));
-</script>
+  <div class="toast" id="toast" hidden></div>
+  <script src="app.js"></script>
 </body>
 </html>
