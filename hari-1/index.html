@@ -7,36 +7,14 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="pokedex">
-    <!-- Bagian atas ala perangkat Pokédex: lensa biru + 3 lampu indikator -->
-    <div class="pokedex-top">
-      <div class="lens"></div>
-      <div class="lights">
-        <span class="light red"></span>
-        <span class="light yellow"></span>
-        <span class="light green"></span>
-      </div>
-      <div class="brand">POKÉDEX</div>
+  <div class="app">
+    <h1>GACHA ETHJKT</h1>
+    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
+
+    <div class="stats">
+      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
+      <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR Didapat</div></div>
     </div>
-
-    <!-- Layar putih tempat semua konten tampil -->
-    <div class="screen">
-      <h1>POKÉ GACHA</h1>
-      <div class="subtitle">tarik Pokémon asli — data langsung dari PokeAPI</div>
-
-      <!-- Navigasi tab -->
-      <div class="tabs">
-        <button class="tab active" data-tab="gacha">Gacha</button>
-        <button class="tab" data-tab="koleksi">Koleksi</button>
-        <button class="tab" data-tab="badge">Badge</button>
-      </div>
-
-      <!-- ============ TAB: GACHA ============ -->
-      <div class="tab-panel" id="panel-gacha">
-        <div class="stats">
-          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
-        </div>
 
         <div class="pity">
           <div class="pity-top"><span>Pity ke Legendary gratis</span><span id="pityText">0 / 10</span></div>
