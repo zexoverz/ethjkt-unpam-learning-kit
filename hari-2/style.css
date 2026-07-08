@@ -424,6 +424,10 @@ body {
   color: var(--orange);
 }
 
+.stock-ok {
+  color: var(--olive);
+}
+
 /* CATATAN + KUPON */
 
 .field-label {
