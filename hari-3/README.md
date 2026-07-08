@@ -13,6 +13,9 @@ File di folder ini:
 TokenKu.sol      -> koin kamu (Tegar Andri Coin & TCA ).
 Smart Contract: 0xf8CaEFAA59fF0d939dF0681A29d5464EBa4a203E
 Hash: https://sepolia.etherscan.io/tx/0xabaaf34f231ba420d0b7bfd3f2f48e95000a2416ea3b1af970bac61f8ca23d25
+TX Hash Send Ke Addres:
+https://sepolia.etherscan.io/tx/0x1895d6a3a5c161c47b5eff8b5dd269ed16ef264702aad43d6e2db358a11d91a6
+
 EthjktToken.sol  -> token bersama (biasanya pengajar yang deploy).
 SimpleAMM.sol     -> mesin pasar/swap (x*y=k).
 app/              -> interface web (Stretch): index.html, main.js, config.js, styles.css
