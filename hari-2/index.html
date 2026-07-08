@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://res.cloudinary.com; font-src 'self'; object-src 'none'; base-uri 'self'">
   <title>Pasar Pagi</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
   <header class="header">
@@ -17,7 +17,7 @@
     <div class="cart-summary">
       <span class="cart-label">keranjang</span>
       <div class="cart-pill">
-        <i class="fas fa-shopping-basket"></i>
+        <span class="cart-icon" aria-hidden="true">Basket</span>
         <span id="cart-count">0</span>
       </div>
     </div>

@@ -1,259 +1,286 @@
-// ============================================================
-//  PASAR PAGI — mesin keranjang belanja
-//  "Ditulis AI." Katanya udah rapi, aman, siap jualan.
-//
-//  Kodenya JALAN & keliatan meyakinkan. Tapi jangan ketipu:
-//  diselipin BUG, CELAH KEAMANAN, dan POLA GELAP (dark pattern).
-//  Tugas kamu (TIM KEAMANAN): jalanin, belanja, lalu BEDAH pelan.
-//  Kamu gerbang terakhir sebelum ini "dijual" ke orang beneran.
-// ============================================================
-
 document.addEventListener("DOMContentLoaded", () => {
-  // Katalog resmi toko. Harga "asli" tercatat di sini.
+  const MAX_TOTAL_ITEMS = 24;
+  const HANDLING_FEE_CENTS = 30;
+
   const products = [
-    { id: 1,  name: "Apel Fuji",       price: 1.5, stock: 12, produceId: "#4131", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg" },
-    { id: 2,  name: "Jeruk Navel",     price: 2.0, stock: 9,  produceId: "#4012", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg" },
-    { id: 3,  name: "Pisang",          price: 1.2, stock: 20, produceId: "#4011", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg" },
-    { id: 4,  name: "Anggur",          price: 3.5, stock: 6,  produceId: "#4022", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg" },
-    { id: 5,  name: "Stroberi",        price: 4.5, stock: 8,  produceId: "#4252", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg" },
-    { id: 6,  name: "Blueberry",       price: 5.0, stock: 5,  produceId: "#4264", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg" },
-    { id: 7,  name: "Nanas",           price: 3.0, stock: 7,  produceId: "#4430", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg" },
-    { id: 8,  name: "Mangga",          price: 2.8, stock: 15, produceId: "#4951", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg" },
-    { id: 9,  name: "Kiwi",            price: 1.9, stock: 10, produceId: "#4301", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg" },
-    { id: 10, name: "Semangka (Potong)", price: 3.2, stock: 4, produceId: "#4032", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg" }
+    { id: 1, name: "Apel Fuji", priceCents: 150, produceId: "#4131", stock: 8, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg" },
+    { id: 2, name: "Jeruk Navel", priceCents: 200, produceId: "#4012", stock: 7, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg" },
+    { id: 3, name: "Pisang", priceCents: 120, produceId: "#4011", stock: 10, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg" },
+    { id: 4, name: "Anggur", priceCents: 350, produceId: "#4022", stock: 5, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg" },
+    { id: 5, name: "Stroberi", priceCents: 450, produceId: "#4252", stock: 6, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg" },
+    { id: 6, name: "Blueberry", priceCents: 500, produceId: "#4264", stock: 4, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg" },
+    { id: 7, name: "Nanas", priceCents: 300, produceId: "#4430", stock: 5, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg" },
+    { id: 8, name: "Mangga", priceCents: 280, produceId: "#4951", stock: 7, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg" },
+    { id: 9, name: "Kiwi", priceCents: 190, produceId: "#4301", stock: 8, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg" },
+    { id: 10, name: "Semangka (Potong)", priceCents: 320, produceId: "#4032", stock: 6, image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg" }
   ];
 
   let cart = {};
-
-  // Biaya penanganan kecil biar operasional toko tetap jalan.
-  const HANDLING_FEE = 0.30;
-
-  // Kupon divalidasi lewat HASH, bukan string mentah — jadi kode kupon
-  // nggak nongol plain-text di View Source (nggak gampang disebar).
-  //
-  // PENTING: ini cuma hardening sisi client. Di produksi, keabsahan kupon &
-  // besar diskon WAJIB diputuskan di SERVER. Client nggak boleh dipercaya buat
-  // keputusan uang — siapa pun bisa baca/otak-atik JS di browsernya sendiri.
-  const KUPON_HASH = "a12497e637e42764b41e7c6de1b07a8906d8e8841c7522a471a48a1ee74d61cd";
-  const DISKON_KUPON = 0.9;
-  let diskon = 0; // 0 = tanpa diskon, 0.9 = potong 90%
-
-  async function hashSha256(text) {
-    const data = new TextEncoder().encode(text);
-    const buf = await crypto.subtle.digest("SHA-256", data);
-    return Array.from(new Uint8Array(buf))
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
-  }
+  let discountRate = 0;
+  let currentProductIndex = 0;
+  let expandedProducts = false;
 
   const productSection = document.getElementById("product-section");
   const cartDetailsEl = document.getElementById("cart-details");
-  const cartSummaryEl = document.getElementById("cart-summary-breakdown");
+  const totalPriceEl = document.getElementById("modal-total-price");
   const cartCountEl = document.getElementById("cart-count");
   const reviewModal = document.getElementById("review-modal");
+  const couponMsg = document.getElementById("coupon-msg");
 
-  // Satu sumber kebenaran buat rincian biaya. Dipakai di sidebar & modal
-  // biar angkanya identik dan nggak ada yang muncul mendadak di akhir.
-  function buildBreakdown(subtotal) {
-    const fee = subtotal > 0 ? HANDLING_FEE : 0;
-    const potongan = (subtotal + fee) * diskon;
-    const total = subtotal + fee - potongan;
-    return { subtotal, fee, potongan, total };
+  function money(cents) {
+    return (cents / 100).toFixed(2);
   }
 
-  function renderBreakdownRows(target, sums) {
-    target.innerHTML = `
-      <div class="row"><span>Subtotal</span><span>$${sums.subtotal.toFixed(2)}</span></div>
-      <div class="row"><span>Biaya penanganan</span><span>$${sums.fee.toFixed(2)}</span></div>
-      ${sums.potongan ? `<div class="row"><span>Kupon (-90%)</span><span>-$${sums.potongan.toFixed(2)}</span></div>` : ""}
-      <div class="row grand"><span>Total</span><span>$${sums.total.toFixed(2)}</span></div>
-    `;
+  function createEl(tag, className, text) {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (text !== undefined) el.textContent = text;
+    return el;
   }
 
-  /* RENDER PRODUK */
+  function getProduct(id) {
+    return products.find((item) => item.id === Number(id));
+  }
+
+  function getItemCount() {
+    return Object.values(cart).reduce((sum, item) => sum + item.count, 0);
+  }
+
+  function getSubtotalCents() {
+    return Object.values(cart).reduce((sum, item) => sum + item.count * item.priceCents, 0);
+  }
+
+  function getDiscountCents(subtotalCents) {
+    const base = subtotalCents > 0 ? subtotalCents + HANDLING_FEE_CENTS : 0;
+    return Math.round(base * discountRate);
+  }
+
+  function getTotals() {
+    const subtotalCents = getSubtotalCents();
+    const feeCents = subtotalCents > 0 ? HANDLING_FEE_CENTS : 0;
+    const discountCents = getDiscountCents(subtotalCents);
+    return {
+      subtotalCents,
+      feeCents,
+      discountCents,
+      totalCents: subtotalCents + feeCents - discountCents
+    };
+  }
+
+  function buildProductCard(product) {
+    const quantity = cart[product.id] ? cart[product.id].count : 0;
+    const remaining = product.stock - quantity;
+    const card = createEl("article", "product");
+
+    const produceId = createEl("p", "produce-id", product.produceId);
+    const image = createEl("img", "product-image");
+    image.src = product.image;
+    image.alt = product.name;
+
+    const meta = createEl("div", "item-meta");
+    meta.append(createEl("h2", "", product.name), createEl("p", "price", `$${money(product.priceCents)}`));
+
+    const stock = createEl("p", "stock", `Stok tersedia: ${remaining} dari ${product.stock}`);
+    const controls = createEl("div", "quantity-controls");
+    const minus = createEl("button", "quantity-button minus-button", "-");
+    minus.type = "button";
+    minus.dataset.id = product.id;
+    const count = createEl("span", "quantity-display", String(quantity));
+    count.id = `quantity-${product.id}`;
+    const plus = createEl("button", "quantity-button plus-button", "+");
+    plus.type = "button";
+    plus.dataset.id = product.id;
+    plus.disabled = remaining <= 0 || getItemCount() >= MAX_TOTAL_ITEMS;
+
+    controls.append(minus, count, plus);
+    card.append(produceId, image, meta, stock, controls);
+    return card;
+  }
+
   function renderProducts() {
-    productSection.innerHTML = "";
+    productSection.replaceChildren();
+    productSection.className = expandedProducts ? "product-section expanded" : "product-section carousel-mode";
 
-    products.forEach((product) => {
-      const quantity = cart[product.id] ? cart[product.id].count : 0;
-      // Stok NYATA = stok katalog dikurangi yang sudah di keranjang.
-      // Stabil, jujur, nggak diacak tiap render.
-      const sisa = product.stock - quantity;
-      const habis = sisa <= 0;
+    if (expandedProducts) {
+      products.forEach((product) => productSection.appendChild(buildProductCard(product)));
+      return;
+    }
 
-      const productCard = document.createElement("article");
-      productCard.classList.add("product");
-      productCard.innerHTML = `
-        <p class="produce-id">${product.produceId}</p>
-        <img src="${product.image}" alt="${product.name}" class="product-image">
-        <div class="item-meta">
-          <h2>${product.name}</h2>
-          <p class="price">$${product.price.toFixed(2)}</p>
-        </div>
-        <p class="stock">${habis ? "Stok habis" : `Stok tersedia: ${sisa}`}</p>
-        <div class="quantity-controls">
-          <button class="quantity-button minus-button" data-id="${product.id}">−</button>
-          <span class="quantity-display" id="quantity-${product.id}">${quantity}</span>
-          <button class="quantity-button plus-button" data-id="${product.id}" ${habis ? "disabled" : ""}>+</button>
-        </div>
-      `;
-      productSection.appendChild(productCard);
+    const frame = createEl("div", "carousel-frame");
+    const previous = createEl("button", "carousel-btn prev-product", "<");
+    previous.type = "button";
+    previous.setAttribute("aria-label", "Produk sebelumnya");
+    const next = createEl("button", "carousel-btn next-product", ">");
+    next.type = "button";
+    next.setAttribute("aria-label", "Produk berikutnya");
+
+    const activeProduct = products[currentProductIndex];
+    const stage = createEl("div", "carousel-stage");
+    stage.appendChild(buildProductCard(activeProduct));
+
+    const indicator = createEl("p", "carousel-indicator", `${currentProductIndex + 1} / ${products.length}`);
+    const expand = createEl("button", "expand-products", "Expand");
+    expand.type = "button";
+    expand.id = "expand-products";
+
+    frame.append(previous, stage, next);
+    productSection.append(frame, indicator, expand);
+  }
+
+  function renderBreakdown(container, totals, grandClass = false) {
+    container.replaceChildren();
+    const rows = [
+      ["Subtotal", `$${money(totals.subtotalCents)}`],
+      ["Biaya penanganan", `$${money(totals.feeCents)}`]
+    ];
+
+    if (totals.discountCents > 0) {
+      rows.push(["Kupon", `-$${money(totals.discountCents)}`]);
+    }
+
+    rows.push(["Total", `$${money(totals.totalCents)}`]);
+
+    rows.forEach(([label, value], index) => {
+      const row = createEl("div", index === rows.length - 1 && grandClass ? "row grand" : "row");
+      row.append(createEl("span", "", label), createEl("span", "", value));
+      container.appendChild(row);
     });
   }
 
-  /* HITUNG JUMLAH BARANG DI KERANJANG */
-  function updateCartCount() {
-    const totalCount = Object.values(cart).reduce((sum, item) => sum + item.count, 0);
-    cartCountEl.textContent = totalCount;
-  }
-
-  /* RENDER KERANJANG */
   function renderCart() {
-    cartDetailsEl.innerHTML = "";
-    let totalPrice = 0;
+    cartDetailsEl.replaceChildren();
+    const totals = getTotals();
 
     if (Object.keys(cart).length === 0) {
-      cartDetailsEl.innerHTML = `<p class="empty-cart">Keranjang kamu masih kosong.</p>`;
-      renderBreakdownRows(cartSummaryEl, buildBreakdown(0));
+      cartDetailsEl.appendChild(createEl("p", "empty-cart", "Keranjang kamu masih kosong."));
+      totalPriceEl.textContent = "0.00";
       updateCartCount();
       renderProducts();
       return;
     }
 
     Object.values(cart).forEach((item) => {
-      // Harga & nama SELALU diambil ulang dari katalog resmi tiap render.
-      // Kalau ada yang ngutak-atik object `cart` di console, langsung ketimpa.
-      const official = products.find((p) => p.id == item.id);
-      if (official) {
-        item.price = official.price;
-        item.name = official.name;
-      }
+      const itemTotal = item.count * item.priceCents;
+      const listItem = createEl("div", "cart-item");
+      const top = createEl("div", "cart-item-top");
+      const info = createEl("div");
+      info.append(createEl("div", "cart-item-name", item.name), createEl("div", "cart-item-price", `$${money(item.priceCents)} / buah`));
+      top.append(info, createEl("strong", "", `$${money(itemTotal)}`));
 
-      const itemTotal = item.count * item.price;
-      totalPrice += itemTotal;
-
-      const listItem = document.createElement("div");
-      listItem.classList.add("cart-item");
-      listItem.innerHTML = `
-        <div class="cart-item-top">
-          <div>
-            <div class="cart-item-name">${item.name}</div>
-            <div class="cart-item-price">$${item.price.toFixed(2)} / buah</div>
-          </div>
-          <strong>$${itemTotal.toFixed(2)}</strong>
-        </div>
-        <div class="cart-item-controls">
-          <input type="number" min="1" class="edit-quantity-input" value="${item.count}" data-id="${item.id}">
-          <i class="fas fa-trash delete-icon" data-id="${item.id}"></i>
-        </div>
-      `;
+      const controls = createEl("div", "cart-item-controls");
+      const input = createEl("input", "edit-quantity-input");
+      input.type = "number";
+      input.min = "1";
+      input.max = String(Math.min(item.stock, MAX_TOTAL_ITEMS));
+      input.value = String(item.count);
+      input.dataset.id = item.id;
+      const deleteButton = createEl("button", "delete-icon", "Hapus");
+      deleteButton.type = "button";
+      deleteButton.dataset.id = item.id;
+      controls.append(input, deleteButton);
+      listItem.append(top, controls);
       cartDetailsEl.appendChild(listItem);
     });
 
-    // Preview catatan buat petani (biar user lihat tulisannya).
-    const note = document.getElementById("note").value;
+    const note = document.getElementById("note").value.trim();
     if (note) {
-      const preview = document.createElement("div");
-      preview.className = "note-preview";
-      preview.textContent = "Catatan: " + note; // textContent = input user diperlakukan sbg TEKS, cegah XSS
-      cartDetailsEl.appendChild(preview);
+      cartDetailsEl.appendChild(createEl("div", "note-preview", `Catatan: ${note}`));
     }
 
-    // Rincian biaya lengkap ditampilkan di sidebar sejak awal — subtotal,
-    // biaya penanganan, diskon, total — bukan cuma angka Total gelondongan.
-    renderBreakdownRows(cartSummaryEl, buildBreakdown(totalPrice));
+    const breakdown = createEl("div", "cart-breakdown");
+    renderBreakdown(breakdown, totals);
+    cartDetailsEl.appendChild(breakdown);
+
+    totalPriceEl.textContent = money(totals.totalCents);
     updateCartCount();
     renderProducts();
   }
 
-  /* TAMBAH BARANG */
+  function updateCartCount() {
+    cartCountEl.textContent = String(getItemCount());
+  }
+
   function addToCart(id) {
-    const product = products.find((item) => item.id == id);
+    const product = getProduct(id);
     if (!product) return;
 
-    const current = cart[id] ? cart[id].count : 0;
-    // Stok itu nyata: nggak boleh nambah melebihi yang benar-benar ada.
-    if (current >= product.stock) {
-      showToast(`Stok ${product.name} tinggal ${product.stock}.`);
+    const currentCount = cart[product.id] ? cart[product.id].count : 0;
+    if (getItemCount() >= MAX_TOTAL_ITEMS) {
+      showToast(`Maksimal ${MAX_TOTAL_ITEMS} barang per pesanan.`);
+      return;
+    }
+    if (currentCount >= product.stock) {
+      showToast(`${product.name} sudah mencapai batas stok.`);
       return;
     }
 
-    if (!cart[id]) {
-      cart[id] = { ...product, count: 0 };
-    }
-    cart[id].price = product.price;   // harga RESMI dari katalog, bukan dari DOM (anti manipulasi)
-    cart[id].count++;
+    cart[product.id] = { ...product, count: currentCount + 1 };
     renderCart();
   }
 
-  /* KURANGI BARANG */
   function removeFromCart(id) {
-    if (!cart[id]) return;
-    cart[id].count--;
-    if (cart[id].count <= 0) {
-      delete cart[id];
+    const productId = Number(id);
+    if (!cart[productId]) return;
+    cart[productId].count--;
+    if (cart[productId].count <= 0) {
+      delete cart[productId];
     }
     renderCart();
   }
 
-  /* HAPUS BARANG */
   function deleteItem(id) {
-    delete cart[id];
+    delete cart[Number(id)];
     renderCart();
   }
 
-  /* UBAH JUMLAH */
-  function updateQuantity(id, quantity) {
-    if (!cart[id]) return;
-    // Input nakal: kosong / huruf → parseInt = NaN. Jangan korupsi keranjang.
-    // Biarkan user lanjut ngetik; nilai valid terakhir tetap dipakai.
-    if (!Number.isInteger(quantity)) return;
-    if (quantity <= 0) {
-      delete cart[id];
+  function updateQuantity(id, value) {
+    const productId = Number(id);
+    const item = cart[productId];
+    if (!item) return;
+
+    const quantity = Number(value);
+    const otherItemsCount = getItemCount() - item.count;
+    const maxAllowed = Math.min(item.stock, MAX_TOTAL_ITEMS - otherItemsCount);
+
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      showToast("Jumlah harus berupa angka bulat minimal 1.");
+      renderCart();
+      return;
+    }
+    if (quantity > maxAllowed) {
+      showToast(`Maksimal ${maxAllowed} untuk item ini.`);
+      item.count = maxAllowed;
+      renderCart();
+      return;
+    }
+
+    item.count = quantity;
+    renderCart();
+  }
+
+  function applyCoupon() {
+    const code = document.getElementById("coupon").value;
+
+    discountRate = 0;
+    if (code.trim()) {
+      couponMsg.textContent = "Kode kupon dicatat. Diskon divalidasi saat pembayaran.";
+      couponMsg.className = "coupon-msg success";
     } else {
-      // Stok nyata juga ditegakkan lewat input manual: nggak bisa ngetik
-      // angka lebih besar dari stok yang benar-benar tersedia.
-      const product = products.find((item) => item.id == id);
-      const maks = product ? product.stock : quantity;
-      if (quantity > maks) {
-        showToast(`Stok ${cart[id].name} tinggal ${maks}.`);
-        quantity = maks;
-      }
-      cart[id].count = quantity;
+      couponMsg.textContent = "Masukkan kode kupon terlebih dahulu.";
+      couponMsg.className = "coupon-msg error";
     }
     renderCart();
   }
 
-  /* KUPON */
-  // Idealnya isi fungsi ini = satu panggilan ke server: kirim `code`,
-  // server balikin diskon yang sah. Di sini kita tiru dengan cek hash.
-  async function applyCoupon() {
-    const code = document.getElementById("coupon").value.trim();
-    const msg = document.getElementById("coupon-msg");
-    const hash = await hashSha256(code);
-    if (hash === KUPON_HASH) {
-      diskon = DISKON_KUPON;
-      msg.textContent = "Kupon aktif! Potongan 90%.";
-      msg.style.color = "#6e7b61";
-    } else {
-      diskon = 0;
-      msg.textContent = "Kode kupon salah.";
-      msg.style.color = "#b96f5c";
-    }
-    renderCart();
-  }
-
-  /* TOAST */
   let toastTimer = null;
   function showToast(message) {
-    const t = document.getElementById("toast");
-    t.textContent = message;
-    t.classList.add("show");
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
   }
 
-  /* MODAL REVIEW CHECKOUT */
   function openReview() {
     if (Object.keys(cart).length === 0) {
       showToast("Keranjang kamu masih kosong.");
@@ -261,31 +288,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const itemsEl = document.getElementById("review-items");
-    itemsEl.innerHTML = "";
-    let subtotal = 0;
+    itemsEl.replaceChildren();
+
     Object.values(cart).forEach((item) => {
-      const line = item.count * item.price;
-      subtotal += line;
-      const row = document.createElement("div");
-      row.className = "review-line";
-      row.innerHTML = `<span>${item.name} x ${item.count}</span><span>$${line.toFixed(2)}</span>`;
+      const line = item.count * item.priceCents;
+      const row = createEl("div", "review-line");
+      row.append(createEl("span", "", `${item.name} x ${item.count}`), createEl("span", "", `$${money(line)}`));
       itemsEl.appendChild(row);
     });
 
     const noteWrap = document.getElementById("review-note-wrap");
-    noteWrap.innerHTML = "";
-    const note = document.getElementById("note").value;
+    noteWrap.replaceChildren();
+    const note = document.getElementById("note").value.trim();
     if (note) {
-      const n = document.createElement("div");
-      n.className = "review-note";
-      n.textContent = "Catatan: " + note;
-      noteWrap.appendChild(n);
+      noteWrap.appendChild(createEl("div", "review-note", `Catatan: ${note}`));
     }
 
-    // Rincian di modal dibangun dari fungsi yang SAMA dengan sidebar,
-    // jadi angkanya dijamin identik — nggak ada kejutan di detik terakhir.
-    renderBreakdownRows(document.getElementById("review-breakdown"), buildBreakdown(subtotal));
-
+    renderBreakdown(document.getElementById("review-breakdown"), getTotals(), true);
     reviewModal.classList.add("open");
   }
 
@@ -296,54 +315,54 @@ document.addEventListener("DOMContentLoaded", () => {
   function placeOrder() {
     closeReview();
     cart = {};
-    diskon = 0;
+    discountRate = 0;
     document.getElementById("note").value = "";
     document.getElementById("coupon").value = "";
-    document.getElementById("coupon-msg").textContent = "";
+    couponMsg.textContent = "";
+    couponMsg.className = "coupon-msg";
     renderCart();
     showToast("Pesanan masuk! Sampai jumpa besok pagi.");
   }
 
-  /* EVENT KLIK */
+  function moveCarousel(direction) {
+    currentProductIndex = (currentProductIndex + direction + products.length) % products.length;
+    renderProducts();
+  }
+
+  function expandProducts() {
+    const frame = productSection.querySelector(".carousel-frame");
+    if (frame) frame.classList.add("bursting");
+    setTimeout(() => {
+      expandedProducts = true;
+      renderProducts();
+    }, 520);
+  }
+
   document.addEventListener("click", (event) => {
     const target = event.target;
 
-    if (target.classList.contains("plus-button")) {
-      addToCart(target.dataset.id);
-    }
-    if (target.classList.contains("minus-button")) {
-      removeFromCart(target.dataset.id);
-    }
-    if (target.classList.contains("delete-icon")) {
-      deleteItem(target.dataset.id);
-    }
-    if (target.id === "apply-coupon") {
-      applyCoupon();
-    }
-    if (target.id === "checkout-button") {
-      openReview();
-    }
-    if (target.id === "review-confirm") {
-      placeOrder();
-    }
-    if (target.id === "review-back" || target === reviewModal) {
-      closeReview();
-    }
+    if (target.classList.contains("plus-button")) addToCart(target.dataset.id);
+    if (target.classList.contains("minus-button")) removeFromCart(target.dataset.id);
+    if (target.classList.contains("delete-icon")) deleteItem(target.dataset.id);
+    if (target.id === "apply-coupon") applyCoupon();
+    if (target.id === "checkout-button") openReview();
+    if (target.id === "review-confirm") placeOrder();
+    if (target.id === "review-back" || target === reviewModal) closeReview();
+    if (target.classList.contains("prev-product")) moveCarousel(-1);
+    if (target.classList.contains("next-product")) moveCarousel(1);
+    if (target.id === "expand-products") expandProducts();
   });
 
-  /* EVENT INPUT */
   document.addEventListener("input", (event) => {
     const target = event.target;
     if (target.classList.contains("edit-quantity-input")) {
-      const quantity = parseInt(target.value, 10);
-      updateQuantity(target.dataset.id, quantity);
+      updateQuantity(target.dataset.id, target.value);
     }
     if (target.id === "note") {
       renderCart();
     }
   });
 
-  /* MULAI */
   renderProducts();
   renderCart();
 });
