@@ -28,9 +28,42 @@ document.addEventListener("DOMContentLoaded", () => {
   // Biaya penanganan kecil biar operasional toko tetap jalan.
   const HANDLING_FEE = 0.30;
 
-  // Kupon internal buat teman-teman petani. Jangan disebar ya.
-  const KUPON_RAHASIA = "TEMANFARMER";
+  // CATATAN KEAMANAN: Kode kupon TIDAK boleh disimpan atau divalidasi di client.
+  // Validasi harus dilakukan di server. Fungsi di bawah mensimulasikan server call.
   let diskon = 0; // 0 = tanpa diskon, 0.9 = potong 90%
+
+  async function validateCouponOnServer(code) {
+    // Di produksi: ganti dengan fetch("/api/validate-coupon", { method: "POST", body: ... })
+    // Kode kupon tidak pernah ada di sisi client.
+    return new Promise((resolve) => {
+      setTimeout(() => resolve({ valid: false, discountRate: 0 }), 0);
+    });
+  }
+
+  /* KUPON */
+  async function applyCoupon() {
+    const code = document.getElementById("coupon").value.trim();
+    const msg = document.getElementById("coupon-msg");
+    if (!code) {
+      msg.textContent = "Masukkan kode kupon terlebih dahulu.";
+      msg.style.color = "#b96f5c";
+      return;
+    }
+    msg.textContent = "Mengecek kupon…";
+    msg.style.color = "#6e7b61";
+
+    const result = await validateCouponOnServer(code);
+    if (result.valid) {
+      diskon = result.discountRate;
+      msg.textContent = `Kupon aktif! Potongan ${result.discountRate * 100}%.`;
+      msg.style.color = "#6e7b61";
+    } else {
+      diskon = 0;
+      msg.textContent = "Kode kupon salah atau tidak valid.";
+      msg.style.color = "#b96f5c";
+    }
+    renderCart();
+  }
 
   const productSection = document.getElementById("product-section");
   const cartDetailsEl = document.getElementById("cart-details");
@@ -161,22 +194,6 @@ document.addEventListener("DOMContentLoaded", () => {
       delete cart[id];
     } else {
       cart[id].count = quantity;
-    }
-    renderCart();
-  }
-
-  /* KUPON */
-  function applyCoupon() {
-    const code = document.getElementById("coupon").value;
-    const msg = document.getElementById("coupon-msg");
-    if (code === KUPON_RAHASIA) {
-      diskon = 0.9;
-      msg.textContent = "Kupon aktif! Potongan 90%.";
-      msg.style.color = "#6e7b61";
-    } else {
-      diskon = 0;
-      msg.textContent = "Kode kupon salah.";
-      msg.style.color = "#b96f5c";
     }
     renderCart();
   }
