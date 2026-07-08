@@ -1,98 +1,142 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poké Gacha ETHJKT</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardian Tales Gacha Simulator</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Google Fonts: Titillium Web for a premium gaming UI aesthetic -->
+  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="pokedex">
-    <!-- Bagian atas ala perangkat Pokédex: lensa biru + 3 lampu indikator -->
-    <div class="pokedex-top">
-      <div class="lens"></div>
-      <div class="lights">
-        <span class="light red"></span>
-        <span class="light yellow"></span>
-        <span class="light green"></span>
+  <div class="simulator-container">
+    <!-- Header: Menampilkan profil gacha & stats penting -->
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="game-logo">GUARDIAN TALES</span>
+        <span class="app-tag">GACHA SIMULATOR</span>
       </div>
-      <div class="brand">POKÉDEX</div>
-    </div>
-
-    <!-- Layar putih tempat semua konten tampil -->
-    <div class="screen">
-      <h1>POKÉ GACHA</h1>
-      <div class="subtitle">tarik Pokémon asli — data langsung dari PokeAPI</div>
-
-      <!-- Navigasi tab -->
-      <div class="tabs">
-        <button class="tab active" data-tab="gacha">Gacha</button>
-        <button class="tab" data-tab="koleksi">Koleksi</button>
-        <button class="tab" data-tab="badge">Badge</button>
+      <div class="currency-panel">
+        <div class="currency-item" id="tambahGemsBtn" title="Klik untuk tambah 10,000 Gems gratis!">
+          <span class="curr-icon">💎</span>
+          <span class="curr-val" id="gemsCount">10,000</span>
+          <span class="add-btn">+</span>
+        </div>
+        <div class="currency-item" title="Mileage Tickets (Dapatkan 1 per pull)">
+          <span class="curr-icon">🎫</span>
+          <span class="curr-val" id="mileageCount">0</span>
+        </div>
+        <div class="currency-item" title="Hero Crystals (Dapatkan dari duplikat hero)">
+          <span class="curr-icon">🔮</span>
+          <span class="curr-val" id="crystalsCount">0</span>
+        </div>
       </div>
+    </header>
+
+    <!-- Layar Utama Simulator -->
+    <main class="main-screen">
+      <!-- Navigasi Tab -->
+      <nav class="navigation-tabs">
+        <button class="tab active" data-tab="gacha">Summon</button>
+        <button class="tab" data-tab="inventory">Inventory</button>
+        <button class="tab" data-tab="shop">Mileage Shop</button>
+      </nav>
 
       <!-- ============ TAB: GACHA ============ -->
-      <div class="tab-panel" id="panel-gacha">
-        <div class="stats">
-          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
-        </div>
-
-        <div class="pity">
-          <div class="pity-top"><span>Pity ke Legendary gratis</span><span id="pityText">0 / 10</span></div>
-          <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-        </div>
-
-        <div class="stage">
-          <div class="card" id="card">
-            <div class="spinner" id="spinner"></div>
-            <img class="sprite" id="sprite" alt="">
-            <div class="shiny-badge" id="shinyBadge">✨ SHINY</div>
-            <div class="placeholder" id="placeholder">
-              <div class="pokeball"></div>
-              <div class="ph-text">Tekan PULL</div>
-            </div>
+      <section class="tab-panel" id="panel-gacha">
+        <!-- Pengaturan Banner -->
+        <div class="banner-config">
+          <div class="banner-select-wrapper">
+            <label for="bannerSelect">PILIH BANNER</label>
+            <select id="bannerSelect">
+              <option value="hero-rateup">Pick-up Hero (Future Princess)</option>
+              <option value="hero-normal">Summon Hero Normal</option>
+              <option value="weapon-rateup">Pick-up Weapon (Liberator)</option>
+              <option value="weapon-normal">Summon Weapon Normal</option>
+            </select>
+          </div>
+          <div class="banner-details">
+            <h3 id="bannerTitle">RATE UP: Future Princess</h3>
+            <p id="bannerRates">Peluang Future Princess: 1.375% | Bintang 3 Lain: 1.375%</p>
           </div>
         </div>
 
-        <div class="poke-info">
-          <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
-          <div class="types" id="types"></div>
-          <div class="rar" id="rarity"></div>
-          <div class="stats-panel" id="statsPanel"></div>
+        <!-- Progress Pity -->
+        <div class="pity-container">
+          <div class="pity-header">
+            <span id="pityLabel">Pity Hero Bintang 3</span>
+            <span id="pityText">0 / 30</span>
+          </div>
+          <div class="pity-bar-track">
+            <div class="pity-bar-fill" id="pityFill"></div>
+          </div>
         </div>
 
-        <div class="err" id="err"></div>
-
-        <div class="buttons">
-          <button class="btn" id="tarik1">PULL 1x</button>
-          <button class="btn gold" id="tarik10">PULL 10x</button>
+        <!-- Stage Area (Tempat Animasi Reveal) -->
+        <div class="stage" id="stage">
+          <div class="placeholder" id="placeholder">
+            <div class="drone-container">
+              <div class="gacha-drone"></div>
+            </div>
+            <div class="ph-text">Tekan PULL untuk memulai gacha</div>
+          </div>
         </div>
 
-        <div class="hist-lbl">Riwayat Terakhir</div>
-        <div class="history" id="history"></div>
-      </div>
-
-      <!-- ============ TAB: KOLEKSI ============ -->
-      <div class="tab-panel" id="panel-koleksi" hidden>
-        <div class="stats">
-          <div class="stat"><div class="num" id="uniqueCount">0</div><div class="lbl">Jenis Terkumpul</div></div>
-          <div class="stat"><div class="num" id="shinyCount">0</div><div class="lbl">Shiny</div></div>
+        <!-- Tombol Pull & Reset -->
+        <div class="action-buttons-group">
+          <div class="pull-buttons">
+            <button class="btn pull-btn" id="tarik1">SUMMON 1x <span class="cost-lbl">💎 300</span></button>
+            <button class="btn pull-btn gold" id="tarik10">SUMMON 10x <span class="cost-lbl">💎 2700</span></button>
+          </div>
+          <div class="utility-buttons">
+            <button class="btn danger-btn" id="resetBtn">RESET ALL</button>
+            <div class="pull-stats">Total Pulls: <span id="totalCount">0</span></div>
+          </div>
         </div>
-        <div class="collection-empty" id="collectionEmpty">Belum ada Pokémon. Tarik dulu di tab Gacha! 🎣</div>
-        <div class="collection-grid" id="collectionGrid"></div>
-      </div>
 
-      <!-- ============ TAB: BADGE ============ -->
-      <div class="tab-panel" id="panel-badge" hidden>
-        <p class="badge-intro">Kumpulkan Pokémon tiap tipe untuk menguasai gym Kanto dan meraih 8 badge-nya!</p>
-        <div class="champion" id="champion" hidden>👑 CHAMPION! Kamu menguasai semua 8 gym Kanto!</div>
-        <div class="badge-grid" id="badgeGrid"></div>
-      </div>
+        <!-- Riwayat Tarikan Terakhir -->
+        <div class="history-section">
+          <h4 class="section-title">Riwayat Summon Terakhir</h4>
+          <div class="history-list" id="history">
+            <div class="empty-hist">Belum ada riwayat tarikan saat ini.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ TAB: INVENTORY ============ -->
+      <section class="tab-panel" id="panel-inventory" hidden>
+        <div class="inventory-section">
+          <h3 class="section-title">Collected Heroes</h3>
+          <div class="inventory-grid" id="heroGrid"></div>
+        </div>
+        <div class="inventory-section" style="margin-top: 24px;">
+          <h3 class="section-title">Collected Weapons</h3>
+          <div class="inventory-grid" id="weaponGrid"></div>
+        </div>
+      </section>
+
+      <!-- ============ TAB: SHOP ============ -->
+      <section class="tab-panel" id="panel-shop" hidden>
+        <div class="shop-header">
+          <div class="ticket-status">
+            <span>Tiket Mileage Anda:</span>
+            <span class="ticket-badge">🎫 <strong id="shopTickets">0</strong></span>
+          </div>
+          <p class="shop-intro">Tukarkan 300 tiket mileage untuk mendapatkan Hero Bintang 3 (Unique) atau Senjata Eksklusif Bintang 5 pilihan Anda.</p>
+        </div>
+        <div class="shop-grid" id="shopGrid"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Detail Hero Modal -->
+  <div class="modal" id="detailModal">
+    <div class="modal-wrapper" id="modalContent">
+      <!-- Diisi dinamis oleh JavaScript -->
     </div>
   </div>
 
-  <!-- Notifikasi kecil saat dapat badge baru -->
+  <!-- Toast Notification -->
   <div class="toast" id="toast" hidden></div>
 
   <script src="app.js"></script>

@@ -1,69 +1,60 @@
-# Log Hari 1 — Poké Gacha (Simulator Gacha Pokémon)
+# Log Hari 1 — GT Gacha (Simulator Gacha Guardian Tales)
 
-Penjelasan santai soal isi `index.html`. Sekarang gacha-nya menarik
-**Pokémon asli** langsung dari internet (PokeAPI), lengkap dengan gambar,
-tipe, dan statistik betulan.
+Penjelasan santai tentang implementasi gacha simulator **Guardian Tales** menggunakan data asli dari API public `gtales.top`. Semua aset dan logika terintegrasi dalam folder `hari-1` tanpa menambah file baru di luar berkas bawaan.
 
-## Apa yang berubah dari versi sebelumnya?
+## Apa yang Baru & Berubah dari Poké Gacha?
 
-Versi lama cuma emoji buatan sendiri (kelihatan "AI banget").
-Versi baru mengambil data nyata dari **PokeAPI** (https://pokeapi.co) —
-database Pokémon gratis untuk umum. Jadi tiap tarikan memunculkan Pokémon
-sungguhan dengan artwork resminya.
+1. **Migrasi Data ke Guardian Tales**:
+   - Simulator beralih dari Pokémon ke Guardian Tales.
+   - Mengambil data dari public API `gtales.top` (heroes list & hero details).
+   - Seluruh data 168 hero lengkap dengan elemen, role, dan senjata tanda tangan (signature weapon) dikompilasi secara lokal ke dalam `HEROES_DB` di `app.js` agar web berjalan instan, responsif, dan bebas dari isu CORS serta batas rate-limiting (HTTP 429).
 
-## Cara kerjanya (bahasa gampang)
+2. **Mekanisme Gacha Akurat**:
+   - **Hero Summon**:
+     - 3-Star (Unique Hero): **2.75%** (Rate-up hero utama: 1.375%).
+     - 2-Star (Rare Hero): **19.00%**.
+     - 1-Star (Normal Hero): **78.25%**.
+   - **Weapon Summon**:
+     - 5-Star Exclusive Weapon: **3.00%** (Rate-up weapon utama: 1.00%).
+     - 4-Star Legend Weapon: **9.00%**.
+     - Normal Equipment: **88.00%** (menggunakan nama-nama senjata generik seperti Bastard Sword, Magician Staff, dll).
 
-1. **Roll rarity dulu (pakai pity)** — sama seperti gacha beneran:
-   - **SSR 3%**, **EPIC 10%**, **RARE 30%**, sisanya **COMMON**.
-   - **Pity:** kalau sampai tarikan ke-10 belum dapat SSR, tarikan ke-10
-     itu **dijamin SSR**. Bar kuning menunjukkan progresnya.
+3. **Sistem Garansi (Soft Pity)**:
+   - Jika sampai tarikan ke-30 belum mendapatkan Bintang 3 (untuk banner hero) atau Bintang 5 Eksklusif (untuk banner senjata), tarikan ke-30 dijamin memberikan hadiah tier tertinggi tersebut.
 
-2. **Baru ambil Pokémon yang cocok** dengan tier hasil roll:
-   - **SSR** → Pokémon **Legendary / Mythical** asli (Mewtwo, Mew, Rayquaza, dll).
-     Daftar ID-nya sudah diverifikasi lewat data `is_legendary` / `is_mythical`.
-   - **EPIC** → Pokémon "pseudo-legendary" super kuat (Dragonite, Garchomp, dll).
-   - **RARE & COMMON** → Pokémon acak dari National Dex (nomor 1–1025).
+4. **Akumulasi Duplikat (Hero Crystals)**:
+   - Setiap kali mendapatkan hero duplikat, sistem akan mengonversinya menjadi **Hero Crystals (HC)** sesuai tier:
+     - Duplikat Bintang 3 → **50 HC**
+     - Duplikat Bintang 2 → **8 HC**
+     - Duplikat Bintang 1 → **1 HC**
 
-3. **Ambil + gabung data** dari dua alamat API:
-   - `/pokemon/{id}` → gambar artwork, tipe, base stat.
-   - `/pokemon-species/{id}` → status legendary/mythical.
-   Keduanya diambil **barengan** (Promise.all) biar cepat.
+5. **Mileage Shop (Toko Penukaran)**:
+   - Setiap tarikan gacha memberikan **1 Mileage Ticket**.
+   - Setelah mengumpulkan **300 Mileage Tickets**, user dapat menukarkannya secara instan dengan Hero Bintang 3 atau Senjata Eksklusif Bintang 5 apa saja yang ada di daftar toko!
 
-4. **Shiny!** — tiap Pokémon punya peluang **1/40** keluar versi *shiny*
-   (warna langka & mengkilap). Kalau hoki, muncul badge "✨ SHINY" dan
-   gambar shiny-nya yang dipakai.
+6. **Desain Estetika Premium & Animasi Box**:
+   - Tampilan diubah ke mode gelap luar angkasa dengan sentuhan warna neon violet, ungu glowing, dan emas bintang.
+   - Menggunakan Google Fonts *Titillium Web* agar memberi kesan antarmuka game modern.
+   - **Animasi Reveal Box**: Saat melakukan summon, visual box akan muncul di layar.
+     - **White Box** (glitch/glow pelangi) → Menandakan dapat Bintang 3/5 Eksklusif.
+     - **Gold Box** (glowing kuning) → Menandakan dapat Bintang 2/4.
+     - **Brown Box** (kotak kayu cokelat) → Hadiah bintang rendah.
+     - User bisa membuka kotak satu per satu atau menekan tombol **SKIP ALL** untuk melihat ringkasan hasil secara instan.
 
-5. **Tampilan kartu** menunjukkan:
-   - Artwork resmi + nomor Pokédex + nama.
-   - Badge **tipe** dengan warna resminya (contoh: grass hijau, fire oranye).
-   - **6 bar base stat** (HP, ATK, DEF, SpA, SpD, SPD).
-   - Border kartu berubah warna sesuai rarity, SSR ada efek getar + kilau emas.
+7. **Fitur Tambahan**:
+   - **+ Gems Gratis**: Tombol untuk menambah +10,000 Gems secara instan jika Gems habis.
+   - **Reset Simulator**: Tombol untuk menghapus semua progres dan inventory untuk mulai dari awal.
+   - **Local Storage**: Semua data Gems, Mileage, Crystals, Inventory, dan Banner saat ini disimpan otomatis di browser agar tidak hilang saat di-refresh.
 
-6. **Hemat internet (cache)** — Pokémon yang sudah pernah ditarik disimpan
-   di memori, jadi tidak minta ke server berulang-ulang. Ini juga mematuhi
-   aturan *fair use* PokeAPI.
+---
 
-7. **Tombol** — **PULL 1x** menarik sekali, **PULL 10x** menarik 10 kali
-   beruntun. Selama mengambil data, tombol dikunci + muncul spinner loading.
+## Riwayat Commit (Kecil & Rapi)
 
-## Sudah dites? Ya, beneran. ✅
-
-Selain cek logika, saya jalankan tes **end-to-end pakai browser sungguhan
-(Chrome headless)**:
-- Klik PULL 1x → muncul Pokémon asli (gambar tampil, 2 tipe, 6 bar stat). ✔
-- Klik PULL 10x → total jadi 11, pity ter-update, riwayat terisi. ✔
-- **0 error JavaScript** di console. ✔
-- Data fetch + cache + pity + anti-tabrakan pool sudah diuji terpisah juga. ✔
-
-## Cara lihat hasilnya
-
-Dobel-klik `hari-1/index.html` di browser (butuh koneksi internet karena
-gambar & data diambil online), lalu pencet **PULL**. Tarik terus sampai bar
-pity penuh untuk dapat Legendary gratis, dan semoga hoki dapat **shiny**! ✨
-
-## Riwayat commit (kecil-kecil, sesuai aturan)
-
-1. `feat: redesign gacha UI shell + local rarity/pity engine`
-2. `feat: fetch real Pokémon from PokeAPI with caching + async pulls`
-3. `feat: add type badges, base-stat bars, and shiny variants`
-4. `docs: update LOG.md for Pokémon gacha`
+1. `feat: implement gacha engine and embed compiled heroes database`
+   - Mengintegrasikan mesin gacha, parameter rate, soft pity, serta kompilasi data 168 hero.
+2. `feat: implement HTML structure for Guardian Tales gacha simulator`
+   - Membuat struktur layout semantik untuk tab summon, inventory, toko, dan modal detail hero.
+3. `feat: implement premium cosmic dark theme styles for the simulator`
+   - Menerapkan desain dark mode luar angkasa, styling box reveal gacha, dan efek glow.
+4. `docs: update LOG.md for Guardian Tales simulator`
+   - Memperbarui dokumentasi log dalam bahasa Indonesia.
