@@ -1,344 +1,219 @@
-# ETHJKT x UNPAM — Learning Kit: AI & Blockchain
+# MISI HARI 2 — BUG BOUNTY: PASAR PAGI
 
-Short Course "AI & Blockchain" | Universitas Pamulang (UNPAM)
-Pengajar: Faisal "Zexo" — Founder ETHJKT (Ethereum Jakarta)
-Mulai 6 Juli 2026 | Hari 1-4 sesi live (2 jam), Hari 5 proyek take-home
+Hari ini kalian nggak bikin dari nol. Kalian jadi TIM KEAMANAN.
 
----
+Ceritanya: seorang "AI junior dev" nyerahin sebuah TOKO BUAH ONLINE
+("Pasar Pagi"). Kodenya JALAN, tampilannya rapi, ada modal checkout, ada
+toast sukses. Keliatan profesional. Justru itu jebakannya makin rapi
+tampilannya, makin gampang kamu percaya tanpa ngecek.
 
-## BACA INI H-1 (Sehari Sebelum Kelas)
+Bedanya sama sekadar coding biasa: di toko ini ada UANG dan KEPERCAYAAN
+pembeli yang dipertaruhkan. Kalau kode kayak gini beneran naik ke publik,
+yang rugi bukan cuma perasaan orang toko bisa bangkrut, pembeli bisa
+dibohongin, data bisa bocor.
 
-Halo. Ini panduan persiapan. Tujuannya satu: pas hari pertama,
-laptop kalian udah SIAP, jadi kita nggak buang 2 jam cuma buat install-install.
-
-Kerjain semua langkah di bawah SEBELUM hari-H. Nggak lama, kok
-santai sekitar 30-45 menit. Kalau nyangkut, catat errornya, nanti
-kita beresin bareng.
-
-Prinsip course ini biar kalian tau dari awal:
-
-    AI = tukang ketik. Kamu = pilot.
-    Dinilai dari "bisa jelasin & verifikasi kode AI",
-    BUKAN dari "kodenya jalan".
-
-Jadi tenang, kalian nggak dituntut jago sintaks. Kalian dituntut PAHAM.
+Tugas kamu: jalanin, belanja beneran, lalu BEDAH. Ada 7 masalah tertanam
+(BUG, KEAMANAN, ETIKA) yang halus-halus. Ini skill inti Hari 2: MEMBACA
+& MEMVERIFIKASI kode AI. Nemu semua sendiri?
 
 ---
 
-## CHECKLIST PERSIAPAN
-
-Centang satu-satu. Kalau keenam ini beres, kalian aman.
+## ATURAN EMAS (masih sama)
 
 ```
-[ ] 1. Punya akun GitHub (buat simpan & pamer karya)
-[ ] 2. Git ke-install di laptop
-[ ] 3. Node.js ke-install di laptop
-[ ] 4. VSCode ke-install (editor kode + terminal built-in)
-[ ] 5. Punya AI coding CLI gratis yang jalan di terminal (Codex CLI)
-[ ] 6. Udah tes semua lewat "Verifikasi Akhir" di bawah
+AI = tukang ketik, kamu = pilot.
+Pilot yang baik BACA instrumen sebelum percaya.
+
+Dinilai dari: seberapa tajam kamu NEMUIN, MEMBUKTIIN & NJELASIN
+masalah, BUKAN dari kodenya jalan (kodenya emang udah jalan, tapi cacat).
 ```
 
-Spek laptop minimal: bisa buka browser + terminal. Windows, Mac,
-atau Linux semua bisa. Koneksi internet wajib.
+Bedanya di level ini: sebagian masalah butuh kamu MEMBUKTIIN, bukan cuma
+"kayaknya salah". Buka DevTools (F12). Detektif beneran ngumpulin bukti.
+
+Catatan penting: petunjuk di bawah SENGAJA nggak nyebutin jawabannya.
+Cuma nunjuk "area" tempat kamu harus curiga. Sisanya kamu yang gali.
+Kalau langsung dikasih jawaban, itu bukan bug bounty namanya.
 
 ---
 
-## LANGKAH 1 — Akun GitHub
+## TARGET: 7 TEMUAN, 3 KATEGORI
 
-GitHub itu tempat naruh kode online. Semua tugas & capstone kalian
-bakal disimpan di sini. Ini sekalian jadi PORTFOLIO + amunisi CV.
+```
++-----------+---------------------------------------------------+
+| Kategori  | Cari apa                                          |
++-----------+---------------------------------------------------+
+| BUG       | Kelakuan salah / angka yang aneh                  |
+| KEAMANAN  | Celah yang bisa dimanfaatin buat curang / nyerang |
+| ETIKA     | Pola gelap (dark pattern): toko sengaja "nyetir"  |
+|           | pembeli dengan cara nggak jujur                   |
++-----------+---------------------------------------------------+
+```
 
-1. Buka https://github.com/signup
-2. Isi email, bikin password, pilih username (bebas, apa aja).
-3. Verifikasi (klik teka-teki + cek email konfirmasi).
-4. Selesai. Simpan username + password baik-baik.
+Sebaran target: 2 BUG, 3 KEAMANAN, 2 ETIKA. (Jumlah tiap kategori
+dikasih tau biar kamu tau kapan berhenti nyari, bukan biar kamu nyontek.)
 
-Cek berhasil: kalian bisa login di https://github.com dan lihat halaman
-profil kosong kalian.
+Konsep baru di level ini: DARK PATTERN. Bukan bug teknis kodenya
+"bener", tapi sengaja didesain buat NGAKALIN pengguna (bikin panik,
+sembunyiin biaya, dll). Ini isu etika produk yang nyata.
 
 ---
 
-## LANGKAH 2 — Install Git
-
-Git itu alat buat "nyimpan versi" kode + upload ke GitHub.
-
-### Windows
-
-1. Buka https://git-scm.com/download/win
-2. Download otomatis jalan. Buka file `.exe`-nya.
-3. Klik Next terus sampai selesai (default-nya udah bener,
-   nggak usah diutak-atik).
-4. Selesai.
-
-### macOS
-
-Cara paling gampang lewat terminal (buka app "Terminal"):
+## CHECKPOINT 0 — Jalanin & Belanja Dulu
 
 ```
-git --version
+[ ] Buka index.html di browser (tinggal double-click / Live Server).
+[ ] Masukin beberapa buah ke basket pakai tombol +/-.
+[ ] Isi "Note for the farmer", klik Continue to Checkout, Confirm.
+[ ] Perhatiin angka Total. Bandingin sama jumlah harga barangnya.
+[ ] Buka DevTools (F12) > tab Console & Elements. Ini senjatamu.
 ```
 
-Kalau Git belum ada, macOS otomatis nawarin install ("Command Line
-Developer Tools"). Klik Install, tunggu selesai.
-
-### Linux (Ubuntu/Debian)
-
-```
-sudo apt update
-sudo apt install git -y
-```
-
-### Cek berhasil (semua OS)
-
-Buka terminal, ketik:
-
-```
-git --version
-```
-
-Kalau muncul sesuatu kayak `git version 2.4x.x`, berarti SUKSES.
+Detektif main dulu sama barangnya sebelum nuduh. Sambil belanja,
+tanya terus: "angka ini dari mana?", "kenapa segini?", "ini jujur nggak?"
 
 ---
 
-## LANGKAH 3 — Install Node.js
+## CHECKPOINT 1 — Berburu BUG (target 2)
 
-Node.js dipakai buat jalanin tools & (nanti) frontend. Ambil versi
-LTS (Long Term Support) = versi paling stabil.
+GOAL: temukan 2 kelakuan angka yang SALAH.
 
-### Windows & macOS (cara termudah)
-
-1. Buka https://nodejs.org
-2. Klik tombol versi LTS (bertuliskan "LTS", biasanya angka genap).
-3. Buka installer-nya, klik Next/Continue sampai selesai (default aman).
-
-### Linux (Ubuntu/Debian)
+Area yang wajib kamu curigai:
 
 ```
-sudo apt update
-sudo apt install nodejs npm -y
+- MATEMATIKA UANG. Belanja beberapa kombinasi barang, lalu tatap
+  angka Total baik-baik. Selalu rapi & masuk akal, atau kadang
+  bentuknya aneh?
+- INPUT NAKAL. Di mana pun user bisa NGETIK ANGKA (mis. jumlah
+  barang di basket), coba isi yang "nakal": kosongin, kasih huruf,
+  kasih minus. Toko-nya tetap waras?
 ```
 
-### Cek berhasil (semua OS)
+Jangan cuma nebak dari baca kode. BUKTIIN di layar: reproduksi angkanya,
+screenshot / catat langkahnya.
 
-Buka terminal, ketik dua baris ini:
-
+Prompt bantu (boleh ke Codex/Claude, buat NGERTI, bukan nyari jawaban):
 ```
-node -v
-npm -v
-```
-
-Kalau dua-duanya keluar angka versi (contoh `v22.x.x` dan `10.x.x`),
-berarti SUKSES. `npm` ikut ke-install bareng Node otomatis.
-
----
-
-## LANGKAH 4 — Install VSCode (Editor Kode)
-
-VSCode = tempat kalian nulis & baca kode. Ada TERMINAL built-in-nya juga,
-jadi ngoding + jalanin perintah bisa di satu jendela. Ini yang bakal
-kita pakai sepanjang course.
-
-### Semua OS
-
-1. Buka https://code.visualstudio.com
-2. Download sesuai OS (tombolnya ngedeteksi otomatis). Buka installer,
-   klik Next/Continue sampai selesai.
-3. (Windows) kalau ditawarin "Add to PATH", CENTANG.
-
-### Kenalan terminal built-in
-
-Buka VSCode. Di menu atas: Terminal > New Terminal (atau tekan Ctrl + `
-tombol backtick, di pojok kiri atas keyboard). Muncul kotak hitam di
-bawah itu terminalnya. Semua perintah CLI kita jalanin di situ.
-
-Cek berhasil: VSCode kebuka DAN kalian bisa munculin terminal di dalamnya.
-
----
-
-## LANGKAH 5 — AI Coding CLI (WAJIB, jalan di terminal)
-
-Ini jantung course-nya. Gaya ngajar kita MEMBIASAKAN kalian kerja lewat
-CLI (terminal), bukan cuma copy-paste dari web. Kenapa? Karena di
-dunia kerja beneran, engineer ngobrol sama AI langsung dari terminal,
-nempel di sebelah kodenya. Skill ini yang mau kita bangun.
-
-Jadi wajib punya SATU AI coding CLI yang jalan. Semua di bawah GRATIS,
-tanpa kartu kredit.
-
-### Rekomendasi utama: Codex CLI (gratis via akun ChatGPT)
-
-Codex CLI dari OpenAI GRATIS pakai akun ChatGPT biasa (plan Free, $0).
-Node.js udah kalian install di Langkah 3, jadi tinggal:
-
-1. Bikin akun ChatGPT gratis di https://chatgpt.com (skip kalau udah punya).
-2. Install Codex CLI. Di terminal VSCode ketik:
-
-```
-npm install -g @openai/codex
-```
-
-3. Jalankan:
-
-```
-codex
-```
-
-4. Pilih "Sign in with ChatGPT", login pakai akun tadi.
-5. Tes: ketik "jelasin apa itu smart contract dalam 2 kalimat".
-   Kalau dibales, SUKSES.
-
-### Pilihan lain (kalau Codex bermasalah)
-
-```
-+---+----------------------+--------+----------------------------+
-| # | CLI                  | Kartu? | Catatan                    |
-+---+----------------------+--------+----------------------------+
-| A | Codex CLI (OpenAI)   | Tidak  | REKOMENDASI. Gratis via    |
-|   |                      |        | akun ChatGPT Free.         |
-+---+----------------------+--------+----------------------------+
-| B | Antigravity CLI      | Tidak  | Gratis dari Google         |
-|   | (Google)             |        | (pengganti Gemini CLI),    |
-|   |                      |        | kuota harian besar.        |
-+---+----------------------+--------+----------------------------+
-| C | Claude Code (CLI)    | Ya /   | Yang dipakai PENGAJAR.     |
-|   |                      | kredit | Butuh Pro (~$20/bln) atau  |
-|   |                      |        | kredit API. TIDAK wajib.   |
-+---+----------------------+--------+----------------------------+
-```
-
-Catatan: Gemini CLI udah dipensiun Google (Juni 2026), diganti
-Antigravity CLI. Kalau nemu tutorial "Gemini CLI", itu udah usang.
-
-PENTING SOAL KEAMANAN: hindari situs/proxy "AI gratis unlimited" yang
-minta kalian tempel API key ke server mereka. Itu rawan dicuri. Cukup
-jalur resmi di atas.
-
----
-
-## VERIFIKASI AKHIR
-
-Buka terminal (boleh terminal built-in VSCode), jalanin satu-satu:
-
-```
-git --version
-node -v
-npm -v
-codex --version
-```
-
-Lalu:
-
-```
-Buka VSCode        -> kebuka + bisa munculin terminal built-in
-Login github.com   -> harus bisa masuk
-Jalankan: codex    -> udah login (Sign in with ChatGPT sukses)
-```
-
-Kalau empat perintah terminal keluar angka versi, VSCode jalan, DAN
-Codex CLI udah login, artinya laptop kalian 100% SIAP. Mantap.
-
----
-
-## KALAU MUNCUL ERROR
-
-Jangan panik. Ini normal. Beberapa yang sering kejadian:
-
-```
-+-------------------------------+---------------------------------+
-| Masalah                       | Coba ini dulu                   |
-+-------------------------------+---------------------------------+
-| "git bukan perintah dikenal"  | Tutup & buka LAGI terminalnya,  |
-| / "'git' is not recognized"   | terus coba ulang. Kalau masih,  |
-|                               | install ulang Git (Langkah 2).  |
-+-------------------------------+---------------------------------+
-| "node bukan perintah dikenal" | Sama: tutup-buka terminal, cek  |
-|                               | ulang. Restart laptop kalau     |
-|                               | perlu.                          |
-+-------------------------------+---------------------------------+
-| Download lama / gagal         | Cek koneksi internet, coba WiFi |
-|                               | lain, ulangi.                   |
-+-------------------------------+---------------------------------+
-| Codex gagal install/login     | Cek `node -v` jalan dulu. Masih |
-|                               | gagal? Pakai Pilihan B          |
-|                               | (Antigravity CLI) sebagai ganti.|
-+-------------------------------+---------------------------------+
-```
-
-Masih nyangkut? Screenshot error-nya, catat langkah ke berapa, bawa
-pas hari-H. Kita beresin 5 menit di awal kelas.
-
----
-
-## YANG DIBAWA PAS HARI-H
-
-```
-[ ] Laptop yang udah lolos "Verifikasi Akhir"
-[ ] Charger laptop
-[ ] Username & password GitHub (jangan lupa!)
-[ ] Akun ChatGPT + Codex CLI yang udah bisa login di terminal
-[ ] Niat belajar + siap salah. Salah itu bagian dari proses.
+"Baca cara kode ini menghitung dan menampilkan Total. Menurut kamu,
+kondisi input seperti apa yang bisa bikin hasilnya salah atau aneh?
+Jelasin alurnya, jangan cuma kasih kesimpulan."
 ```
 
 ---
 
-## SEKILAS: 5 HARI KE DEPAN
+## CHECKPOINT 2 — Berburu CELAH KEAMANAN (target 3)
+
+GOAL: temukan 3 celah. Ini bagian paling seru buktiin sendiri di DevTools.
+
+Tiga pertanyaan pemandu (tiap pertanyaan nuntun ke satu celah):
 
 ```
-+------+--------------------------------+---------------+
-| Hari | Yang kita lakuin               | Format        |
-+------+--------------------------------+---------------+
-| 1    | Kenalan AI + ngoding pertama   | Live (2 jam)  |
-|      | dibantu AI                     |               |
-| 2    | Review & bongkar kode AI       | Live (2 jam)  |
-|      | (nyari bug + celah keamanan)   |               |
-| 3    | Deploy smart contract pertama  | Live (2 jam)  |
-|      | (papan Menfess) di browser     |               |
-| 4    | Menfess lengkap + AI Moderator | Live (2 jam)  |
-|      | + ringkasan "vibe kampus"      |               |
-| 5    | Mini proyek = PR TERAKHIR.     | Take-home     |
-|      | Poles karya -> push GitHub     | (TANPA sesi   |
-|      | -> demo. Dikerjain mandiri.    | live)         |
-+------+--------------------------------+---------------+
+1. INPUT USER. Di setiap tempat user bisa NGETIK (catatan, kupon),
+   apa yang terjadi kalau yang diketik BUKAN teks biasa? Kode-nya
+   nampilin input user dengan aman, atau mentah? (kata kunci: XSS)
+2. RAHASIA & LOGIKA DI CLIENT. Buka file kode / View Source. Ada
+   "rahasia" yang keliatan terang-terangan? Ada keputusan penting
+   yang diputus di BROWSER, yang harusnya nggak boleh dipercaya?
+3. ANGKA PENTING DARI MANA. Harga yang dipakai buat ngitung Total
+   itu diambil dari data resmi produk, atau dari sesuatu di halaman
+   yang bisa diedit user lewat DevTools?
 ```
 
-CATATAN HARI 5: nggak ada kelas live di hari terakhir. Hari 5 =
-mini proyek yang jadi PR (tugas) TERAKHIR kalian, dikerjain mandiri
-dari rumah, lalu di-push ke GitHub. Sesi live cuma Hari 1-4.
+Buktiin tiap celah beneran. "Kayaknya rawan" belum keitung kamu harus
+bisa nunjukin celahnya kepake.
 
-Buat Hari 5 ada bacaan mandiri soal karier + cara lanjut belajar +
-gabung komunitas ETHJKT. Baca di file: KARIER.md (ada di repo ini).
-
-Capstone kita: "OnChain Menfess" papan menfess kampus yang tersimpan
-permanen di blockchain, dijaga AI moderator biar aman. Seru. Sampai
-ketemu di hari-H.
-
----
-
-## SUMBER INFO (biar transparan)
-
-Info soal tool & harga di panduan ini diverifikasi dari sumber resmi
-per Juli 2026. Kalau ada yang berubah, cek link di bawah:
-
+Prompt bantu:
 ```
-- Codex CLI gratis via akun ChatGPT Free (OpenAI Help Center)
-  https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan
-
-- Cara install & sign-in Codex CLI (OpenAI Developers)
-  https://developers.openai.com/codex/cli
-
-- Perbandingan AI CLI gratis + info Gemini CLI dipensiun -> Antigravity
-  https://www.termdock.com/en/blog/free-ai-cli-tools-ranked
-
-- Download Node.js (versi LTS)
-  https://nodejs.org
-
-- Download Git
-  https://git-scm.com
-
-- Download VSCode
-  https://code.visualstudio.com
+"Di file ini: (1) gimana cara kode nampilin catatan dari user, aman
+dari XSS nggak? (2) apakah ada rahasia atau logika penting yang ada di
+sisi browser? (3) harga buat ngitung total diambil dari mana? Jelasin
+BAHAYANYA, jangan langsung kasih patch."
 ```
 
 ---
+
+## CHECKPOINT 3 — Berburu POLA GELAP / ETIKA (target 2)
+
+GOAL: buktiin toko ini sengaja "nyetir" pembeli dengan nggak jujur.
+
+Dua hal yang perlu kamu tanyain ke toko ini:
+
+```
+- TOKO INI JUJUR SOAL "STOK"? Perhatiin klaim yang bikin buru-buru
+  (mis. angka "sisa sekian"). Klik-klik & refresh halaman. Angkanya
+  kelakuan kayak stok beneran, atau kayak dikarang biar kamu panik?
+- TOKO INI JUJUR SOAL "HARGA"? Jumlahin harga barang di basket pakai
+  kalkulator, bandingin sama Total yang kamu bayar. Pas? Kalau ada
+  selisih, selisih itu dijelasin JELAS dari awal, atau muncul diam-diam
+  di detik terakhir?
+```
+
+Renungan (buat laporan): dua-duanya "kode-nya jalan sempurna". Tapi
+tujuannya bikin orang panik & bayar lebih tanpa sadar. Ini bukan bug
+teknis ini pilihan ETIKA. Kalau kamu yang disuruh AI bikin fitur kayak
+gini buat startup-mu, kamu bakal bilang apa?
+
+---
+
+## CHECKPOINT 4 — Betulin (FINISH)
+
+GOAL: perbaiki temuanmu, dibantu AI, TAPI kamu yang paham.
+
+Buat tiap temuan yang udah kamu buktiin: minta AI bantu betulin, lalu
+kamu WAJIB bisa jelasin kenapa fix-nya bener. Contoh prompt:
+```
+"Aku nemu masalah ini: <jelasin temuanmu>. Betulin di kode ini, dan
+jelasin kenapa cara itu yang bener + prinsip umum di baliknya."
+```
+
+Cara ngecek fix-mu beneran jalan: ULANGI langkah waktu kamu nemuin
+masalahnya tadi. Kalau sekarang toko-nya udah kelakuan bener & jujur,
+berarti fix-mu lolos. Kamu yang nyusun checklist-nya sendiri dari
+temuanmu itu bagian dari nilainya.
+
+Kalau mentok, tanya AI (Codex/Claude) pakai prompt-prompt di atas, atau
+minta bocoran ke pengajar. Tapi tetap wajib bisa JELASIN sendiri kunci
+lengkapnya sengaja nggak ditaruh di sini biar kamu nyari dulu.
+
+---
+
+## LAPORAN TEMUAN (WAJIB — ini yang dinilai)
+
+Bikin file `LAPORAN-TEMUAN.md`. Buat tiap temuan, tulis:
+
+```
+Temuan #: [BUG / KEAMANAN / ETIKA]
+- Masalahnya apa (bahasa sendiri):
+- Cara buktiinnya (langkah persis yang kamu lakuin):
+- Kenapa ini bahaya / nggak adil (siapa yang rugi):
+- Cara betulinnya:
+```
+
+Plus 1 refleksi penutup:
+```
+- Bedanya "kode jalan" sama "kode benar & jujur" itu apa, menurutmu,
+  setelah level ini?
+```
+
+Yang paling dihargain: temuan yang kamu BUKTIIN sendiri di DevTools +
+ngerti kenapa bahaya. Nemu 4 tapi paham & terbukti > nemu 7 tapi nyontek.
+
+---
+
+## STRETCH (buat yang haus)
+
+```
+- Cari temuan ke-8: masih ada celah lain yang belum masuk target 7?
+  (petunjuk: pikirin batas-batas yang "lupa" dipasang, atau angka yang
+  ditampilin di dua tempat tapi nggak sinkron).
+- Harga versi aman: gimana caranya toko beneran mastiin pembeli nggak
+  ngakalin harga? (kata kunci: validasi di server).
+- Tulis "5 aturan review" versimu buat tiap kali AI ngasih kode toko.
+```
+
+---
+
+Inget: kode AI itu DRAFT, bukan FINAL. Di toko beneran, kamu gerbang
+terakhir sebelum duit & kepercayaan orang dipertaruhkan.
 
 -- Zexo, ETHJKT
