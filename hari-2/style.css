@@ -382,9 +382,28 @@ body {
   justify-content: space-between;
   align-items: center;
 
+  margin-bottom: 0.4rem;
+
+  font-size: 0.95rem;
+
+  color: var(--olive);
+}
+
+.handling-row {
+  font-size: 0.85rem;
+
+  padding-bottom: 0.6rem;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.total-final {
+  margin-top: 0.4rem;
   margin-bottom: 1rem;
 
   font-size: 1.05rem;
+
+  color: var(--brown);
 }
 
 .checkout-button {

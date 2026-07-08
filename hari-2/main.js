@@ -157,6 +157,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let total = totalPrice + HANDLING_FEE;
     total = total - total * diskon;
 
+    // Tampilkan subtotal dan total secara terpisah (transparan ke pengguna)
+    const subtotalEl = document.getElementById("sidebar-subtotal");
+    if (subtotalEl) subtotalEl.textContent = totalPrice.toFixed(2);
     totalPriceEl.textContent = total.toFixed(2);
     updateCartCount();
     renderProducts();
