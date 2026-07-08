@@ -265,6 +265,13 @@ body {
   transform: scale(1.05);
 }
 
+.quantity-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #ece3d7;
+  transform: none;
+}
+
 .quantity-display {
   font-size: 0.95rem;
 
@@ -710,3 +717,20 @@ body {
     align-items: flex-start;
   }
 }
+
+/* CART BREAKDOWN SIDEBAR */
+.cart-breakdown {
+  margin-top: 1rem;
+  margin-bottom: 0.8rem;
+  border-top: 1px dashed var(--line);
+  padding-top: 0.8rem;
+}
+
+.cart-breakdown .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem 0;
+  color: var(--olive);
+  font-size: 0.88rem;
+}
+
