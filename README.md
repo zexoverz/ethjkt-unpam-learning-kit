@@ -365,3 +365,10 @@ per Juli 2026. Kalau ada yang berubah, cek link di bawah:
 ---
 
 -- Zexo, ETHJKT
+
+---
+
+## SUBMISI TUGAS HARI 3: KAMPUSSWAP
+- **Nama Siswa**: Dinar Fadilah
+- **Wallet Address**: `0xCC54DCBecdCd1cDef915Fe95f1FE1ba715971Ab8`
+- **Token Contract Address (KeyFrame Coin - KeyFrame)**: `0x955ec89aEb0B8F5BBaBC6A22785e5f1a1171D440`
