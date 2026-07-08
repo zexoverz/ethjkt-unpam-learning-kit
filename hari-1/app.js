@@ -1,139 +1,203 @@
 // ==========================================================
-// POKÉ GACHA - HARI 1
-// Simulator gacha yang menarik Pokémon ASLI dari PokeAPI.
+// DRAGON BALL GACHA - HARI 1
+// Simulator gacha yang menarik karakter asli dari Dragon Ball API.
 //
-// File ini dibangun bertahap (lihat LOG.md):
-//   1) Mesin rarity + pity (lokal, tanpa internet)
-//   2) Lapisan ambil data PokeAPI (fetch + cache)
-//   3) Render kartu Pokémon (artwork, tipe, stat, shiny)
+// Data digabung dari:
+//   1) /characters, semua halaman via links.next
+//   2) /characters/:id, detail planet asal + transformasi saat kartu keluar
+//   3) /planets, semua halaman untuk konteks koleksi planet
 // ==========================================================
 
 // ---------- Konfigurasi rarity & pity ----------
-const PITY_MAX = 10; // tarikan ke-10 dijamin Legendary (SSR) kalau belum dapat
+const PITY_MAX = 10; // tarikan ke-10 dijamin SSR kalau belum dapat
 
 // Peluang tiap tier (dicek berurutan): SSR 3%, EPIC 10%, RARE 30%, sisanya COMMON.
 const RATE_SSR = 0.03;
 const RATE_EPIC = 0.10;
 const RATE_RARE = 0.30;
 
-const SHINY_RATE = 1 / 40; // peluang setiap Pokémon keluar versi shiny (langka & mengkilap)
+const AURA_RATE = 1 / 40; // peluang setiap karakter keluar versi Aura Burst
 
-// ---------- Sumber data: PokeAPI ----------
-const API = "https://pokeapi.co/api/v2";
-const DEX_MAX = 1025; // batas National Dex yang punya official artwork
+// ---------- Sumber data: Dragon Ball API ----------
+const API = "https://dragonball-api.com/api";
+const STORAGE_KEY = "dragonball_gacha_state_v1";
 
-// Kolam ID Pokémon per tier.
-// SSR  = legendary + mythical asli (sudah diverifikasi lewat is_legendary/is_mythical).
-// EPIC = "pseudo-legendary" & Pokémon kuat ikonik (base stat 500-600).
-// RARE & COMMON = ID acak dari National Dex (di luar kolam SSR/EPIC).
-const SSR_IDS = [144,145,146,150,151,243,244,245,249,250,251,377,378,379,380,381,382,383,384,385,386,480,481,482,483,484,485,486,487,488,491,492,493,494,638,639,640,641,642,643,644,645,646,647,648,649,716,717,718,719,720,721,785,786,787,788,791,792,800,801,802,807,809,888,889,890,891,892,893,894,895,896,897,898,905,1001,1002,1003,1004,1007,1008,1014,1015,1016,1017,1024];
-const EPIC_IDS = [3,6,9,149,248,257,282,373,376,445,448,462,530,635,700,706,784,887,998];
-const SPECIAL_IDS = new Set([...SSR_IDS, ...EPIC_IDS]);
-
-// Warna resmi tiap tipe Pokémon (untuk badge tipe).
-const TYPE_COLORS = {
-  normal: "#A8A77A", fire: "#EE8130", water: "#6390F0", electric: "#F7D02C",
-  grass: "#7AC74C", ice: "#96D9D6", fighting: "#C22E28", poison: "#A33EA1",
-  ground: "#E2BF65", flying: "#A98FF3", psychic: "#F95587", bug: "#A6B91A",
-  rock: "#B6A136", ghost: "#735797", dragon: "#6F35FC", dark: "#705746",
-  steel: "#B7B7CE", fairy: "#D685AD",
+const dataCache = {
+  roster: null,
+  planets: null,
+  pools: null,
+  details: new Map(),
 };
 
-// Label pendek + urutan tampil untuk 6 stat dasar.
-const STAT_LABELS = {
-  "hp": "HP", "attack": "ATK", "defense": "DEF",
-  "special-attack": "SpA", "special-defense": "SpD", "speed": "SPD",
+// Warna badge untuk race/affiliation.
+const TAG_COLORS = {
+  Saiyan: "#d9572b",
+  Human: "#2d6f9f",
+  Namekian: "#4f9b45",
+  Android: "#8b3ff0",
+  "Frieza Race": "#9a65c7",
+  Majin: "#d66ba4",
+  Angel: "#4ba3c7",
+  God: "#d99e00",
+  "Z Fighter": "#2fae5a",
+  "Army of Frieza": "#6e5aa8",
+  Freelancer: "#687386",
+  Villain: "#b83b3b",
+  Other: "#687386",
 };
-const STAT_MAX = 255; // stat dasar tertinggi yang mungkin (untuk skala bar)
 
-// Cache hasil fetch supaya hemat request (patuh fair-use PokeAPI).
-const cache = new Map();
+const POWER_UNITS = {
+  thousand: 1e3,
+  million: 1e6,
+  billion: 1e9,
+  trillion: 1e12,
+  quadrillion: 1e15,
+  quintillion: 1e18,
+  sextillion: 1e21,
+  septillion: 1e24,
+  septllion: 1e24,
+  octillion: 1e27,
+  googolplex: 1e100,
+};
 
-// PokeAPI mengarahkan gambar ke raw.githubusercontent.com yang gampang kena
-// rate-limit (HTTP 429) saat banyak gambar dimuat sekaligus (misal PULL 10x).
-// Kita alihkan ke jsDelivr — CDN yang me-mirror repo yang sama tanpa limit.
-function lewatCDN(url) {
-  if (!url) return url;
-  return url.replace(
-    "https://raw.githubusercontent.com/PokeAPI/sprites/master/",
-    "https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/"
-  );
-}
-
-// Ambil satu angka acak dalam [min, max].
+// ---------- Utilitas ----------
 function acakAntara(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Ambil satu elemen acak dari array.
 function pilihAcak(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// Pilih ID Pokémon sesuai tier hasil roll.
-function pickId(kelas) {
-  if (kelas === "ssr") return pilihAcak(SSR_IDS);
-  if (kelas === "epic") return pilihAcak(EPIC_IDS);
-  // rare & common: ID acak dari dex, hindari yang sudah jadi milik SSR/EPIC.
-  let id;
-  do { id = acakAntara(1, DEX_MAX); } while (SPECIAL_IDS.has(id));
-  return id;
+function shortText(text, max = 170) {
+  if (!text) return "Deskripsi belum tersedia dari API.";
+  const clean = text.replace(/\s+/g, " ").trim();
+  return clean.length > max ? clean.slice(0, max - 1).trim() + "..." : clean;
 }
 
-// Judul rapi: "bulbasaur" -> "Bulbasaur", "mr-mime" -> "Mr Mime".
-function rapikanNama(nama) {
-  return nama.split("-").map(k => k.charAt(0).toUpperCase() + k.slice(1)).join(" ");
+function normalizeTag(value) {
+  return value && String(value).trim() ? String(value).trim() : "Other";
 }
 
-// ---------- Ambil + gabungkan data satu Pokémon ----------
-// Menggabungkan endpoint /pokemon (artwork, tipe, stat) dan
-// /pokemon-species (status legendary/mythical) jadi satu objek rapi.
-async function getPokemon(id) {
-  if (cache.has(id)) return cache.get(id);
+function parsePower(value) {
+  if (!value) return 0;
+  const raw = String(value).toLowerCase().replace(/,/g, "").trim();
+  const unit = Object.keys(POWER_UNITS).find(u => raw.includes(u));
 
-  const [pRes, sRes] = await Promise.all([
-    fetch(API + "/pokemon/" + id),
-    fetch(API + "/pokemon-species/" + id),
-  ]);
-  if (!pRes.ok || !sRes.ok) throw new Error("Gagal ambil data Pokémon #" + id);
+  if (unit) {
+    const number = parseFloat(raw.replace(/[^0-9.]/g, ""));
+    return Number.isFinite(number) ? number * POWER_UNITS[unit] : 0;
+  }
 
-  const p = await pRes.json();
-  const s = await sRes.json();
-  const art = p.sprites.other["official-artwork"];
+  const digits = raw.replace(/\./g, "").replace(/[^0-9]/g, "");
+  return digits ? Number(digits) : 0;
+}
 
-  const mon = {
-    id: p.id,
-    name: rapikanNama(p.name),
-    artwork: lewatCDN(art.front_default),
-    shinyArtwork: lewatCDN(art.front_shiny),
-    fallbackArt: lewatCDN(p.sprites.front_default), // sprite piksel klasik, jaring pengaman
-    types: p.types.map(t => t.type.name),
-    stats: p.stats.map(st => ({ name: st.stat.name, value: st.base_stat })),
-    bst: p.stats.reduce((sum, st) => sum + st.base_stat, 0),
-    isLegendary: s.is_legendary,
-    isMythical: s.is_mythical,
+function powerScore(character) {
+  return parsePower(character.maxKi) || parsePower(character.ki);
+}
+
+function formatPower(value) {
+  return value || "Unknown";
+}
+
+function hexToRgba(hex, alpha) {
+  const n = parseInt(hex.slice(1), 16);
+  return "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + alpha + ")";
+}
+
+async function fetchJson(url, label) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Gagal ambil data " + label + " (" + res.status + ")");
+  return res.json();
+}
+
+async function fetchAll(endpoint) {
+  let url = API + "/" + endpoint + "?limit=100";
+  const items = [];
+
+  while (url) {
+    const page = await fetchJson(url, endpoint);
+    items.push(...(page.items || []));
+    url = page.links && page.links.next ? page.links.next : "";
+  }
+
+  return items.filter(item => !item.deletedAt);
+}
+
+async function getRoster() {
+  if (!dataCache.roster) dataCache.roster = fetchAll("characters");
+  return dataCache.roster;
+}
+
+async function getPlanets() {
+  if (!dataCache.planets) dataCache.planets = fetchAll("planets");
+  return dataCache.planets;
+}
+
+async function getCharacterDetail(id) {
+  if (dataCache.details.has(id)) return dataCache.details.get(id);
+  const detail = await fetchJson(API + "/characters/" + id, "karakter #" + id);
+  dataCache.details.set(id, detail);
+  return detail;
+}
+
+async function buildPools() {
+  if (dataCache.pools) return dataCache.pools;
+
+  const roster = await getRoster();
+  const ranked = [...roster].sort((a, b) => powerScore(b) - powerScore(a));
+  const topCount = Math.max(8, Math.ceil(ranked.length * 0.18));
+  const epicCount = Math.max(12, Math.ceil(ranked.length * 0.28));
+
+  dataCache.pools = {
+    ssr: ranked.slice(0, topCount),
+    epic: ranked.slice(topCount, topCount + epicCount),
+    rare: ranked.slice(topCount + epicCount, topCount + epicCount + Math.max(12, Math.ceil(ranked.length * 0.28))),
+    common: ranked.slice(topCount + epicCount + Math.max(12, Math.ceil(ranked.length * 0.28))),
   };
-  cache.set(id, mon);
-  return mon;
+
+  if (!dataCache.pools.common.length) dataCache.pools.common = ranked;
+  return dataCache.pools;
+}
+
+async function pickCharacter(kelas) {
+  const pools = await buildPools();
+  return pilihAcak(pools[kelas] && pools[kelas].length ? pools[kelas] : await getRoster());
+}
+
+async function hydrateCharacter(base) {
+  const detail = await getCharacterDetail(base.id);
+  const origin = detail.originPlanet || detail.planet || null;
+  const transformations = Array.isArray(detail.transformations) ? detail.transformations : [];
+
+  return {
+    id: detail.id || base.id,
+    name: detail.name || base.name,
+    image: detail.image || base.image,
+    race: normalizeTag(detail.race || base.race),
+    gender: normalizeTag(detail.gender || base.gender),
+    affiliation: normalizeTag(detail.affiliation || base.affiliation),
+    ki: detail.ki || base.ki,
+    maxKi: detail.maxKi || base.maxKi,
+    description: detail.description || base.description,
+    planet: origin ? origin.name : "Unknown Planet",
+    planetDestroyed: origin ? !!origin.isDestroyed : false,
+    transformations,
+  };
 }
 
 // ---------- State permainan ----------
-let pity = 0;      // tarikan sejak Legendary terakhir
-let total = 0;     // total tarikan
-let ssrCount = 0;  // total Legendary/Mythical didapat
-
-// Koleksi Pokédex: id -> data Pokémon yang pernah didapat (+ jumlahnya).
+let pity = 0;
+let total = 0;
+let ssrCount = 0;
 let collection = {};
-
-// ---------- Simpan / muat progres (localStorage) ----------
-// Semua progres bertahan walau browser ditutup / halaman di-refresh.
-const STORAGE_KEY = "pokegacha_state_v1";
 
 function saveState() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ total, pity, ssrCount, collection }));
   } catch (e) {
-    // localStorage bisa penuh atau diblokir — abaikan, game tetap jalan.
+    // Game tetap berjalan kalau localStorage diblokir.
   }
 }
 
@@ -147,26 +211,24 @@ function loadState() {
     ssrCount = s.ssrCount || 0;
     collection = s.collection || {};
   } catch (e) {
-    // Data rusak -> mulai dari nol saja.
     collection = {};
   }
 }
 
-// Catat satu Pokémon ke koleksi (atau tambah hitungannya kalau sudah punya).
 function recordCatch(result) {
   const existing = collection[result.id];
   if (existing) {
     existing.count += 1;
-    if (result.shiny) existing.shiny = true; // sekali shiny, selamanya ditandai shiny
+    if (result.aura) existing.aura = true;
   } else {
     collection[result.id] = {
       id: result.id,
       name: result.name,
-      artwork: result.artwork,
-      shinyArtwork: result.shinyArtwork,
-      fallbackArt: result.fallbackArt,
-      types: result.types,
-      shiny: !!result.shiny,
+      image: result.image,
+      race: result.race,
+      affiliation: result.affiliation,
+      planet: result.planet,
+      aura: !!result.aura,
       count: 1,
     };
   }
@@ -179,9 +241,9 @@ const el = {
   sprite: document.getElementById("sprite"),
   shinyBadge: document.getElementById("shinyBadge"),
   placeholder: document.getElementById("placeholder"),
-  pokeName: document.getElementById("pokeName"),
-  dexNum: document.getElementById("dexNum"),
-  types: document.getElementById("types"),
+  fighterName: document.getElementById("pokeName"),
+  fighterNum: document.getElementById("dexNum"),
+  tags: document.getElementById("types"),
   rarity: document.getElementById("rarity"),
   statsPanel: document.getElementById("statsPanel"),
   total: document.getElementById("total"),
@@ -202,24 +264,23 @@ const el = {
 };
 
 // ---------- Mesin rarity ----------
-// Menentukan tier tanpa mengubah state (biar aman kalau fetch gagal nanti).
 function decideRarity() {
   const acak = Math.random();
-  // "+1" karena tarikan ini belum masuk hitungan pity.
   if (pity + 1 >= PITY_MAX || acak < RATE_SSR) return "ssr";
   if (acak < RATE_EPIC) return "epic";
   if (acak < RATE_RARE) return "rare";
   return "common";
 }
 
-// Baru dicatat setelah tarikan benar-benar berhasil.
 function commitCounters(kelas) {
   total += 1;
   pity += 1;
-  if (kelas === "ssr") { pity = 0; ssrCount += 1; }
+  if (kelas === "ssr") {
+    pity = 0;
+    ssrCount += 1;
+  }
 }
 
-// ---------- Update panel statistik & pity bar ----------
 function updateStats() {
   el.total.textContent = total;
   el.ssrCount.textContent = ssrCount;
@@ -227,7 +288,6 @@ function updateStats() {
   el.pityFill.style.width = (pity / PITY_MAX) * 100 + "%";
 }
 
-// ---------- Status loading & error ----------
 function setLoading(on) {
   el.spinner.style.display = on ? "block" : "none";
   if (on) {
@@ -242,96 +302,94 @@ function showError(msg) {
   el.err.textContent = msg;
 }
 
-// Bangun badge tipe (misal: grass / poison) dengan warna resminya.
-function buildTypes(types) {
-  el.types.innerHTML = "";
-  types.forEach(t => {
+function buildTags(result) {
+  el.tags.innerHTML = "";
+  [result.race, result.affiliation, result.planet].forEach(t => {
     const badge = document.createElement("span");
     badge.className = "type-badge";
     badge.textContent = t;
-    badge.style.background = TYPE_COLORS[t] || "#666";
-    el.types.appendChild(badge);
+    badge.style.background = TAG_COLORS[t] || TAG_COLORS.Other;
+    el.tags.appendChild(badge);
   });
 }
 
-// Bangun 6 baris bar stat dasar (HP, ATK, DEF, SpA, SpD, SPD).
-function buildStats(stats) {
+function buildPowerPanel(result) {
+  const rows = [
+    { label: "KI", value: formatPower(result.ki) },
+    { label: "MAX", value: formatPower(result.maxKi) },
+    { label: "FORM", value: result.transformations.length ? result.transformations.length + " transformasi" : "Base form" },
+    { label: "PLANET", value: result.planet + (result.planetDestroyed ? " (destroyed)" : "") },
+    { label: "BIO", value: shortText(result.description) },
+  ];
+
   el.statsPanel.innerHTML = "";
-  stats.forEach(s => {
+  rows.forEach(rowData => {
     const row = document.createElement("div");
-    row.className = "stat-row";
-    const persen = Math.min(100, (s.value / STAT_MAX) * 100);
+    row.className = "stat-row db-row";
+    row.style.gridTemplateColumns = "48px 1fr";
+    row.style.alignItems = "start";
     row.innerHTML =
-      '<span class="s-lbl">' + (STAT_LABELS[s.name] || s.name) + "</span>" +
-      '<span class="s-val">' + s.value + "</span>" +
-      '<span class="stat-bar"><span style="width:' + persen + '%"></span></span>';
+      '<span class="s-lbl">' + rowData.label + "</span>" +
+      '<span class="s-val">' + rowData.value + "</span>";
+    row.querySelector(".s-val").style.cssText = "text-align:left;line-height:1.35;overflow-wrap:anywhere;";
     el.statsPanel.appendChild(row);
   });
 }
 
-// Gambar mana yang dipakai: shiny kalau lagi hoki, kalau tidak yang biasa.
-function artOf(result) {
-  return result.shiny && result.shinyArtwork ? result.shinyArtwork : result.artwork;
-}
-
-// ---------- Render kartu Pokémon ----------
 function render(result) {
   el.placeholder.style.display = "none";
   el.sprite.style.display = "block";
-  // Kalau artwork gagal dimuat, jatuh ke sprite piksel klasik (bukan ikon rusak).
   el.sprite.onerror = () => {
     el.sprite.onerror = null;
-    if (result.fallbackArt) el.sprite.src = result.fallbackArt;
+    el.sprite.style.display = "none";
+    el.placeholder.style.display = "flex";
   };
-  el.sprite.src = artOf(result);
+  el.sprite.src = result.image;
   el.sprite.alt = result.name;
-  el.shinyBadge.style.display = result.shiny ? "block" : "none";
+  el.shinyBadge.style.display = result.aura ? "block" : "none";
 
-  el.pokeName.textContent = result.name;
-  el.dexNum.textContent = "#" + String(result.id).padStart(3, "0");
+  el.fighterName.textContent = result.name;
+  el.fighterNum.textContent = "#" + String(result.id).padStart(3, "0");
 
-  buildTypes(result.types);
-  buildStats(result.stats);
+  buildTags(result);
+  buildPowerPanel(result);
 
-  el.rarity.textContent = result.kelas + (result.shiny ? " ✨ shiny" : "");
+  el.rarity.textContent = result.kelas + (result.aura ? " aura burst" : "");
   el.rarity.className = "rar " + result.kelas;
 
-  // Trik reset animasi: hapus kelas, paksa reflow, pasang lagi.
   el.card.className = "card";
   void el.card.offsetWidth;
-  el.card.className = "card " + result.kelas + " reveal" + (result.shiny ? " shiny" : "");
+  el.card.className = "card " + result.kelas + " reveal" + (result.aura ? " shiny" : "");
 }
 
 function addHistory(result) {
   const chip = document.createElement("div");
-  chip.className = "chip " + result.kelas + (result.shiny ? " shiny" : "");
+  chip.className = "chip " + result.kelas + (result.aura ? " shiny" : "");
   const img = document.createElement("img");
-  img.onerror = () => { img.onerror = null; if (result.fallbackArt) img.src = result.fallbackArt; };
-  img.src = artOf(result);
+  img.src = result.image;
   img.alt = result.name;
   chip.appendChild(img);
-  chip.title = result.name + " (" + result.kelas + (result.shiny ? ", shiny" : "") + ")";
+  chip.title = result.name + " (" + result.kelas + (result.aura ? ", aura" : "") + ")";
   el.history.prepend(chip);
-  while (el.history.children.length > 12) {
-    el.history.removeChild(el.history.lastChild);
-  }
+  while (el.history.children.length > 12) el.history.removeChild(el.history.lastChild);
 }
 
-// ---------- Satu tarikan (async: ambil data dulu, baru tampil) ----------
 async function pull() {
   const kelas = decideRarity();
-  const id = pickId(kelas);
+
   try {
-    const mon = await getPokemon(id);
-    const shiny = Math.random() < SHINY_RATE && !!mon.shinyArtwork;
-    const result = { ...mon, kelas, shiny };
-    commitCounters(kelas); // hanya dihitung kalau fetch sukses
-    recordCatch(result);   // masukkan ke koleksi Pokédex
+    const base = await pickCharacter(kelas);
+    const character = await hydrateCharacter(base);
+    const aura = Math.random() < AURA_RATE;
+    const result = { ...character, kelas, aura };
+
+    commitCounters(kelas);
+    recordCatch(result);
     updateStats();
     render(result);
     addHistory(result);
-    checkNewBadges();      // rayakan kalau ada badge baru
-    saveState();           // simpan progres ke localStorage
+    checkNewBadges();
+    saveState();
     return result;
   } catch (e) {
     showError(e.message);
@@ -350,75 +408,66 @@ el.tarik1.addEventListener("click", async () => {
 el.tarik10.addEventListener("click", async () => {
   showError("");
   setLoading(true);
-  for (let i = 0; i < 10; i++) {
-    await pull(); // berurutan biar sopan ke API & animasi enak dilihat
-  }
+  for (let i = 0; i < 10; i++) await pull();
   setLoading(false);
 });
 
-// ---------- Render koleksi (Pokédex) ----------
+// ---------- Render koleksi ----------
 function renderCollection() {
-  // Urutkan berdasarkan nomor Pokédex biar rapi seperti Pokédex asli.
   const daftar = Object.values(collection).sort((a, b) => a.id - b.id);
-  const shinyTotal = daftar.filter(m => m.shiny).length;
+  const auraTotal = daftar.filter(m => m.aura).length;
 
   el.uniqueCount.textContent = daftar.length;
-  el.shinyCount.textContent = shinyTotal;
+  el.shinyCount.textContent = auraTotal;
   el.collectionEmpty.hidden = daftar.length > 0;
 
   el.collectionGrid.innerHTML = "";
   daftar.forEach(m => {
     const cell = document.createElement("div");
-    cell.className = "dex-cell" + (m.shiny ? " shiny" : "");
+    cell.className = "dex-cell" + (m.aura ? " shiny" : "");
 
-    const src = m.shiny && m.shinyArtwork ? m.shinyArtwork : m.artwork;
     const img = document.createElement("img");
-    img.onerror = () => { img.onerror = null; if (m.fallbackArt) img.src = m.fallbackArt; };
-    img.src = src;
+    img.src = m.image;
     img.alt = m.name;
 
     cell.innerHTML =
-      (m.shiny ? '<span class="shiny-star">✨</span>' : "") +
-      (m.count > 1 ? '<span class="dex-count">×' + m.count + "</span>" : "") +
+      (m.aura ? '<span class="shiny-star">AURA</span>' : "") +
+      (m.count > 1 ? '<span class="dex-count">x' + m.count + "</span>" : "") +
       '<div class="dex-no">#' + String(m.id).padStart(3, "0") + "</div>";
     cell.insertBefore(img, cell.firstChild);
+
     const name = document.createElement("div");
     name.className = "dex-name";
     name.textContent = m.name;
     cell.appendChild(name);
 
+    const meta = document.createElement("div");
+    meta.className = "dex-meta";
+    meta.textContent = m.race + " - " + m.affiliation;
+    meta.style.cssText = "font-size:9px;color:var(--muted);line-height:1.25;min-height:22px;overflow:hidden;";
+    cell.appendChild(meta);
+
     el.collectionGrid.appendChild(cell);
   });
 }
 
-// ---------- Badge gym Kanto ----------
-// Tiap badge "dikuasai" dengan mengumpulkan BADGE_GOAL jenis Pokémon dari tipe tertentu.
+// ---------- Badge fraksi ----------
 const BADGE_GOAL = 3;
 const BADGES = [
-  { id: "boulder", name: "Boulder", gym: "Pewter",    type: "rock",     icon: "🪨", color: "#B6A136" },
-  { id: "cascade", name: "Cascade", gym: "Cerulean",  type: "water",    icon: "💧", color: "#6390F0" },
-  { id: "thunder", name: "Thunder", gym: "Vermilion", type: "electric", icon: "⚡", color: "#E8B900" },
-  { id: "rainbow", name: "Rainbow", gym: "Celadon",   type: "grass",    icon: "🌿", color: "#7AC74C" },
-  { id: "soul",    name: "Soul",    gym: "Fuchsia",   type: "poison",   icon: "☠️", color: "#A33EA1" },
-  { id: "marsh",   name: "Marsh",   gym: "Saffron",   type: "psychic",  icon: "🔮", color: "#F95587" },
-  { id: "volcano", name: "Volcano", gym: "Cinnabar",  type: "fire",     icon: "🔥", color: "#EE8130" },
-  { id: "earth",   name: "Earth",   gym: "Viridian",  type: "ground",   icon: "⛰️", color: "#C79A45" },
+  { id: "zf", name: "Z Fighter", group: "Z Fighter", icon: "ZF", color: "#2fae5a" },
+  { id: "frieza", name: "Frieza Force", group: "Army of Frieza", icon: "FF", color: "#6e5aa8" },
+  { id: "saiyan", name: "Saiyan Pride", group: "Saiyan", icon: "SA", color: "#d9572b" },
+  { id: "namek", name: "Namekian", group: "Namekian", icon: "NA", color: "#4f9b45" },
+  { id: "android", name: "Android", group: "Android", icon: "AN", color: "#8b3ff0" },
+  { id: "cosmic", name: "Cosmic", group: "God", icon: "CO", color: "#d99e00" },
 ];
 
-// Berapa jenis unik dari sebuah tipe yang sudah dikoleksi.
-function countType(type) {
-  return Object.values(collection).filter(m => m.types.includes(type)).length;
+function countGroup(group) {
+  return Object.values(collection).filter(m => m.affiliation === group || m.race === group).length;
 }
 
-// Kumpulan id badge yang sudah diraih saat ini.
 function earnedBadgeIds() {
-  return new Set(BADGES.filter(b => countType(b.type) >= BADGE_GOAL).map(b => b.id));
-}
-
-// Ubah warna hex jadi rgba (untuk efek glow badge).
-function hexToRgba(hex, alpha) {
-  const n = parseInt(hex.slice(1), 16);
-  return "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + alpha + ")";
+  return new Set(BADGES.filter(b => countGroup(b.group) >= BADGE_GOAL).map(b => b.id));
 }
 
 function renderBadges() {
@@ -427,7 +476,7 @@ function renderBadges() {
 
   el.badgeGrid.innerHTML = "";
   BADGES.forEach(b => {
-    const punya = Math.min(countType(b.type), BADGE_GOAL);
+    const punya = Math.min(countGroup(b.group), BADGE_GOAL);
     const isEarned = earned.has(b.id);
     const persen = (punya / BADGE_GOAL) * 100;
 
@@ -437,21 +486,19 @@ function renderBadges() {
     cell.style.setProperty("--gym-glow", hexToRgba(b.color, 0.45));
     cell.style.setProperty("--gym-soft", hexToRgba(b.color, 0.12));
     cell.innerHTML =
-      (isEarned ? '<span class="badge-check">✔</span>' : "") +
+      (isEarned ? '<span class="badge-check">OK</span>' : "") +
       '<div class="badge-icon">' + b.icon + "</div>" +
       '<div class="badge-name">' + b.name + " Badge</div>" +
-      '<div class="badge-gym">' + b.gym + " · " + b.type + "</div>" +
+      '<div class="badge-gym">' + b.group + "</div>" +
       '<div class="badge-prog-track"><div class="badge-prog-fill" style="width:' + persen + '%"></div></div>' +
       '<div class="badge-prog-txt">' + punya + " / " + BADGE_GOAL + "</div>";
     el.badgeGrid.appendChild(cell);
   });
 }
 
-// Badge yang sudah diraih & sudah ditampilkan (biar toast tidak muncul ulang).
 let shownBadges = new Set();
-
-// Munculkan notifikasi kecil selama beberapa detik.
 let toastTimer = null;
+
 function showToast(msg) {
   el.toast.textContent = msg;
   el.toast.hidden = false;
@@ -459,13 +506,12 @@ function showToast(msg) {
   toastTimer = setTimeout(() => { el.toast.hidden = true; }, 3500);
 }
 
-// Cek apakah ada badge baru setelah sebuah tarikan; kalau ada, rayakan.
 function checkNewBadges() {
   const earned = earnedBadgeIds();
   earned.forEach(id => {
     if (!shownBadges.has(id)) {
       const b = BADGES.find(x => x.id === id);
-      showToast(b.icon + " Badge " + b.name + " diraih!");
+      showToast("Badge " + b.name + " diraih!");
     }
   });
   shownBadges = earned;
@@ -479,7 +525,7 @@ function switchTab(name) {
   document.querySelectorAll(".tab-panel").forEach(p => {
     p.hidden = p.id !== "panel-" + name;
   });
-  if (name === "koleksi") renderCollection(); // selalu tampilkan data terbaru
+  if (name === "koleksi") renderCollection();
   if (name === "badge") renderBadges();
 }
 
@@ -487,7 +533,10 @@ document.querySelectorAll(".tab").forEach(t => {
   t.addEventListener("click", () => switchTab(t.dataset.tab));
 });
 
-// ---------- Mulai: pulihkan progres yang tersimpan ----------
+// ---------- Mulai ----------
 loadState();
 updateStats();
-shownBadges = earnedBadgeIds(); // badge yang sudah diraih dari sesi lama, jangan toast ulang
+shownBadges = earnedBadgeIds();
+
+// Warm-up ringan: ambil roster + planet agar error koneksi muncul lebih awal.
+Promise.all([getRoster(), getPlanets()]).catch(e => showError(e.message));
