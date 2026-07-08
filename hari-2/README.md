@@ -31,7 +31,7 @@ masalah, BUKAN dari kodenya jalan (kodenya emang udah jalan, tapi cacat).
 Bedanya di level ini: sebagian masalah butuh kamu MEMBUKTIIN, bukan cuma
 "kayaknya salah". Buka DevTools (F12). Detektif beneran ngumpulin bukti.
 
-Catatan penting: petunjuk di bawah SENGAJA nggak nyebutin jawabannya.
+Catatan pe  nting: petunjuk di bawah SENGAJA nggak nyebutin jawabannya.
 Cuma nunjuk "area" tempat kamu harus curiga. Sisanya kamu yang gali.
 Kalau langsung dikasih jawaban, itu bukan bug bounty namanya.
 
