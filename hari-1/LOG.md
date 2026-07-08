@@ -67,3 +67,123 @@ pity penuh untuk dapat Legendary gratis, dan semoga hoki dapat **shiny**! ✨
 2. `feat: fetch real Pokémon from PokeAPI with caching + async pulls`
 3. `feat: add type badges, base-stat bars, and shiny variants`
 4. `docs: update LOG.md for Pokémon gacha`
+
+## Perubahan Kecil
+Saya menambahkan fitur Reset Progress di praktik Hari 1, supaya
+  user bisa mulai ulang gacha dari nol tanpa harus hapus data
+  browser manual.
+
+  Bagian yang diubah:
+
+  1. hari-1/index.html:70
+
+  Saya menambahkan tombol baru:
+
+  <button class="btn reset" id="resetProgress">RESET</button>
+
+  Kenapa:
+
+  - Sebelumnya cuma ada PULL 1x dan PULL 10x.
+  - Progress gacha disimpan di localStorage, tapi tidak ada
+    tombol untuk menghapusnya.
+
+  - Tombol ini jadi pintu masuk user untuk reset data.
+
+  2. hari-1/app.js:195
+
+  Saya tambahkan referensi DOM:
+
+  resetProgress: document.getElementById("resetProgress"),
+
+  Kenapa:
+
+  - Supaya JavaScript bisa menangkap tombol RESET.
+  - Polanya mengikuti tombol lain seperti tarik1 dan tarik10.
+
+  3. hari-1/app.js:231
+
+  Saya tambahkan fungsi resetCardView().
+
+  Fungsinya:
+
+  - Mengembalikan kartu Pokémon ke tampilan awal.
+  - Menghapus gambar Pokémon terakhir.
+  - Mengosongkan nama, nomor Pokédex, tipe, rarity, stat, dan
+    history.
+
+  Kenapa:
+
+  - Kalau hanya hapus data, tampilan terakhir masih bisa
+    kelihatan.
+
+  - Jadi reset harus membersihkan state data dan state tampilan.
+
+  4. hari-1/app.js:248
+
+  Saya tambahkan fungsi resetProgress().
+
+  Fungsinya:
+
+  - Menampilkan konfirmasi dengan confirm(...).
+  - Mengatur ulang:
+
+  total = 0;
+  pity = 0;
+  ssrCount = 0;
+  collection = {};
+  shownBadges = new Set();
+
+  - Menghapus data browser:
+
+  localStorage.removeItem(STORAGE_KEY);
+
+  - Merender ulang statistik, koleksi, badge, dan tampilan kartu.
+
+  Kenapa:
+
+  - Data utama aplikasi disimpan di variabel-variabel itu.
+  - Data permanennya disimpan di localStorage.
+  - Keduanya harus di-reset supaya setelah refresh browser,
+    progress lama tidak balik lagi.
+
+  5. hari-1/app.js:281
+
+  Saya tambahkan:
+
+  el.resetProgress.disabled = on;
+
+  Kenapa:
+
+  - Saat sedang loading pull, tombol reset ikut dikunci.
+  - Ini mencegah user reset di tengah proses fetch Pokémon.
+
+  6. hari-1/app.js:402
+
+  Saya sambungkan tombol ke fungsi reset:
+
+  el.resetProgress.addEventListener("click", resetProgress);
+
+  Kenapa:
+
+  - Tanpa event listener ini, tombol muncul tapi tidak melakukan
+    apa-apa.
+
+  7. hari-1/styles.css:245
+
+  Saya tambahkan style:
+
+  .btn.reset {
+    color: var(--ink);
+    background: linear-gradient(180deg,#f7f9fd,#dfe4ee);
+    box-shadow: 0 4px 0 #aab4c5;
+  }
+
+  Kenapa:
+
+  - Supaya tombol reset terlihat beda dari tombol pull.
+  - Warna dibuat netral karena reset adalah aksi utilitas, bukan
+    aksi utama seperti PULL.
+
+  Intinya: perubahan ini menambahkan satu fitur kecil tapi
+  lengkap: tombol reset yang menghapus progress dari memori
+  aplikasi, localStorage, dan tampilan layar.
