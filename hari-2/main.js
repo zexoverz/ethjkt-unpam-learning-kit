@@ -281,7 +281,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = event.target;
     if (target.classList.contains("edit-quantity-input")) {
       const quantity = parseInt(target.value, 10);
-      updateQuantity(target.dataset.id, quantity);
+      if (!isNaN(quantity) && quantity > 0) {
+        updateQuantity(target.dataset.id, quantity);
+      } else if (target.value === "" || (!isNaN(quantity) && quantity <= 0)) {
+        deleteItem(target.dataset.id);
+      }
     }
     if (target.id === "note") {
       renderCart();
