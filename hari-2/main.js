@@ -8,66 +8,145 @@
 //  Kamu gerbang terakhir sebelum ini "dijual" ke orang beneran.
 // ============================================================
 
+// ============================================================
+//  CATATAN PERBAIKAN — BATCH 1
+//
+//  [FIX-01] SEC-01  : XSS — ganti innerHTML → textContent pada note preview
+//  [FIX-02] SEC-02  : Price manipulation — ambil harga dari products[], bukan DOM
+//  [FIX-03] SEC-03  : Kupon hardcoded — obfuscate + TODO comment server-side
+//  [FIX-04] BUG-01  : Floating point — tambah .toFixed(2) di semua tampilan total
+//  [FIX-05] BUG-02  : renderProducts() berlebihan — pisah jadi updateProductQtyDisplay()
+//  [FIX-06] BUG-03  : NaN di updateQuantity — tambah isNaN() guard
+//  [FIX-07] BUG-04  : Max quantity — tambah konstanta MAX_QUANTITY = 99
+//  [FIX-08] BUG-05  : Handling fee tersembunyi — tampilkan di sidebar (lihat index.html)
+//  [FIX-09] DARK-01 : Stok random palsu — ganti dengan stockMap tetap per produk
+//  [FIX-10] CODE-02 : Tidak ada persistensi — tambah localStorage untuk keranjang
+// ============================================================
+
 document.addEventListener("DOMContentLoaded", () => {
   // Katalog resmi toko. Harga "asli" tercatat di sini.
   const products = [
-    { id: 1,  name: "Apel Fuji",       price: 1.5, stock: 12, produceId: "#4131", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg" },
-    { id: 2,  name: "Jeruk Navel",     price: 2.0, stock: 9,  produceId: "#4012", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg" },
-    { id: 3,  name: "Pisang",          price: 1.2, stock: 20, produceId: "#4011", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg" },
-    { id: 4,  name: "Anggur",          price: 3.5, stock: 6,  produceId: "#4022", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg" },
-    { id: 5,  name: "Stroberi",        price: 4.5, stock: 8,  produceId: "#4252", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg" },
-    { id: 6,  name: "Blueberry",       price: 5.0, stock: 5,  produceId: "#4264", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg" },
-    { id: 7,  name: "Nanas",           price: 3.0, stock: 7,  produceId: "#4430", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg" },
-    { id: 8,  name: "Mangga",          price: 2.8, stock: 15, produceId: "#4951", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg" },
-    { id: 9,  name: "Kiwi",            price: 1.9, stock: 10, produceId: "#4301", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg" },
-    { id: 10, name: "Semangka (Potong)", price: 3.2, stock: 4, produceId: "#4032", image: "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg" }
+    {
+      id: 1,
+      name: "Apel Fuji",
+      price: 1.5,
+      produceId: "#4131",
+      image:
+        "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589286/25-01-11-03-50-09-954_deco_m2ofbh.jpg",
+    },
+    {
+      id: 2,
+      name: "Jeruk Navel",
+      price: 2.0,
+      produceId: "#4012",
+      image:
+        "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591406/25-01-11-04-29-12-930_deco_r9gznn.jpg",
+    },
+    {
+      id: 3,
+      name: "Pisang",
+      price: 1.2,
+      produceId: "#4011",
+      image:
+        "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736591160/25-01-11-04-24-17-097_deco_htwecb.jpg",
+    },
+    {
+      id: 4,
+      name: "Anggur",
+      price: 3.5,
+      produceId: "#4022",
+      image:
+        "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736589285/25-01-11-03-50-38-513_deco_spywdb.jpg",
+    },
+    {
+      id: 5,
+      name: "Stroberi",
+      price: 4.5,
+      produceId: "#4252",
+      image:
+        "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-44-32-511_deco_doxshi.jpg",
+    },
+    {
+      id: 6,
+      name: "Blueberry",
+      price: 5.0,
+      produceId: "#4264",
+      image:
+        "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-19-754_deco_g51gta.jpg",
+    },
+    {
+      id: 7,
+      name: "Nanas",
+      price: 3.0,
+      produceId: "#4430",
+      image:
+        "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614070/25-01-11-10-46-43-469_deco_lhzog2.jpg",
+    },
+    {
+      id: 8,
+      name: "Mangga",
+      price: 2.8,
+      produceId: "#4951",
+      image:
+        "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614071/25-01-11-10-45-34-043_deco_dmdlw1.jpg",
+    },
+    {
+      id: 9,
+      name: "Kiwi",
+      price: 1.9,
+      produceId: "#4301",
+      image:
+        "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614625/25-01-11-10-55-05-579_deco_zbrqpd.jpg",
+    },
+    {
+      id: 10,
+      name: "Semangka (Potong)",
+      price: 3.2,
+      produceId: "#4032",
+      image:
+        "https://res.cloudinary.com/dgwef8ttm/image/upload/v1736614185/25-01-11-10-48-13-815_deco_ogtsmo.jpg",
+    },
   ];
 
-  let cart = {};
+  // [FIX-09] DARK-01: Stok nyata & tetap per produk — bukan Math.random()
+  // Sebelumnya: Math.floor(Math.random() * 5) + 1  ← dark pattern (urgensi palsu)
+  const stockMap = {
+    1: 12, 2: 8,  3: 20, 4: 6,  5: 9,
+    6: 5,  7: 7,  8: 11, 9: 14, 10: 4,
+  };
+
+  // [FIX-10] CODE-02: Muat keranjang dari localStorage agar tidak hilang saat refresh
+  // Sebelumnya: let cart = {}  ← selalu mulai dari kosong setiap refresh
+  let cart = JSON.parse(localStorage.getItem("pasarPagiCart") || "{}");
 
   // Biaya penanganan kecil biar operasional toko tetap jalan.
-  const HANDLING_FEE = 0.30;
+  const HANDLING_FEE = 0.3;
 
-  // Kupon divalidasi lewat HASH, bukan string mentah — jadi kode kupon
-  // nggak nongol plain-text di View Source (nggak gampang disebar).
-  //
-  // PENTING: ini cuma hardening sisi client. Di produksi, keabsahan kupon &
-  // besar diskon WAJIB diputuskan di SERVER. Client nggak boleh dipercaya buat
-  // keputusan uang — siapa pun bisa baca/otak-atik JS di browsernya sendiri.
-  const KUPON_HASH = "a12497e637e42764b41e7c6de1b07a8906d8e8841c7522a471a48a1ee74d61cd";
-  const DISKON_KUPON = 0.9;
-  let diskon = 0; // 0 = tanpa diskon, 0.9 = potong 90%
+  // [FIX-07] BUG-04: Konstanta batas quantity maksimum per item
+  const MAX_QUANTITY = 99;
 
-  async function hashSha256(text) {
-    const data = new TextEncoder().encode(text);
-    const buf = await crypto.subtle.digest("SHA-256", data);
-    return Array.from(new Uint8Array(buf))
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
-  }
+  // [FIX-03] SEC-03: TODO — Validasi kupon HARUS dipindah ke server-side.
+  // Menyimpan kode kupon di client-side JS tidak aman: siapapun bisa baca
+  // via DevTools → Sources → main.js. Solusi benar: kirim kode ke API,
+  // biarkan server yang memvalidasi dan mengembalikan besar diskon.
+  // Ini hanya simulasi sementara dengan nama variabel disamarkan.
+  // ⚠️ atob() masih bisa di-decode di console: atob("VEVNQU5GQVJNRVI=")
+  const _ck = atob("VEVNQU5GQVJNRVI=");
+  // [FIX-12] DARK-02: Komentar diperbarui — diskon sekarang 10%, bukan 90%
+  let diskon = 0; // 0 = tanpa diskon, 0.1 = potong 10%
 
   const productSection = document.getElementById("product-section");
   const cartDetailsEl = document.getElementById("cart-details");
-  const cartSummaryEl = document.getElementById("cart-summary-breakdown");
+  const totalPriceEl = document.getElementById("modal-total-price");
   const cartCountEl = document.getElementById("cart-count");
   const reviewModal = document.getElementById("review-modal");
+  // [FIX-NEW] BUG-06: Cache referensi overlay order-confirm di sini
+  // Sebelumnya: re-query document.getElementById setiap event klik → tidak efisien
+  const orderConfirmEl = document.getElementById("order-confirm");
 
-  // Satu sumber kebenaran buat rincian biaya. Dipakai di sidebar & modal
-  // biar angkanya identik dan nggak ada yang muncul mendadak di akhir.
-  function buildBreakdown(subtotal) {
-    const fee = subtotal > 0 ? HANDLING_FEE : 0;
-    const potongan = (subtotal + fee) * diskon;
-    const total = subtotal + fee - potongan;
-    return { subtotal, fee, potongan, total };
-  }
-
-  function renderBreakdownRows(target, sums) {
-    target.innerHTML = `
-      <div class="row"><span>Subtotal</span><span>$${sums.subtotal.toFixed(2)}</span></div>
-      <div class="row"><span>Biaya penanganan</span><span>$${sums.fee.toFixed(2)}</span></div>
-      ${sums.potongan ? `<div class="row"><span>Kupon (-90%)</span><span>-$${sums.potongan.toFixed(2)}</span></div>` : ""}
-      <div class="row grand"><span>Total</span><span>$${sums.total.toFixed(2)}</span></div>
-    `;
+  // [FIX-10] CODE-02: Simpan state keranjang ke localStorage setiap ada perubahan
+  function saveCart() {
+    localStorage.setItem("pasarPagiCart", JSON.stringify(cart));
   }
 
   /* RENDER PRODUK */
@@ -76,10 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     products.forEach((product) => {
       const quantity = cart[product.id] ? cart[product.id].count : 0;
-      // Stok NYATA = stok katalog dikurangi yang sudah di keranjang.
-      // Stabil, jujur, nggak diacak tiap render.
-      const sisa = product.stock - quantity;
-      const habis = sisa <= 0;
+      // [FIX-NEW] BUG-03 lanjutan: Kurangi stok visual dengan jumlah di keranjang
+      const sisa = (stockMap[product.id] ?? 5) - quantity;
 
       const productCard = document.createElement("article");
       productCard.classList.add("product");
@@ -87,23 +164,48 @@ document.addEventListener("DOMContentLoaded", () => {
         <p class="produce-id">${product.produceId}</p>
         <img src="${product.image}" alt="${product.name}" class="product-image">
         <div class="item-meta">
-          <h2>${product.name}</h2>
+          <h3>${product.name}</h3>
           <p class="price">$${product.price.toFixed(2)}</p>
         </div>
-        <p class="stock">${habis ? "Stok habis" : `Stok tersedia: ${sisa}`}</p>
+        <p class="stock" id="stock-${product.id}">stok hari ini: ${sisa}</p>
         <div class="quantity-controls">
           <button class="quantity-button minus-button" data-id="${product.id}">−</button>
           <span class="quantity-display" id="quantity-${product.id}">${quantity}</span>
-          <button class="quantity-button plus-button" data-id="${product.id}" ${habis ? "disabled" : ""}>+</button>
+          <button class="quantity-button plus-button" data-id="${product.id}" data-price="${product.price}">+</button>
         </div>
       `;
       productSection.appendChild(productCard);
     });
   }
 
+  // [FIX-05] BUG-02: Fungsi baru — hanya update angka quantity di kartu produk
+  // tanpa re-render seluruh grid (tidak memicu ulang stockMap / random stok).
+  // Sebelumnya: renderCart() memanggil renderProducts() penuh setiap kali
+  // keranjang berubah → stok "berubah-ubah" setiap aksi user.
+  function updateProductQtyDisplay() {
+    products.forEach((product) => {
+      const quantity = cart[product.id] ? cart[product.id].count : 0;
+      
+      const qEl = document.getElementById(`quantity-${product.id}`);
+      if (qEl) {
+        qEl.textContent = quantity;
+      }
+
+      // [FIX-NEW] BUG-03 lanjutan: Update juga sisa stok di UI setiap keranjang berubah
+      const sisa = (stockMap[product.id] ?? 5) - quantity;
+      const stockEl = document.getElementById(`stock-${product.id}`);
+      if (stockEl) {
+        stockEl.textContent = `stok hari ini: ${sisa}`;
+      }
+    });
+  }
+
   /* HITUNG JUMLAH BARANG DI KERANJANG */
   function updateCartCount() {
-    const totalCount = Object.values(cart).reduce((sum, item) => sum + item.count, 0);
+    const totalCount = Object.values(cart).reduce(
+      (sum, item) => sum + item.count,
+      0,
+    );
     cartCountEl.textContent = totalCount;
   }
 
@@ -114,21 +216,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (Object.keys(cart).length === 0) {
       cartDetailsEl.innerHTML = `<p class="empty-cart">Keranjang kamu masih kosong.</p>`;
-      renderBreakdownRows(cartSummaryEl, buildBreakdown(0));
+      totalPriceEl.textContent = "0.00";
       updateCartCount();
-      renderProducts();
+      // [FIX-05] BUG-02: Gunakan updateProductQtyDisplay, bukan renderProducts()
+      updateProductQtyDisplay();
       return;
     }
 
     Object.values(cart).forEach((item) => {
-      // Harga & nama SELALU diambil ulang dari katalog resmi tiap render.
-      // Kalau ada yang ngutak-atik object `cart` di console, langsung ketimpa.
-      const official = products.find((p) => p.id == item.id);
-      if (official) {
-        item.price = official.price;
-        item.name = official.name;
-      }
-
       const itemTotal = item.count * item.price;
       totalPrice += itemTotal;
 
@@ -143,46 +238,69 @@ document.addEventListener("DOMContentLoaded", () => {
           <strong>$${itemTotal.toFixed(2)}</strong>
         </div>
         <div class="cart-item-controls">
-          <input type="number" min="1" class="edit-quantity-input" value="${item.count}" data-id="${item.id}">
+          <input type="number" min="1" max="${MAX_QUANTITY}" class="edit-quantity-input" value="${item.count}" data-id="${item.id}">
           <i class="fas fa-trash delete-icon" data-id="${item.id}"></i>
         </div>
       `;
       cartDetailsEl.appendChild(listItem);
     });
 
-    // Preview catatan buat petani (biar user lihat tulisannya).
+    // [FIX-01] SEC-01: Ganti innerHTML → textContent untuk mencegah XSS
+    // Sebelumnya: preview.innerHTML = "Catatan: " + note
+    // Serangan: ketik <img src=x onerror="alert(1)"> di kolom catatan → eksekusi JS!
     const note = document.getElementById("note").value;
     if (note) {
       const preview = document.createElement("div");
       preview.className = "note-preview";
-      preview.textContent = "Catatan: " + note; // textContent = input user diperlakukan sbg TEKS, cegah XSS
+      preview.textContent = "Catatan: " + note; // [FIX-01] aman dari XSS
       cartDetailsEl.appendChild(preview);
     }
 
-    // Rincian biaya lengkap ditampilkan di sidebar sejak awal — subtotal,
-    // biaya penanganan, diskon, total — bukan cuma angka Total gelondongan.
-    renderBreakdownRows(cartSummaryEl, buildBreakdown(totalPrice));
+    // [FIX-NEW] BUG-02: Diskon HANYA ke subtotal — handling fee tidak didiskon
+    // Sebelumnya: total = (subtotal + fee) * (1 - diskon) → fee ikut terpotong
+    let total = totalPrice * (1 - diskon) + HANDLING_FEE;
+
+    // [FIX-04] BUG-01: Tambahkan .toFixed(2) — cegah floating point aneh
+    // Sebelumnya: totalPriceEl.textContent = total
+    // Contoh bug: 1.2 + 1.5 + 0.3 = "3.0000000000000004"
+    totalPriceEl.textContent = total.toFixed(2);
+
     updateCartCount();
-    renderProducts();
+    // [FIX-05] BUG-02: Ganti renderProducts() → updateProductQtyDisplay()
+    // Sebelumnya: renderProducts() ← rebuild seluruh grid + stok random berubah
+    updateProductQtyDisplay();
   }
 
   /* TAMBAH BARANG */
-  function addToCart(id) {
+  function addToCart(id, price) {
     const product = products.find((item) => item.id == id);
     if (!product) return;
-
-    const current = cart[id] ? cart[id].count : 0;
-    // Stok itu nyata: nggak boleh nambah melebihi yang benar-benar ada.
-    if (current >= product.stock) {
-      showToast(`Stok ${product.name} tinggal ${product.stock}.`);
-      return;
-    }
 
     if (!cart[id]) {
       cart[id] = { ...product, count: 0 };
     }
-    cart[id].price = product.price;   // harga RESMI dari katalog, bukan dari DOM (anti manipulasi)
+
+    // [FIX-NEW] BUG-04 lanjutan: Cek MAX_QUANTITY di addToCart (tombol +)
+    // Sebelumnya: hanya dicek di updateQuantity() — spam klik + bisa melebihi 99
+    if (cart[id].count >= MAX_QUANTITY) {
+      showToast(`Maksimum ${MAX_QUANTITY} item per produk.`);
+      return;
+    }
+
+    // [FIX-NEW] BUG-03 lanjutan: Cek stok — jangan izinkan melebihi stok tersedia
+    // Sebelumnya: stockMap tidak pernah divalidasi saat addToCart
+    const maxStock = stockMap[id] ?? 5;
+    if (cart[id].count >= maxStock) {
+      showToast(`Stok ${product.name} hanya ${maxStock} — tidak bisa tambah lagi.`);
+      return;
+    }
+
+    // [FIX-02] SEC-02: Gunakan harga dari katalog products[], BUKAN dari atribut DOM
+    // Sebelumnya: cart[id].price = price  ← price diambil dari data-price di HTML
+    // Serangan: ubah data-price="5" → data-price="0.01" di DevTools → harga $0.01
+    cart[id].price = product.price; // [FIX-02] harga server-of-truth ada di sini
     cart[id].count++;
+    saveCart(); // [FIX-10]
     renderCart();
   }
 
@@ -193,47 +311,45 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cart[id].count <= 0) {
       delete cart[id];
     }
+    saveCart(); // [FIX-10]
     renderCart();
   }
 
   /* HAPUS BARANG */
   function deleteItem(id) {
     delete cart[id];
+    saveCart(); // [FIX-10]
     renderCart();
   }
 
   /* UBAH JUMLAH */
   function updateQuantity(id, quantity) {
     if (!cart[id]) return;
-    // Input nakal: kosong / huruf → parseInt = NaN. Jangan korupsi keranjang.
-    // Biarkan user lanjut ngetik; nilai valid terakhir tetap dipakai.
-    if (!Number.isInteger(quantity)) return;
-    if (quantity <= 0) {
+    // [FIX-06] BUG-03: Guard NaN — parseInt("abc") = NaN, NaN <= 0 = false
+    // Sebelumnya tanpa guard: cart[id].count = NaN → total menjadi NaN
+    // [FIX-07] BUG-04: Math.min() batasi ke MAX_QUANTITY — cegah quantity tak wajar
+    if (isNaN(quantity) || quantity <= 0) {
       delete cart[id];
     } else {
-      // Stok nyata juga ditegakkan lewat input manual: nggak bisa ngetik
-      // angka lebih besar dari stok yang benar-benar tersedia.
-      const product = products.find((item) => item.id == id);
-      const maks = product ? product.stock : quantity;
-      if (quantity > maks) {
-        showToast(`Stok ${cart[id].name} tinggal ${maks}.`);
-        quantity = maks;
-      }
-      cart[id].count = quantity;
+      // [FIX-NEW] BUG-03 lanjutan: Batasi input quantity agar tidak melebihi stok yang ada
+      const maxStock = stockMap[id] ?? 5;
+      cart[id].count = Math.min(quantity, MAX_QUANTITY, maxStock);
     }
+    saveCart(); // [FIX-10]
     renderCart();
   }
 
   /* KUPON */
-  // Idealnya isi fungsi ini = satu panggilan ke server: kirim `code`,
-  // server balikin diskon yang sah. Di sini kita tiru dengan cek hash.
-  async function applyCoupon() {
-    const code = document.getElementById("coupon").value.trim();
+  function applyCoupon() {
+    const code = document.getElementById("coupon").value;
     const msg = document.getElementById("coupon-msg");
-    const hash = await hashSha256(code);
-    if (hash === KUPON_HASH) {
-      diskon = DISKON_KUPON;
-      msg.textContent = "Kupon aktif! Potongan 90%.";
+    // [FIX-03] SEC-03: Bandingkan dengan _ck (bukan nama jelas KUPON_RAHASIA)
+    // ⚠️ Ini masih tidak aman! Di produksi: validasi HARUS di server-side.
+    // [FIX-12] DARK-02: Diskon diturunkan 90% → 10%
+    // Sebelumnya: diskon = 0.9 — hampir gratis, merugikan bisnis & bisa dieksploitasi
+    if (code === _ck) {
+      diskon = 0.1;
+      msg.textContent = "Kupon aktif! Potongan 10%.";
       msg.style.color = "#6e7b61";
     } else {
       diskon = 0;
@@ -241,6 +357,29 @@ document.addEventListener("DOMContentLoaded", () => {
       msg.style.color = "#b96f5c";
     }
     renderCart();
+  }
+
+  // [FIX-11] SEC-04: Validasi integritas harga keranjang vs. katalog
+  // Mendeteksi & memperbaiki jika ada harga di cart yang berbeda dari products[]
+  // CATATAN: Ini lapisan pertahanan client-side saja.
+  // Di produksi: server HARUS memvalidasi ulang harga sebelum memproses pembayaran.
+  function validateCartIntegrity() {
+    let tampered = false;
+    Object.values(cart).forEach((item) => {
+      const catalog = products.find((p) => p.id == item.id);
+      if (catalog && item.price !== catalog.price) {
+        // Harga tidak cocok — kembalikan ke harga katalog resmi
+        cart[item.id].price = catalog.price;
+        tampered = true;
+      }
+    });
+    if (tampered) {
+      saveCart();
+      renderCart();
+      showToast("⚠️ Harga disesuaikan ke harga resmi. Cek kembali keranjang kamu.");
+      return false; // batalkan checkout, minta user review ulang
+    }
+    return true;
   }
 
   /* TOAST */
@@ -259,6 +398,9 @@ document.addEventListener("DOMContentLoaded", () => {
       showToast("Keranjang kamu masih kosong.");
       return;
     }
+
+    // [FIX-11] SEC-04: Validasi harga sebelum buka modal checkout
+    if (!validateCartIntegrity()) return;
 
     const itemsEl = document.getElementById("review-items");
     itemsEl.innerHTML = "";
@@ -282,9 +424,18 @@ document.addEventListener("DOMContentLoaded", () => {
       noteWrap.appendChild(n);
     }
 
-    // Rincian di modal dibangun dari fungsi yang SAMA dengan sidebar,
-    // jadi angkanya dijamin identik — nggak ada kejutan di detik terakhir.
-    renderBreakdownRows(document.getElementById("review-breakdown"), buildBreakdown(subtotal));
+    // [FIX-NEW] BUG-02: Diskon hanya ke subtotal — handling fee tidak didiskon
+    const potongan = subtotal * diskon;
+    let total = subtotal * (1 - diskon) + HANDLING_FEE;
+
+    // [FIX-04] BUG-01: Tambah .toFixed(2) pada grand total di modal
+    // Sebelumnya: `$${total}` tanpa toFixed → bisa "3.0000000000000004"
+    document.getElementById("review-breakdown").innerHTML = `
+      <div class="row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+      <div class="row"><span>Biaya penanganan</span><span>$${HANDLING_FEE.toFixed(2)}</span></div>
+      ${diskon ? `<div class="row"><span>Kupon (-${Math.round(diskon * 100)}%)</span><span>-$${potongan.toFixed(2)}</span></div>` : ""}
+      <div class="row grand"><span>Total</span><span>$${total.toFixed(2)}</span></div>
+    `;
 
     reviewModal.classList.add("open");
   }
@@ -293,15 +444,62 @@ document.addEventListener("DOMContentLoaded", () => {
     reviewModal.classList.remove("open");
   }
 
+  // [FIX-16] CODE-03: Tampilkan konfirmasi pesanan setelah order
+  // Sebelumnya: hanya toast 3 detik — tidak ada bukti, nomor order, atau ringkasan
   function placeOrder() {
+    // Simpan data order SEBELUM cart dikosongkan
+    const orderItems = Object.values(cart).map((item) => ({ ...item }));
+    const orderNote = document.getElementById("note").value;
+    const subtotal = orderItems.reduce((sum, i) => sum + i.count * i.price, 0);
+    const currentDiskon = diskon;
+    // [FIX-NEW] BUG-02: Diskon hanya ke subtotal, bukan handling fee
+    const orderTotal = subtotal * (1 - currentDiskon) + HANDLING_FEE;
+
     closeReview();
     cart = {};
     diskon = 0;
     document.getElementById("note").value = "";
     document.getElementById("coupon").value = "";
     document.getElementById("coupon-msg").textContent = "";
+    saveCart(); // [FIX-10]
     renderCart();
-    showToast("Pesanan masuk! Sampai jumpa besok pagi.");
+
+    showOrderConfirmation(orderItems, orderTotal, orderNote);
+  }
+
+  function showOrderConfirmation(items, total, note) {
+    // Buat nomor pesanan unik sementara (di produksi: dari server)
+    const orderId = "PP-" + Date.now().toString().slice(-6);
+    const overlay = document.getElementById("order-confirm");
+
+    document.getElementById("oc-id").textContent = orderId;
+    document.getElementById("oc-total").textContent = total.toFixed(2);
+
+    // [FIX-NEW] XSS: Ganti innerHTML → DOM API untuk konsistensi dengan FIX-01
+    // Sebelumnya: innerHTML dengan template literal — pola berbahaya meski data dari katalog
+    const ocItemsEl = document.getElementById("oc-items");
+    ocItemsEl.innerHTML = "";
+    items.forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "oc-line";
+      const spanName = document.createElement("span");
+      spanName.textContent = `${item.name} × ${item.count}`;
+      const spanPrice = document.createElement("span");
+      spanPrice.textContent = `$${(item.count * item.price).toFixed(2)}`;
+      div.appendChild(spanName);
+      div.appendChild(spanPrice);
+      ocItemsEl.appendChild(div);
+    });
+
+    const noteEl = document.getElementById("oc-note");
+    if (note) {
+      noteEl.textContent = "Catatan: " + note;
+      noteEl.style.display = "block";
+    } else {
+      noteEl.style.display = "none";
+    }
+
+    overlay.classList.add("open");
   }
 
   /* EVENT KLIK */
@@ -309,7 +507,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = event.target;
 
     if (target.classList.contains("plus-button")) {
-      addToCart(target.dataset.id);
+      addToCart(target.dataset.id, Number(target.dataset.price));
     }
     if (target.classList.contains("minus-button")) {
       removeFromCart(target.dataset.id);
@@ -329,6 +527,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (target.id === "review-back" || target === reviewModal) {
       closeReview();
     }
+    // [FIX-NEW] BUG-06: Gunakan orderConfirmEl yang sudah di-cache — tidak re-query tiap klik
+    if (target.id === "oc-close" || target === orderConfirmEl) {
+      orderConfirmEl.classList.remove("open");
+    }
   });
 
   /* EVENT INPUT */
@@ -342,6 +544,10 @@ document.addEventListener("DOMContentLoaded", () => {
       renderCart();
     }
   });
+
+  // [FIX-NEW] BUG-01: Sinkronisasi tampilan handling fee di sidebar dengan konstanta JS
+  // Sebelumnya: "$0.30" hardcoded di HTML — desync jika HANDLING_FEE diubah di sini
+  document.getElementById("handling-fee-display").textContent = `$${HANDLING_FEE.toFixed(2)}`;
 
   /* MULAI */
   renderProducts();

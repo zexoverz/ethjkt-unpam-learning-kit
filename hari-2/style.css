@@ -159,7 +159,9 @@ body {
 
   background: var(--paper);
 
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .product:hover {
@@ -204,7 +206,9 @@ body {
   margin-bottom: 0.45rem;
 }
 
-.product h2 {
+/* [FIX-17] CODE-04: Nama produk di kartu pakai h3, bukan h2
+   Hierarki benar: h1 = "Pasar Pagi", h2 = "Keranjang Kamu", h3 = nama produk */
+.product h3 {
   margin: 0;
 
   line-height: 1.1;
@@ -256,23 +260,15 @@ body {
 
   font-size: 1.1rem;
 
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 .quantity-button:hover {
   background: #dfd2c1;
 
   transform: scale(1.05);
-}
-
-.quantity-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.quantity-button:disabled:hover {
-  background: #ece3d7;
-  transform: none;
 }
 
 .quantity-display {
@@ -387,29 +383,31 @@ body {
   margin-top: 2rem;
 }
 
-.cart-breakdown {
-  margin-bottom: 1rem;
-}
-
-.cart-breakdown .row {
+/* [FIX-08] BUG-05/DARK-04: Baris biaya penanganan yang kini transparan di sidebar */
+.fee-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
-  padding: 0.25rem 0;
+  margin-bottom: 0.5rem;
+
+  font-size: 0.88rem;
 
   color: var(--olive);
-  font-size: 0.92rem;
 }
 
-.cart-breakdown .grand {
-  margin-top: 0.6rem;
-  padding-top: 0.7rem;
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-top: 0.5rem;
 
   border-top: 1px solid var(--line);
 
-  color: var(--brown);
-  font-size: 1.2rem;
-  font-weight: 600;
+  margin-bottom: 1rem;
+
+  font-size: 1.05rem;
 }
 
 .checkout-button {
@@ -429,7 +427,9 @@ body {
 
   cursor: pointer;
 
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .checkout-button:hover {
@@ -698,7 +698,9 @@ body {
   opacity: 0;
   pointer-events: none;
 
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 
   z-index: 60;
 }
@@ -734,4 +736,62 @@ body {
   .cart-summary {
     align-items: flex-start;
   }
+}
+
+/* ============================================================
+   [FIX-16] CODE-03: Styles untuk overlay konfirmasi pesanan
+   ============================================================ */
+
+.oc-card {
+  text-align: center;
+}
+
+.oc-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 56px;
+  height: 56px;
+
+  margin: 0 auto 1rem;
+
+  border-radius: 50%;
+
+  background: var(--olive);
+
+  color: white;
+  font-size: 1.6rem;
+}
+
+.oc-card h3 {
+  margin: 0 0 0.2rem;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.9rem;
+}
+
+.oc-id-label {
+  margin: 0.8rem 0;
+
+  font-size: 0.85rem;
+
+  color: var(--olive);
+}
+
+.oc-items {
+  margin: 0.8rem 0;
+
+  text-align: left;
+}
+
+.oc-line {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 0.4rem 0;
+
+  border-bottom: 1px dashed var(--line);
+
+  font-size: 0.92rem;
 }
