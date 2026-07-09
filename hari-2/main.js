@@ -42,9 +42,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // yang menyimpan & memvalidasi kode kupon, bukan file JS publik.
   let diskon = 0; // 0 = tanpa diskon, 0.9 = potong 90%
 
+  async function hashSha256(text) {
+    const data = new TextEncoder().encode(text);
+    const buf = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(buf))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
   const productSection = document.getElementById("product-section");
   const cartDetailsEl = document.getElementById("cart-details");
-  const totalPriceEl = document.getElementById("modal-total-price");
+  const cartSummaryEl = document.getElementById("cart-summary-breakdown");
   const cartCountEl = document.getElementById("cart-count");
   const reviewModal = document.getElementById("review-modal");
 
@@ -102,13 +110,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (Object.keys(cart).length === 0) {
       cartDetailsEl.innerHTML = `<p class="empty-cart">Keranjang kamu masih kosong.</p>`;
-      totalPriceEl.textContent = "0.00";
+      renderBreakdownRows(cartSummaryEl, buildBreakdown(0));
       updateCartCount();
       renderProducts();
       return;
     }
 
     Object.values(cart).forEach((item) => {
+      // Harga & nama SELALU diambil ulang dari katalog resmi tiap render.
+      // Kalau ada yang ngutak-atik object `cart` di console, langsung ketimpa.
+      const official = products.find((p) => p.id == item.id);
+      if (official) {
+        item.price = official.price;
+        item.name = official.name;
+      }
+
       const itemTotal = item.count * item.price;
       totalPrice += itemTotal;
 
