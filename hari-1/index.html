@@ -3,98 +3,291 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poké Gacha ETHJKT</title>
-<link rel="stylesheet" href="styles.css">
+<title>Genshin Wish Simulator</title>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color: #f8fbff;
+    background: #050914;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 460px;
+    padding: 24px 22px 28px;
+    text-align: center;
+    background: #0b1220;
+    border: 1px solid #22324d;
+    border-radius: 16px;
+    box-shadow: 0 24px 70px rgba(0,0,0,.45);
+  }
+
+  h1 {
+    margin-bottom: 6px;
+    font-size: 28px;
+    color: #fff;
+  }
+
+  .subtitle {
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: #9bb7dc;
+  }
+
+  .stats {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .stat {
+    flex: 1;
+    padding: 10px 6px;
+    background: #111b2d;
+    border: 1px solid #1e3352;
+    border-radius: 10px;
+  }
+
+  .stat .num {
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .stat .lbl {
+    font-size: 11px;
+    color: #9bb7dc;
+    text-transform: uppercase;
+  }
+
+  .pity {
+    margin-bottom: 18px;
+    text-align: left;
+  }
+
+  .pity-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: #cfe4ff;
+  }
+
+  .pity-track {
+    height: 10px;
+    background: #111b2d;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .pity-fill {
+    height: 100%;
+    width: 0%;
+    background: #2f8cff;
+    transition: width .35s ease;
+  }
+
+  .stage {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    width: 190px;
+    height: 250px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    background: #08101f;
+    border: 2px solid #2b405f;
+    border-radius: 14px;
+  }
+
+  .portrait {
+    width: 116px;
+    height: 116px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #111b2d;
+    border: 1px solid #263b59;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: none;
+  }
+
+  .mark {
+    font-size: 42px;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .name {
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .rar {
+    font-size: 12px;
+    font-weight: 700;
+    color: #9bb7dc;
+    text-transform: uppercase;
+  }
+
+  .card.common { border-color:#526174; }
+  .card.rare { border-color:#2f8cff; }
+  .card.epic { border-color:#7aaeff; }
+  .card.ssr {
+    border-color:#fff;
+    box-shadow:0 0 34px rgba(47,140,255,.62);
+  }
+
+  @keyframes pop {
+    0% { transform:scale(.5); opacity:0; }
+    60% { transform:scale(1.06); }
+    100% { transform:scale(1); opacity:1; }
+  }
+
+  @keyframes shake {
+    0%,100% { transform:translateX(0); }
+    20% { transform:translateX(-5px); }
+    40% { transform:translateX(5px); }
+    60% { transform:translateX(-3px); }
+    80% { transform:translateX(3px); }
+  }
+
+  .card.reveal {
+    animation: pop .35s ease;
+  }
+
+  .card.ssr.reveal {
+    animation: pop .35s ease, shake .45s ease .35s;
+  }
+
+  .buttons {
+    display:flex;
+    gap:12px;
+    margin-bottom:22px;
+  }
+
+  .btn {
+    flex:1;
+    padding:14px 0;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:700;
+    color:#fff;
+    background:#1b6fe5;
+  }
+
+  .btn.alt {
+    background:#fff;
+    color:#06101f;
+  }
+
+  .history {
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+
+  .chip {
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    border:2px solid #2b405f;
+  }
+
+  .chip.rare { border-color:#2f8cff; }
+  .chip.epic { border-color:#7aaeff; }
+  .chip.ssr { border-color:#fff; }
+</style>
 </head>
+
 <body>
-  <div class="pokedex">
-    <!-- Bagian atas ala perangkat Pokédex: lensa biru + 3 lampu indikator -->
-    <div class="pokedex-top">
-      <div class="lens"></div>
-      <div class="lights">
-        <span class="light red"></span>
-        <span class="light yellow"></span>
-        <span class="light green"></span>
-      </div>
-      <div class="brand">POKÉDEX</div>
+
+<div class="app">
+
+  <h1>Genshin Wish</h1>
+  <div class="subtitle">
+    Simulasi wish karakter dari Genshin API
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="num" id="total">0</div>
+      <div class="lbl">Total Wish</div>
     </div>
 
-    <!-- Layar putih tempat semua konten tampil -->
-    <div class="screen">
-      <h1>POKÉ GACHA</h1>
-      <div class="subtitle">tarik Pokémon asli — data langsung dari PokeAPI</div>
-
-      <!-- Navigasi tab -->
-      <div class="tabs">
-        <button class="tab active" data-tab="gacha">Gacha</button>
-        <button class="tab" data-tab="koleksi">Koleksi</button>
-        <button class="tab" data-tab="badge">Badge</button>
-      </div>
-
-      <!-- ============ TAB: GACHA ============ -->
-      <div class="tab-panel" id="panel-gacha">
-        <div class="stats">
-          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
-        </div>
-
-        <div class="pity">
-          <div class="pity-top"><span>Pity ke Legendary gratis</span><span id="pityText">0 / 10</span></div>
-          <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-        </div>
-
-        <div class="stage">
-          <div class="card" id="card">
-            <div class="spinner" id="spinner"></div>
-            <img class="sprite" id="sprite" alt="">
-            <div class="shiny-badge" id="shinyBadge">✨ SHINY</div>
-            <div class="placeholder" id="placeholder">
-              <div class="pokeball"></div>
-              <div class="ph-text">Tekan PULL</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="poke-info">
-          <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
-          <div class="types" id="types"></div>
-          <div class="rar" id="rarity"></div>
-          <div class="stats-panel" id="statsPanel"></div>
-        </div>
-
-        <div class="err" id="err"></div>
-
-        <div class="buttons">
-          <button class="btn" id="tarik1">PULL 1x</button>
-          <button class="btn gold" id="tarik10">PULL 10x</button>
-        </div>
-
-        <div class="hist-lbl">Riwayat Terakhir</div>
-        <div class="history" id="history"></div>
-      </div>
-
-      <!-- ============ TAB: KOLEKSI ============ -->
-      <div class="tab-panel" id="panel-koleksi" hidden>
-        <div class="stats">
-          <div class="stat"><div class="num" id="uniqueCount">0</div><div class="lbl">Jenis Terkumpul</div></div>
-          <div class="stat"><div class="num" id="shinyCount">0</div><div class="lbl">Shiny</div></div>
-        </div>
-        <div class="collection-empty" id="collectionEmpty">Belum ada Pokémon. Tarik dulu di tab Gacha! 🎣</div>
-        <div class="collection-grid" id="collectionGrid"></div>
-      </div>
-
-      <!-- ============ TAB: BADGE ============ -->
-      <div class="tab-panel" id="panel-badge" hidden>
-        <p class="badge-intro">Kumpulkan Pokémon tiap tipe untuk menguasai gym Kanto dan meraih 8 badge-nya!</p>
-        <div class="champion" id="champion" hidden>👑 CHAMPION! Kamu menguasai semua 8 gym Kanto!</div>
-        <div class="badge-grid" id="badgeGrid"></div>
-      </div>
+    <div class="stat">
+      <div class="num" id="ssrCount">0</div>
+      <div class="lbl">5-Star</div>
     </div>
   </div>
 
-  <!-- Notifikasi kecil saat dapat badge baru -->
-  <div class="toast" id="toast" hidden></div>
+  <div class="pity">
+    <div class="pity-top">
+      <span>Pity ke 5-Star</span>
+      <span id="pityText">0 / 10</span>
+    </div>
 
-  <script src="app.js"></script>
+    <div class="pity-track">
+      <div class="pity-fill" id="pityFill"></div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="card" id="card">
+
+      <div class="portrait">
+        <img class="card-image" id="cardImage" alt="">
+        <span class="mark" id="cardMark">?</span>
+      </div>
+
+      <div class="name" id="cardName">
+        Tekan WISH
+      </div>
+
+      <div class="rar" id="cardRarity"></div>
+
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button class="btn" id="tarik1">WISH 1x</button>
+    <button class="btn alt" id="tarik10">WISH 10x</button>
+  </div>
+
+  <div class="hist-lbl">Riwayat Wish</div>
+  <div class="history" id="history"></div>
+
+</div>
+
+<script src="app.js"></script>
+
 </body>
 </html>
