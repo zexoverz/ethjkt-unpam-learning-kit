@@ -207,8 +207,9 @@ function decideRarity() {
   const acak = Math.random();
   // "+1" karena tarikan ini belum masuk hitungan pity.
   if (pity + 1 >= PITY_MAX || acak < RATE_SSR) return "ssr";
-  if (acak < RATE_EPIC) return "epic";
-  if (acak < RATE_RARE) return "rare";
+  // Rate dicek secara kumulatif supaya EPIC tetap 10% dan RARE tetap 30%.
+  if (acak < RATE_SSR + RATE_EPIC) return "epic";
+  if (acak < RATE_SSR + RATE_EPIC + RATE_RARE) return "rare";
   return "common";
 }
 
