@@ -1,3 +1,74 @@
+# DikaToken (DKT) x ETHJKT — Mini DEX
+
+Proyek belajar smart contract & DeFi dari ETHJKT Learning Kit — UNPAM.
+Bikin token ERC20 sendiri (DikaToken), lalu deploy AMM (`x*y=k`) buat
+tuker-tuker DikaToken dengan ETHJKT di jaringan Sepolia testnet.
+
+## Info Token
+
+Nama Token: DikaToken
+Simbol: DKT
+Network: Sepolia Testnet
+
+## Alamat Contract
+
+DikaToken (DKT): `0x52BB960d6c0e57ff09897E0a02A560B3e81b7509`
+ETHJKT: `0x7E96fed902B0A26b62DA78e8112253920Fc55936`
+SimpleAMM (pasar/pool): `0x519A58F552d4aF1400cF40E3505c55BFC3Dcb78e`
+
+Lihat di Sepolia Etherscan:
+- [DikaToken](https://sepolia.etherscan.io/address/0x52BB960d6c0e57ff09897E0a02A560B3e81b7509)
+- [ETHJKT](https://sepolia.etherscan.io/address/0x7E96fed902B0A26b62DA78e8112253920Fc55936#code)
+- [SimpleAMM](https://sepolia.etherscan.io/address/0x519A58F552d4aF1400cF40E3505c55BFC3Dcb78e)
+
+## Struktur Repo
+
+```
+hari-3/           -> materi & progress Hari 3 (deploy token ERC20)
+hari-4/
+  DikaToken.sol    -> source code token ERC20 (DikaToken)
+  SimpleAMM.sol    -> source code AMM/pool (x*y=k)
+  EthjktToken.sol  -> token bersama dari pengajar
+  LOG-HARI-4.md    -> log pemahaman checkpoint 6-9
+  app/             -> interface web (React + wagmi) untuk swap
+```
+
+## Cara Menjalankan Interface Web (`app/`)
+
+1. Masuk ke folder app:
+   ```bash
+   cd hari-4/app
+   npm install
+   npm run dev
+   ```
+2. Buka `app/config.ts`, pastikan alamat berikut sudah sesuai:
+   - `AMM_ADDRESS` → alamat SimpleAMM di atas
+   - `TOKEN_A.address` → alamat DikaToken
+   - `TOKEN_B.address` → alamat ETHJKT
+3. Buka browser ke alamat local dev server (biasanya `http://localhost:5173`).
+4. Klik **Connect Wallet** (MetaMask, network Sepolia), lalu coba swap.
+
+## Cara Kerja Singkat
+
+- **DikaToken** & **ETHJKT** adalah token ERC20 standar (transfer, approve,
+  transferFrom).
+- **SimpleAMM** adalah contract pool yang menyimpan cadangan (reserve) kedua
+  token, dan menentukan harga swap otomatis pakai rumus constant product
+  (`reserveA * reserveB = k`), dengan fee 0.3% tiap transaksi swap.
+- User perlu **approve** dulu sebelum SimpleAMM bisa menarik token dari
+  dompet mereka (standar keamanan ERC20).
+
+## Dokumentasi Belajar
+
+- [LOG-HARI-4.md](hari-4/LOG-HARI-4.md) — pemahaman soal DeFi, ERC20,
+  pembuktian `x*y=k`, uji AI Swap Advisor vs kontrak asli, dan slippage.
+
+## Disclaimer
+
+Proyek ini murni untuk belajar di **Sepolia testnet**. Semua token tidak
+punya nilai finansial nyata. Jangan pernah pakai private key/seed phrase
+asli untuk hal ini.
+
 # ETHJKT x UNPAM — Learning Kit: AI & Blockchain
 
 Short Course "AI & Blockchain" | Universitas Pamulang (UNPAM)
