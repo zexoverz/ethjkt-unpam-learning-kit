@@ -3,98 +3,988 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poké Gacha ETHJKT</title>
-<link rel="stylesheet" href="styles.css">
+<title>One Piece Character Gacha</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #060a14;
+    --panel: rgba(6, 10, 20, 0.85);
+    --line: rgba(148, 163, 184, 0.12);
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --accent: #38bdf8;
+    --gold: #f59e0b;
+    --gold-light: #fbbf24;
+    --red: #ef4444;
+    --red-light: #f87171;
+  }
+
+  @keyframes bgShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text);
+    background: linear-gradient(-45deg, #060a14 0%, #0f1235 25%, #0a1628 50%, #12082a 75%, #060a14 100%);
+    background-size: 400% 400%;
+    animation: bgShift 25s ease infinite;
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+    overflow-x: hidden;
+  }
+
+  .app { width: min(1100px, 100%); position: relative; }
+
+  .flash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.08s ease;
+  }
+  .flash.active { opacity: 1; }
+  .flash.legend { background: radial-gradient(circle at center, rgba(245, 158, 11, 0.55), transparent 70%); }
+  .flash.epic { background: radial-gradient(circle at center, rgba(239, 68, 68, 0.45), transparent 70%); }
+  .flash.rare { background: radial-gradient(circle at center, rgba(56, 189, 248, 0.35), transparent 70%); }
+
+  #confetti-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+  }
+
+  /* Stars */
+  .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .star {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0.15;
+    animation: twinkle var(--d) ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.05; transform: scale(0.5); }
+    100% { opacity: 0.4; transform: scale(1.5); }
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand h1 {
+    font-size: clamp(22px, 4vw, 40px);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold-light), var(--accent), var(--gold-light));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    margin-top: 5px;
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  .status {
+    min-width: 170px;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: rgba(6, 10, 20, 0.6);
+    color: var(--muted);
+    font-size: 12px;
+    text-align: right;
+    backdrop-filter: blur(12px);
+    position: relative;
+    z-index: 1;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 310px;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(18px);
+  }
+
+  .stage { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .stat {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.025);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .stat:nth-child(1)::before { background: linear-gradient(90deg, var(--accent), transparent); }
+  .stat:nth-child(2)::before { background: linear-gradient(90deg, var(--gold), transparent); }
+  .stat:nth-child(3)::before { background: linear-gradient(90deg, var(--accent), transparent); }
+
+  .num { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+  .lbl { margin-top: 2px; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+  .card-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 380px;
+    perspective: 1000px;
+  }
+
+  .card {
+    width: min(430px, 100%);
+    min-height: 340px;
+    border-radius: 14px;
+    background: linear-gradient(170deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+    border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+    padding: 24px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    transform-style: preserve-3d;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+
+  .card-wanted {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
+  }
+  .card-wanted span {
+    display: inline-block;
+    border: 1px solid var(--line);
+    padding: 4px 16px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .avatar {
+    width: 130px;
+    height: 130px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    background: rgba(6, 10, 20, 0.8);
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 0;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .rarity {
+    position: relative;
+    z-index: 2;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    transition: color 0.3s ease;
+  }
+
+  .name {
+    position: relative;
+    z-index: 2;
+    font-size: clamp(20px, 3.5vw, 32px);
+    line-height: 1.1;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-align: center;
+    transition: color 0.3s ease;
+  }
+
+  .bounty-text {
+    position: relative;
+    z-index: 2;
+    font-size: 13px;
+    color: var(--gold-light);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .meta {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+  }
+
+  .pill {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 10px;
+    color: #94a3b8;
+    background: rgba(6, 10, 20, 0.5);
+    font-size: 10px;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Rarity card styles */
+  .card.legend {
+    border-color: var(--gold);
+    box-shadow: 0 0 50px rgba(245, 158, 11, 0.3), 0 0 100px rgba(245, 158, 11, 0.08);
+  }
+  .card.legend .avatar { border-color: var(--gold); box-shadow: 0 0 25px rgba(245, 158, 11, 0.35); }
+  .card.legend .rarity { color: var(--gold); }
+  .card.legend .name {
+    background: linear-gradient(135deg, var(--gold-light), #fef3c7, var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .card.legend .card-wanted span { border-color: rgba(245, 158, 11, 0.5); color: var(--gold); }
+
+  .card.epic {
+    border-color: var(--red);
+    box-shadow: 0 0 35px rgba(239, 68, 68, 0.25), 0 0 70px rgba(239, 68, 68, 0.06);
+  }
+  .card.epic .avatar { border-color: var(--red); box-shadow: 0 0 18px rgba(239, 68, 68, 0.3); }
+  .card.epic .rarity { color: var(--red); }
+  .card.epic .name { color: var(--red-light); }
+  .card.epic .card-wanted span { border-color: rgba(239, 68, 68, 0.4); color: var(--red); }
+
+  .card.rare {
+    border-color: var(--accent);
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+  }
+  .card.rare .avatar { border-color: var(--accent); box-shadow: 0 0 12px rgba(56, 189, 248, 0.25); }
+  .card.rare .rarity { color: var(--accent); }
+  .card.rare .card-wanted span { border-color: rgba(56, 189, 248, 0.4); color: var(--accent); }
+
+  /* Card bg gradient */
+  .card-bg {
+    position: absolute;
+    inset: -60% -30% auto;
+    height: 300px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.15), transparent 65%);
+    transform: rotate(-12deg);
+    transition: background 0.5s ease;
+    pointer-events: none;
+  }
+  .card.legend .card-bg { background: radial-gradient(circle, rgba(245, 158, 11, 0.3), transparent 65%); }
+  .card.epic .card-bg { background: radial-gradient(circle, rgba(239, 68, 68, 0.25), transparent 65%); }
+  .card.rare .card-bg { background: radial-gradient(circle, rgba(56, 189, 248, 0.25), transparent 65%); }
+
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.5));
+    pointer-events: none;
+  }
+
+  /* Rarity animations */
+  @keyframes legendGlow {
+    0%, 100% { box-shadow: 0 0 50px rgba(245, 158, 11, 0.3), 0 0 100px rgba(245, 158, 11, 0.08); }
+    50% { box-shadow: 0 0 70px rgba(245, 158, 11, 0.4), 0 0 140px rgba(245, 158, 11, 0.12); }
+  }
+  @keyframes epicPulse {
+    0%, 100% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.25), 0 0 70px rgba(239, 68, 68, 0.06); }
+    50% { box-shadow: 0 0 50px rgba(239, 68, 68, 0.35), 0 0 100px rgba(239, 68, 68, 0.1); }
+  }
+  @keyframes rareShimmer {
+    0%, 100% { box-shadow: 0 0 25px rgba(56, 189, 248, 0.2); }
+    50% { box-shadow: 0 0 40px rgba(56, 189, 248, 0.3); }
+  }
+  @keyframes cardShake {
+    0%, 100% { transform: translateX(0); }
+    10% { transform: translateX(-4px) rotate(-0.5deg); }
+    30% { transform: translateX(4px) rotate(0.5deg); }
+    50% { transform: translateX(-3px); }
+    70% { transform: translateX(3px); }
+    90% { transform: translateX(-1px); }
+  }
+
+  .card.legend.animate { animation: legendGlow 2s ease-in-out infinite, cardShake 0.4s ease 0.1s; }
+  .card.epic.animate { animation: epicPulse 1.8s ease-in-out infinite, cardShake 0.25s ease 0.1s; }
+  .card.rare.animate { animation: rareShimmer 2s ease-in-out infinite; }
+
+  .card.reveal {
+    animation: cardReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes cardReveal {
+    from { transform: translateY(20px) scale(0.95) rotateX(4deg); opacity: 0; }
+    to { transform: translateY(0) scale(1) rotateX(0); opacity: 1; }
+  }
+
+  .card .shine {
+    position: absolute;
+    top: -30%;
+    bottom: -30%;
+    width: 50px;
+    background: rgba(255, 255, 255, 0.12);
+    filter: blur(14px);
+    z-index: 3;
+    pointer-events: none;
+    animation: cardShine 0.7s ease forwards;
+  }
+  @keyframes cardShine {
+    0% { transform: translateX(-120%) rotate(18deg); }
+    100% { transform: translateX(220%) rotate(18deg); }
+  }
+
+  .controls { display: flex; flex-direction: column; gap: 12px; }
+  .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .btn {
+    min-height: 50px;
+    border: 0;
+    border-radius: 10px;
+    color: #0a0e1a;
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn:hover {
+    filter: brightness(1.12);
+    box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+    transform: translateY(-1px);
+  }
+  .btn:active { transform: translateY(1px) scale(0.99); }
+  .btn.gold {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+  .btn.gold:hover {
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.35);
+  }
+  .btn:disabled {
+    cursor: not-allowed;
+    filter: grayscale(0.8);
+    opacity: 0.45;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .pity-section { margin-bottom: 2px; }
+  .pity-top { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; margin-bottom: 6px; }
+  .pity-track { height: 8px; border-radius: 999px; background: rgba(148, 163, 184, 0.1); overflow: hidden; }
+  .pity-fill {
+    width: 0%; height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 999px;
+  }
+
+  .side { padding: 18px; display: flex; flex-direction: column; gap: 18px; }
+  .section-title {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .history { display: flex; flex-direction: column; gap: 6px; }
+
+  .chip {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.025);
+    font-size: 12px;
+    transition: border-color 0.2s;
+  }
+  .chip.legend { border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.06); }
+  .chip.epic { border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.06); }
+  .chip.rare { border-color: rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.06); }
+  .chip-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+  .chip-rarity { font-weight: 800; font-size: 10px; white-space: nowrap; }
+  .chip.legend .chip-rarity { color: var(--gold); }
+  .chip.epic .chip-rarity { color: var(--red); }
+  .chip.rare .chip-rarity { color: var(--accent); }
+
+  .pool { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; padding-right: 4px; }
+  .pool::-webkit-scrollbar { width: 3px; }
+  .pool::-webkit-scrollbar-track { background: transparent; }
+  .pool::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.15); border-radius: 999px; }
+
+  .pool-item {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.02);
+    transition: background 0.2s;
+  }
+  .pool-item:hover { background: rgba(255, 255, 255, 0.05); }
+  .pool-name { font-size: 12px; font-weight: 700; }
+  .pool-meta { margin-top: 1px; color: var(--muted); font-size: 10px; }
+
+  @media (max-width: 820px) {
+    body { padding: 12px; }
+    .topbar { flex-direction: column; align-items: flex-start; }
+    .status { width: 100%; text-align: left; }
+    .layout { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    .stage { min-height: auto; padding: 14px; }
+    .buttons { grid-template-columns: 1fr; }
+    .card-wrap { min-height: 300px; }
+    .card { min-height: 280px; padding: 16px; }
+    .avatar { width: 100px; height: 100px; font-size: 36px; }
+  }
+</style>
 </head>
 <body>
-  <div class="pokedex">
-    <!-- Bagian atas ala perangkat Pokédex: lensa biru + 3 lampu indikator -->
-    <div class="pokedex-top">
-      <div class="lens"></div>
-      <div class="lights">
-        <span class="light red"></span>
-        <span class="light yellow"></span>
-        <span class="light green"></span>
-      </div>
-      <div class="brand">POKÉDEX</div>
+<div class="stars" id="stars"></div>
+<div class="flash" id="flash"></div>
+<canvas id="confetti-canvas"></canvas>
+
+<main class="app">
+  <header class="topbar">
+    <div class="brand">
+      <h1>☠ One Piece Gacha</h1>
+      <p class="subtitle">Tarik karakter dari onepieceapi.com dan kumpulkan bounty tertinggi!</p>
     </div>
+    <div class="status" id="loadStatus">Memuat kru...</div>
+  </header>
 
-    <!-- Layar putih tempat semua konten tampil -->
-    <div class="screen">
-      <h1>POKÉ GACHA</h1>
-      <div class="subtitle">tarik Pokémon asli — data langsung dari PokeAPI</div>
-
-      <!-- Navigasi tab -->
-      <div class="tabs">
-        <button class="tab active" data-tab="gacha">Gacha</button>
-        <button class="tab" data-tab="koleksi">Koleksi</button>
-        <button class="tab" data-tab="badge">Badge</button>
+  <div class="layout">
+    <section class="panel stage">
+      <div class="stats">
+        <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
+        <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legend Ditemukan</div></div>
+        <div class="stat"><div class="num" id="poolCount">0</div><div class="lbl">Karakter Pool</div></div>
       </div>
 
-      <!-- ============ TAB: GACHA ============ -->
-      <div class="tab-panel" id="panel-gacha">
-        <div class="stats">
-          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
-        </div>
+      <div class="card-wrap">
+        <article class="card" id="card">
+          <div class="card-bg"></div>
+          <div class="card-overlay"></div>
+          <div class="shine"></div>
+          <div class="card-wanted"><span>WANTED</span></div>
+          <div class="avatar" id="avatar"><span id="avatarText">?</span></div>
+          <div class="rarity" id="cardRarity">Siap Tarik</div>
+          <div class="name" id="cardName">Tekan Tombol Tarik</div>
+          <div class="bounty-text" id="bountyDisplay"></div>
+          <div class="meta" id="cardMeta">
+            <span class="pill">⏳ Tarik untuk mulai</span>
+          </div>
+        </article>
+      </div>
 
-        <div class="pity">
-          <div class="pity-top"><span>Pity ke Legendary gratis</span><span id="pityText">0 / 10</span></div>
+      <div class="controls">
+        <div class="pity-section">
+          <div class="pity-top"><span>🎯 Pity menuju Legend</span><span id="pityText">0 / 10</span></div>
           <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
         </div>
-
-        <div class="stage">
-          <div class="card" id="card">
-            <div class="spinner" id="spinner"></div>
-            <img class="sprite" id="sprite" alt="">
-            <div class="shiny-badge" id="shinyBadge">✨ SHINY</div>
-            <div class="placeholder" id="placeholder">
-              <div class="pokeball"></div>
-              <div class="ph-text">Tekan PULL</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="poke-info">
-          <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
-          <div class="types" id="types"></div>
-          <div class="rar" id="rarity"></div>
-          <div class="stats-panel" id="statsPanel"></div>
-        </div>
-
-        <div class="err" id="err"></div>
-
         <div class="buttons">
-          <button class="btn" id="tarik1">PULL 1x</button>
-          <button class="btn gold" id="tarik10">PULL 10x</button>
+          <button class="btn" id="tarik1" disabled>Tarik 1x</button>
+          <button class="btn gold" id="tarik10" disabled>Tarik 10x</button>
         </div>
+      </div>
+    </section>
 
-        <div class="hist-lbl">Riwayat Terakhir</div>
+    <aside class="panel side">
+      <section>
+        <div class="section-title">📜 Riwayat Terakhir</div>
         <div class="history" id="history"></div>
-      </div>
-
-      <!-- ============ TAB: KOLEKSI ============ -->
-      <div class="tab-panel" id="panel-koleksi" hidden>
-        <div class="stats">
-          <div class="stat"><div class="num" id="uniqueCount">0</div><div class="lbl">Jenis Terkumpul</div></div>
-          <div class="stat"><div class="num" id="shinyCount">0</div><div class="lbl">Shiny</div></div>
-        </div>
-        <div class="collection-empty" id="collectionEmpty">Belum ada Pokémon. Tarik dulu di tab Gacha! 🎣</div>
-        <div class="collection-grid" id="collectionGrid"></div>
-      </div>
-
-      <!-- ============ TAB: BADGE ============ -->
-      <div class="tab-panel" id="panel-badge" hidden>
-        <p class="badge-intro">Kumpulkan Pokémon tiap tipe untuk menguasai gym Kanto dan meraih 8 badge-nya!</p>
-        <div class="champion" id="champion" hidden>👑 CHAMPION! Kamu menguasai semua 8 gym Kanto!</div>
-        <div class="badge-grid" id="badgeGrid"></div>
-      </div>
-    </div>
+      </section>
+      <section>
+        <div class="section-title">🏴‍☠️ Character Pool</div>
+        <div class="pool" id="pool"></div>
+      </section>
+    </aside>
   </div>
+</main>
 
-  <!-- Notifikasi kecil saat dapat badge baru -->
-  <div class="toast" id="toast" hidden></div>
+<script>
+  const API_URL = "https://api.api-onepiece.com/v2/characters/en";
+  const FALLBACK_CHARACTERS = [
+    { name: "Monkey D Luffy", size: "174cm", bounty: "3.000.000.000", status: "vivant", job: "Captain", crew: { name: "Straw Hat Pirates" } },
+    { name: "Roronoa Zoro", size: "181cm", bounty: "1.101.000.000", status: "living", job: "Swordsman", crew: { name: "Straw Hat Pirates" } },
+    { name: "Nami", size: "170cm", bounty: "366.000.000", status: "living", job: "Navigator", crew: { name: "Straw Hat Pirates" } },
+    { name: "Sanji", size: "180cm", bounty: "1.032.000.000", status: "living", job: "Cook", crew: { name: "Straw Hat Pirates" } },
+    { name: "Tony Tony Chopper", size: "90cm", bounty: "1.000", status: "living", job: "Doctor", crew: { name: "Straw Hat Pirates" } }
+  ];
 
-  <script src="app.js"></script>
-</body>
-</html>
+  const RARITY_LABEL = {
+    legend: "Legend",
+    epic: "Yonko Tier",
+    rare: "Supernova",
+    common: "Crewmate"
+  };
+
+  const RARITY_COLORS = {
+    legend: "#f59e0b",
+    epic: "#ef4444",
+    rare: "#38bdf8",
+    common: "#94a3b8"
+  };
+
+  let characters = [];
+  let pity = 0;
+  let total = 0;
+  let ssrCount = 0;
+  const imageCache = new Map();
+  const imageQueue = [];
+  let isProcessingQueue = false;
+  let currentConfettiRarity = "common";
+
+  const card = document.getElementById("card");
+  const avatar = document.getElementById("avatar");
+  const avatarText = document.getElementById("avatarText");
+  const cardName = document.getElementById("cardName");
+  const cardRarity = document.getElementById("cardRarity");
+  const cardMeta = document.getElementById("cardMeta");
+  const bountyDisplay = document.getElementById("bountyDisplay");
+  const totalEl = document.getElementById("total");
+  const ssrCountEl = document.getElementById("ssrCount");
+  const poolCount = document.getElementById("poolCount");
+  const pityText = document.getElementById("pityText");
+  const pityFill = document.getElementById("pityFill");
+  const history = document.getElementById("history");
+  const pool = document.getElementById("pool");
+  const loadStatus = document.getElementById("loadStatus");
+  const tarik1 = document.getElementById("tarik1");
+  const tarik10 = document.getElementById("tarik10");
+  const flash = document.getElementById("flash");
+  const canvas = document.getElementById("confetti-canvas");
+  const ctx = canvas.getContext("2d");
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  function createStars() {
+    const container = document.getElementById("stars");
+    for (let i = 0; i < 80; i++) {
+      const star = document.createElement("div");
+      star.className = "star";
+      star.style.left = Math.random() * 100 + "%";
+      star.style.top = Math.random() * 100 + "%";
+      star.style.setProperty("--d", (2 + Math.random() * 3) + "s");
+      star.style.animationDelay = Math.random() * 3 + "s";
+      container.appendChild(star);
+    }
+  }
+  createStars();
+
+  function getName(character) {
+    return character?.name || "Unknown";
+  }
+
+  function getBounty(character) {
+    if (!character?.bounty) return 0;
+    const num = parseInt(character.bounty.replace(/\./g, ""), 10);
+    return num || 0;
+  }
+
+  function getSize(character) {
+    if (!character?.size) return null;
+    const num = parseInt(character.size.replace(/[^0-9]/g, ""), 10);
+    return num || null;
+  }
+
+  function formatBounty(amount) {
+    if (!amount) return "No bounty";
+    return amount.toLocaleString("id-ID") + " berries";
+  }
+
+  function getInitials(name) {
+    return name.split(" ").filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+  }
+
+  function pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function getRarityByBounty(character) {
+    const bounty = getBounty(character);
+    if (bounty >= 1000000000) return "legend";
+    if (bounty >= 500000000) return "epic";
+    if (bounty >= 100000000) return "rare";
+    return "common";
+  }
+
+  function pickByRarity(kelas) {
+    const matching = characters.filter(c => getRarityByBounty(c) === kelas);
+    return pickRandom(matching.length ? matching : characters);
+  }
+
+  function rollSingle() {
+    total += 1;
+    pity += 1;
+    const r = Math.random();
+    let kelas = "common";
+    if (pity >= 10 || r < 0.03) {
+      kelas = "legend";
+      pity = 0;
+      ssrCount += 1;
+    } else if (r < 0.10) {
+      kelas = "epic";
+    } else if (r < 0.30) {
+      kelas = "rare";
+    }
+    const character = pickByRarity(kelas);
+    return { kelas: getRarityByBounty(character), character };
+  }
+
+  // ---- Image loading via JSONP with search fallback ----
+  function fetchImage(name) {
+    return new Promise(resolve => {
+      if (imageCache.has(name)) {
+        resolve(imageCache.get(name));
+        return;
+      }
+      imageCache.set(name, null);
+
+      const cb = "opimg_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
+      const tryExact = () => {
+        window[cb] = data => {
+          delete window[cb];
+          const pages = data?.query?.pages;
+          if (pages) {
+            const page = Object.values(pages)[0];
+            if (page?.thumbnail?.source && page.pageid !== -1) {
+              imageCache.set(name, page.thumbnail.source);
+              resolve(page.thumbnail.source);
+              return;
+            }
+          }
+          trySearch();
+        };
+
+        const s = document.createElement("script");
+        s.src = "https://onepiece.fandom.com/api.php?action=query&titles=" +
+          encodeURIComponent(name) +
+          "&prop=pageimages&format=json&pithumbsize=300&callback=" + cb;
+        s.onerror = () => { delete window[cb]; trySearch(); };
+        document.head.appendChild(s);
+        setTimeout(() => {
+          if (window[cb]) { delete window[cb]; trySearch(); }
+        }, 5000);
+      };
+
+      const trySearch = () => {
+        const cb2 = cb + "_s";
+        window[cb2] = data => {
+          delete window[cb2];
+          const pages = data?.query?.pages;
+          if (pages) {
+            for (const id in pages) {
+              const page = pages[id];
+              if (page?.thumbnail?.source && page.ns === 0) {
+                imageCache.set(name, page.thumbnail.source);
+                resolve(page.thumbnail.source);
+                return;
+              }
+            }
+          }
+          resolve(null);
+        };
+
+        const s = document.createElement("script");
+        s.src = "https://onepiece.fandom.com/api.php?action=query&generator=search&gsrsearch=" +
+          encodeURIComponent(name) +
+          "&gsrlimit=3&gsrnamespace=0&prop=pageimages&pithumbsize=300&format=json&callback=" + cb2;
+        s.onerror = () => { delete window[cb2]; resolve(null); };
+        document.head.appendChild(s);
+        setTimeout(() => {
+          if (window[cb2]) { delete window[cb2]; resolve(null); }
+        }, 5000);
+      };
+
+      tryExact();
+    });
+  }
+
+  function loadImage(name) {
+    const cached = imageCache.get(name);
+    if (cached) {
+      applyImage(name, cached);
+      return;
+    }
+    fetchImage(name).then(url => {
+      if (url) applyImage(name, url);
+    });
+  }
+
+  function applyImage(name, url) {
+    const img = new Image();
+    img.onload = () => {
+      avatar.innerHTML = "";
+      avatar.appendChild(img);
+    };
+    img.src = url;
+    img.alt = name;
+  }
+
+  function prefetchAllImages() {
+    for (const c of characters) {
+      const n = getName(c);
+      if (!imageCache.has(n)) imageQueue.push(n);
+    }
+    processImageQueue();
+  }
+
+  function processImageQueue() {
+    if (isProcessingQueue || imageQueue.length === 0) return;
+    isProcessingQueue = true;
+    const name = imageQueue.shift();
+    fetchImage(name).then(() => {
+      isProcessingQueue = false;
+      setTimeout(processImageQueue, 400);
+    });
+  }
+
+  // ---- Confetti system ----
+  let confettiParticles = [];
+  let confettiFrame = 0;
+  let confettiRunning = false;
+
+  function launchConfetti(rarity) {
+    currentConfettiRarity = rarity;
+    const colors = rarity === "legend"
+      ? ["#f59e0b", "#fbbf24", "#fef3c7", "#d97706", "#fff"]
+      : rarity === "epic"
+        ? ["#ef4444", "#f87171", "#fecaca", "#dc2626", "#fff"]
+        : ["#38bdf8", "#7dd3fc", "#e0f2fe", "#0ea5e9", "#fff"];
+
+    const count = rarity === "legend" ? 120 : rarity === "epic" ? 80 : 50;
+    confettiParticles = [];
+    for (let i = 0; i < count; i++) {
+      confettiParticles.push({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * canvas.height * 0.3,
+        w: 4 + Math.random() * 8,
+        h: 2 + Math.random() * 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx: (Math.random() - 0.5) * 5,
+        vy: 2 + Math.random() * 5,
+        rot: Math.random() * 360,
+        rs: (Math.random() - 0.5) * 12,
+        o: 1,
+        shape: Math.random() > 0.5 ? "rect" : "circle"
+      });
+    }
+    confettiFrame = 0;
+    if (!confettiRunning) {
+      confettiRunning = true;
+      animateConfetti();
+    }
+  }
+
+  function animateConfetti() {
+    const maxFrames = currentConfettiRarity === "legend" ? 150 : currentConfettiRarity === "epic" ? 120 : 90;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (const p of confettiParticles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.08;
+      p.rot += p.rs;
+
+      if (confettiFrame > maxFrames - 30) {
+        p.o = Math.max(0, p.o - 0.035);
+      }
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.globalAlpha = p.o;
+      ctx.fillStyle = p.color;
+
+      if (p.shape === "circle") {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      }
+      ctx.restore();
+    }
+
+    confettiFrame++;
+    if (confettiFrame <= maxFrames) {
+      requestAnimationFrame(animateConfetti);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiRunning = false;
+    }
+  }
+
+  function triggerFlash(rarity) {
+    flash.className = "flash " + rarity;
+    flash.classList.add("active");
+    setTimeout(() => flash.classList.remove("active"), 150 + (rarity === "legend" ? 100 : 0));
+  }
+
+  function showResult(result) {
+    const character = result.character;
+    const name = getName(character);
+    const bounty = getBounty(character);
+
+    avatarText.style.display = "block";
+    avatar.innerHTML = "";
+    avatar.appendChild(avatarText);
+    avatarText.textContent = getInitials(name);
+    avatar.style.background = `rgba(6, 10, 20, 0.8)`;
+
+    cardName.textContent = name;
+    cardRarity.textContent = RARITY_LABEL[result.kelas];
+    bountyDisplay.textContent = formatBounty(bounty);
+    const size = getSize(character);
+    cardMeta.innerHTML = `
+      <span class="pill">${character.status || "Unknown"}</span>
+      <span class="pill">${size ? size + " cm" : "Height unknown"}</span>
+      <span class="pill">${character.job || "Unknown role"}</span>
+      <span class="pill">${character.crew?.name || "Unknown crew"}</span>
+    `;
+
+    card.className = "card reveal";
+    card.offsetWidth;
+    card.classList.add(result.kelas, "animate");
+
+    totalEl.textContent = total;
+    ssrCountEl.textContent = ssrCount;
+    pityText.textContent = pity + " / 10";
+    pityFill.style.width = (pity / 10 * 100) + "%";
+
+    // Special effects for rare pulls
+    if (result.kelas === "legend") {
+      triggerFlash("legend");
+      launchConfetti("legend");
+    } else if (result.kelas === "epic") {
+      triggerFlash("epic");
+      launchConfetti("epic");
+    } else if (result.kelas === "rare") {
+      launchConfetti("rare");
+    }
+
+    // Load character image from wiki (non-blocking)
+    loadImage(name);
+  }
+
+  function addHistory(result) {
+    const name = getName(result.character);
+    const chip = document.createElement("div");
+    chip.className = "chip";
+    chip.innerHTML = `<span class="chip-name">${name}</span><span class="chip-rarity">${RARITY_LABEL[result.kelas]}</span>`;
+    chip.classList.add(result.kelas);
+    history.prepend(chip);
+    while (history.children.length > 8) {
+      history.lastElementChild.remove();
+    }
+  }
+
+  function pull(count) {
+    let lastResult;
+    for (let i = 0; i < count; i++) {
+      lastResult = rollSingle();
+      addHistory(lastResult);
+    }
+    showResult(lastResult);
+  }
+
+  function renderPool() {
+    pool.innerHTML = "";
+    characters.slice(0, 25).forEach(character => {
+      const name = getName(character);
+      const item = document.createElement("div");
+      item.className = "pool-item";
+      item.innerHTML = `
+        <div class="pool-name">${name}</div>
+        <div class="pool-meta">${RARITY_LABEL[getRarityByBounty(character)]} - ${formatBounty(getBounty(character))}</div>
+      `;
+      pool.appendChild(item);
+    });
+    poolCount.textContent = characters.length;
+  }
+
+  async function loadCharacters() {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      const data = await response.json();
+      characters = Array.isArray(data) ? data : data.results || data.data || [];
+      if (!characters.length) throw new Error("empty");
+      loadStatus.textContent = "API aktif - " + characters.length + " karakter dimuat";
+    } catch (_) {
+      characters = FALLBACK_CHARACTERS;
+      loadStatus.textContent = "API gagal, memakai fallback lokal";
+    }
+    renderPool();
+    tarik1.disabled = false;
+    tarik10.disabled = false;
+    prefetchAllImages();
+  }
+
+  tarik1.addEventListener("click", () => pull(1));
+  tarik10.addEventListener("click", () => pull(10));
+  loadCharacters();
+</script>
+
