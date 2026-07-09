@@ -43,8 +43,41 @@ sungguhan dengan artwork resminya.
    di memori, jadi tidak minta ke server berulang-ulang. Ini juga mematuhi
    aturan *fair use* PokeAPI.
 
-7. **Tombol** — **PULL 1x** menarik sekali, **PULL 10x** menarik 10 kali
-   beruntun. Selama mengambil data, tombol dikunci + muncul spinner loading.
+7. **Tombol** — **PULL 1x** menarik sekali, **PULL 10x** menarik 10 kali beruntun. Selama mengambil data, tombol dikunci + muncul spinner loading.
+
+## Fitur Baru & Modernisasi Pokedex (Upgraded)
+
+1. **Desain Cyberpunk Dark Theme & Glassmorphism**:
+   - Tampilan diubah total dari tema terang FireRed menjadi dark theme dengan glassmorphism modern (`backdrop-filter: blur(12px)`).
+   - Efek neon glow disematkan pada border kartu berdasarkan tingkat kelangkaannya (Common: perak, Rare: cyan, Epic: ungu, SSR: emas berkilau).
+   - Menggunakan Google Fonts: Poppins, Outfit, dan Orbitron untuk teks data statistik agar terasa canggih.
+
+2. **Sistem Booster Pack & Sobek Pack 3D**:
+   - Pemain bisa memilih dari 3 jenis booster packs:
+     - **Kanto Journey Pack** (Koin 15): Pokémon generasi pertama.
+     - **Eevee Spark Pack** (Koin 40): Tinggi peluang shiny (10%) & berisi famili Eevee serta tipe peri/lucu.
+     - **Legendary Raid Pack** (Koin 100): Dijamin Epic atau SSR!
+   - Saat membeli pack, muncul animasi 3D membuka bungkus kartu. Pemain merobek bungkus dengan efek getaran (shaking), sobekan, dan kilatan cahaya.
+   - Kartu yang keluar berbaris terbalik (face-down). Klik kartu satu per satu untuk membalik dengan efek putar 3D (flip rotation).
+
+3. **Audio Retro Synthesizer (Web Audio API)**:
+   - Efek suara 8-bit disintesis secara real-time langsung melalui kode (tanpa file mp3 eksternal).
+   - Efek suara untuk flip kartu, merobek pack, koin emas, tangisan Pokemon, serang takel, dan musik kemenangan (fanfare).
+   - Mute toggle disematkan pada lensa kamera bulat Pokédex di sudut kiri atas (status mute disimpan di `localStorage`).
+
+4. **Koleksi & Filter Pencarian**:
+   - Pokedex Koleksi kini dilengkapi kolom pencarian nama secara real-time dan pil filter tipe (Semua, Shiny, Legendary, Api, Air, Rumput, Listrik).
+   - Klik sel koleksi akan membuka modal pop-up detail untuk melihat data stats dan evolusi secara lengkap.
+
+5. **Koleksi Spesial (Collection Mastery Badges)**:
+   - Ditambahkan 5 set koleksi khusus untuk diselesaikan (Starter Squad, Eevee Clan, Legendary Birds, Weather Lords, Mew Duo).
+   - Setiap koleksi memiliki checklist visual (Pokémon belum ditangkap akan hitam-putih dan bertanda tanya).
+   - Meraih Mastery Badge khusus ketika berhasil menyelesaikan set tersebut dengan efek audio kemenangan.
+
+6. **Battle Arena**:
+   - Pemain bisa memilih salah satu Pokémon yang sudah ditangkap untuk bertanding dengan AI musuh.
+   - Ada 4 tier kesulitan (Gym Trainer, Gym Leader, Elite Four, Rival Champion) dengan biaya koin masuk dan imbalan hadiah koin yang melimpah jika menang.
+   - Menghitung damage dinamis (Attack vs Defense) dan kecepatan (Speed) untuk menentukan giliran menyerang.
 
 ## Sudah dites? Ya, beneran. ✅
 
@@ -67,3 +100,8 @@ pity penuh untuk dapat Legendary gratis, dan semoga hoki dapat **shiny**! ✨
 2. `feat: fetch real Pokémon from PokeAPI with caching + async pulls`
 3. `feat: add type badges, base-stat bars, and shiny variants`
 4. `docs: update LOG.md for Pokémon gacha`
+5. `feat: implement interactive booster packs, 3D card flipping, and Web Audio SFX`
+6. `feat: add battle arena loop, gacha coins economy, and search/type filter for Pokedex`
+7. `feat: add special collection mastery badges check list`
+8. `docs: update CHANGELOG.md and LOG.md with redesigned gameplay mechanics`
+
