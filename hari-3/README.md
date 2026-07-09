@@ -22,6 +22,10 @@ Mentok? Tanya AI ("jelasin error ini"), atau tanya pengajar/mentor di kelas.
 TxHash Deploy = https://sepolia.etherscan.io/tx/0x8b800635865845171d27749114f0b8954c214b6c54108d25ccbfd24a26b414de
 DikaToken Address (DKT) = 0x52BB960d6c0e57ff09897E0a02A560B3e81b7509
 
+Transfer TxHash = https://sepolia.etherscan.io/tx/0x56810d924db2a9912e37b15840a894fdc33e9f2d7093b764c77f895fbb592a8
+Transfer to (zexo) = 0x9ebdC8ACc879a8284Ae5B3CecfbD280ec307aFA3
+Jumlah Transfer = 1000 DKT
+
 ---
 
 ## ATURAN EMAS (lanjutan Hari 1-2)
