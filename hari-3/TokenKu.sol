@@ -38,7 +38,7 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract TokenKu is ERC20 {
     constructor()
         // >>> GANTI DI SINI <<<  ("Nama Panjang Token", "SIMBOL")
-        // contoh: ERC20("Mie Ayam Coin", "MIEAYAM")
+        // contoh: ERC20("Sigma Boy", "SGM")
         ERC20("Token Ku", "TOKENKU")
     {
         // cetak 1.000.000 token ke kamu (deployer). "10 ** decimals()"

@@ -15,6 +15,10 @@ EthjktToken.sol  -> token bersama (biasanya pengajar yang deploy).
 SimpleAMM.sol     -> mesin pasar/swap (x*y=k).
 app/              -> interface web (Stretch): index.html, main.js, config.js, styles.css
 ```
+TxHash Deploy = https://sepolia.etherscan.io/token/0xfcb838664bd83641c9ee74eee18117eb8fac2e18
+TokenKu Address (SGM) = 0xFCb838664BD83641C9eE74eeE18117eB8Fac2E18
+
+Tokennya transfer ke address zexo = 0x9ebdC8ACc879a8284Ae5B3CecfbD280ec307aFA3
 
 Mentok? Tanya AI ("jelasin error ini"), atau tanya pengajar/mentor di kelas.
 
