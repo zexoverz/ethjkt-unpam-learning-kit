@@ -237,6 +237,10 @@ Cek berhasil: MetaMask kebuka, ada 1 akun (0x...), bisa pindah ke "Sepolia".
 Belum ada saldo? Wajar — ETH gratis kita ambil di kelas (faucet).
 CATATAN: kelas ini CUMA main di Sepolia. JANGAN pakai mainnet / uang asli.
 
+
+<img width="762" height="1192" alt="image" src="https://github.com/user-attachments/assets/7eb5965e-8dc2-47bd-aaef-30e33f7b9d23" />
+
+
 ---
 
 ## VERIFIKASI AKHIR
