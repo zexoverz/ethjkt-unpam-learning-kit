@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://res.cloudinary.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <title>Pasar Pagi</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
   <header class="header">
@@ -17,7 +17,7 @@
     <div class="cart-summary">
       <span class="cart-label">keranjang</span>
       <div class="cart-pill">
-        <i class="fas fa-shopping-basket"></i>
+        <span class="cart-icon" aria-hidden="true">cart</span>
         <span id="cart-count">0</span>
       </div>
     </div>
@@ -49,9 +49,11 @@
 
         <div class="coupon-row">
           <input id="coupon" class="coupon-input" placeholder="kode kupon">
-          <button id="apply-coupon" class="coupon-btn">Pakai</button>
+          <button id="apply-coupon" class="coupon-btn">Cek</button>
         </div>
         <div id="coupon-msg" class="coupon-msg"></div>
+
+        <div id="sidebar-breakdown" class="sidebar-breakdown"></div>
 
         <div class="total-row">
           <span>Total</span>
@@ -59,7 +61,7 @@
         </div>
 
         <button id="checkout-button" class="checkout-button">
-          Lanjut ke Pembayaran
+          Review Estimasi
         </button>
       </div>
     </aside>
@@ -68,13 +70,13 @@
   <div class="modal-overlay" id="review-modal">
     <div class="modal-card">
       <h3>Cek Pesanan Kamu</h3>
-      <p class="modal-sub">Lihat sekali lagi sebelum dikirim ke petani.</p>
+      <p class="modal-sub">Lihat sekali lagi. Ini simulasi lokal, bukan pembayaran.</p>
       <div id="review-items"></div>
       <div id="review-note-wrap"></div>
       <div class="review-breakdown" id="review-breakdown"></div>
       <div class="modal-actions">
         <button class="btn-back" id="review-back">Kembali</button>
-        <button class="btn-confirm" id="review-confirm">Konfirmasi Pesanan</button>
+        <button class="btn-confirm" id="review-confirm">Simpan Simulasi</button>
       </div>
     </div>
   </div>
