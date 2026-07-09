@@ -67,3 +67,19 @@ pity penuh untuk dapat Legendary gratis, dan semoga hoki dapat **shiny**! ✨
 2. `feat: fetch real Pokémon from PokeAPI with caching + async pulls`
 3. `feat: add type badges, base-stat bars, and shiny variants`
 4. `docs: update LOG.md for Pokémon gacha`
+
+## Update: Limit 100 Pull per Hari
+
+Sekarang gacha punya batas harian: **maksimal 100 pull per hari** di browser
+yang sama.
+
+Cara kerjanya:
+
+1. Game menyimpan tanggal hari ini dan jumlah pull hari ini di `localStorage`.
+2. Kalau tanggal sudah ganti, hitungan harian otomatis balik ke **0**.
+3. Panel Gacha menampilkan **Sisa Hari Ini**, jadi pemain tahu kuota yang
+   masih tersedia.
+4. Kalau kuota habis, tombol pull dikunci dan muncul pesan:
+   `Limit harian 100 pull sudah habis. Coba lagi besok.`
+5. Kalau sisa kuota kurang dari 10 lalu pemain menekan **PULL 10x**, game hanya
+   menarik sesuai sisa kuota supaya tidak melewati batas harian.

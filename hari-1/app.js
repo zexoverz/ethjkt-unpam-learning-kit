@@ -17,6 +17,7 @@ const RATE_EPIC = 0.10;
 const RATE_RARE = 0.30;
 
 const SHINY_RATE = 1 / 40; // peluang setiap Pokémon keluar versi shiny (langka & mengkilap)
+const DAILY_PULL_LIMIT = 100; // batas tarikan per hari di browser yang sama
 
 // ---------- Sumber data: PokeAPI ----------
 const API = "https://pokeapi.co/api/v2";
@@ -121,6 +122,9 @@ async function getPokemon(id) {
 let pity = 0;      // tarikan sejak Legendary terakhir
 let total = 0;     // total tarikan
 let ssrCount = 0;  // total Legendary/Mythical didapat
+let pullsToday = 0; // jumlah tarikan hari ini
+let pullDate = todayKey(); // tanggal kuota harian terakhir dipakai
+let isPulling = false;
 
 // Koleksi Pokédex: id -> data Pokémon yang pernah didapat (+ jumlahnya).
 let collection = {};
@@ -129,9 +133,30 @@ let collection = {};
 // Semua progres bertahan walau browser ditutup / halaman di-refresh.
 const STORAGE_KEY = "pokegacha_state_v1";
 
+function todayKey() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return year + "-" + month + "-" + day;
+}
+
+function resetDailyPullsIfNeeded() {
+  const currentDate = todayKey();
+  if (pullDate !== currentDate) {
+    pullDate = currentDate;
+    pullsToday = 0;
+  }
+}
+
+function remainingPullsToday() {
+  resetDailyPullsIfNeeded();
+  return Math.max(0, DAILY_PULL_LIMIT - pullsToday);
+}
+
 function saveState() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ total, pity, ssrCount, collection }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ total, pity, ssrCount, collection, pullsToday, pullDate }));
   } catch (e) {
     // localStorage bisa penuh atau diblokir — abaikan, game tetap jalan.
   }
@@ -146,9 +171,14 @@ function loadState() {
     pity = s.pity || 0;
     ssrCount = s.ssrCount || 0;
     collection = s.collection || {};
+    pullsToday = s.pullsToday || 0;
+    pullDate = s.pullDate || todayKey();
+    resetDailyPullsIfNeeded();
   } catch (e) {
     // Data rusak -> mulai dari nol saja.
     collection = {};
+    pullsToday = 0;
+    pullDate = todayKey();
   }
 }
 
@@ -186,6 +216,7 @@ const el = {
   statsPanel: document.getElementById("statsPanel"),
   total: document.getElementById("total"),
   ssrCount: document.getElementById("ssrCount"),
+  dailyLeft: document.getElementById("dailyLeft"),
   pityText: document.getElementById("pityText"),
   pityFill: document.getElementById("pityFill"),
   history: document.getElementById("history"),
@@ -215,27 +246,41 @@ function decideRarity() {
 // Baru dicatat setelah tarikan benar-benar berhasil.
 function commitCounters(kelas) {
   total += 1;
+  pullsToday += 1;
   pity += 1;
   if (kelas === "ssr") { pity = 0; ssrCount += 1; }
 }
 
+function canPull(count) {
+  return remainingPullsToday() >= count;
+}
+
 // ---------- Update panel statistik & pity bar ----------
 function updateStats() {
+  const dailyLeft = remainingPullsToday();
   el.total.textContent = total;
   el.ssrCount.textContent = ssrCount;
+  el.dailyLeft.textContent = dailyLeft;
   el.pityText.textContent = pity + " / " + PITY_MAX;
   el.pityFill.style.width = (pity / PITY_MAX) * 100 + "%";
+  updatePullButtons();
 }
 
 // ---------- Status loading & error ----------
+function updatePullButtons() {
+  const hasQuota = remainingPullsToday() > 0;
+  el.tarik1.disabled = isPulling || !hasQuota;
+  el.tarik10.disabled = isPulling || !hasQuota;
+}
+
 function setLoading(on) {
+  isPulling = on;
   el.spinner.style.display = on ? "block" : "none";
   if (on) {
     el.placeholder.style.display = "none";
     el.sprite.style.display = "none";
   }
-  el.tarik1.disabled = on;
-  el.tarik10.disabled = on;
+  updatePullButtons();
 }
 
 function showError(msg) {
@@ -319,6 +364,13 @@ function addHistory(result) {
 
 // ---------- Satu tarikan (async: ambil data dulu, baru tampil) ----------
 async function pull() {
+  if (!canPull(1)) {
+    showError("Limit harian 100 pull sudah habis. Coba lagi besok.");
+    updateStats();
+    saveState();
+    return null;
+  }
+
   const kelas = decideRarity();
   const id = pickId(kelas);
   try {
@@ -342,6 +394,12 @@ async function pull() {
 // ---------- Tombol ----------
 el.tarik1.addEventListener("click", async () => {
   showError("");
+  if (!canPull(1)) {
+    showError("Limit harian 100 pull sudah habis. Coba lagi besok.");
+    updateStats();
+    saveState();
+    return;
+  }
   setLoading(true);
   await pull();
   setLoading(false);
@@ -349,8 +407,18 @@ el.tarik1.addEventListener("click", async () => {
 
 el.tarik10.addEventListener("click", async () => {
   showError("");
+  const pullCount = Math.min(10, remainingPullsToday());
+  if (pullCount <= 0) {
+    showError("Limit harian 100 pull sudah habis. Coba lagi besok.");
+    updateStats();
+    saveState();
+    return;
+  }
+  if (pullCount < 10) {
+    showError("Sisa pull hari ini tinggal " + pullCount + ", jadi ditarik " + pullCount + " kali.");
+  }
   setLoading(true);
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < pullCount; i++) {
     await pull(); // berurutan biar sopan ke API & animasi enak dilihat
   }
   setLoading(false);
