@@ -265,6 +265,19 @@ body {
   transform: scale(1.05);
 }
 
+<<<<<<< HEAD
+=======
+.quantity-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.quantity-button:disabled:hover {
+  background: #ece3d7;
+  transform: none;
+}
+
+>>>>>>> 8468cd9a3bf79abfe5e68525be70a429c52a9041
 .quantity-display {
   font-size: 0.95rem;
 
@@ -377,6 +390,7 @@ body {
   margin-top: 2rem;
 }
 
+<<<<<<< HEAD
 .total-row {
   display: flex;
   justify-content: space-between;
@@ -385,6 +399,31 @@ body {
   margin-bottom: 1rem;
 
   font-size: 1.05rem;
+=======
+.cart-breakdown {
+  margin-bottom: 1rem;
+}
+
+.cart-breakdown .row {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 0.25rem 0;
+
+  color: var(--olive);
+  font-size: 0.92rem;
+}
+
+.cart-breakdown .grand {
+  margin-top: 0.6rem;
+  padding-top: 0.7rem;
+
+  border-top: 1px solid var(--line);
+
+  color: var(--brown);
+  font-size: 1.2rem;
+  font-weight: 600;
+>>>>>>> 8468cd9a3bf79abfe5e68525be70a429c52a9041
 }
 
 .checkout-button {
