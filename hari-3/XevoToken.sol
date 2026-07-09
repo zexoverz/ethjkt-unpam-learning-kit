@@ -39,7 +39,7 @@ contract XevoToken is ERC20 {
     constructor()
         // >>> GANTI DI SINI <<<  ("Nama Panjang Token", "SIMBOL")
         // contoh: ERC20("Mie Ayam Coin", "MIEAYAM")
-        ERC20("Token Ku", "TOKENKU")
+        ERC20("Xevo Token", "XVT")
     {
         // cetak 1.000.000 token ke kamu (deployer). "10 ** decimals()"
         // karena token pakai 18 angka di belakang koma, sama kayak ETH.
