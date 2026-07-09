@@ -1,0 +1,129 @@
+LAPORAN KERENTANAN - HARI 2 / PASAR PAGI
+Target audit: index.html dan perilaku JavaScript yang dimuat oleh index.html lewat main.js
+
+Ringkasan:
+Ditemukan 7 masalah utama yang sesuai dengan target latihan: 2 bug, 3 keamanan, dan 2 etika/dark pattern.
+Ada juga 1 catatan tambahan terkait dependensi eksternal.
+
+1. [KEAMANAN] Stored/DOM XSS lewat kolom "Catatan buat petani"
+- Lokasi terkait:
+  - index.html: textarea id="note"
+  - main.js: renderCart(), bagian preview catatan memakai preview.innerHTML = "Catatan: " + note
+- Masalah:
+  Input user dari textarea dimasukkan kembali ke halaman memakai innerHTML tanpa sanitasi. Browser akan membaca input tersebut sebagai HTML, bukan sebagai teks biasa.
+- Cara membuktikan:
+  1. Tambahkan minimal satu produk ke keranjang.
+  2. Isi catatan dengan payload berikut:
+     <img src=x onerror=alert('XSS')>
+  3. Saat preview catatan muncul di sidebar keranjang, alert akan berjalan.
+- Dampak:
+  Penyerang bisa menjalankan JavaScript di halaman korban. Dalam aplikasi nyata ini dapat dipakai untuk mencuri data, memalsukan tampilan checkout, atau menjalankan aksi atas nama user.
+- Cara memperbaiki:
+  Gunakan textContent untuk menampilkan catatan user, bukan innerHTML. Jika benar-benar perlu menerima HTML, lakukan sanitasi dengan library yang tepercaya.
+
+2. [KEAMANAN] Kupon rahasia terbuka di sisi client
+- Lokasi terkait:
+  - index.html memuat main.js langsung
+  - main.js: const KUPON_RAHASIA = "TEMANFARMER"
+- Masalah:
+  Kode kupon rahasia berada di file JavaScript yang dikirim ke browser. Siapa pun bisa membuka DevTools atau View Source dan membaca kode tersebut.
+- Cara membuktikan:
+  1. Buka DevTools.
+  2. Buka file main.js.
+  3. Cari KUPON_RAHASIA.
+  4. Masukkan TEMANFARMER ke input kupon.
+- Dampak:
+  Diskon 90% dapat dipakai siapa pun. Dalam toko sungguhan, ini merugikan penjual karena rahasia bisnis bocor ke semua pengunjung.
+- Cara memperbaiki:
+  Validasi kupon harus dilakukan di server. Browser hanya mengirim kode kupon, server yang menentukan valid/tidak dan menghitung diskon.
+
+3. [KEAMANAN] Harga dapat dimanipulasi lewat atribut data-price di DOM
+- Lokasi terkait:
+  - main.js: renderProducts() menaruh data-price pada tombol plus
+  - main.js: event click memanggil addToCart(target.dataset.id, Number(target.dataset.price))
+  - main.js: addToCart() menyimpan cart[id].price = price
+- Masalah:
+  Harga yang dipakai untuk menghitung total diambil dari atribut data-price pada tombol di halaman. Atribut ini bisa diedit user lewat DevTools.
+- Cara membuktikan:
+  1. Buka DevTools tab Elements.
+  2. Pilih tombol plus salah satu produk.
+  3. Ubah data-price menjadi 0.01.
+  4. Klik tombol plus tersebut.
+  5. Produk masuk keranjang dengan harga hasil manipulasi.
+- Dampak:
+  Pembeli bisa mengubah harga sendiri. Dalam aplikasi nyata, ini celah fraud karena browser tidak boleh dipercaya untuk menentukan harga final.
+- Cara memperbaiki:
+  Gunakan id produk saja dari browser. Harga final harus diambil dari database/server saat checkout. Di sisi client pun, addToCart sebaiknya mengambil harga dari objek products berdasarkan id, bukan dari data-price DOM.
+
+4. [BUG] Total uang ditampilkan tidak konsisten dan tidak selalu 2 angka desimal
+- Lokasi terkait:
+  - main.js: totalPriceEl.textContent = total
+  - main.js: modal review menampilkan $${total}
+- Masalah:
+  Total akhir tidak diformat memakai toFixed(2). Beberapa kombinasi harga/desimal dapat menampilkan angka panjang atau format yang tidak rapi.
+- Cara membuktikan:
+  1. Tambahkan beberapa produk dengan harga desimal, misalnya Pisang atau Kiwi.
+  2. Perhatikan total di sidebar dan modal review.
+  3. Total tidak selalu diformat seperti nominal uang standar.
+- Dampak:
+  User bisa bingung karena angka pembayaran terlihat tidak profesional dan tidak konsisten.
+- Cara memperbaiki:
+  Tampilkan semua nominal uang dengan formatter yang konsisten, misalnya total.toFixed(2) atau Intl.NumberFormat.
+
+5. [BUG] Input jumlah barang bisa menghasilkan nilai tidak valid
+- Lokasi terkait:
+  - index.html: cart-details menjadi tempat input quantity yang dirender main.js
+  - main.js: parseInt(target.value, 10), lalu updateQuantity() tanpa validasi NaN yang jelas
+- Masalah:
+  Input jumlah dapat dikosongkan atau diisi nilai yang tidak valid lewat DevTools. parseInt bisa menghasilkan NaN. Karena NaN tidak <= 0, cart[id].count bisa menjadi NaN.
+- Cara membuktikan:
+  1. Tambahkan produk ke keranjang.
+  2. Kosongkan input jumlah, atau ubah value lewat DevTools menjadi teks tidak valid.
+  3. Perhatikan jumlah/total dapat menjadi NaN atau perilaku keranjang menjadi tidak waras.
+- Dampak:
+  Perhitungan total rusak dan checkout bisa menampilkan nilai yang salah.
+- Cara memperbaiki:
+  Validasi quantity dengan Number.isInteger, batas minimum 1, dan batas maksimum stok/aturan bisnis. Jika input tidak valid, tolak perubahan atau kembalikan ke nilai terakhir yang valid.
+
+6. [ETIKA / DARK PATTERN] Klaim stok "tinggal X lagi" palsu dan acak
+- Lokasi terkait:
+  - main.js: const sisa = Math.floor(Math.random() * 5) + 1
+  - main.js: teks "tinggal ${sisa} lagi hari ini!"
+- Masalah:
+  Angka stok dibuat acak setiap render, bukan berasal dari data stok nyata. Angka dapat berubah saat keranjang dirender ulang.
+- Cara membuktikan:
+  1. Buka halaman dan catat angka stok.
+  2. Klik tambah/kurang produk atau refresh.
+  3. Angka stok berubah-ubah tanpa hubungan dengan stok sebenarnya.
+- Dampak:
+  User didorong untuk buru-buru membeli karena kelangkaan palsu. Ini merusak kepercayaan dan tidak jujur secara produk.
+- Cara memperbaiki:
+  Hapus klaim stok jika tidak ada data stok nyata. Jika ada stok, tampilkan angka dari sumber data yang benar dan konsisten.
+
+7. [ETIKA / DARK PATTERN] Biaya penanganan ditambahkan diam-diam
+- Lokasi terkait:
+  - main.js: const HANDLING_FEE = 0.30
+  - main.js: total = totalPrice + HANDLING_FEE
+  - index.html: sidebar hanya menampilkan "Total" tanpa breakdown awal
+- Masalah:
+  Biaya penanganan ditambahkan ke total, tetapi tidak dijelaskan dengan jelas di sidebar sebelum user lanjut ke pembayaran. Breakdown baru terlihat di modal review.
+- Cara membuktikan:
+  1. Tambahkan Apel Fuji seharga $1.50.
+  2. Sidebar menampilkan total $1.80 karena ada fee $0.30.
+  3. Fee tidak dijelaskan di area total sidebar.
+- Dampak:
+  User membayar lebih dari harga barang yang terlihat tanpa penjelasan yang cukup dari awal.
+- Cara memperbaiki:
+  Tampilkan subtotal, biaya penanganan, diskon, dan total secara jelas sejak sidebar keranjang, bukan hanya di modal akhir.
+
+Catatan tambahan:
+[KEAMANAN RENDAH] index.html memuat stylesheet Font Awesome dari CDN tanpa Subresource Integrity (SRI).
+- Lokasi terkait:
+  - index.html: link rel="stylesheet" ke cdnjs.cloudflare.com
+- Risiko:
+  Jika CDN atau jalur distribusi terganggu, file eksternal dapat berubah tanpa terdeteksi oleh browser.
+- Cara memperbaiki:
+  Tambahkan atribut integrity dan crossorigin yang sesuai, atau vendorkan asset yang dibutuhkan secara lokal.
+
+Kesimpulan:
+Kode ini memang berjalan, tetapi belum aman dan belum jujur. Masalah terbesarnya adalah browser dipercaya untuk hal yang seharusnya tidak dipercaya: menjalankan HTML dari input user, menyimpan rahasia kupon, dan menentukan harga. Selain itu, stok palsu dan biaya tersembunyi membuat pengalaman belanja tidak adil bagi user.
