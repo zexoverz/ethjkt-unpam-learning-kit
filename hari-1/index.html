@@ -1,436 +1,81 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pokemon Gacha Simulator</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --paper: #f8f3e8;
-    --ink: #243044;
-    --muted: #6f7787;
-    --line: #d9d2c2;
-    --red: #d94141;
-    --blue: #2c73d2;
-    --yellow: #f6c945;
-    --green: #2f9f67;
-  }
-
-  body {
-    font-family: "Segoe UI", system-ui, sans-serif;
-    background:
-      linear-gradient(135deg, rgba(217,65,65,.08) 25%, transparent 25%) -18px 0 / 36px 36px,
-      linear-gradient(225deg, rgba(44,115,210,.08) 25%, transparent 25%) -18px 0 / 36px 36px,
-      var(--paper);
-    color: var(--ink); min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 18px;
-  }
-  .app {
-    width: 100%; max-width: 760px;
-    background: rgba(255,255,255,.82);
-    border: 2px solid var(--line);
-    border-radius: 8px; padding: 18px;
-    box-shadow: 0 18px 42px rgba(36,48,68,.18);
-  }
-  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
-  h1 {
-    font-size: 24px; letter-spacing: 0; line-height: 1;
-    color: var(--ink);
-  }
-  .subtitle { font-size: 13px; color: var(--muted); margin-top: 5px; }
-  .api-badge {
-    flex: 0 0 auto; font-size: 12px; font-weight: 800; color: #fff;
-    background: var(--red); border: 2px solid #b93232; border-radius: 999px;
-    padding: 7px 11px;
-  }
-
-  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 18px; align-items: start; }
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
-  .stat {
-    background: #fff; border: 1px solid var(--line); border-radius: 6px;
-    padding: 10px 8px; text-align: center;
-  }
-  .stat .num { font-size: 22px; font-weight: 700; }
-  .stat .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-
-  .pity { margin-bottom: 18px; text-align: left; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-  .pity-track { height: 10px; background: #e9e1d3; border-radius: 999px; overflow: hidden; }
-  .pity-fill {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg,var(--yellow),#f08f36);
-    transition: width 0.35s ease;
-  }
-
-  .stage { display: flex; justify-content: center; margin-bottom: 20px; }
-  .card {
-    width: min(100%, 330px); min-height: 430px; border-radius: 8px;
-    background: #fff; border: 3px solid #8d97a8;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 10px; position: relative; padding: 18px;
-    box-shadow: inset 0 0 0 6px #f2eadc;
-  }
-  .dex-no {
-    position: absolute; top: 12px; left: 14px; font-size: 12px; font-weight: 800;
-    color: var(--muted);
-  }
-  .sprite-frame {
-    width: 100%; aspect-ratio: 1 / .82; border-radius: 6px;
-    display: grid; place-items: center;
-    background:
-      linear-gradient(#eef6ff 1px, transparent 1px) 0 0 / 18px 18px,
-      linear-gradient(90deg, #eef6ff 1px, transparent 1px) 0 0 / 18px 18px,
-      #f8fbff;
-    border: 1px solid #d8e5f5;
-  }
-  .pokemon-img {
-    width: min(86%, 220px); height: auto;
-    image-rendering: auto;
-    filter: drop-shadow(0 12px 10px rgba(36,48,68,.18));
-  }
-  .card .emoji { font-size: 54px; line-height: 1; color: var(--muted); }
-  .card .name { font-size: 25px; font-weight: 800; padding: 0 8px; text-transform: capitalize; text-align: center; }
-  .card .rar { font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; opacity: .95; }
-  .type-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; min-height: 26px; }
-  .type-pill {
-    border-radius: 999px; padding: 5px 9px; font-size: 11px; font-weight: 800;
-    color: #fff; background: #7a8494; text-transform: uppercase;
-  }
-  .flavor {
-    min-height: 48px; font-size: 13px; line-height: 1.45; color: var(--muted);
-    text-align: center;
-  }
-
-  .card.common { border-color: #8d97a8; }
-  .card.common .rar { color: #6f7787; }
-  .card.rare   { border-color: var(--blue); box-shadow: 0 12px 30px rgba(44,115,210,.24); }
-  .card.rare   .rar { color: var(--blue); }
-  .card.epic   { border-color: #7b55d9; box-shadow: 0 12px 34px rgba(123,85,217,.28); }
-  .card.epic   .rar { color: #7b55d9; }
-  .card.ssr    { border-color: #d99b24; box-shadow: 0 16px 42px rgba(217,155,36,.35); }
-  .card.ssr    .rar { color: #b57511; }
-  .card.ssr    .name { color: #9a5d00; }
-
-  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-  @keyframes glowpulse { 0%,100%{box-shadow:0 16px 42px rgba(217,155,36,.35)} 50%{box-shadow:0 18px 60px rgba(217,155,36,.62)} }
-  .card.reveal { animation: pop .4s ease; }
-  .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
-
-  .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
-  .btn {
-    flex: 1; padding: 14px 0; border: 2px solid #1e579f; border-radius: 6px;
-    font-size: 15px; font-weight: 800; letter-spacing: 0; cursor: pointer;
-    color: #fff; background: var(--blue);
-    transition: transform .08s ease, filter .15s ease, opacity .15s ease;
-  }
-  .btn:hover { filter: brightness(1.08); }
-  .btn:active { transform: scale(.95); }
-  .btn.gold { background: var(--red); border-color: #b93232; }
-  .btn:disabled { cursor: wait; opacity: .62; }
-
-  .panel {
-    background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 12px;
-  }
-  .hist-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
-  .history { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; min-height: 34px; }
-  .chip {
-    width: 100%; aspect-ratio: 1; border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    background: #f8fbff; border: 2px solid #8d97a8; overflow: hidden;
-  }
-  .chip img { width: 90%; height: 90%; object-fit: contain; }
-  .chip.rare { border-color: var(--blue); }
-  .chip.epic { border-color: #7b55d9; }
-  .chip.ssr  { border-color: #d99b24; box-shadow: 0 0 12px rgba(217,155,36,.28); }
-
-  @media (max-width: 720px) {
-    .layout { grid-template-columns: 1fr; }
-    .topbar { align-items: flex-start; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasar Pagi</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
-    <div class="topbar">
-      <div>
-        <h1>Pokemon Gacha</h1>
-        <div class="subtitle">Pull Pokemon directly from PokeAPI.</div>
-      </div>
-      <div class="api-badge">PokeAPI</div>
+  <header class="header">
+    <div class="brand">
+      <p class="eyebrow">buah segar / pagi yang tenang</p>
+      <h1>Pasar Pagi</h1>
     </div>
 
-    <div class="layout">
-      <main>
-        <div class="stage">
-          <div class="card" id="card">
-            <div class="dex-no" id="dexNo">#---</div>
-            <div class="sprite-frame">
-              <img class="pokemon-img" id="pokemonImage" alt="" hidden>
-              <div class="emoji" id="cardEmoji">?</div>
-            </div>
-            <div class="name" id="cardName">Tekan TARIK</div>
-            <div class="rar" id="cardRarity"></div>
-            <div class="type-row" id="typeRow"></div>
-            <div class="flavor" id="flavorText">Pokemon akan muncul di sini setelah pull.</div>
-          </div>
-        </div>
-      </main>
+    <div class="cart-summary">
+      <span class="cart-label">keranjang</span>
+      <div class="cart-pill">
+        <span class="cart-icon" aria-hidden="true">Basket</span>
+        <span id="cart-count">0</span>
+      </div>
+    </div>
+  </header>
 
-      <aside class="panel">
-        <div class="stats">
-          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Pull</div></div>
-          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">SSR</div></div>
-          <div class="stat"><div class="num" id="seenCount">0</div><div class="lbl">Seen</div></div>
+  <main class="store-layout">
+    <section class="products-area">
+      <div class="market-note">
+        <p>
+          Pilih buah yang kamu butuhkan. Harga dan total pesanan ditampilkan
+          terbuka sebelum pembayaran.
+        </p>
+      </div>
+
+      <section id="product-section" class="product-section"></section>
+    </section>
+
+    <aside class="cart-sidebar">
+      <div class="cart-header">
+        <h2>Keranjang Kamu</h2>
+        <p>ringkasan pesanan sebelum checkout</p>
+      </div>
+
+      <div id="cart-details" class="cart-details"></div>
+
+      <div class="cart-footer">
+        <label class="field-label" for="note">Catatan buat petani</label>
+        <textarea id="note" class="note-input" placeholder="mis. titip di depan pintu biru ya :)"></textarea>
+
+        <div class="pricing-breakdown" id="price-breakdown"></div>
+
+        <div class="total-row">
+          <span>Total</span>
+          <strong>$<span id="modal-total-price">0.00</span></strong>
         </div>
 
-        <div class="pity">
-          <div class="pity-top"><span>Pity to SSR</span><span id="pityText">0 / 10</span></div>
-          <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-        </div>
+        <button id="checkout-button" class="checkout-button">
+          Lanjut ke Pembayaran
+        </button>
+      </div>
+    </aside>
+  </main>
 
-        <div class="buttons">
-          <button class="btn" id="tarik1">Pull 1x</button>
-          <button class="btn gold" id="tarik10">Pull 10x</button>
-        </div>
-
-        <div class="hist-lbl">Last Pulls</div>
-        <div class="history" id="history"></div>
-      </aside>
+  <div class="modal-overlay" id="review-modal">
+    <div class="modal-card">
+      <h3>Cek Pesanan Kamu</h3>
+      <p class="modal-sub">Lihat sekali lagi sebelum dikirim ke petani.</p>
+      <div id="review-items"></div>
+      <div id="review-note-wrap"></div>
+      <div class="review-breakdown" id="review-breakdown"></div>
+      <div class="modal-actions">
+        <button class="btn-back" id="review-back">Kembali</button>
+        <button class="btn-confirm" id="review-confirm">Konfirmasi Pesanan</button>
+      </div>
     </div>
   </div>
 
-<script>
-  const API_BASE = "https://pokeapi.co/api/v2";
-  const maxPity = 10;
-  const fallbackMaxPokemonId = 1025;
-  const ssrPool = [
-    144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251,
-    377, 378, 379, 380, 381, 382, 383, 384, 385, 386,
-    483, 484, 487, 491, 492, 493, 494, 643, 644, 646, 716,
-    717, 718, 719, 720, 721, 888, 889, 890, 891, 892, 893,
-    894, 895, 896, 897, 898, 905, 1007, 1008, 1024
-  ];
-  const typeColors = {
-    normal: "#7a8494", fire: "#e35d3e", water: "#3387d7", electric: "#d9a921",
-    grass: "#3f9b56", ice: "#4ca6b7", fighting: "#b94b3f", poison: "#8e58b7",
-    ground: "#b98244", flying: "#6f89d8", psychic: "#d95f8d", bug: "#7f9f33",
-    rock: "#9a7b42", ghost: "#5d5a9d", dragon: "#6f61d8", dark: "#5c5360",
-    steel: "#6f8796", fairy: "#d774aa"
-  };
+  <div class="toast" id="toast"></div>
 
-  let pity = 0;
-  let total = 0;
-  let ssrCount = 0;
-  const seenPokemon = new Set();
-  const apiCache = new Map();
-  let pokemonCountPromise = null;
-
-  const card = document.getElementById("card");
-  const cardEmoji = document.getElementById("cardEmoji");
-  const cardName = document.getElementById("cardName");
-  const cardRarity = document.getElementById("cardRarity");
-  const dexNo = document.getElementById("dexNo");
-  const pokemonImage = document.getElementById("pokemonImage");
-  const typeRow = document.getElementById("typeRow");
-  const flavorText = document.getElementById("flavorText");
-  const totalText = document.getElementById("total");
-  const ssrCountText = document.getElementById("ssrCount");
-  const seenCountText = document.getElementById("seenCount");
-  const pityText = document.getElementById("pityText");
-  const pityFill = document.getElementById("pityFill");
-  const history = document.getElementById("history");
-  const tarik1Button = document.getElementById("tarik1");
-  const tarik10Button = document.getElementById("tarik10");
-
-  function pilihAcak(daftar) {
-    return daftar[Math.floor(Math.random() * daftar.length)];
-  }
-
-  function angkaAcak(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  async function ambilJson(url) {
-    if (apiCache.has(url)) {
-      return apiCache.get(url);
-    }
-
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error("PokeAPI request failed: " + response.status);
-    }
-
-    const data = await response.json();
-    apiCache.set(url, data);
-    return data;
-  }
-
-  function namaBagus(nama) {
-    return nama
-      .split("-")
-      .map((kata) => kata.charAt(0).toUpperCase() + kata.slice(1))
-      .join(" ");
-  }
-
-  function teksInggris(daftar, key) {
-    const item = daftar.find((entry) => entry.language.name === "en");
-    return item ? item[key].replace(/[\n\f]/g, " ") : "";
-  }
-
-  function pilihRarity() {
-    pity += 1;
-    const acak = Math.random();
-
-    if (pity >= maxPity || acak < 0.03) {
-      pity = 0;
-      return "ssr";
-    }
-    if (acak < 0.10) return "epic";
-    if (acak < 0.30) return "rare";
-    return "common";
-  }
-
-  function ambilJumlahPokemon() {
-    if (!pokemonCountPromise) {
-      pokemonCountPromise = ambilJson(API_BASE + "/pokemon-species?limit=1")
-        .then((data) => data.count || fallbackMaxPokemonId)
-        .catch(() => fallbackMaxPokemonId);
-    }
-
-    return pokemonCountPromise;
-  }
-
-  async function pilihPokemonId(kelas) {
-    if (kelas === "ssr") {
-      return pilihAcak(ssrPool);
-    }
-
-    if (kelas === "epic") {
-      return angkaAcak(1, 493);
-    }
-
-    const maxPokemonId = await ambilJumlahPokemon();
-    return angkaAcak(1, maxPokemonId);
-  }
-
-  function rarityDariSpecies(kelasAwal, species) {
-    if (species.is_legendary || species.is_mythical) {
-      return "ssr";
-    }
-    if (kelasAwal === "epic" || species.capture_rate <= 45) {
-      return "epic";
-    }
-    if (kelasAwal === "rare" || species.is_baby || species.capture_rate <= 90) {
-      return "rare";
-    }
-    return "common";
-  }
-
-  async function rollSatu() {
-    const kelasAwal = pilihRarity();
-    const pokemonId = await pilihPokemonId(kelasAwal);
-    const pokemon = await ambilJson(API_BASE + "/pokemon/" + pokemonId + "/");
-    const species = await ambilJson(pokemon.species.url);
-    const kelas = rarityDariSpecies(kelasAwal, species);
-
-    total += 1;
-    if (kelas === "ssr") {
-      ssrCount += 1;
-      pity = 0;
-    }
-    seenPokemon.add(species.id);
-
-    return {
-      kelas: kelas,
-      id: species.id,
-      nama: teksInggris(species.names, "name") || namaBagus(pokemon.name),
-      genus: teksInggris(species.genera, "genus"),
-      deskripsi: teksInggris(species.flavor_text_entries, "flavor_text"),
-      sprite:
-        pokemon.sprites.other["official-artwork"].front_default ||
-        pokemon.sprites.other.home.front_default ||
-        pokemon.sprites.front_default,
-      types: pokemon.types.map((slot) => slot.type.name),
-      ability: pokemon.abilities[0] ? namaBagus(pokemon.abilities[0].ability.name) : "Unknown",
-      baseExp: pokemon.base_experience || 0
-    };
-  }
-
-  function tampilkan(hasil) {
-    dexNo.textContent = "#" + String(hasil.id).padStart(4, "0");
-    pokemonImage.src = hasil.sprite;
-    pokemonImage.alt = hasil.nama;
-    pokemonImage.hidden = false;
-    cardEmoji.hidden = true;
-    cardName.textContent = hasil.nama;
-    cardRarity.textContent = hasil.kelas.toUpperCase();
-    flavorText.textContent = (hasil.genus || "Pokemon") + " - " + (hasil.deskripsi || "Ability: " + hasil.ability);
-    typeRow.replaceChildren(
-      ...hasil.types.map((type) => {
-        const pill = document.createElement("span");
-        pill.className = "type-pill";
-        pill.textContent = type;
-        pill.style.backgroundColor = typeColors[type] || typeColors.normal;
-        return pill;
-      })
-    );
-
-    card.className = "card";
-    void card.offsetWidth;
-    card.className = "card " + hasil.kelas + " reveal";
-
-    totalText.textContent = total;
-    ssrCountText.textContent = ssrCount;
-    seenCountText.textContent = seenPokemon.size;
-    pityText.textContent = pity + " / " + maxPity;
-    pityFill.style.width = (pity / maxPity) * 100 + "%";
-  }
-
-  function tambahRiwayat(hasil) {
-    const chip = document.createElement("div");
-    const img = document.createElement("img");
-
-    chip.className = "chip " + hasil.kelas;
-    chip.title = hasil.nama + " (" + hasil.kelas.toUpperCase() + ")";
-    img.src = hasil.sprite;
-    img.alt = hasil.nama;
-    chip.append(img);
-
-    history.prepend(chip);
-
-    while (history.children.length > 12) {
-      history.lastElementChild.remove();
-    }
-  }
-
-  function setLoading(isLoading) {
-    tarik1Button.disabled = isLoading;
-    tarik10Button.disabled = isLoading;
-    tarik1Button.textContent = isLoading ? "Pulling..." : "Pull 1x";
-    tarik10Button.textContent = isLoading ? "Pulling..." : "Pull 10x";
-  }
-
-  async function tarik(jumlahTarikan) {
-    setLoading(true);
-
-    try {
-      for (let i = 0; i < jumlahTarikan; i += 1) {
-        const hasil = await rollSatu();
-        tampilkan(hasil);
-        tambahRiwayat(hasil);
-      }
-    } catch (error) {
-      flavorText.textContent = "Gagal mengambil data dari PokeAPI. Coba pull lagi saat koneksi tersedia.";
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  tarik1Button.addEventListener("click", () => tarik(1));
-  tarik10Button.addEventListener("click", () => tarik(10));
-</script>
+  <script src="main.js"></script>
 </body>
 </html>
