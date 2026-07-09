@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasar Pagi</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <p class="eyebrow">buah segar / pagi yang tenang</p>
+      <h1>Pasar Pagi</h1>
+    </div>
+
+    <div class="cart-summary">
+      <span class="cart-label">keranjang</span>
+      <div class="cart-pill">
+        <i class="fas fa-shopping-basket"></i>
+        <span id="cart-count">0</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="store-layout">
+    <section class="products-area">
+      <div class="market-note">
+        <p>
+          Jam pasar yang tenang. Buah musiman ditata pelan-pelan, dengan
+          keterikatan emosional yang patut dipertanyakan.
+        </p>
+      </div>
+
+      <section id="product-section" class="product-section"></section>
+    </section>
+
+    <aside class="cart-sidebar">
+      <div class="cart-header">
+        <h2>Keranjang Kamu</h2>
+        <p>barang pilihan yang kebanyakan</p>
+      </div>
+
+      <div id="cart-details" class="cart-details"></div>
+
+      <div class="cart-footer">
+        <label class="field-label" for="note">Catatan buat petani</label>
+        <textarea id="note" class="note-input" placeholder="mis. titip di depan pintu biru ya :)"></textarea>
+
+        <div class="coupon-row">
+          <input id="coupon" class="coupon-input" placeholder="kode kupon">
+          <button id="apply-coupon" class="coupon-btn">Pakai</button>
+        </div>
+        <div id="coupon-msg" class="coupon-msg"></div>
+
+        <div class="cart-breakdown" id="cart-summary-breakdown"></div>
+
+        <button id="checkout-button" class="checkout-button">
+          Lanjut ke Pembayaran
+        </button>
+      </div>
+    </aside>
+  </main>
+
+  <div class="modal-overlay" id="review-modal">
+    <div class="modal-card">
+      <h3>Cek Pesanan Kamu</h3>
+      <p class="modal-sub">Lihat sekali lagi sebelum dikirim ke petani.</p>
+      <div id="review-items"></div>
+      <div id="review-note-wrap"></div>
+      <div class="review-breakdown" id="review-breakdown"></div>
+      <div class="modal-actions">
+        <button class="btn-back" id="review-back">Kembali</button>
+        <button class="btn-confirm" id="review-confirm">Konfirmasi Pesanan</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>
