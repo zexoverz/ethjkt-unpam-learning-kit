@@ -16,6 +16,11 @@ SimpleAMM.sol     -> mesin pasar/swap (x*y=k).
 app/              -> interface web (Stretch): index.html, main.js, config.js, styles.css
 ```
 
+Tx Has Deploy = 0xa33e33f2c983cfc3eeeb57d181ce805cfa35a23cdc68a7ab91ea2fb5b8ae8a7b
+Tokenku Adress (ITN)= 0xbddcb50e9dc28f98073b51f12af47a57d1c5215a
+
+Transfer Token nya ke address zexo : 0x9ebdC8ACc879a02844a45B3C4c4bD200ec307AFA3
+
 Mentok? Tanya AI ("jelasin error ini"), atau tanya pengajar/mentor di kelas.
 
 ---
