@@ -10,7 +10,8 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "types": []
   },
   "include": ["src", "config.ts", "vite.config.ts"]
 }

@@ -1,0 +1,4 @@
+1.screeshot buktiin bisa swap
+2.styling interface fifi kalian sendiri
+3.bikin live chartnya
+3.pake styling routnya sendiri
