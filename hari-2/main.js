@@ -28,10 +28,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // Biaya penanganan kecil biar operasional toko tetap jalan.
   const HANDLING_FEE = 0.30;
 
+<<<<<<< HEAD
+=======
+  // Kupon internal buat teman-teman petani. Jangan disebar ya.
+  const KUPON_RAHASIA = "TEMANFARMER";
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
   let diskon = 0; // 0 = tanpa diskon, 0.9 = potong 90%
 
   const productSection = document.getElementById("product-section");
   const cartDetailsEl = document.getElementById("cart-details");
+<<<<<<< HEAD
   const priceBreakdownEl = document.getElementById("price-breakdown");
   const totalPriceEl = document.getElementById("modal-total-price");
   const cartCountEl = document.getElementById("cart-count");
@@ -48,6 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function formatMoney(value) {
     return Number(value).toFixed(2);
   }
+=======
+  const totalPriceEl = document.getElementById("modal-total-price");
+  const cartCountEl = document.getElementById("cart-count");
+  const reviewModal = document.getElementById("review-modal");
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
 
   /* RENDER PRODUK */
   function renderProducts() {
@@ -55,6 +66,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     products.forEach((product) => {
       const quantity = cart[product.id] ? cart[product.id].count : 0;
+<<<<<<< HEAD
+=======
+      const sisa = Math.floor(Math.random() * 5) + 1; // sisa stok hari ini
+
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
       const productCard = document.createElement("article");
       productCard.classList.add("product");
       productCard.innerHTML = `
@@ -64,11 +80,19 @@ document.addEventListener("DOMContentLoaded", () => {
           <h2>${product.name}</h2>
           <p class="price">$${product.price.toFixed(2)}</p>
         </div>
+<<<<<<< HEAD
         <p class="stock">stok tersedia</p>
         <div class="quantity-controls">
           <button class="quantity-button minus-button" data-id="${product.id}">−</button>
           <span class="quantity-display" id="quantity-${product.id}">${quantity}</span>
           <button class="quantity-button plus-button" data-id="${product.id}">+</button>
+=======
+        <p class="stock">tinggal ${sisa} lagi hari ini!</p>
+        <div class="quantity-controls">
+          <button class="quantity-button minus-button" data-id="${product.id}">−</button>
+          <span class="quantity-display" id="quantity-${product.id}">${quantity}</span>
+          <button class="quantity-button plus-button" data-id="${product.id}" data-price="${product.price}">+</button>
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
         </div>
       `;
       productSection.appendChild(productCard);
@@ -88,9 +112,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (Object.keys(cart).length === 0) {
       cartDetailsEl.innerHTML = `<p class="empty-cart">Keranjang kamu masih kosong.</p>`;
+<<<<<<< HEAD
       if (priceBreakdownEl) {
         priceBreakdownEl.innerHTML = "";
       }
+=======
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
       totalPriceEl.textContent = "0.00";
       updateCartCount();
       renderProducts();
@@ -98,10 +125,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     Object.values(cart).forEach((item) => {
+<<<<<<< HEAD
       const product = findProductById(item.id);
       if (!product) return;
 
       const itemTotal = item.count * product.price;
+=======
+      const itemTotal = item.count * item.price;
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
       totalPrice += itemTotal;
 
       const listItem = document.createElement("div");
@@ -109,6 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
       listItem.innerHTML = `
         <div class="cart-item-top">
           <div>
+<<<<<<< HEAD
             <div class="cart-item-name">${product.name}</div>
             <div class="cart-item-price">$${product.price.toFixed(2)} / buah</div>
           </div>
@@ -116,6 +148,15 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <div class="cart-item-controls">
           <input type="number" min="1" max="${MAX_QUANTITY}" step="1" inputmode="numeric" class="edit-quantity-input" value="${item.count}" data-id="${item.id}">
+=======
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">$${item.price.toFixed(2)} / buah</div>
+          </div>
+          <strong>$${itemTotal.toFixed(2)}</strong>
+        </div>
+        <div class="cart-item-controls">
+          <input type="number" min="1" class="edit-quantity-input" value="${item.count}" data-id="${item.id}">
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
           <i class="fas fa-trash delete-icon" data-id="${item.id}"></i>
         </div>
       `;
@@ -127,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (note) {
       const preview = document.createElement("div");
       preview.className = "note-preview";
+<<<<<<< HEAD
       preview.textContent = "Catatan: " + note;
       cartDetailsEl.appendChild(preview);
     }
@@ -144,11 +186,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     totalPriceEl.textContent = formatMoney(total);
+=======
+      preview.innerHTML = "Catatan: " + note; // innerHTML biar tulisannya rapi
+      cartDetailsEl.appendChild(preview);
+    }
+
+    // Total akhir = barang + biaya penanganan, lalu potong diskon.
+    let total = totalPrice + HANDLING_FEE;
+    total = total - total * diskon;
+
+    totalPriceEl.textContent = total;
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
     updateCartCount();
     renderProducts();
   }
 
   /* TAMBAH BARANG */
+<<<<<<< HEAD
   function addToCart(id) {
     const product = findProductById(id);
     if (!product) return;
@@ -162,6 +216,16 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     
+=======
+  function addToCart(id, price) {
+    const product = products.find((item) => item.id == id);
+    if (!product) return;
+
+    if (!cart[id]) {
+      cart[id] = { ...product, count: 0 };
+    }
+    cart[id].price = price;   // pakai harga dari kartu di layar
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
     cart[id].count++;
     renderCart();
   }
@@ -185,6 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* UBAH JUMLAH */
   function updateQuantity(id, quantity) {
     if (!cart[id]) return;
+<<<<<<< HEAD
     
     // Jika input <= 0, hapus item dari keranjang
     if (Number.isInteger(quantity) && quantity <= 0) {
@@ -200,6 +265,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     cart[id].count = quantity;
+=======
+    if (quantity <= 0) {
+      delete cart[id];
+    } else {
+      cart[id].count = quantity;
+    }
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
     renderCart();
   }
 
@@ -207,6 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function applyCoupon() {
     const code = document.getElementById("coupon").value;
     const msg = document.getElementById("coupon-msg");
+<<<<<<< HEAD
     if (Object.prototype.hasOwnProperty.call(COUPONS, code)) {
       diskon = COUPONS[code];
       msg.textContent = "Kode promo valid. Potongan 90%.";
@@ -214,6 +287,15 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       diskon = 0;
       msg.textContent = "Kode promo salah.";
+=======
+    if (code === KUPON_RAHASIA) {
+      diskon = 0.9;
+      msg.textContent = "Kupon aktif! Potongan 90%.";
+      msg.style.color = "#6e7b61";
+    } else {
+      diskon = 0;
+      msg.textContent = "Kode kupon salah.";
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
       msg.style.color = "#b96f5c";
     }
     renderCart();
@@ -240,6 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
     itemsEl.innerHTML = "";
     let subtotal = 0;
     Object.values(cart).forEach((item) => {
+<<<<<<< HEAD
       const product = findProductById(item.id);
       if (!product) return;
 
@@ -251,6 +334,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const amount = document.createElement("span");
       amount.textContent = `$${formatMoney(line)}`;
       row.appendChild(amount);
+=======
+      const line = item.count * item.price;
+      subtotal += line;
+      const row = document.createElement("div");
+      row.className = "review-line";
+      row.innerHTML = `<span>${item.name} x ${item.count}</span><span>$${line.toFixed(2)}</span>`;
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
       itemsEl.appendChild(row);
     });
 
@@ -264,6 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
       noteWrap.appendChild(n);
     }
 
+<<<<<<< HEAD
     const total = subtotal + HANDLING_FEE - (subtotal + HANDLING_FEE) * diskon;
     const potongan = (subtotal + HANDLING_FEE) * diskon;
 
@@ -272,6 +363,17 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="row"><span>Biaya penanganan</span><span>$${formatMoney(HANDLING_FEE)}</span></div>
       ${diskon ? `<div class="row"><span>Diskon</span><span>-$${formatMoney(potongan)}</span></div>` : ""}
       <div class="row grand"><span>Total</span><span>$${formatMoney(total)}</span></div>
+=======
+    let total = subtotal + HANDLING_FEE;
+    total = total - total * diskon;
+    const potongan = (subtotal + HANDLING_FEE) * diskon;
+
+    document.getElementById("review-breakdown").innerHTML = `
+      <div class="row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+      <div class="row"><span>Biaya penanganan</span><span>$${HANDLING_FEE.toFixed(2)}</span></div>
+      ${diskon ? `<div class="row"><span>Kupon (-90%)</span><span>-$${potongan.toFixed(2)}</span></div>` : ""}
+      <div class="row grand"><span>Total</span><span>$${total}</span></div>
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
     `;
 
     reviewModal.classList.add("open");
@@ -297,7 +399,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = event.target;
 
     if (target.classList.contains("plus-button")) {
+<<<<<<< HEAD
       addToCart(target.dataset.id);
+=======
+      addToCart(target.dataset.id, Number(target.dataset.price));
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
     }
     if (target.classList.contains("minus-button")) {
       removeFromCart(target.dataset.id);
@@ -322,6 +428,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* EVENT INPUT */
   document.addEventListener("input", (event) => {
     const target = event.target;
+<<<<<<< HEAD
     if (target.id === "note") {
       renderCart();
     }
@@ -330,10 +437,18 @@ document.addEventListener("DOMContentLoaded", () => {
   /* EVENT CHANGE */
   document.addEventListener("change", (event) => {
     const target = event.target;
+=======
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
     if (target.classList.contains("edit-quantity-input")) {
       const quantity = parseInt(target.value, 10);
       updateQuantity(target.dataset.id, quantity);
     }
+<<<<<<< HEAD
+=======
+    if (target.id === "note") {
+      renderCart();
+    }
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
   });
 
   /* MULAI */
