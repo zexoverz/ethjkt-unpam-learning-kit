@@ -18,6 +18,9 @@ app/              -> interface web (Stretch): index.html, main.js, config.js, st
 
 Mentok? Tanya AI ("jelasin error ini"), atau tanya pengajar/mentor di kelas.
 
+Txhash deploy = https://sepolia.etherscan.io/tx/0x949e71c56f056e2a7dcfc74c3653e5cfee14ddf80f27cd8a2caef031d02edad0
+Tokenku address (ZRT) = 0x3E79233A29038BD390BDA592EaF396F973428dBA
+
 ---
 
 ## ATURAN EMAS (lanjutan Hari 1-2)
