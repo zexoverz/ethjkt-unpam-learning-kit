@@ -10,7 +10,7 @@ Hari: 1 — Fondasi AI
 | 1 | Data hadiah + fungsi pilihAcak() | ✅ Selesai |
 | 2 | Logika rollSatu() + sistem pity | ✅ Selesai |
 | 3 | Tampilkan hasil + animasi | ✅ Selesai |
-| 4 | Riwayat + tombol interaktif | ⏳ Belum |
+| 4 | Riwayat + tombol interaktif | ✅ Selesai |
 
 ---
 
@@ -48,6 +48,22 @@ Hari: 1 — Fondasi AI
 
 **Kenapa penting:** ini yang bikin hasil roll kelihatan di layar, bukan cuma di data.
 
+### Checkpoint 4 — Riwayat & Tombol
+**Apa yang dibikin:**
+- Fungsi `tambahRiwayat(hasil)` — bikin "chip" kecil berisi emoji hasil roll, 
+  taruh di paling depan riwayat, hapus yang paling lama kalau udah lebih dari 12
+- Tombol "TARIK 1x" → panggil `rollSatu()` sekali, tampilkan hasilnya
+- Tombol "TARIK 10x" → ulang proses yang sama 10 kali berturut-turut
+
+**Kenapa penting:** ini yang bikin simulator bisa benar-benar dipakai/diklik, 
+bukan cuma logika di belakang layar.
+
+---
+
+## Status Akhir
+🎉 Hari 1 selesai — semua 4 checkpoint kelar. Gacha simulator Honkai Star Rail 
+udah bisa ditarik, ada sistem pity, animasi, dan riwayat. Siap di-push dan 
+di-PR ke repo mentor.
 ---
 
 ## Belajar Hari Ini
