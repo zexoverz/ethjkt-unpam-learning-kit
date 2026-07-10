@@ -29,6 +29,7 @@ const DEX_MAX = 1025; // batas National Dex yang punya official artwork
 const SSR_IDS = [144,145,146,150,151,243,244,245,249,250,251,377,378,379,380,381,382,383,384,385,386,480,481,482,483,484,485,486,487,488,491,492,493,494,638,639,640,641,642,643,644,645,646,647,648,649,716,717,718,719,720,721,785,786,787,788,791,792,800,801,802,807,809,888,889,890,891,892,893,894,895,896,897,898,905,1001,1002,1003,1004,1007,1008,1014,1015,1016,1017,1024];
 const EPIC_IDS = [3,6,9,149,248,257,282,373,376,445,448,462,530,635,700,706,784,887,998];
 const SPECIAL_IDS = new Set([...SSR_IDS, ...EPIC_IDS]);
+const FEATURED_IDS = new Set([150, 249, 384]);
 
 // Warna resmi tiap tipe Pokémon (untuk badge tipe).
 const TYPE_COLORS = {
@@ -72,7 +73,11 @@ function pilihAcak(arr) {
 
 // Pilih ID Pokémon sesuai tier hasil roll.
 function pickId(kelas) {
-  if (kelas === "ssr") return pilihAcak(SSR_IDS);
+  if (kelas === "ssr") {
+    // Rate up hanya berlaku di tier SSR agar rarity tetap adil.
+    if (featuredId && Math.random() < 0.5) return featuredId;
+    return pilihAcak(SSR_IDS);
+  }
   if (kelas === "epic") return pilihAcak(EPIC_IDS);
   // rare & common: ID acak dari dex, hindari yang sudah jadi milik SSR/EPIC.
   let id;
@@ -121,6 +126,7 @@ async function getPokemon(id) {
 let pity = 0;      // tarikan sejak Legendary terakhir
 let total = 0;     // total tarikan
 let ssrCount = 0;  // total Legendary/Mythical didapat
+let featuredId = null; // Legendary pilihan pemain untuk banner rate up
 
 // Koleksi Pokédex: id -> data Pokémon yang pernah didapat (+ jumlahnya).
 let collection = {};
@@ -131,7 +137,7 @@ const STORAGE_KEY = "pokegacha_state_v1";
 
 function saveState() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ total, pity, ssrCount, collection }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ total, pity, ssrCount, featuredId, collection }));
   } catch (e) {
     // localStorage bisa penuh atau diblokir — abaikan, game tetap jalan.
   }
@@ -145,6 +151,7 @@ function loadState() {
     total = s.total || 0;
     pity = s.pity || 0;
     ssrCount = s.ssrCount || 0;
+    featuredId = FEATURED_IDS.has(Number(s.featuredId)) ? Number(s.featuredId) : null;
     collection = s.collection || {};
   } catch (e) {
     // Data rusak -> mulai dari nol saja.
@@ -192,6 +199,7 @@ const el = {
   err: document.getElementById("err"),
   tarik1: document.getElementById("tarik1"),
   tarik10: document.getElementById("tarik10"),
+  featuredPokemon: document.getElementById("featuredPokemon"),
   uniqueCount: document.getElementById("uniqueCount"),
   shinyCount: document.getElementById("shinyCount"),
   collectionGrid: document.getElementById("collectionGrid"),
@@ -356,6 +364,13 @@ el.tarik10.addEventListener("click", async () => {
   setLoading(false);
 });
 
+// Pemain bebas mengganti target Legendary. Pilihan ini ikut tersimpan.
+el.featuredPokemon.addEventListener("change", () => {
+  const selected = Number(el.featuredPokemon.value);
+  featuredId = FEATURED_IDS.has(selected) ? selected : null;
+  saveState();
+});
+
 // ---------- Render koleksi (Pokédex) ----------
 function renderCollection() {
   // Urutkan berdasarkan nomor Pokédex biar rapi seperti Pokédex asli.
@@ -489,5 +504,6 @@ document.querySelectorAll(".tab").forEach(t => {
 
 // ---------- Mulai: pulihkan progres yang tersimpan ----------
 loadState();
+el.featuredPokemon.value = featuredId || "";
 updateStats();
 shownBadges = earnedBadgeIds(); // badge yang sudah diraih dari sesi lama, jangan toast ulang

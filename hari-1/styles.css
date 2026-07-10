@@ -139,6 +139,19 @@ h1 {
 .stat .num { font-size: 22px; font-weight: 800; color: var(--ink); }
 .stat .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 
+/* ---------- Banner rate up ---------- */
+.rate-up {
+  margin: 0 0 12px; padding: 10px 12px; text-align: left;
+  border: 1px solid #f0d56a; border-radius: 12px;
+  background: linear-gradient(135deg, #fff9db, #fffef7);
+}
+.rate-up label { display: block; color: #a27600; font-size: 11px; font-weight: 800; letter-spacing: 1px; }
+.rate-up select {
+  width: 100%; margin-top: 5px; padding: 7px 9px; border: 1px solid #dfc55b;
+  border-radius: 8px; background: #fff; color: var(--ink); font: inherit; font-size: 13px;
+}
+.rate-up p { margin-top: 5px; color: var(--muted); font-size: 11px; line-height: 1.35; }
+
 /* ---------- Pity bar ---------- */
 .pity { margin-bottom: 18px; text-align: left; }
 .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
