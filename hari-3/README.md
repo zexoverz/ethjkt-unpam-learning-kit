@@ -9,6 +9,7 @@ Bahasa barunya: Solidity. Tenang inget prinsip kita: AI = tukang ketik.
 Kalian nggak dituntut hafal Solidity, tapi dituntut NGERTI & VERIFIKASI.
 
 File di folder ini:
+
 ```
 TokenKu.sol      -> koin kamu (ganti nama & simbol di sini).
 EthjktToken.sol  -> token bersama (biasanya pengajar yang deploy).
@@ -16,11 +17,10 @@ SimpleAMM.sol     -> mesin pasar/swap (x*y=k).
 app/              -> interface web (Stretch): index.html, main.js, config.js, styles.css
 ```
 
-TxHash Deploy = https://sepolia.etherscan.io/tx/0x10a65998f8c736fdd54f43f9fa89650fe5ed08d181b8aa32510b6668965896c2
-Tokenku Address (ZXT) = 0xaf6b337440ffea63c47f077eee2663987aeec33f
+Txhash Deploy = https://sepolia.etherscan.io/tx/0x963ec3befe52c6b59361cb5f80ec022536df2c31d2ac8680e83d22fcaa77b39d
+token address (MEM) = 0x85742D10d596e971dD2eB3A16290C7921a12DBBa
 
-
-Transfer token nya ke address zexo : 0x9ebdC8ACc879a8284Ae5B3CecfbD280ec307aFA3
+Transfer token nya ke address Memo = 0xD8b92Bb66293e3E48c2f7dF6e794E19da968099b
 
 Mentok? Tanya AI ("jelasin error ini"), atau tanya pengajar/mentor di kelas.
 
@@ -38,6 +38,7 @@ Sekali tanda tangan, token kepotong, nggak ada undo. Cek dulu, baru klik.
 ```
 
 KEAMANAN (WAJIB baca):
+
 ```
 - SEED PHRASE / PRIVATE KEY = kunci dompetmu. RAHASIA MUTLAK.
   Jangan screenshot, jangan tempel ke chat, JANGAN kasih ke AI.
@@ -100,6 +101,7 @@ Kenapa butuh ETH? Buat bayar "gas" tiap nulis ke chain. Di Sepolia gratis.
 ```
 
 Import koin ke MetaMask biar keliatan:
+
 ```
 [ ] MetaMask -> Tokens -> Import tokens -> tempel alamat contract koinmu.
 [ ] Muncul saldo 1.000.000 KOINMU. Selamat, kamu punya duit buatan sendiri.
@@ -116,17 +118,21 @@ Ini bagian PALING BANYAK LANGKAHNYA. Santai, ikutin urut. Butuh 2 token
 buat ditukar: KOINMU + ETHJKT (alamat dari pengajar).
 
 ### >> PENTING: JEBAKAN ANGKA (18 desimal) <<
+
 Token pakai 18 angka di belakang koma. Jadi "1000 token" BUKAN diketik
 "1000", tapi 1000 + 18 nol:
+
 ```
       1 token    = 1000000000000000000          (1  + 18 nol)
       1000 token = 1000000000000000000000        (1000 + 18 nol)
       100 token  = 100000000000000000000         (100  + 18 nol)
       100000 token = 100000000000000000000000    (100000 + 18 nol)
 ```
+
 Salah jumlah nol = angka kekecilan/kegedean. Copy-paste dari sini aja.
 
 ### KENAPA LANGKAHNYA BANYAK?
+
 Karena keamanan ERC20: pasar NGGAK BOLEH ambil token dari dompetmu tanpa
 IZIN. Jadi tiap token harus di-`approve` DULU, baru pasar boleh narik.
 Approve = kasih izin. Itu sebabnya ada langkah approve sebelum tiap aksi.
@@ -134,6 +140,7 @@ Approve = kasih izin. Itu sebabnya ada langkah approve sebelum tiap aksi.
 ---
 
 ### 4a. Siapin bahan (2 token)
+
 ```
 [ ] Catat ALAMAT ETHJKT dari pengajar. (contoh instruktur:
     0x7E96fed902B0A26b62DA78e8112253920Fc55936)
@@ -146,6 +153,7 @@ Approve = kasih izin. Itu sebabnya ada langkah approve sebelum tiap aksi.
 ```
 
 ### 4b. Deploy pasar (SimpleAMM)
+
 ```
 [ ] Compile SimpleAMM.sol. Di "Deploy", contract SimpleAMM minta 2 isian:
         _TOKENA = alamat KOINMU     (koin kamu)
@@ -155,8 +163,10 @@ Approve = kasih izin. Itu sebabnya ada langkah approve sebelum tiap aksi.
 ```
 
 ### 4c. APPROVE 2 token (izinin pasar narik)
+
 Ganti <ALAMAT_PASAR> dengan alamat SimpleAMM tadi. Pakai angka besar biar
 sekali approve cukup buat banyak aksi:
+
 ```
 [ ] Di KOINMU (TokenKu)  -> approve(<ALAMAT_PASAR>, 1000000000000000000000000) -> Confirm.
 [ ] Di ETHJKT            -> approve(<ALAMAT_PASAR>, 1000000000000000000000000) -> Confirm.
@@ -164,15 +174,18 @@ sekali approve cukup buat banyak aksi:
 ```
 
 ### 4d. ISI LIKUIDITAS (pasar kamu lahir di sini)
+
 ```
 [ ] Di SimpleAMM -> addLiquidity( 1000000000000000000000 , 1000000000000000000000 )
     (artinya: setor 1000 KOINMU + 1000 ETHJKT) -> Confirm.
 [ ] Cek: panggil reserveA & reserveB -> dua-duanya harus 1000000000000000000000.
     Harga awal jadi 1 : 1.
 ```
+
 Kalau gagal "insufficient allowance" -> balik ke 4c (approve kurang/lupa).
 
 ### 4e. SWAP (tukeran beneran!)
+
 ```
 [ ] (intip dulu) getAmountOut( 100000000000000000000 , reserveA , reserveB )
     -> hasilnya sekitar 90660000000000000000 (= ~90,66 ETHJKT).
@@ -192,6 +205,7 @@ AI itu pinter, tapi bisa NGARANG (inget Hari 1). Uji dia soal token/
 blockchain, lalu COCOKIN jawabannya sama kenyataan di Remix/Etherscan.
 
 Tanya AI, tebak dulu, lalu BUKTIIN:
+
 ```
 1. "Di contract TokenKu ini, gimana cara MENGHAPUS koin punya orang lain?"
 2. "Tunjukin fungsi freezeAccount() di token ERC20 standar ini."
@@ -233,6 +247,7 @@ Kamu cukup ganti 3 alamat, nggak usah ngoding.
 ```
 
 Fitur interface (DEX mini beneran):
+
 ```
 - SWAP        : tuker koinmu <-> ETHJKT, ada preview harga sebelum tanda tangan.
 - LIQUIDITY   : Tambah (setor 2 token, jumlah auto ngikut rasio pool) &
@@ -242,7 +257,7 @@ Fitur interface (DEX mini beneran):
 ```
 
 Kalau interface error, cek dulu yang paling sering: jaringan bukan Sepolia /
-alamat di config.js belum diganti dari 0xISI_... / file dibuka pakai
+alamat di config.js belum diganti dari 0xISI\_... / file dibuka pakai
 dobel-klik (file://) bukan lewat Live Server. Masih mentok? tanya pengajar.
 
 ---
@@ -250,6 +265,7 @@ dobel-klik (file://) bukan lewat Live Server. Masih mentok? tanya pengajar.
 ## LOG PEMAHAMAN + REFLEKSI (WAJIB — ini yang dinilai)
 
 Bikin `LOG-HARI-3.md`, jawab pakai bahasa sendiri:
+
 ```
 1. Token & ERC20 itu apa? Kenapa disebut "standar"?
 2. Bedanya "aksi baca" (mis. balanceOf) vs "aksi nulis" (mis. swap)?
