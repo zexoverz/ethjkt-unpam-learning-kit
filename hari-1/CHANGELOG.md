@@ -1,0 +1,33 @@
+# Catatan Perubahan Hari 1
+
+## Perbaikan gambar Pokemon salah
+
+- Masalah: beberapa cache gambar masih bisa menyimpan URL sprite yang tidak sesuai dengan ID Pokemon hasil pull.
+- Solusi: URL gambar sekarang dibuat dari ID Pokemon yang sedang ditampilkan, cache dinaikkan ke versi baru, dan cache lama/aneh otomatis dibuang kalau URL sprite tidak cocok dengan ID.
+
+## Pull gacha + pity
+
+- Tombol `TARIK 1x` sekarang melakukan satu pull.
+- Tombol `TARIK 10x` sekarang melakukan sepuluh pull sekaligus.
+- Setiap pull memilih hadiah secara acak dari rarity `COMMON`, `RARE`, `EPIC`, atau `SSR`.
+- Peluang SSR normal adalah 3%.
+- Kalau sudah 10 pull belum dapat SSR, sistem pity otomatis memberi SSR dan menghitung pity dari 0 lagi.
+- Hasil terakhir muncul di kartu utama.
+- Riwayat 12 pull terakhir muncul di bawah tombol.
+- Total pull, jumlah SSR, dan progress pity ikut diperbarui setiap kali pull.
+
+## Pokemon gacha pakai PokeAPI
+
+- Simulator sekarang mengambil data Pokemon asli dari `https://pokeapi.co/api/v2/pokemon/{id}`.
+- Setiap rarity punya kumpulan ID Pokemon sendiri: `COMMON`, `RARE`, `EPIC`, dan `SSR`.
+- Hasil pull menampilkan nama Pokemon, gambar resmi, tipe, tinggi, dan berat.
+- Data Pokemon disimpan di `localStorage` setelah pertama kali dimuat supaya tidak sering request ke PokeAPI.
+- Tombol pull masuk mode `LOADING` saat sedang mengambil data dari API.
+- Kalau request API gagal, kartu utama menampilkan pesan error sederhana supaya mudah dipahami.
+
+## Perbaikan gambar Pokemon
+
+- Masalah: beberapa gambar Pokemon bisa kosong kalau URL gambar utama gagal dimuat.
+- Masalah: cache lama bisa menyimpan data gambar yang tidak lengkap, jadi hasil pull terlihat salah atau tidak muncul.
+- Solusi: cache sekarang pakai versi baru dan hanya dipakai kalau ID Pokemon cocok.
+- Solusi: setiap Pokemon menyimpan beberapa pilihan gambar dari PokeAPI, lalu otomatis pindah ke gambar cadangan kalau gambar utama gagal.
