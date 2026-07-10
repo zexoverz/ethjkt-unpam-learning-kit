@@ -39,7 +39,7 @@ contract ZeroToken is ERC20 {
     constructor()
         // >>> GANTI DI SINI <<<  ("Nama Panjang Token", "SIMBOL")
         // contoh: ERC20("Mie Ayam Coin", "MIEAYAM")
-        ERC20("", "TOKENKU")
+        ERC20("Zero Token", "TO")
     {
         // cetak 1.000.000 token ke kamu (deployer). "10 ** decimals()"
         // karena token pakai 18 angka di belakang koma, sama kayak ETH.
