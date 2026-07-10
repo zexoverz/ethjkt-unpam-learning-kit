@@ -18,12 +18,12 @@ export const CONFIG = {
   // Kalau kosong, connect MetaMask masih jalan, tapi QR WalletConnect nggak.
   WALLETCONNECT_PROJECT_ID: "GANTI_DENGAN_PROJECT_ID_KAMU",
 
-  // Alamat pool AMM kamu (hasil deploy SimpleAMM di Remix).
-  AMM_ADDRESS: "0x60a19Da3F8CFA6F64a35a374CE0e5a7bC2d695c3",
+  // Alamat pool AMM kamu (GANTI DENGAN ALAMAT SIMPLEAMM BARU HASIL DEPLOY DI REMIX).
+  AMM_ADDRESS: "0x10846A1D982bC820626682b1BC019b2008120774",
 
-  // TOKEN A = KOIN KAMU (harus SAMA dengan tokenA di SimpleAMM).
+  // TOKEN A = KOIN KAMU (Faiz Coin / FAIZ).
   TOKEN_A: {
-    address: "0x8cfd81e42052a502da01a0884F4De804d0C1Eb4B",
+    address: "0xCe105996E1ef40ef1D6a52BF03E50fc0A9BC80BD",
     logo: "/zexoverz.webp", // ganti dengan logo koinmu (file di public/)
   },
 
