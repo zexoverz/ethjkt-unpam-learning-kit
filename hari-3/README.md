@@ -24,6 +24,9 @@ Transfer token nya ke address zexo : 0x9ebdC8ACc879a8284Ae5B3CecfbD280ec307aFA3
 
 Mentok? Tanya AI ("jelasin error ini"), atau tanya pengajar/mentor di kelas.
 
+Txhash deploy = https://sepolia.etherscan.io/tx/0x949e71c56f056e2a7dcfc74c3653e5cfee14ddf80f27cd8a2caef031d02edad0
+Tokenku address (ZRT) = 0x3E79233A29038BD390BDA592EaF396F973428dBA
+
 ---
 
 ## ATURAN EMAS (lanjutan Hari 1-2)
