@@ -148,6 +148,8 @@ h1 {
   background: linear-gradient(90deg, var(--yellow), var(--red));
   transition: width 0.35s ease;
 }
+.pity-status { min-height: 18px; margin-top: 7px; color: var(--muted); font-size: 11px; }
+.pity-status.guaranteed { color: #b77900; font-weight: 800; }
 
 /* ---------- Panggung / kartu Pokémon ---------- */
 .stage { display: flex; justify-content: center; margin-bottom: 14px; }
