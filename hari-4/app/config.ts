@@ -1,39 +1,22 @@
-// ============================================================
-// KONFIG KAMPUSSWAP  —  >>> MURID CUKUP EDIT FILE INI SAJA <<<
-//
-// Ganti alamat contract + logo token jadi punyamu sendiri.
-// Logo: taruh file gambar di folder "public/", lalu tulis path-nya
-// "/namafile.png" (awali garis miring) di "logo".
-// ============================================================
-
+// KampusSwap multi-pool configuration. Add new tokens and pools here.
 export const CONFIG = {
-  // Sepolia testnet.
   SEPOLIA_CHAIN_ID: 11155111,
-
-  // RPC publik Sepolia -> dipakai buat BACA data pool tanpa perlu wallet.
   RPC_URL: "https://ethereum-sepolia-rpc.publicnode.com",
-
-  // WalletConnect projectId (buat RainbowKit). GRATIS: bikin di
-  // https://cloud.reown.com -> New Project -> copy Project ID.
-  // Kalau kosong, connect MetaMask masih jalan, tapi QR WalletConnect nggak.
   WALLETCONNECT_PROJECT_ID: "GANTI_DENGAN_PROJECT_ID_KAMU",
-
-  // Alamat pool AMM kamu (hasil deploy SimpleAMM di Remix).
-  AMM_ADDRESS: "0x60a19Da3F8CFA6F64a35a374CE0e5a7bC2d695c3",
-
-  // TOKEN A = KOIN KAMU (harus SAMA dengan tokenA di SimpleAMM).
-  TOKEN_A: {
-    address: "0x8cfd81e42052a502da01a0884F4De804d0C1Eb4B",
-    logo: "/zexoverz.webp", // ganti dengan logo koinmu (file di public/)
-  },
-
-  // TOKEN B = ETHJKT (token bersama dari pengajar).
-  TOKEN_B: {
-    address: "0x7E96fed902B0A26b62DA78e8112253920Fc55936",
-    logo: "/ethjkt-logo.png",
-  },
-
-  // Branding header.
-  BRAND_LOGO: "/ethjkt-logo.png",
+  ROUTER_ADDRESS: "0x417bf7FB8224fA42230cCA7e3Fa04F81f7d9Fd43",
+  TOKENS: [
+    { id: "getoken", name: "GeToken", symbol: "GETOKEN", address: "0x938b70f60AEda1525dcd00A5E3d8f2668EF986Cf", logo: "/token-getoken.jpg" },
+    { id: "ethjkt", name: "Ethjkt Token", symbol: "ETHJKT", address: "0x7E96fed902B0A26b62DA78e8112253920Fc55936", logo: "/token-ethjkt.png" },
+    { id: "reze", name: "Reze", symbol: "REZE", address: "0xe43676c5B912E1907445E94512941A68C1420E70", logo: "/token-reze.png" },
+    { id: "ronova", name: "Ronova", symbol: "RONOVA", address: "0xC03D4590FA13ea10487CA17766eEA659F9949987", logo: "/token-ronova.png" },
+    { id: "ronin", name: "Ronin", symbol: "RONIN", address: "0xE148bC1B15853185cB6922DFBeD21396D467B17a", logo: "/token-ronin.png" },
+  ],
+  POOLS: [
+    { id: "getoken-ethjkt", tokenA: "getoken", tokenB: "ethjkt", address: "0xBF213C8dD19F5415Ee360DBb8ba88A6Dc915D9f5" },
+    { id: "reze-ethjkt", tokenA: "reze", tokenB: "ethjkt", address: "0x469314Dd77461295BE3C14af25899EC3ee241d2E" },
+    { id: "reze-ronova", tokenA: "reze", tokenB: "ronova", address: "0x46FC76c87aA272A3A1Bd54eBa285f303DC3D0CD3" },
+    { id: "ronin-ethjkt", tokenA: "ronin", tokenB: "ethjkt", address: "0x08C496613E6fc4A66587bB050FE45E6a47Ebb8f7" },
+  ],
+  BRAND_LOGO: "/token-ethjkt.png",
   TITLE_IMG: "/ai-blockhain-title.png",
-};
+} as const;

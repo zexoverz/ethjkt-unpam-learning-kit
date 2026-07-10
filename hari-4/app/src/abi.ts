@@ -12,6 +12,8 @@ export const ERC20_ABI = parseAbi([
 
 // SimpleAMM (x*y=k).
 export const AMM_ABI = parseAbi([
+  "function tokenA() view returns (address)",
+  "function tokenB() view returns (address)",
   "function reserveA() view returns (uint256)",
   "function reserveB() view returns (uint256)",
   "function totalShares() view returns (uint256)",
@@ -21,4 +23,9 @@ export const AMM_ABI = parseAbi([
   "function removeLiquidity(uint256 shareAmount) returns (uint256, uint256)",
   "function swapAforB(uint256 amountIn) returns (uint256)",
   "function swapBforA(uint256 amountIn) returns (uint256)",
+]);
+
+export const ROUTER_ABI = parseAbi([
+  "function getAmountsOut(uint256 amountIn, address[] pools, address[] path) view returns (uint256[] amounts)",
+  "function swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] pools, address[] path) returns (uint256 amountOut)",
 ]);
