@@ -196,10 +196,21 @@ function pilihAcak(arr) {
 }
 
   // CHECKPOINT 3 - Tampilkan + animasi
-  //   TODO: fungsi tampilkan(hasil) -> isi #cardEmoji, #cardName, #cardRarity,
-  //         set className kartu jadi "card <kelas> reveal" (trik reset animasi:
-  //         set "card", baca card.offsetWidth, baru set kelas+reveal).
-  //         Update #total, #ssrCount, #pityText, dan lebar #pityFill.
+ function tampilkan(hasil) {
+  const card = document.getElementById("card");
+  document.getElementById("cardEmoji").textContent = hasil.emoji;
+  document.getElementById("cardName").textContent = hasil.nama;
+  document.getElementById("cardRarity").textContent = hasil.kelas.toUpperCase();
+
+  card.className = "card";
+  void card.offsetWidth;
+  card.className = "card " + hasil.kelas + " reveal";
+
+  document.getElementById("total").textContent = total;
+  document.getElementById("ssrCount").textContent = ssrCount;
+  document.getElementById("pityText").textContent = pity + " / 10";
+  document.getElementById("pityFill").style.width = (pity / 10 * 100) + "%";
+}
 
   // CHECKPOINT 4 - Riwayat + tombol
   //   TODO: fungsi tambahRiwayat(hasil) -> bikin div .chip <kelas>, isi emoji,
