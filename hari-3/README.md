@@ -16,11 +16,11 @@ SimpleAMM.sol     -> mesin pasar/swap (x*y=k).
 app/              -> interface web (Stretch): index.html, main.js, config.js, styles.css
 ```
 
-TxHash Deploy = https://sepolia.etherscan.io/tx/0x10a65998f8c736fdd54f43f9fa89650fe5ed08d181b8aa32510b6668965896c2
-Tokenku Address (ZXT) = 0xaf6b337440ffea63c47f077eee2663987aeec33f
-
+TxHash Deploy = https://sepolia.etherscan.io/tx/0x46db9bc28c1458edbed7441d5bf7f099ccd10c3a2a02f2b09a65ab5f91274b32
+Tokenku Address (ZXT) = 0x6b28ee778c5521e8d68064780b5493a1441fced9
 
 Transfer token nya ke address zexo : 0x9ebdC8ACc879a8284Ae5B3CecfbD280ec307aFA3
+TxHash Transfer = https://sepolia.etherscan.io/tx/0x99a3dcd06d7d6ec5bea8dc389ba31e908407f439afd96ec1ad27c75700bfb203
 
 Mentok? Tanya AI ("jelasin error ini"), atau tanya pengajar/mentor di kelas.
 
