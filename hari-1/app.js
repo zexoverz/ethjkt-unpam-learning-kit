@@ -183,6 +183,7 @@ const el = {
   dexNum: document.getElementById("dexNum"),
   types: document.getElementById("types"),
   rarity: document.getElementById("rarity"),
+  resultMeta: document.getElementById("resultMeta"),
   statsPanel: document.getElementById("statsPanel"),
   total: document.getElementById("total"),
   ssrCount: document.getElementById("ssrCount"),
@@ -205,11 +206,12 @@ const el = {
 // Menentukan tier tanpa mengubah state (biar aman kalau fetch gagal nanti).
 function decideRarity() {
   const acak = Math.random();
+  const pityHit = pity + 1 >= PITY_MAX;
   // "+1" karena tarikan ini belum masuk hitungan pity.
-  if (pity + 1 >= PITY_MAX || acak < RATE_SSR) return "ssr";
-  if (acak < RATE_EPIC) return "epic";
-  if (acak < RATE_RARE) return "rare";
-  return "common";
+  if (pityHit || acak < RATE_SSR) return { kelas: "ssr", roll: acak, pityHit };
+  if (acak < RATE_EPIC) return { kelas: "epic", roll: acak, pityHit };
+  if (acak < RATE_RARE) return { kelas: "rare", roll: acak, pityHit };
+  return { kelas: "common", roll: acak, pityHit };
 }
 
 // Baru dicatat setelah tarikan benar-benar berhasil.
@@ -269,6 +271,25 @@ function buildStats(stats) {
   });
 }
 
+// Ringkasan kecil supaya pemain tahu hasilnya murni random atau kena pity.
+function renderResultMeta(result) {
+  const nextPity = result.kelas === "ssr" ? PITY_MAX : PITY_MAX - pity;
+  const sourceLabel = result.pityHit ? "SSR dari pity" : "Roll " + Math.round(result.roll * 100) + "%";
+
+  el.resultMeta.innerHTML = "";
+  [
+    { text: result.kelas.toUpperCase(), className: result.kelas },
+    { text: sourceLabel, className: result.pityHit ? "pity-hit" : "" },
+    { text: result.kelas === "ssr" ? "Pity reset" : nextPity + " pull ke pity", className: "" },
+    { text: result.shiny ? "Shiny aktif" : "Normal color", className: result.shiny ? "pity-hit" : "" },
+  ].forEach(item => {
+    const chip = document.createElement("span");
+    chip.textContent = item.text;
+    if (item.className) chip.className = item.className;
+    el.resultMeta.appendChild(chip);
+  });
+}
+
 // Gambar mana yang dipakai: shiny kalau lagi hoki, kalau tidak yang biasa.
 function artOf(result) {
   return result.shiny && result.shinyArtwork ? result.shinyArtwork : result.artwork;
@@ -292,6 +313,7 @@ function render(result) {
 
   buildTypes(result.types);
   buildStats(result.stats);
+  renderResultMeta(result);
 
   el.rarity.textContent = result.kelas + (result.shiny ? " ✨ shiny" : "");
   el.rarity.className = "rar " + result.kelas;
@@ -319,12 +341,13 @@ function addHistory(result) {
 
 // ---------- Satu tarikan (async: ambil data dulu, baru tampil) ----------
 async function pull() {
-  const kelas = decideRarity();
+  const decision = decideRarity();
+  const kelas = decision.kelas;
   const id = pickId(kelas);
   try {
     const mon = await getPokemon(id);
     const shiny = Math.random() < SHINY_RATE && !!mon.shinyArtwork;
-    const result = { ...mon, kelas, shiny };
+    const result = { ...mon, kelas, shiny, roll: decision.roll, pityHit: decision.pityHit };
     commitCounters(kelas); // hanya dihitung kalau fetch sukses
     recordCatch(result);   // masukkan ke koleksi Pokédex
     updateStats();
