@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KampusSwap</title>
+    <link rel="icon" href="ethjkt-logo.png" />
+
+    <!-- Font: Plus Jakarta Sans (brand ETHJKT) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- ethers v6 (wallet/contract) + lucide (icon) via CDN. No build step. -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- config murid (alamat + logo) -> HARUS sebelum main.js -->
+    <script src="config.js"></script>
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- SVG lens filter buat efek "liquid glass" -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0">
+      <filter id="lensFilter" x="0%" y="0%" width="100%" height="100%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="40" result="blur" />
+        <feDisplacementMap in="SourceGraphic" in2="blur" scale="40"
+          xChannelSelector="A" yChannelSelector="A" />
+      </filter>
+    </svg>
+
+    <div class="page">
+      <!-- HERO TITLE -->
+      <img id="titleImg" class="hero-title" alt="AI & BLOCKCHAIN" />
+
+      <!-- HEADER (full width) -->
+      <header class="head">
+        <div class="brand">
+          <img id="brandLogo" class="brand-logo" alt="ETHJKT" />
+          <div>
+            <p class="eyebrow">ETHJKT x UNPAM</p>
+            <h1>KampusSwap</h1>
+          </div>
+        </div>
+        <button id="connectBtn" class="glass pill btn-connect">
+          <span class="glass-filter"></span><span class="glass-overlay"></span>
+          <span class="glass-specular"></span>
+          <span class="glass-content" id="connectInner"><i data-lucide="wallet"></i> <span>Connect</span></span>
+        </button>
+      </header>
+
+      <!-- 2 KOLOM di desktop, numpuk di HP -->
+      <div class="cols">
+        <!-- KOLOM UTAMA: swap / liquidity -->
+        <div class="col col-main">
+          <!-- TAB: SWAP | LIQUIDITY -->
+          <div class="glass pill tabs">
+            <span class="glass-filter"></span><span class="glass-overlay"></span>
+            <span class="glass-specular"></span>
+            <div class="glass-content">
+              <button id="tabSwap" class="tab tab--active">Swap</button>
+              <button id="tabLiquidity" class="tab">Liquidity</button>
+            </div>
+          </div>
+
+          <!-- MAIN CARD -->
+          <section class="glass card main">
+            <span class="glass-filter"></span><span class="glass-overlay"></span>
+            <span class="glass-specular"></span>
+            <div class="glass-content col-inner">
+
+              <!-- ===== VIEW: SWAP ===== -->
+              <div id="viewSwap" class="view">
+                <div class="box">
+                  <div class="box-top"><span class="box-label">Kamu bayar</span></div>
+                  <div class="box-mid">
+                    <input id="amountIn" type="number" min="0" placeholder="0.0" />
+                    <span class="token-chip"><img id="fromLogo" class="token-logo" alt="" /><span id="fromSym">A</span></span>
+                  </div>
+                </div>
+
+                <button id="flipBtn" class="flip" title="Balik arah"><i data-lucide="arrow-up-down"></i></button>
+
+                <div class="box">
+                  <div class="box-top"><span class="box-label">Kamu terima (perkiraan)</span></div>
+                  <div class="box-mid">
+                    <input id="amountOut" type="text" readonly placeholder="0.0" />
+                    <span class="token-chip"><img id="toLogo" class="token-logo" alt="" /><span id="toSym">B</span></span>
+                  </div>
+                </div>
+
+                <div class="actions">
+                  <button id="swapBtn" class="act act--primary" disabled>Connect dulu</button>
+                </div>
+              </div>
+
+              <!-- ===== VIEW: LIQUIDITY ===== -->
+              <div id="viewLiquidity" class="view hidden">
+                <div class="subtabs">
+                  <button id="subAdd" class="subtab subtab--active">Tambah</button>
+                  <button id="subRemove" class="subtab">Tarik</button>
+                </div>
+
+                <!-- TAMBAH -->
+                <div id="viewAdd" class="view">
+                  <div class="box">
+                    <div class="box-top"><span class="box-label">Setor</span></div>
+                    <div class="box-mid">
+                      <input id="addA" type="number" min="0" placeholder="0.0" />
+                      <span class="token-chip"><img class="token-logo logoA" alt="" /><span class="ilA">A</span></span>
+                    </div>
+                  </div>
+
+                  <div class="flip flip--plus"><i data-lucide="plus"></i></div>
+
+                  <div class="box">
+                    <div class="box-top"><span class="box-label">Setor</span></div>
+                    <div class="box-mid">
+                      <input id="addB" type="number" min="0" placeholder="0.0" />
+                      <span class="token-chip"><img class="token-logo logoB" alt="" /><span class="ilB">B</span></span>
+                    </div>
+                  </div>
+
+                  <p id="ratioHint" class="hint">Isi salah satu, satunya otomatis ngikut rasio pool.</p>
+
+                  <div class="actions">
+                    <button id="addLiqBtn" class="act act--primary" disabled>Connect dulu</button>
+                  </div>
+                </div>
+
+                <!-- TARIK -->
+                <div id="viewRemove" class="view hidden">
+                  <div class="box">
+                    <div class="box-top">
+                      <span class="box-label">Share ditarik</span>
+                      <span class="box-bal">punya: <span id="myShares2" class="mono">-</span></span>
+                    </div>
+                    <div class="box-mid">
+                      <input id="removeShares" type="number" min="0" placeholder="0.0" />
+                      <button id="maxSharesBtn" class="token-chip chip-btn">Max</button>
+                    </div>
+                  </div>
+                  <div class="actions">
+                    <button id="removeLiqBtn" class="act act--primary" disabled>Connect dulu</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </div>
+
+        <!-- KOLOM SAMPING: detail akun, pool, log -->
+        <div class="col col-side">
+          <section class="glass card info">
+            <span class="glass-filter"></span><span class="glass-overlay"></span>
+            <span class="glass-specular"></span>
+            <div class="glass-content col-inner">
+              <div class="row"><span class="k">Akun</span><span id="account" class="v mono">belum connect</span></div>
+              <div class="row"><span class="k">Jaringan</span><span id="network" class="v mono">-</span></div>
+              <div class="hr"></div>
+              <div class="row"><span class="k">Saldo <b id="symA">A</b></span><span id="balA" class="v mono">-</span></div>
+              <div class="row"><span class="k">Saldo <b id="symB">B</b></span><span id="balB" class="v mono">-</span></div>
+              <div class="hr"></div>
+              <div class="row"><span class="k">Pool <b id="poolSymA">A</b></span><span id="reserveA" class="v mono">-</span></div>
+              <div class="row"><span class="k">Pool <b id="poolSymB">B</b></span><span id="reserveB" class="v mono">-</span></div>
+              <div class="row"><span class="k">Share kamu / total</span><span class="v mono"><span id="myShares">-</span> / <span id="totalShares">-</span></span></div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- LOG + HISTORY (full width, di bawah 2 kolom) -->
+      <section class="glass card">
+        <span class="glass-filter"></span><span class="glass-overlay"></span>
+        <span class="glass-specular"></span>
+        <div class="glass-content col-inner">
+          <div class="subtabs logtabs">
+            <button id="tabLog" class="subtab subtab--active">Log</button>
+            <button id="tabHistory" class="subtab">History</button>
+          </div>
+          <pre id="log" class="log">Belum ada aktivitas.</pre>
+          <div id="history" class="history hidden">
+            <p class="hist-empty">Belum ada transaksi.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
