@@ -169,10 +169,31 @@ function pilihAcak(arr) {
 }
 
   // CHECKPOINT 2 - Logika tarikan
-  //   TODO: fungsi rollSatu() -> total & pity nambah 1, pakai Math.random():
-  //         pity>=10 ATAU acak<0.03 -> SSR (pity balik 0, ssrCount nambah)
-  //         acak<0.10 -> EPIC, acak<0.30 -> RARE, selain itu -> COMMON.
-  //         balikin { kelas, nama, emoji }.
+  function rollSatu() {
+  total++;
+  pity++;
+
+  const acak = Math.random();
+  let kelas, item;
+
+  if (pity >= 10 || acak < 0.03) {
+    kelas = "ssr";
+    item = pilihAcak(hadiah.ssr);
+    pity = 0;
+    ssrCount++;
+  } else if (acak < 0.10) {
+    kelas = "epic";
+    item = pilihAcak(hadiah.epic);
+  } else if (acak < 0.30) {
+    kelas = "rare";
+    item = pilihAcak(hadiah.rare);
+  } else {
+    kelas = "common";
+    item = pilihAcak(hadiah.common);
+  }
+
+  return { kelas: kelas, nama: item.n, emoji: item.e };
+}
 
   // CHECKPOINT 3 - Tampilkan + animasi
   //   TODO: fungsi tampilkan(hasil) -> isi #cardEmoji, #cardName, #cardRarity,
