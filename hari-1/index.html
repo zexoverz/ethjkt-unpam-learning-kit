@@ -139,10 +139,34 @@
   // ==========================================================
 
   // CHECKPOINT 1 - Data & acak
-  //   TODO: bikin object `hadiah` berisi 4 array (ssr, epic, rare, common),
-  //         tiap item { n: "nama", e: "emoji" }.
-  //   TODO: bikin variabel pity=0, total=0, ssrCount=0.
-  //   TODO: fungsi pilihAcak(arr) -> balikin 1 item acak dari array.
+const hadiah = {
+  ssr: [
+    { n: "Kafka", e: "🌸" },
+    { n: "Acheron", e: "⚔️" },
+    { n: "Robin", e: "🎤" }
+  ],
+  epic: [
+    { n: "Tingyun", e: "🔔" },
+    { n: "Luocha", e: "🌿" }
+  ],
+  rare: [
+    { n: "Natasha", e: "💊" },
+    { n: "Herta", e: "🔧" }
+  ],
+  common: [
+    { n: "Trailblazer", e: "🚂" },
+    { n: "Dan Heng", e: "🐉" }
+  ]
+};
+
+let pity = 0;
+let total = 0;
+let ssrCount = 0;
+
+function pilihAcak(arr) {
+  const index = Math.floor(Math.random() * arr.length);
+  return arr[index];
+}
 
   // CHECKPOINT 2 - Logika tarikan
   //   TODO: fungsi rollSatu() -> total & pity nambah 1, pakai Math.random():
