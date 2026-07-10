@@ -22,6 +22,10 @@ function fmt(raw, dec) {
 function fmtNum(x) {
   return Number(x).toLocaleString("id-ID", { maximumFractionDigits: 4 });
 }
+function fmtRate(raw) {
+  if (raw == null || !isFinite(raw)) return "-";
+  return Number(raw).toLocaleString("id-ID", { maximumFractionDigits: 6 });
+}
 // rumus x*y=k + fee 0.3% (sama persis dengan contract getAmountOut)
 function getAmountOut(amountIn, reserveIn, reserveOut) {
   if (amountIn <= 0n || reserveIn <= 0n || reserveOut <= 0n) return 0n;
@@ -89,6 +93,7 @@ export default function App() {
 
   const ready = isConnected && chainOk && decA != null && decB != null;
   const hasPool = reserveA > 0n && reserveB > 0n;
+  const ammEtherscanUrl = `https://sepolia.etherscan.io/address/${CONFIG.AMM_ADDRESS}`;
 
   function refresh() {
     pool.refetch();
@@ -123,6 +128,52 @@ export default function App() {
       return "";
     }
   }, [amountIn, swapDir, reserveA, reserveB, decA, decB]);
+
+  const previewOutRaw = useMemo(() => {
+    if (!amountIn || Number(amountIn) <= 0 || decA == null || decB == null) return 0n;
+    try {
+      if (swapDir === "AtoB") {
+        return getAmountOut(parseUnits(amountIn, decA), reserveA, reserveB);
+      }
+      return getAmountOut(parseUnits(amountIn, decB), reserveB, reserveA);
+    } catch {
+      return 0n;
+    }
+  }, [amountIn, swapDir, reserveA, reserveB, decA, decB]);
+
+  const priceInfo = useMemo(() => {
+    if (!hasPool || decA == null || decB == null) {
+      return {
+        rateAtoB: "-",
+        rateBtoA: "-",
+        impactText: "-",
+        impactLevel: "neutral",
+      };
+    }
+
+    const reserveANum = Number(formatUnits(reserveA, decA));
+    const reserveBNum = Number(formatUnits(reserveB, decB));
+    const rateAtoB = reserveBNum / reserveANum;
+    const rateBtoA = reserveANum / reserveBNum;
+
+    let impact = null;
+    if (amountIn && Number(amountIn) > 0 && previewOutRaw > 0n) {
+      const input = Number(amountIn);
+      const outputDec = swapDir === "AtoB" ? decB : decA;
+      const output = Number(formatUnits(previewOutRaw, outputDec));
+      const spot = swapDir === "AtoB" ? rateAtoB : rateBtoA;
+      if (input > 0 && output > 0 && spot > 0) {
+        impact = Math.max(0, ((spot - output / input) / spot) * 100);
+      }
+    }
+
+    return {
+      rateAtoB: fmtRate(rateAtoB),
+      rateBtoA: fmtRate(rateBtoA),
+      impactText: impact == null ? "-" : `${fmtRate(impact)}%`,
+      impactLevel: impact == null ? "neutral" : impact >= 5 ? "high" : impact >= 2 ? "medium" : "low",
+    };
+  }, [hasPool, decA, decB, reserveA, reserveB, amountIn, previewOutRaw, swapDir]);
 
   // ---------- liquidity auto-pair ----------
   function onAddA(v) {
@@ -293,7 +344,7 @@ export default function App() {
           <img className="brand-logo" src={CONFIG.BRAND_LOGO} alt="ETHJKT" />
           <div>
             <p className="eyebrow">ETHJKT x UNPAM</p>
-            <h1>KampusSwap</h1>
+            <h1>Swappy</h1>
           </div>
         </div>
         <ConnectButton chainStatus="icon" showBalance={false} />
@@ -327,6 +378,20 @@ export default function App() {
                     <span className="token-chip"><img className="token-logo" src={toLogo} alt="" />{toSym}</span>
                   </div>
                 </div>
+
+                <div className="swap-meta">
+                  <div>
+                    <span>Rate</span>
+                    <b>1 {fromSym} ≈ {swapDir === "AtoB" ? priceInfo.rateAtoB : priceInfo.rateBtoA} {toSym}</b>
+                  </div>
+                  <div className={`impact impact--${priceInfo.impactLevel}`}>
+                    <span>Price impact</span>
+                    <b>{priceInfo.impactText}</b>
+                  </div>
+                </div>
+                {priceInfo.impactLevel === "high" && (
+                  <p className="hint hint--warn">Price impact tinggi. Coba jumlah swap lebih kecil supaya output lebih efisien.</p>
+                )}
 
                 <div className="actions">
                   <button className="act act--primary" disabled={!ready || busy?.key === "swap"} onClick={doSwap}>
@@ -401,6 +466,12 @@ export default function App() {
             <Row k={<>Pool <b>{symA}</b></>} v={fmt(reserveA, decA)} />
             <Row k={<>Pool <b>{symB}</b></>} v={fmt(reserveB, decB)} />
             <Row k="Share kamu / total" v={`${fmt(myShares, 18)} / ${fmt(totalShares, 18)}`} />
+            <div className="hr" />
+            <Row k={`1 ${symA}`} v={`${priceInfo.rateAtoB} ${symB}`} />
+            <Row k={`1 ${symB}`} v={`${priceInfo.rateBtoA} ${symA}`} />
+            <a className="scan-link" href={ammEtherscanUrl} target="_blank" rel="noopener noreferrer">
+              View AMM on Etherscan
+            </a>
           </Glass>
         </div>
       </div>
@@ -454,7 +525,7 @@ function HistRow({ h }) {
       <span className="hist-token"><img className="hist-logo" src={h.aLogo} alt="" /><span className="hist-amt">{h.aAmt} {h.aSym}</span></span>
       <span className="hist-arrow">{mid}</span>
       <span className="hist-token"><img className="hist-logo" src={h.bLogo} alt="" /><span className="hist-amt">{h.bAmt} {h.bSym}</span></span>
-      <span className="hist-via"><span className="hist-via-top">via <b>KampusSwap</b></span><span className="hist-sub2">{via}</span></span>
+      <span className="hist-via"><span className="hist-via-top">via <b>Swappy</b></span><span className="hist-sub2">{via}</span></span>
       <a className="hist-date" href={url} target="_blank" rel="noopener noreferrer">
         <span className="hist-d">{date} ↗</span>
         <span className="hist-t">{time}</span>

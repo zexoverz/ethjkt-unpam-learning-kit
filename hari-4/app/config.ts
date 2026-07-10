@@ -16,15 +16,15 @@ export const CONFIG = {
   // WalletConnect projectId (buat RainbowKit). GRATIS: bikin di
   // https://cloud.reown.com -> New Project -> copy Project ID.
   // Kalau kosong, connect MetaMask masih jalan, tapi QR WalletConnect nggak.
-  WALLETCONNECT_PROJECT_ID: "GANTI_DENGAN_PROJECT_ID_KAMU",
+  WALLETCONNECT_PROJECT_ID: "df65c5eb59c0dab5f861e27167ea0a6d",
 
   // Alamat pool AMM kamu (hasil deploy SimpleAMM di Remix).
-  AMM_ADDRESS: "0x60a19Da3F8CFA6F64a35a374CE0e5a7bC2d695c3",
+  AMM_ADDRESS: "0x63f28F35d3e26ffae6D629EDedF330fF13e9eb5E",
 
   // TOKEN A = KOIN KAMU (harus SAMA dengan tokenA di SimpleAMM).
   TOKEN_A: {
-    address: "0x8cfd81e42052a502da01a0884F4De804d0C1Eb4B",
-    logo: "/zexoverz.webp", // ganti dengan logo koinmu (file di public/)
+    address: "0x7B2F5233f979556DeA08F01caef5c72bbF34d37c",
+    logo: "/TompelCoin.webp", // ganti dengan logo koinmu (file di public/)
   },
 
   // TOKEN B = ETHJKT (token bersama dari pengajar).

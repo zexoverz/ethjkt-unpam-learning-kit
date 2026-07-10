@@ -35,11 +35,11 @@ pragma solidity ^0.8.20;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract TokenKu is ERC20 {
+contract TompelToken is ERC20 {
     constructor()
         // >>> GANTI DI SINI <<<  ("Nama Panjang Token", "SIMBOL")
         // contoh: ERC20("Mie Ayam Coin", "MIEAYAM")
-        ERC20("Token Ku", "TOKENKU")
+        ERC20("Tompel Token", "TMPLT")
     {
         // cetak 1.000.000 token ke kamu (deployer). "10 ** decimals()"
         // karena token pakai 18 angka di belakang koma, sama kayak ETH.

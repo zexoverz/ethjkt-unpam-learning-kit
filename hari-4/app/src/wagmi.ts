@@ -7,7 +7,7 @@ import { CONFIG } from "../config";
 // Baca data pool pakai RPC publik (CONFIG.RPC_URL) -> jalan tanpa wallet.
 // fallback: kalau RPC utama ngadat, otomatis pindah ke cadangan.
 export const wagmiConfig = getDefaultConfig({
-  appName: "KampusSwap",
+  appName: "Swappy",
   projectId: CONFIG.WALLETCONNECT_PROJECT_ID,
   chains: [sepolia],
   transports: {

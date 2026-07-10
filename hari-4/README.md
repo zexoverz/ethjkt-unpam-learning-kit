@@ -8,6 +8,7 @@ Hari ini 2 babak:
   course — dinilai dari "bisa jelasin & verifikasi", bukan "kodenya jalan".
 
 File di folder ini:
+
 ```
 TokenKu.sol      -> koin kamu (udah kamu deploy kemarin).
 EthjktToken.sol  -> token bersama (pengajar udah deploy — lihat di bawah).
@@ -36,19 +37,24 @@ KEAMANAN: SEED PHRASE / PRIVATE KEY = RAHASIA MUTLAK. Jangan kasih ke siapa
 pun, termasuk AI. Kita cuma main di SEPOLIA — jangan pernah pakai uang asli.
 
 ===============================================================
+
 # BABAK 1 — LENGKAPI PASARNYA (build yang ketunda)
+
 ===============================================================
 
 Butuh 2 token buat ditukar: **KOINMU** (dari Hari 3) + **ETHJKT** (dari pengajar).
 
 ### >> JEBAKAN ANGKA (18 desimal) — baca dulu <<
+
 Token pakai 18 angka di belakang koma. "1000 token" BUKAN `1000`, tapi 1000 + 18 nol:
+
 ```
       1 token      = 1000000000000000000          (1  + 18 nol)
       100 token    = 100000000000000000000        (100  + 18 nol)
       1000 token   = 1000000000000000000000       (1000 + 18 nol)
       100000 token = 100000000000000000000000     (100000 + 18 nol)
 ```
+
 Salah jumlah nol = angka kekecilan/kegedean → getAmountOut bisa balik 0. Copy dari sini.
 
 ---
@@ -56,17 +62,20 @@ Salah jumlah nol = angka kekecilan/kegedean → getAmountOut bisa balik 0. Copy 
 ## CHECKPOINT 1 — Ambil Modal ETHJKT
 
 ETHJKT resmi udah di-deploy pengajar & **SUDAH VERIFIED** di Etherscan:
+
 ```
 ETHJKT = 0x7E96fed902B0A26b62DA78e8112253920Fc55936
 sumber terverifikasi:
 https://sepolia.etherscan.io/address/0x7E96fed902B0A26b62DA78e8112253920Fc55936#code
 ```
+
 ```
 [ ] Di Remix panel "Deploy & Run" -> kolom "At Address", tempel alamat ETHJKT
     -> klik "At Address". Muncul contract ETHJKT.
 [ ] Panggil:  mint(100000000000000000000000)      <- ini 100.000 ETHJKT
     -> Confirm di MetaMask. Sekarang kamu punya modal ETHJKT.
 ```
+
 Karena ETHJKT udah verified, kamu bisa BACA source-nya di Etherscan (tab
 "Contract") — cocokin sama EthjktToken.sol di folder ini. Itu latihan verifikasi.
 
@@ -82,6 +91,7 @@ Karena ETHJKT udah verified, kamu bisa BACA source-nya di Etherscan (tab
     -> klik "Deploy" -> Confirm di MetaMask.
 [ ] Copy alamat SimpleAMM (ini "pasar" kamu). Simpan.
 ```
+
 Salah alamat / kebalik = pool nunjuk token salah, PERMANEN → deploy ulang.
 
 ---
@@ -90,11 +100,13 @@ Salah alamat / kebalik = pool nunjuk token salah, PERMANEN → deploy ulang.
 
 Pasar NGGAK BOLEH narik token dari dompetmu tanpa izin. Ganti `<PASAR>` dengan
 alamat SimpleAMM tadi:
+
 ```
 [ ] Di KOINMU (TokenKu) -> approve(<PASAR>, 1000000000000000000000000) -> Confirm.
 [ ] Di ETHJKT           -> approve(<PASAR>, 1000000000000000000000000) -> Confirm.
     (angka = 1.000.000 token, sekali approve cukup buat banyak aksi.)
 ```
+
 Lupa/kurang approve = error `insufficient allowance` (itu FITUR, bukan bug).
 
 ---
@@ -106,6 +118,7 @@ Lupa/kurang approve = error `insufficient allowance` (itu FITUR, bukan bug).
     (setor 1000 KOINMU + 1000 ETHJKT) -> Confirm.
 [ ] Cek reserveA & reserveB -> dua-duanya 1000000000000000000000. Harga awal 1 : 1.
 ```
+
 Gagal `insufficient allowance` -> balik Checkpoint 3. Gagal `jumlah nol` -> modal
 ETHJKT/KOIN kurang (mint lagi / cek 18 desimal).
 
@@ -119,25 +132,30 @@ ETHJKT/KOIN kurang (mint lagi / cek 18 desimal).
 [ ] swapAforB( 100000000000000000000 )   <- swap 100 KOINMU -> ETHJKT -> Confirm.
 [ ] Cek reserveA jadi ~1100, reserveB ~909. Saldo ETHJKT-mu di MetaMask naik.
 ```
+
 Selamat — pasar koinmu resmi HIDUP di blockchain asli. Buka Etherscan buat lihat swap-nya.
 
 ===============================================================
+
 # BABAK 2 — BUKTIIN KAMU PAHAM (ini yang dinilai)
+
 ===============================================================
 
 ## CHECKPOINT 6 — Jelasin Contract-mu Sendiri (bahasa manusia)
 
 Tanpa istilah sok teknis. Bayangin jelasin ke temen yang gaptek.
+
 ```
-[ ] TokenKu: "koin ini nyimpen apa? fungsi transfer & approve buat apa?"
+[ ] TompelToken: "koin ini nyimpen apa? fungsi transfer & approve buat apa?"
 [ ] SimpleAMM: "pool itu apa? addLiquidity ngapain? swap ngapain?"
 [ ] Tunjuk 1 baris kode yang kemarin kamu NGGAK ngerti, sekarang paham.
 ```
+
 Tulis di LOG pakai bahasamu (bukan copy-paste AI).
 
 ---
 
-## CHECKPOINT 7 — Buktiin x*y=k Dengan Angka Sendiri
+## CHECKPOINT 7 — Buktiin x\*y=k Dengan Angka Sendiri
 
 ```
 [ ] Baca reserveA & reserveB SEBELUM swap. Catat. k_sebelum = reserveA * reserveB.
@@ -145,6 +163,7 @@ Tulis di LOG pakai bahasamu (bukan copy-paste AI).
 [ ] Baca reserveA & reserveB SESUDAH. Catat. k_sesudah = reserveA * reserveB.
 [ ] Bandingin: k_sesudah harusnya >= k_sebelum (naik dikit karena fee 0.3%).
 ```
+
 Refleksi (LOG): kenapa k naik SEDIKIT, bukan tetap persis? (fee 0.3% ketinggal di pool.)
 
 ---
@@ -152,6 +171,7 @@ Refleksi (LOG): kenapa k naik SEDIKIT, bukan tetap persis? (fee 0.3% ketinggal d
 ## CHECKPOINT 8 — Uji AI Swap Advisor vs Kenyataan (inti kritis)
 
 Prompt lengkap: `../ai/swap-advisor-prompt.md`.
+
 ```
 [ ] Baca reserveA & reserveB sekarang dari SimpleAMM.
 [ ] Kasih ke AI: reserveIn, reserveOut, amountIn. Minta "perkiraan terima" +
@@ -159,6 +179,7 @@ Prompt lengkap: `../ai/swap-advisor-prompt.md`.
 [ ] Panggil getAmountOut(amountIn, reserveIn, reserveOut) di Remix.
 [ ] Bandingin angka AI vs contract. Beda berapa?
 ```
+
 Kamu jadi HAKIM. Meleset (sering!) = bukti kenapa SELALU verifikasi ke contract.
 
 ---
@@ -166,8 +187,15 @@ Kamu jadi HAKIM. Meleset (sering!) = bukti kenapa SELALU verifikasi ke contract.
 ## CHECKPOINT 9 (BONUS) — AI Market Vibe
 
 Prompt: `../ai/market-vibe-prompt.md`.
+
 ```
 [ ] Buka contract-mu di sepolia.etherscan.io -> tab "Events".
+    List TxHash eventnya : 0x9b5831b5815914f2431eb611f88a5ce6d7dc15e7843f00860003d28100041f8a
+                           0xa6390881aaea518dfd45d34e31a251d1d719feea63785016e5a2e8532c8e1624
+                           0xe0484efbbd5e71f9bc29d1efda0c4fd4466d316a3bc2fef89d64e5168f7dca81
+                           0x32f588c3ee8b6ded3fbdebb7b490d149f40a7e08e25a222217736fe737e2312c
+                           0x0144792bebec64b9840ff3913aa71e857e9b88f783d2f7663cba9af4a3454dd9
+                           0x2a7f6cf5a59dbc35a12465f443e2542cffabf81f0b9fe8f98221887fa4e5d5b8
 [ ] Kumpulin beberapa event Swapped. Kasih ke AI, minta ringkasan "vibe pasar"
     3 kalimat santai. Tempel di LOG (disclaimer: hiburan, bukan saran finansial).
 ```
@@ -177,6 +205,7 @@ Prompt: `../ai/market-vibe-prompt.md`.
 ## STRETCH — Buka Interface Web (`app/`)
 
 DEX mini React + wagmi. Cukup edit **satu file**: `app/config.ts`.
+
 ```
 [ ] npm install && npm run dev  (di dalam folder app/)
 [ ] Edit app/config.ts: AMM_ADDRESS, TOKEN_A.address (koinmu),
@@ -184,6 +213,7 @@ DEX mini React + wagmi. Cukup edit **satu file**: `app/config.ts`.
 [ ] (opsional) WALLETCONNECT_PROJECT_ID gratis di cloud.reown.com.
 [ ] Connect Wallet -> swap lewat web. Isi pool kebaca tanpa connect (RPC publik).
 ```
+
 Challenge lanjut (Challenge Ladder di slide): styling sendiri -> price chart ->
 extend fee (bikin fee configurable / protocol-fee) -> routing.
 
@@ -194,6 +224,7 @@ diverifikasi pengajar sebagai contoh. Tanya pengajar buat caranya.
 ---
 
 ## LOG PEMAHAMAN (WAJIB — `LOG-HARI-4.md`)
+
 ```
 1. DeFi itu apa, bedanya sama bank? (bahasa sendiri)
 2. ERC20 kasih kamu fungsi apa aja? Kenapa swap butuh approve dulu?
@@ -203,6 +234,7 @@ diverifikasi pengajar sebagai contoh. Tanya pengajar buat caranya.
 ```
 
 ## TAKE-HOME (tugas akhir mandiri)
+
 ```
 [ ] DEMO: tunjukin/rekam pasar koinmu -> connect wallet -> 1 swap jalan.
 [ ] GITHUB: push contract + LOG hari 3 & 4 + screenshot. README repo
