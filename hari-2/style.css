@@ -265,6 +265,8 @@ body {
   transform: scale(1.05);
 }
 
+<<<<<<< HEAD
+=======
 .quantity-button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -275,6 +277,7 @@ body {
   transform: none;
 }
 
+>>>>>>> upstream/master
 .quantity-display {
   font-size: 0.95rem;
 
@@ -387,6 +390,16 @@ body {
   margin-top: 2rem;
 }
 
+<<<<<<< HEAD
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 1rem;
+
+  font-size: 1.05rem;
+=======
 .cart-breakdown {
   margin-bottom: 1rem;
 }
@@ -410,6 +423,7 @@ body {
   color: var(--brown);
   font-size: 1.2rem;
   font-weight: 600;
+>>>>>>> upstream/master
 }
 
 .checkout-button {
