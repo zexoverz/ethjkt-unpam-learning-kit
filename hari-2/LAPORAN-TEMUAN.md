@@ -2,11 +2,13 @@
 
 ## Ruang lingkup dan validasi
 
-Audit dilakukan pada skrip inline di `hari-2/index.html` (baris 85–222),
-bukan pada `main.js`. Halaman ini adalah versi latihan yang sengaja rentan
-untuk dianalisis secara lokal. Sintaks skrip telah diperiksa dengan
-`node --check`; temuan di bawah divalidasi dari alur data dan langkah
-reproduksi yang dapat dilakukan di browser/DevTools.
+Audit ini merujuk ke snapshot latihan yang sebelumnya sempat ada di
+`hari-2/index.html` (baris 85–222). Implementasi final sekarang sudah pindah
+ke `main.js`, tetapi temuan di bawah tetap dipertahankan sebagai catatan
+analisis atas versi rentan yang memang sengaja dipakai untuk latihan lokal.
+Sintaks skrip telah diperiksa dengan `node --check`; temuan di bawah
+divalidasi dari alur data dan langkah reproduksi yang dapat dilakukan di
+browser/DevTools.
 
 | Kategori | Jumlah |
 | --- | ---: |
