@@ -1,18 +1,21 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState, useEffect, type ReactNode } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount, useChainId, useReadContracts } from "wagmi";
 import { readContract, writeContract, waitForTransactionReceipt } from "@wagmi/core";
 import { formatUnits, parseUnits } from "viem";
 
-import { CONFIG } from "../config";
+import { CONFIG, AMM_ADDRESS, TOKEN_A, TOKEN_B } from "../config";
 import { ERC20_ABI, AMM_ABI } from "./abi";
 import { wagmiConfig } from "./wagmi";
+import PriceChart, { savePrice, loadPrices, type PricePoint } from "./PriceChart";
+import SlippageGauge from "./SlippageGauge";
+import XYKCurve from "./XYKCurve";
 
 const SEPOLIA = CONFIG.SEPOLIA_CHAIN_ID;
-const tokenA = { address: CONFIG.TOKEN_A.address, abi: ERC20_ABI };
-const tokenB = { address: CONFIG.TOKEN_B.address, abi: ERC20_ABI };
-const amm = { address: CONFIG.AMM_ADDRESS, abi: AMM_ABI };
-const HKEY = "ks_hist_v2_" + String(CONFIG.AMM_ADDRESS).toLowerCase();
+const tokenA = { address: TOKEN_A.address, abi: ERC20_ABI };
+const tokenB = { address: TOKEN_B.address, abi: ERC20_ABI };
+const amm = { address: AMM_ADDRESS, abi: AMM_ABI };
+const HKEY = "ks_hist_v2_" + String(AMM_ADDRESS).toLowerCase();
 
 // ---------- helpers ----------
 function fmt(raw, dec) {
@@ -22,7 +25,6 @@ function fmt(raw, dec) {
 function fmtNum(x) {
   return Number(x).toLocaleString("id-ID", { maximumFractionDigits: 4 });
 }
-// rumus x*y=k + fee 0.3% (sama persis dengan contract getAmountOut)
 function getAmountOut(amountIn, reserveIn, reserveOut) {
   if (amountIn <= 0n || reserveIn <= 0n || reserveOut <= 0n) return 0n;
   const inWithFee = amountIn * 997n;
@@ -41,17 +43,22 @@ export default function App() {
   const chainId = useChainId();
   const chainOk = chainId === SEPOLIA;
 
-  const [tab, setTab] = useState("swap"); // swap | liquidity
-  const [liqSub, setLiqSub] = useState("add"); // add | remove
-  const [logTab, setLogTab] = useState("history"); // log | history
+  const [tab, setTab] = useState("swap");
+  const [liqSub, setLiqSub] = useState("add");
+  const [logTab, setLogTab] = useState("history");
   const [swapDir, setSwapDir] = useState("AtoB");
   const [amountIn, setAmountIn] = useState("");
   const [addA, setAddA] = useState("");
   const [addB, setAddB] = useState("");
   const [removeShares, setRemoveShares] = useState("");
-  const [busy, setBusy] = useState(null); // { key, text }
+  const [busy, setBusy] = useState(null);
   const [logLines, setLogLines] = useState([]);
   const [history, setHistory] = useState(loadHistory);
+  const [priceHistory, setPriceHistory] = useState<PricePoint[]>(() => loadPrices(AMM_ADDRESS));
+
+  useEffect(() => {
+    setPriceHistory(loadPrices(AMM_ADDRESS));
+  }, [AMM_ADDRESS]);
 
   // ---------- reads ----------
   const pool = useReadContracts({
@@ -96,7 +103,7 @@ export default function App() {
   }
   function log(msg) {
     const t = new Date().toLocaleTimeString();
-    setLogLines((prev) => [`[${t}] ${msg}`, ...prev].slice(0, 40));
+    setLogLines((prev) => ["[" + t + "] " + msg, ...prev].slice(0, 40));
   }
   function pushHistory(entry) {
     setHistory((prev) => {
@@ -123,6 +130,30 @@ export default function App() {
       return "";
     }
   }, [amountIn, swapDir, reserveA, reserveB, decA, decB]);
+
+  // ---------- slippage data ----------
+  const slippageData = useMemo(() => {
+    if (!amountIn || Number(amountIn) <= 0 || !previewOut || decA == null || decB == null) {
+      return null;
+    }
+    const amtIn = Number(amountIn);
+    const amtOut = Number(previewOut);
+    const rIn = swapDir === "AtoB"
+      ? Number(formatUnits(reserveA, decA))
+      : Number(formatUnits(reserveB, decB));
+    const rOut = swapDir === "AtoB"
+      ? Number(formatUnits(reserveB, decB))
+      : Number(formatUnits(reserveA, decA));
+    return { amtIn, amtOut, rIn, rOut };
+  }, [amountIn, previewOut, swapDir, reserveA, reserveB, decA, decB]);
+
+  // ---------- spot price ----------
+  const spotPrice = useMemo(() => {
+    if (!hasPool || decA == null || decB == null) return 0;
+    const rA = Number(formatUnits(reserveA, decA));
+    const rB = Number(formatUnits(reserveB, decB));
+    return rB / rA;
+  }, [reserveA, reserveB, decA, decB, hasPool]);
 
   // ---------- liquidity auto-pair ----------
   function onAddA(v) {
@@ -152,20 +183,20 @@ export default function App() {
       address: token.address,
       abi: ERC20_ABI,
       functionName: "allowance",
-      args: [address, CONFIG.AMM_ADDRESS],
+      args: [address, AMM_ADDRESS],
     });
     if (cur >= amount) return;
-    setStep(`Approve ${sym} — cek MetaMask`);
-    log(`Approve ${sym}... konfirmasi di wallet`);
+    setStep("Approve " + sym + " — cek MetaMask");
+    log("Approve " + sym + "... konfirmasi di wallet");
     const hash = await writeContract(wagmiConfig, {
       address: token.address,
       abi: ERC20_ABI,
       functionName: "approve",
-      args: [CONFIG.AMM_ADDRESS, amount],
+      args: [AMM_ADDRESS, amount],
     });
-    setStep(`Approve ${sym} terkirim, nunggu…`);
+    setStep("Approve " + sym + " terkirim, nunggu…");
     await waitForTransactionReceipt(wagmiConfig, { hash });
-    log(`Approve ${sym} sukses.`);
+    log("Approve " + sym + " sukses.");
   }
 
   async function doSwap() {
@@ -186,7 +217,7 @@ export default function App() {
       setStep("Konfirmasi swap di MetaMask");
       log("Kirim swap... konfirmasi di wallet");
       const hash = await writeContract(wagmiConfig, {
-        address: CONFIG.AMM_ADDRESS,
+        address: AMM_ADDRESS,
         abi: AMM_ABI,
         functionName: swapDir === "AtoB" ? "swapAforB" : "swapBforA",
         args: [amount],
@@ -196,12 +227,26 @@ export default function App() {
       const outRaw = getAmountOut(amount, rIn, rOut);
       const amtIn = Number(amountIn);
       const amtOut = Number(formatUnits(outRaw, outDec));
+
+      const pricePoint: PricePoint = {
+        ts: Date.now(),
+        price: amtOut / amtIn,
+        poolAddress: AMM_ADDRESS,
+        direction: swapDir,
+        amountIn: amtIn,
+        amountOut: amtOut,
+        symA,
+        symB,
+      };
+      savePrice(pricePoint);
+      setPriceHistory((prev) => [...prev, pricePoint].slice(-200));
+
       log("Swap sukses!");
       pushHistory({
         type: "swap", hash, ts: Date.now(),
-        aLogo: swapDir === "AtoB" ? CONFIG.TOKEN_A.logo : CONFIG.TOKEN_B.logo,
+        aLogo: swapDir === "AtoB" ? TOKEN_A.logo : TOKEN_B.logo,
         aAmt: fmtNum(amtIn), aSym: inSym,
-        bLogo: swapDir === "AtoB" ? CONFIG.TOKEN_B.logo : CONFIG.TOKEN_A.logo,
+        bLogo: swapDir === "AtoB" ? TOKEN_B.logo : TOKEN_A.logo,
         bAmt: fmtNum(amtOut), bSym: outSym,
       });
       refresh();
@@ -225,7 +270,7 @@ export default function App() {
       setStep("Konfirmasi tambah di MetaMask");
       log("Kirim addLiquidity...");
       const hash = await writeContract(wagmiConfig, {
-        address: CONFIG.AMM_ADDRESS, abi: AMM_ABI,
+        address: AMM_ADDRESS, abi: AMM_ABI,
         functionName: "addLiquidity", args: [amtA, amtB],
       });
       setStep("Menambah… (nunggu blok)");
@@ -233,8 +278,8 @@ export default function App() {
       log("Tambah likuiditas sukses!");
       pushHistory({
         type: "add", hash, ts: Date.now(),
-        aLogo: CONFIG.TOKEN_A.logo, aAmt: fmtNum(Number(addA)), aSym: symA,
-        bLogo: CONFIG.TOKEN_B.logo, bAmt: fmtNum(Number(addB)), bSym: symB,
+        aLogo: TOKEN_A.logo, aAmt: fmtNum(Number(addA)), aSym: symA,
+        bLogo: TOKEN_B.logo, bAmt: fmtNum(Number(addB)), bSym: symB,
       });
       refresh();
     } catch (e) {
@@ -252,7 +297,7 @@ export default function App() {
     try {
       log("Kirim removeLiquidity...");
       const hash = await writeContract(wagmiConfig, {
-        address: CONFIG.AMM_ADDRESS, abi: AMM_ABI,
+        address: AMM_ADDRESS, abi: AMM_ABI,
         functionName: "removeLiquidity", args: [parseUnits(removeShares, 18)],
       });
       setStep("Menarik… (nunggu blok)");
@@ -260,8 +305,8 @@ export default function App() {
       log("Tarik likuiditas sukses!");
       pushHistory({
         type: "remove", hash, ts: Date.now(),
-        aLogo: CONFIG.TOKEN_A.logo, aAmt: "", aSym: symA,
-        bLogo: CONFIG.TOKEN_B.logo, bAmt: "", bSym: symB,
+        aLogo: TOKEN_A.logo, aAmt: "", aSym: symA,
+        bLogo: TOKEN_B.logo, bAmt: "", bSym: symB,
       });
       refresh();
     } catch (e) {
@@ -279,8 +324,8 @@ export default function App() {
 
   const fromSym = swapDir === "AtoB" ? symA : symB;
   const toSym = swapDir === "AtoB" ? symB : symA;
-  const fromLogo = swapDir === "AtoB" ? CONFIG.TOKEN_A.logo : CONFIG.TOKEN_B.logo;
-  const toLogo = swapDir === "AtoB" ? CONFIG.TOKEN_B.logo : CONFIG.TOKEN_A.logo;
+  const fromLogo = swapDir === "AtoB" ? TOKEN_A.logo : TOKEN_B.logo;
+  const toLogo = swapDir === "AtoB" ? TOKEN_B.logo : TOKEN_A.logo;
 
   const actLabel = !isConnected ? "Connect dulu" : !chainOk ? "Jaringan salah" : null;
 
@@ -302,13 +347,13 @@ export default function App() {
       <div className="cols">
         {/* ===== MAIN ===== */}
         <div className="col col-main">
-          <Glass className="pill tabs" inner="tabs-row">
-            <button className={`tab ${tab === "swap" ? "tab--active" : ""}`} onClick={() => setTab("swap")}>Swap</button>
-            <button className={`tab ${tab === "liquidity" ? "tab--active" : ""}`} onClick={() => setTab("liquidity")}>Liquidity</button>
-          </Glass>
-
           <Glass className="card main">
-            {tab === "swap" ? (
+            <div className="tabs">
+              <button className={"tab " + (tab === "swap" ? "tab--active" : "")} onClick={() => setTab("swap")}>Swap</button>
+              <button className={"tab " + (tab === "liquidity" ? "tab--active" : "")} onClick={() => setTab("liquidity")}>Liquidity</button>
+            </div>
+
+            {tab === "swap" && (
               <div className="view">
                 <div className="box">
                   <div className="box-top"><span className="box-label">Kamu bayar</span></div>
@@ -328,17 +373,31 @@ export default function App() {
                   </div>
                 </div>
 
+                {slippageData && (
+                  <SlippageGauge
+                    amountIn={slippageData.amtIn}
+                    amountOut={slippageData.amtOut}
+                    reserveIn={slippageData.rIn}
+                    reserveOut={slippageData.rOut}
+                    swapDir={swapDir}
+                    symA={symA}
+                    symB={symB}
+                  />
+                )}
+
                 <div className="actions">
                   <button className="act act--primary" disabled={!ready || busy?.key === "swap"} onClick={doSwap}>
                     {busy?.key === "swap" ? <><span className="spinner" />{busy.text}</> : actLabel || "Swap"}
                   </button>
                 </div>
               </div>
-            ) : (
+            )}
+
+            {tab === "liquidity" && (
               <div className="view">
                 <div className="subtabs">
-                  <button className={`subtab ${liqSub === "add" ? "subtab--active" : ""}`} onClick={() => setLiqSub("add")}>Tambah</button>
-                  <button className={`subtab ${liqSub === "remove" ? "subtab--active" : ""}`} onClick={() => setLiqSub("remove")}>Tarik</button>
+                  <button className={"subtab " + (liqSub === "add" ? "subtab--active" : "")} onClick={() => setLiqSub("add")}>Tambah</button>
+                  <button className={"subtab " + (liqSub === "remove" ? "subtab--active" : "")} onClick={() => setLiqSub("remove")}>Tarik</button>
                 </div>
 
                 {liqSub === "add" ? (
@@ -347,7 +406,7 @@ export default function App() {
                       <div className="box-top"><span className="box-label">Setor</span></div>
                       <div className="box-mid">
                         <input type="number" min="0" placeholder="0.0" value={addA} onChange={(e) => onAddA(e.target.value)} />
-                        <span className="token-chip"><img className="token-logo" src={CONFIG.TOKEN_A.logo} alt="" />{symA}</span>
+                        <span className="token-chip"><img className="token-logo" src={TOKEN_A.logo} alt="" />{symA}</span>
                       </div>
                     </div>
                     <div className="flip flip--plus">+</div>
@@ -355,7 +414,7 @@ export default function App() {
                       <div className="box-top"><span className="box-label">Setor</span></div>
                       <div className="box-mid">
                         <input type="number" min="0" placeholder="0.0" value={addB} onChange={(e) => onAddB(e.target.value)} />
-                        <span className="token-chip"><img className="token-logo" src={CONFIG.TOKEN_B.logo} alt="" />{symB}</span>
+                        <span className="token-chip"><img className="token-logo" src={TOKEN_B.logo} alt="" />{symB}</span>
                       </div>
                     </div>
                     <p className="hint">{hasPool ? "Isi salah satu, satunya otomatis ngikut rasio pool." : "Pool baru: kamu yang tentuin harga awal (isi dua-duanya)."}</p>
@@ -393,23 +452,51 @@ export default function App() {
         <div className="col col-side">
           <Glass className="card info">
             <Row k="Akun" v={address ? address.slice(0, 6) + "…" + address.slice(-4) : "belum connect"} />
-            <Row k="Jaringan" v={!isConnected ? "-" : chainOk ? "Sepolia" : `chainId ${chainId} (bukan Sepolia)`} />
+            <Row k="Jaringan" v={!isConnected ? "-" : chainOk ? "Sepolia" : "chainId " + chainId + " (bukan Sepolia)"} />
             <div className="hr" />
-            <Row k={<>Saldo <b>{symA}</b></>} v={fmt(balA, decA)} />
-            <Row k={<>Saldo <b>{symB}</b></>} v={fmt(balB, decB)} />
+            <Row k={<>{("Saldo ")}<b>{symA}</b></>} v={fmt(balA, decA)} />
+            <Row k={<>{("Saldo ")}<b>{symB}</b></>} v={fmt(balB, decB)} />
             <div className="hr" />
-            <Row k={<>Pool <b>{symA}</b></>} v={fmt(reserveA, decA)} />
-            <Row k={<>Pool <b>{symB}</b></>} v={fmt(reserveB, decB)} />
-            <Row k="Share kamu / total" v={`${fmt(myShares, 18)} / ${fmt(totalShares, 18)}`} />
+            <Row k={<>{("Pool ")}<b>{symA}</b></>} v={fmt(reserveA, decA)} />
+            <Row k={<>{("Pool ")}<b>{symB}</b></>} v={fmt(reserveB, decB)} />
+            {hasPool && decA != null && decB != null && (
+              <Row k="Spot price" v={(Number(formatUnits(reserveB, decB)) / Number(formatUnits(reserveA, decA))).toFixed(6) + " " + symB + "/" + symA} />
+            )}
+            <Row k="Share kamu / total" v={fmt(myShares, 18) + " / " + fmt(totalShares, 18)} />
           </Glass>
         </div>
+      </div>
+
+      {/* ===== CHARTS (always visible) ===== */}
+      <div className="charts-row">
+        <Glass className="card chart-card">
+          <h3 className="chart-card__title">📊 Price History</h3>
+          <PriceChart
+            history={priceHistory}
+            poolAddress={AMM_ADDRESS}
+            symA={symA}
+            symB={symB}
+            currentPrice={spotPrice}
+          />
+        </Glass>
+        <Glass className="card chart-card">
+          <XYKCurve
+            reserveA={hasPool && decA != null ? Number(formatUnits(reserveA, decA)) : 0}
+            reserveB={hasPool && decB != null ? Number(formatUnits(reserveB, decB)) : 0}
+            amountIn={slippageData?.amtIn || 0}
+            amountOut={slippageData?.amtOut || 0}
+            swapDir={swapDir}
+            symA={symA}
+            symB={symB}
+          />
+        </Glass>
       </div>
 
       {/* ===== LOG + HISTORY ===== */}
       <Glass className="card">
         <div className="subtabs logtabs">
-          <button className={`subtab ${logTab === "log" ? "subtab--active" : ""}`} onClick={() => setLogTab("log")}>Log</button>
-          <button className={`subtab ${logTab === "history" ? "subtab--active" : ""}`} onClick={() => setLogTab("history")}>History</button>
+          <button className={"subtab " + (logTab === "log" ? "subtab--active" : "")} onClick={() => setLogTab("log")}>Log</button>
+          <button className={"subtab " + (logTab === "history" ? "subtab--active" : "")} onClick={() => setLogTab("history")}>History</button>
         </div>
         {logTab === "log" ? (
           <pre className="log">{logLines.length ? logLines.join("\n") : "Belum ada aktivitas."}</pre>
@@ -430,9 +517,9 @@ export default function App() {
 // ---------- small components ----------
 function Glass({ className = "", inner = "col-inner", children }: { className?: string; inner?: string; children: ReactNode }) {
   return (
-    <section className={`glass ${className}`}>
+    <section className={"glass " + className}>
       <span className="glass-filter" /><span className="glass-overlay" /><span className="glass-specular" />
-      <div className={`glass-content ${inner}`}>{children}</div>
+      <div className={"glass-content " + inner}>{children}</div>
     </section>
   );
 }
@@ -442,7 +529,7 @@ function Row({ k, v }: { k: ReactNode; v: ReactNode }) {
   );
 }
 function HistRow({ h }) {
-  const short = h.hash ? h.hash.slice(0, 6) + "…" + h.hash.slice(-4) : "";
+  const shortHash = h.hash ? h.hash.slice(0, 6) + "…" + h.hash.slice(-4) : "";
   const url = h.hash ? "https://sepolia.etherscan.io/tx/" + h.hash : "#";
   const dt = h.ts ? new Date(h.ts) : null;
   const date = dt ? dt.toLocaleDateString("id-ID", { day: "2-digit", month: "2-digit", year: "numeric" }) : "";
