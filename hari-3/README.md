@@ -16,7 +16,9 @@ SimpleAMM.sol     -> mesin pasar/swap (x*y=k).
 app/              -> interface web (Stretch): index.html, main.js, config.js, styles.css
 ```
 
-
+//ini punya aku-aisyah
+TxHash Deploy = https://sepolia.etherscan.io/tx/0xdb204d58964043dc15b0ac39d3f0ba18aa9d5b9c83a1c80ba0d957ec3d9dee6e
+Tokenku Address (MRT) = 0xf22dd091d191db022bed8b3b07bfdb50c502d93c
 
 //ini punya kaka nya
 TxHash Deploy = https://sepolia.etherscan.io/tx/0x10a65998f8c736fdd54f43f9fa89650fe5ed08d181b8aa32510b6668965896c2
