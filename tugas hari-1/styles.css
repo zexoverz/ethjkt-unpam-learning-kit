@@ -1,0 +1,342 @@
+:root {
+  color-scheme: dark;
+  --bg: #090b10;
+  --panel: #121722;
+  --panel-strong: #191f2c;
+  --text: #f5f7fb;
+  --muted: #9ba6b8;
+  --line: rgba(255, 255, 255, 0.12);
+  --six: #ef4444;
+  --five: #f8c84e;
+  --four: #9d6cff;
+  --three: #7aa2c9;
+  --gold: #ffd76a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--text);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(239, 68, 68, 0.18), transparent 28rem),
+    radial-gradient(circle at 82% 18%, rgba(248, 200, 78, 0.12), transparent 24rem),
+    linear-gradient(145deg, #090b10 0%, #10141d 58%, #08090d 100%);
+}
+
+button {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(1180px, calc(100% - 32px));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.topbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 14px 0 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 4.7rem);
+  line-height: 0.94;
+  letter-spacing: 0;
+}
+
+.pity-panel {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 4px 12px;
+  min-width: 168px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(18, 23, 34, 0.86);
+}
+
+.pity-label {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pity-panel strong {
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.pity-panel span:last-child {
+  align-self: end;
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  padding: 22px 0;
+}
+
+.controls button {
+  min-width: 132px;
+  min-height: 46px;
+  border: 0;
+  border-radius: 8px;
+  color: #090b10;
+  background: #ffffff;
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.controls button:hover {
+  transform: translateY(-1px);
+  background: #f0f3f8;
+  box-shadow: 0 12px 32px rgba(255, 255, 255, 0.16);
+}
+
+.controls button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.results-wrap {
+  min-height: 520px;
+}
+
+.results {
+  display: grid;
+  gap: 14px;
+}
+
+.results.count-1 {
+  grid-template-columns: minmax(280px, 420px);
+}
+
+.results.count-10 {
+  grid-template-columns: repeat(auto-fit, minmax(184px, 1fr));
+}
+
+.empty-state {
+  min-height: 420px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(18, 23, 34, 0.58);
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.operator-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 360px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  isolation: isolate;
+}
+
+.operator-card::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  opacity: 0.26;
+  background: linear-gradient(145deg, var(--rarity-color), transparent 42%);
+}
+
+.operator-card.rarity-6 {
+  --rarity-color: var(--six);
+  border-color: rgba(239, 68, 68, 0.72);
+  box-shadow:
+    0 0 0 1px rgba(255, 215, 106, 0.22),
+    0 24px 56px rgba(239, 68, 68, 0.22);
+}
+
+.operator-card.rarity-6::after {
+  position: absolute;
+  inset: -40%;
+  content: "";
+  background: linear-gradient(
+    115deg,
+    transparent 34%,
+    rgba(255, 215, 106, 0.08) 42%,
+    rgba(255, 245, 194, 0.52) 50%,
+    rgba(255, 215, 106, 0.08) 58%,
+    transparent 66%
+  );
+  animation: shine 2.8s linear infinite;
+  pointer-events: none;
+}
+
+.operator-card.rarity-5 {
+  --rarity-color: var(--five);
+  border-color: rgba(248, 200, 78, 0.64);
+}
+
+.operator-card.rarity-4 {
+  --rarity-color: var(--four);
+  border-color: rgba(157, 108, 255, 0.64);
+}
+
+.operator-card.rarity-3 {
+  --rarity-color: var(--three);
+  border-color: rgba(122, 162, 201, 0.56);
+}
+
+.operator-art {
+  position: relative;
+  height: 260px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent);
+}
+
+.operator-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.46));
+}
+
+.operator-art.avatar-art {
+  display: grid;
+  place-items: center;
+}
+
+.operator-art.avatar-art img {
+  width: min(70%, 180px);
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+.fallback-name {
+  display: none;
+}
+
+.missing-art {
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+.missing-art .fallback-name {
+  display: block;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.operator-info {
+  position: relative;
+  z-index: 1;
+  min-height: 100px;
+  padding: 14px 16px 16px;
+  background: linear-gradient(180deg, rgba(9, 11, 16, 0.68), rgba(9, 11, 16, 0.94));
+}
+
+.rarity-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  color: #090b10;
+  background: var(--rarity-color);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.operator-info h2 {
+  margin: 10px 0 4px;
+  overflow-wrap: anywhere;
+  font-size: clamp(1.08rem, 2.4vw, 1.45rem);
+  line-height: 1.06;
+  letter-spacing: 0;
+}
+
+.operator-info p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+@keyframes shine {
+  from {
+    transform: translateX(-35%) rotate(0deg);
+  }
+
+  to {
+    transform: translateX(35%) rotate(0deg);
+  }
+}
+
+@media (max-width: 720px) {
+  .app-shell {
+    width: min(100% - 20px, 1180px);
+    padding: 18px 0;
+  }
+
+  .topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pity-panel {
+    width: 100%;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .controls button {
+    min-width: 0;
+  }
+
+  .results.count-1,
+  .results.count-10 {
+    grid-template-columns: 1fr;
+  }
+
+  .operator-card {
+    min-height: 330px;
+  }
+
+  .operator-art {
+    height: 236px;
+  }
+}

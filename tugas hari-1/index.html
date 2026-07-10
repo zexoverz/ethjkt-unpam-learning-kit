@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arknights Gacha</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="operators-data.js"></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="topbar">
+        <div>
+          <p class="eyebrow">Rhodes Island Headhunting</p>
+          <h1>Arknights Gacha</h1>
+        </div>
+
+        <div class="pity-panel" aria-live="polite">
+          <span class="pity-label">6-star pity</span>
+          <strong id="pityCount">0</strong>
+          <span id="sixRate">2.00%</span>
+        </div>
+      </section>
+
+      <section class="controls" aria-label="Pull controls">
+        <button id="pullOneButton" type="button">Pull 1x</button>
+        <button id="pullTenButton" type="button">Pull 10x</button>
+      </section>
+
+      <section class="results-wrap">
+        <div id="results" class="results empty-state">
+          <p>Press a pull button to begin.</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

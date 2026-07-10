@@ -1,0 +1,3602 @@
+[
+  {
+    "id": "char_003_kalts",
+    "name": "Kal'tsit",
+    "rarity": 6,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "physician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_003_kalts_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_003_kalts.png"
+  },
+  {
+    "id": "char_010_chen",
+    "name": "Ch'en",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "sword",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_010_chen_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_010_chen.png"
+  },
+  {
+    "id": "char_017_huang",
+    "name": "Blaze",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "centurion",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_017_huang_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_017_huang.png"
+  },
+  {
+    "id": "char_1012_skadi2",
+    "name": "Skadi the Corrupting Heart",
+    "rarity": 6,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "bard",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1012_skadi2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1012_skadi2.png"
+  },
+  {
+    "id": "char_1013_chen2",
+    "name": "Ch'en the Holungday",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "reaperrange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1013_chen2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1013_chen2.png"
+  },
+  {
+    "id": "char_1014_nearl2",
+    "name": "Nearl the Radiant Knight",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fearless",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1014_nearl2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1014_nearl2.png"
+  },
+  {
+    "id": "char_1016_agoat2",
+    "name": "Eyjafjalla the Hvít Aska",
+    "rarity": 6,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "wandermedic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1016_agoat2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1016_agoat2.png"
+  },
+  {
+    "id": "char_1019_siege2",
+    "name": "Vina Victoria",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "artsfghter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1019_siege2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1019_siege2.png"
+  },
+  {
+    "id": "char_1020_reed2",
+    "name": "Reed the Flame Shadow",
+    "rarity": 6,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "incantationmedic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1020_reed2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1020_reed2.png"
+  },
+  {
+    "id": "char_1023_ghost2",
+    "name": "Specter the Unchained",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "dollkeeper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1023_ghost2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1023_ghost2.png"
+  },
+  {
+    "id": "char_1026_gvial2",
+    "name": "Gavial the Invincible",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "centurion",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1026_gvial2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1026_gvial2.png"
+  },
+  {
+    "id": "char_1028_texas2",
+    "name": "Texas the Omertosa",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "executor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1028_texas2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1028_texas2.png"
+  },
+  {
+    "id": "char_1029_yato2",
+    "name": "Kirin R Yato",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "executor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1029_yato2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1029_yato2.png"
+  },
+  {
+    "id": "char_103_angel",
+    "name": "Exusiai",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_103_angel_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_103_angel.png"
+  },
+  {
+    "id": "char_1031_slent2",
+    "name": "Silence the Paradigmatic",
+    "rarity": 6,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "blessing",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1031_slent2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1031_slent2.png"
+  },
+  {
+    "id": "char_1032_excu2",
+    "name": "Executor the Ex Foedere",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "reaper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1032_excu2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1032_excu2.png"
+  },
+  {
+    "id": "char_1033_swire2",
+    "name": "Swire the Elegant Wit",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "merchant",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1033_swire2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1033_swire2.png"
+  },
+  {
+    "id": "char_1034_jesca2",
+    "name": "Jessica the Liberated",
+    "rarity": 6,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "shotprotector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1034_jesca2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1034_jesca2.png"
+  },
+  {
+    "id": "char_1035_wisdel",
+    "name": "Wiš'adel",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "bombarder",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1035_wisdel_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1035_wisdel.png"
+  },
+  {
+    "id": "char_1038_whitw2",
+    "name": "Lappland the Decadenza",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "funnel",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1038_whitw2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1038_whitw2.png"
+  },
+  {
+    "id": "char_1039_thorn2",
+    "name": "Thorns the Lodestar",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "alchemist",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1039_thorn2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1039_thorn2.png"
+  },
+  {
+    "id": "char_1040_blaze2",
+    "name": "Blaze the Igniting Spark",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "primcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1040_blaze2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1040_blaze2.png"
+  },
+  {
+    "id": "char_1041_angel2",
+    "name": "Exusiai the New Covenant",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "geek",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1041_angel2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1041_angel2.png"
+  },
+  {
+    "id": "char_1042_phatm2",
+    "name": "Tragodia",
+    "rarity": 6,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "ritualist",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1042_phatm2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1042_phatm2.png"
+  },
+  {
+    "id": "char_112_siege",
+    "name": "Siege",
+    "rarity": 6,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_112_siege_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_112_siege.png"
+  },
+  {
+    "id": "char_113_cqbw",
+    "name": "W",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "aoesniper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_113_cqbw_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_113_cqbw.png"
+  },
+  {
+    "id": "char_134_ifrit",
+    "name": "Ifrit",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "blastcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_134_ifrit_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_134_ifrit.png"
+  },
+  {
+    "id": "char_136_hsguma",
+    "name": "Hoshiguma",
+    "rarity": 6,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "protector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_136_hsguma_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_136_hsguma.png"
+  },
+  {
+    "id": "char_147_shining",
+    "name": "Shining",
+    "rarity": 6,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "physician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_147_shining_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_147_shining.png"
+  },
+  {
+    "id": "char_1502_crosly",
+    "name": "Crownslayer",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "executor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1502_crosly_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1502_crosly.png"
+  },
+  {
+    "id": "char_172_svrash",
+    "name": "SilverAsh",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "lord",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_172_svrash_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_172_svrash.png"
+  },
+  {
+    "id": "char_179_cgbird",
+    "name": "Nightingale",
+    "rarity": 6,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "ringhealer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_179_cgbird_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_179_cgbird.png"
+  },
+  {
+    "id": "char_180_amgoat",
+    "name": "Eyjafjalla",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "corecaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_180_amgoat_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_180_amgoat.png"
+  },
+  {
+    "id": "char_188_helage",
+    "name": "Hellagur",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "musha",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_188_helage_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_188_helage.png"
+  },
+  {
+    "id": "char_197_poca",
+    "name": "Rosa",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "siegesniper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_197_poca_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_197_poca.png"
+  },
+  {
+    "id": "char_2012_typhon",
+    "name": "Typhon",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "siegesniper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_2012_typhon_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_2012_typhon.png"
+  },
+  {
+    "id": "char_2013_cerber",
+    "name": "Ceobe",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "corecaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_2013_cerber_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_2013_cerber.png"
+  },
+  {
+    "id": "char_2014_nian",
+    "name": "Nian",
+    "rarity": 6,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "protector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_2014_nian_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_2014_nian.png"
+  },
+  {
+    "id": "char_2015_dusk",
+    "name": "Dusk",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "splashcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_2015_dusk_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_2015_dusk.png"
+  },
+  {
+    "id": "char_202_demkni",
+    "name": "Saria",
+    "rarity": 6,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "guardian",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_202_demkni_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_202_demkni.png"
+  },
+  {
+    "id": "char_2023_ling",
+    "name": "Ling",
+    "rarity": 6,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "summoner",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_2023_ling_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_2023_ling.png"
+  },
+  {
+    "id": "char_2024_chyue",
+    "name": "Chongyue",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fighter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_2024_chyue_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_2024_chyue.png"
+  },
+  {
+    "id": "char_2025_shu",
+    "name": "Shu",
+    "rarity": 6,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "guardian",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_2025_shu_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_2025_shu.png"
+  },
+  {
+    "id": "char_2026_yu",
+    "name": "Yu",
+    "rarity": 6,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "primprotector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_2026_yu_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_2026_yu.png"
+  },
+  {
+    "id": "char_206_gnosis",
+    "name": "Gnosis",
+    "rarity": 6,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "underminer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_206_gnosis_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_206_gnosis.png"
+  },
+  {
+    "id": "char_213_mostma",
+    "name": "Mostima",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "splashcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_213_mostma_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_213_mostma.png"
+  },
+  {
+    "id": "char_222_bpipe",
+    "name": "Bagpipe",
+    "rarity": 6,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "charger",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_222_bpipe_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_222_bpipe.png"
+  },
+  {
+    "id": "char_225_haak",
+    "name": "Aak",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "geek",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_225_haak_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_225_haak.png"
+  },
+  {
+    "id": "char_245_cello",
+    "name": "Virtuosa",
+    "rarity": 6,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "ritualist",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_245_cello_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_245_cello.png"
+  },
+  {
+    "id": "char_248_mgllan",
+    "name": "Magallan",
+    "rarity": 6,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "summoner",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_248_mgllan_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_248_mgllan.png"
+  },
+  {
+    "id": "char_249_mlyss",
+    "name": "Muelsyse",
+    "rarity": 6,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "tactician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_249_mlyss_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_249_mlyss.png"
+  },
+  {
+    "id": "char_250_phatom",
+    "name": "Phantom",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "executor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_250_phatom_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_250_phatom.png"
+  },
+  {
+    "id": "char_263_skadi",
+    "name": "Skadi",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fearless",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_263_skadi_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_263_skadi.png"
+  },
+  {
+    "id": "char_264_f12yin",
+    "name": "Mountain",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fighter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_264_f12yin_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_264_f12yin.png"
+  },
+  {
+    "id": "char_291_aglina",
+    "name": "Angelina",
+    "rarity": 6,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "slower",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_291_aglina_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_291_aglina.png"
+  },
+  {
+    "id": "char_293_thorns",
+    "name": "Thorns",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "lord",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_293_thorns_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_293_thorns.png"
+  },
+  {
+    "id": "char_300_phenxi",
+    "name": "Fiammetta",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "aoesniper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_300_phenxi_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_300_phenxi.png"
+  },
+  {
+    "id": "char_311_mudrok",
+    "name": "Mudrock",
+    "rarity": 6,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "unyield",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_311_mudrok_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_311_mudrok.png"
+  },
+  {
+    "id": "char_322_lmlee",
+    "name": "Lee",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "merchant",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_322_lmlee_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_322_lmlee.png"
+  },
+  {
+    "id": "char_332_archet",
+    "name": "Archetto",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_332_archet_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_332_archet.png"
+  },
+  {
+    "id": "char_340_shwaz",
+    "name": "Schwarz",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "closerange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_340_shwaz_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_340_shwaz.png"
+  },
+  {
+    "id": "char_350_surtr",
+    "name": "Surtr",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "artsfghter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_350_surtr_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_350_surtr.png"
+  },
+  {
+    "id": "char_358_lisa",
+    "name": "Suzuran",
+    "rarity": 6,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "slower",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_358_lisa_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_358_lisa.png"
+  },
+  {
+    "id": "char_362_saga",
+    "name": "Saga",
+    "rarity": 6,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_362_saga_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_362_saga.png"
+  },
+  {
+    "id": "char_377_gdglow",
+    "name": "Goldenglow",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "funnel",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_377_gdglow_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_377_gdglow.png"
+  },
+  {
+    "id": "char_391_rosmon",
+    "name": "Rosmontis",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "bombarder",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_391_rosmon_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_391_rosmon.png"
+  },
+  {
+    "id": "char_400_weedy",
+    "name": "Weedy",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "pusher",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_400_weedy_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_400_weedy.png"
+  },
+  {
+    "id": "char_4009_irene",
+    "name": "Irene",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "sword",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4009_irene_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4009_irene.png"
+  },
+  {
+    "id": "char_4010_etlchi",
+    "name": "Entelechia",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "reaper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4010_etlchi_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4010_etlchi.png"
+  },
+  {
+    "id": "char_4011_lessng",
+    "name": "Lessing",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fearless",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4011_lessng_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4011_lessng.png"
+  },
+  {
+    "id": "char_4026_vulpis",
+    "name": "Vulpisfoglia",
+    "rarity": 6,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4026_vulpis_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4026_vulpis.png"
+  },
+  {
+    "id": "char_4027_heyak",
+    "name": "Ho'olheyak",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "corecaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4027_heyak_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4027_heyak.png"
+  },
+  {
+    "id": "char_4039_horn",
+    "name": "Horn",
+    "rarity": 6,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "fortress",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4039_horn_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4039_horn.png"
+  },
+  {
+    "id": "char_4042_lumen",
+    "name": "Lumen",
+    "rarity": 6,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "healer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4042_lumen_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4042_lumen.png"
+  },
+  {
+    "id": "char_4046_ebnhlz",
+    "name": "Ebenholz",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "mystic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4046_ebnhlz_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4046_ebnhlz.png"
+  },
+  {
+    "id": "char_4048_doroth",
+    "name": "Dorothy",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "traper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4048_doroth_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4048_doroth.png"
+  },
+  {
+    "id": "char_4055_bgsnow",
+    "name": "Pozëmka",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "closerange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4055_bgsnow_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4055_bgsnow.png"
+  },
+  {
+    "id": "char_4058_pepe",
+    "name": "Pepe",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "hammer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4058_pepe_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4058_pepe.png"
+  },
+  {
+    "id": "char_4064_mlynar",
+    "name": "Młynar",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "librator",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4064_mlynar_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4064_mlynar.png"
+  },
+  {
+    "id": "char_4065_judge",
+    "name": "Penance",
+    "rarity": 6,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "unyield",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4065_judge_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4065_judge.png"
+  },
+  {
+    "id": "char_4072_ironmn",
+    "name": "Stainless",
+    "rarity": 6,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "craftsman",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4072_ironmn_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4072_ironmn.png"
+  },
+  {
+    "id": "char_4080_lin",
+    "name": "Lin",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "phalanx",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4080_lin_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4080_lin.png"
+  },
+  {
+    "id": "char_4082_qiubai",
+    "name": "Qiubai",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "lord",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4082_qiubai_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4082_qiubai.png"
+  },
+  {
+    "id": "char_4087_ines",
+    "name": "Ines",
+    "rarity": 6,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "agent",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4087_ines_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4087_ines.png"
+  },
+  {
+    "id": "char_4088_hodrer",
+    "name": "Hoederer",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "crusher",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4088_hodrer_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4088_hodrer.png"
+  },
+  {
+    "id": "char_4098_vvana",
+    "name": "Viviana",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "artsfghter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4098_vvana_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4098_vvana.png"
+  },
+  {
+    "id": "char_4116_blkkgt",
+    "name": "Degenbrecher",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "sword",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4116_blkkgt_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4116_blkkgt.png"
+  },
+  {
+    "id": "char_4117_ray",
+    "name": "Ray",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "hunter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4117_ray_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4117_ray.png"
+  },
+  {
+    "id": "char_4121_zuole",
+    "name": "Zuo Le",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "musha",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4121_zuole_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4121_zuole.png"
+  },
+  {
+    "id": "char_4123_ela",
+    "name": "Ela",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "traper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4123_ela_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4123_ela.png"
+  },
+  {
+    "id": "char_4132_ascln",
+    "name": "Ascalon",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "stalker",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4132_ascln_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4132_ascln.png"
+  },
+  {
+    "id": "char_4133_logos",
+    "name": "Logos",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "corecaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4133_logos_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4133_logos.png"
+  },
+  {
+    "id": "char_4134_cetsyr",
+    "name": "Civilight Eterna",
+    "rarity": 6,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "bard",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4134_cetsyr_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4134_cetsyr.png"
+  },
+  {
+    "id": "char_4138_narant",
+    "name": "Narantuya",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "loopshooter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4138_narant_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4138_narant.png"
+  },
+  {
+    "id": "char_4141_marcil",
+    "name": "Marcille",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "splashcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4141_marcil_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4141_marcil.png"
+  },
+  {
+    "id": "char_4145_ulpia",
+    "name": "Ulpianus",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "crusher",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4145_ulpia_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4145_ulpia.png"
+  },
+  {
+    "id": "char_4146_nymph",
+    "name": "Nymph",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "primcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4146_nymph_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4146_nymph.png"
+  },
+  {
+    "id": "char_416_zumama",
+    "name": "Eunectes",
+    "rarity": 6,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "duelist",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_416_zumama_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_416_zumama.png"
+  },
+  {
+    "id": "char_4179_monstr",
+    "name": "Mon3tr",
+    "rarity": 6,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "chainhealer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4179_monstr_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4179_monstr.png"
+  },
+  {
+    "id": "char_4193_lemuen",
+    "name": "Lemuen",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "longrange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4193_lemuen_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4193_lemuen.png"
+  },
+  {
+    "id": "char_4194_rmixer",
+    "name": "Sankta Miksaparato",
+    "rarity": 6,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "shotprotector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4194_rmixer_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4194_rmixer.png"
+  },
+  {
+    "id": "char_420_flamtl",
+    "name": "Flametail",
+    "rarity": 6,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_420_flamtl_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_420_flamtl.png"
+  },
+  {
+    "id": "char_423_blemsh",
+    "name": "Blemishine",
+    "rarity": 6,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "guardian",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_423_blemsh_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_423_blemsh.png"
+  },
+  {
+    "id": "char_426_billro",
+    "name": "Carnelian",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "phalanx",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_426_billro_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_426_billro.png"
+  },
+  {
+    "id": "char_427_vigil",
+    "name": "Vigil",
+    "rarity": 6,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "tactician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_427_vigil_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_427_vigil.png"
+  },
+  {
+    "id": "char_430_fartth",
+    "name": "Fartooth",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "longrange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_430_fartth_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_430_fartth.png"
+  },
+  {
+    "id": "char_437_mizuki",
+    "name": "Mizuki",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "stalker",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_437_mizuki_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_437_mizuki.png"
+  },
+  {
+    "id": "char_450_necras",
+    "name": "Necrass",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "soulcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_450_necras_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_450_necras.png"
+  },
+  {
+    "id": "char_456_ash",
+    "name": "Ash",
+    "rarity": 6,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_456_ash_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_456_ash.png"
+  },
+  {
+    "id": "char_472_pasngr",
+    "name": "Passenger",
+    "rarity": 6,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "chain",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_472_pasngr_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_472_pasngr.png"
+  },
+  {
+    "id": "char_474_glady",
+    "name": "Gladiia",
+    "rarity": 6,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "hookmaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_474_glady_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_474_glady.png"
+  },
+  {
+    "id": "char_479_sleach",
+    "name": "Saileach",
+    "rarity": 6,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "bearer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_479_sleach_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_479_sleach.png"
+  },
+  {
+    "id": "char_485_pallas",
+    "name": "Pallas",
+    "rarity": 6,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "instructor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_485_pallas_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_485_pallas.png"
+  },
+  {
+    "id": "char_002_amiya",
+    "name": "Amiya",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "corecaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_002_amiya_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_002_amiya.png"
+  },
+  {
+    "id": "char_101_sora",
+    "name": "Sora",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "bard",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_101_sora_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_101_sora.png"
+  },
+  {
+    "id": "char_1011_lava2",
+    "name": "Lava the Purgatory",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "splashcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1011_lava2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1011_lava2.png"
+  },
+  {
+    "id": "char_102_texas",
+    "name": "Texas",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_102_texas_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_102_texas.png"
+  },
+  {
+    "id": "char_1021_kroos2",
+    "name": "Kroos the Keen Glint",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1021_kroos2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1021_kroos2.png"
+  },
+  {
+    "id": "char_1024_hbisc2",
+    "name": "Hibiscus the Purifier",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "incantationmedic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1024_hbisc2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1024_hbisc2.png"
+  },
+  {
+    "id": "char_1027_greyy2",
+    "name": "Greyy the Lightningbearer",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "bombarder",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1027_greyy2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1027_greyy2.png"
+  },
+  {
+    "id": "char_1030_noirc2",
+    "name": "Rathalos S Noir Corne",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "musha",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1030_noirc2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1030_noirc2.png"
+  },
+  {
+    "id": "char_1036_fang2",
+    "name": "Fang the Fire-Sharpened",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "charger",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_1036_fang2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_1036_fang2.png"
+  },
+  {
+    "id": "char_106_franka",
+    "name": "Franka",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fearless",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_106_franka_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_106_franka.png"
+  },
+  {
+    "id": "char_107_liskam",
+    "name": "Liskarm",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "shotprotector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_107_liskam_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_107_liskam.png"
+  },
+  {
+    "id": "char_108_silent",
+    "name": "Silence",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "physician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_108_silent_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_108_silent.png"
+  },
+  {
+    "id": "char_115_headbr",
+    "name": "Zima",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_115_headbr_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_115_headbr.png"
+  },
+  {
+    "id": "char_128_plosis",
+    "name": "Ptilopsis",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "ringhealer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_128_plosis_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_128_plosis.png"
+  },
+  {
+    "id": "char_129_bluep",
+    "name": "Blue Poison",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_129_bluep_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_129_bluep.png"
+  },
+  {
+    "id": "char_131_flameb",
+    "name": "Flamebringer",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fearless",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_131_flameb_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_131_flameb.png"
+  },
+  {
+    "id": "char_135_halo",
+    "name": "Astgenne",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "chain",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_135_halo_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_135_halo.png"
+  },
+  {
+    "id": "char_140_whitew",
+    "name": "Lappland",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "lord",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_140_whitew_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_140_whitew.png"
+  },
+  {
+    "id": "char_143_ghost",
+    "name": "Specter",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "centurion",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_143_ghost_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_143_ghost.png"
+  },
+  {
+    "id": "char_144_red",
+    "name": "Projekt Red",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "executor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_144_red_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_144_red.png"
+  },
+  {
+    "id": "char_145_prove",
+    "name": "Provence",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "closerange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_145_prove_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_145_prove.png"
+  },
+  {
+    "id": "char_148_nearl",
+    "name": "Nearl",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "guardian",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_148_nearl_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_148_nearl.png"
+  },
+  {
+    "id": "char_154_morgan",
+    "name": "Morgan",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fearless",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_154_morgan_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_154_morgan.png"
+  },
+  {
+    "id": "char_155_tiger",
+    "name": "Indra",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fighter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_155_tiger_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_155_tiger.png"
+  },
+  {
+    "id": "char_157_dagda",
+    "name": "Dagda",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fighter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_157_dagda_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_157_dagda.png"
+  },
+  {
+    "id": "char_158_milu",
+    "name": "Firewatch",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "longrange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_158_milu_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_158_milu.png"
+  },
+  {
+    "id": "char_163_hpsts",
+    "name": "Vulcan",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "unyield",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_163_hpsts_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_163_hpsts.png"
+  },
+  {
+    "id": "char_164_nightm",
+    "name": "Nightmare",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "corecaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_164_nightm_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_164_nightm.png"
+  },
+  {
+    "id": "char_166_skfire",
+    "name": "Skyfire",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "splashcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_166_skfire_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_166_skfire.png"
+  },
+  {
+    "id": "char_171_bldsk",
+    "name": "Warfarin",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "physician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_171_bldsk_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_171_bldsk.png"
+  },
+  {
+    "id": "char_173_slchan",
+    "name": "Cliffheart",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "hookmaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_173_slchan_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_173_slchan.png"
+  },
+  {
+    "id": "char_174_slbell",
+    "name": "Pramanix",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "underminer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_174_slbell_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_174_slbell.png"
+  },
+  {
+    "id": "char_194_leto",
+    "name": "Leto",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "lord",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_194_leto_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_194_leto.png"
+  },
+  {
+    "id": "char_195_glassb",
+    "name": "Istina",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "slower",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_195_glassb_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_195_glassb.png"
+  },
+  {
+    "id": "char_201_moeshd",
+    "name": "Croissant",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "protector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_201_moeshd_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_201_moeshd.png"
+  },
+  {
+    "id": "char_204_platnm",
+    "name": "Platinum",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_204_platnm_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_204_platnm.png"
+  },
+  {
+    "id": "char_214_kafka",
+    "name": "Kafka",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "executor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_214_kafka_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_214_kafka.png"
+  },
+  {
+    "id": "char_215_mantic",
+    "name": "Manticore",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "stalker",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_215_mantic_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_215_mantic.png"
+  },
+  {
+    "id": "char_218_cuttle",
+    "name": "Andreana",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "longrange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_218_cuttle_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_218_cuttle.png"
+  },
+  {
+    "id": "char_219_meteo",
+    "name": "Meteorite",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "aoesniper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_219_meteo_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_219_meteo.png"
+  },
+  {
+    "id": "char_220_grani",
+    "name": "Grani",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "charger",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_220_grani_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_220_grani.png"
+  },
+  {
+    "id": "char_226_hmau",
+    "name": "Hung",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "guardian",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_226_hmau_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_226_hmau.png"
+  },
+  {
+    "id": "char_230_savage",
+    "name": "Savage",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "centurion",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_230_savage_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_230_savage.png"
+  },
+  {
+    "id": "char_241_panda",
+    "name": "FEater",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "pusher",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_241_panda_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_241_panda.png"
+  },
+  {
+    "id": "char_242_otter",
+    "name": "Mayer",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "summoner",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_242_otter_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_242_otter.png"
+  },
+  {
+    "id": "char_243_waaifu",
+    "name": "Waai Fu",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "executor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_243_waaifu_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_243_waaifu.png"
+  },
+  {
+    "id": "char_252_bibeak",
+    "name": "Bibeak",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "sword",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_252_bibeak_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_252_bibeak.png"
+  },
+  {
+    "id": "char_254_vodfox",
+    "name": "Shamare",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "underminer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_254_vodfox_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_254_vodfox.png"
+  },
+  {
+    "id": "char_261_sddrag",
+    "name": "Reed",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "charger",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_261_sddrag_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_261_sddrag.png"
+  },
+  {
+    "id": "char_265_sophia",
+    "name": "Whislash",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "instructor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_265_sophia_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_265_sophia.png"
+  },
+  {
+    "id": "char_274_astesi",
+    "name": "Astesia",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "artsfghter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_274_astesi_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_274_astesi.png"
+  },
+  {
+    "id": "char_275_breeze",
+    "name": "Breeze",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "ringhealer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_275_breeze_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_275_breeze.png"
+  },
+  {
+    "id": "char_279_excu",
+    "name": "Executor",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "reaperrange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_279_excu_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_279_excu.png"
+  },
+  {
+    "id": "char_294_ayer",
+    "name": "Ayerscarpe",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "lord",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_294_ayer_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_294_ayer.png"
+  },
+  {
+    "id": "char_297_hamoni",
+    "name": "Harmonie",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "mystic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_297_hamoni_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_297_hamoni.png"
+  },
+  {
+    "id": "char_304_zebra",
+    "name": "Heavyrain",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "protector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_304_zebra_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_304_zebra.png"
+  },
+  {
+    "id": "char_306_leizi",
+    "name": "Leizi",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "chain",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_306_leizi_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_306_leizi.png"
+  },
+  {
+    "id": "char_308_swire",
+    "name": "Swire",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "instructor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_308_swire_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_308_swire.png"
+  },
+  {
+    "id": "char_325_bison",
+    "name": "Bison",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "protector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_325_bison_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_325_bison.png"
+  },
+  {
+    "id": "char_326_glacus",
+    "name": "Glaucus",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "slower",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_326_glacus_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_326_glacus.png"
+  },
+  {
+    "id": "char_333_sidero",
+    "name": "Sideroca",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "artsfghter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_333_sidero_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_333_sidero.png"
+  },
+  {
+    "id": "char_336_folivo",
+    "name": "Scene",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "summoner",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_336_folivo_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_336_folivo.png"
+  },
+  {
+    "id": "char_338_iris",
+    "name": "Iris",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "mystic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_338_iris_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_338_iris.png"
+  },
+  {
+    "id": "char_341_sntlla",
+    "name": "Santalla",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "splashcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_341_sntlla_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_341_sntlla.png"
+  },
+  {
+    "id": "char_343_tknogi",
+    "name": "Tsukinogi",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "blessing",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_343_tknogi_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_343_tknogi.png"
+  },
+  {
+    "id": "char_344_beewax",
+    "name": "Beeswax",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "phalanx",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_344_beewax_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_344_beewax.png"
+  },
+  {
+    "id": "char_345_folnic",
+    "name": "Folinic",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "physician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_345_folnic_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_345_folnic.png"
+  },
+  {
+    "id": "char_346_aosta",
+    "name": "Aosta",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "reaperrange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_346_aosta_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_346_aosta.png"
+  },
+  {
+    "id": "char_348_ceylon",
+    "name": "Ceylon",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "healer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_348_ceylon_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_348_ceylon.png"
+  },
+  {
+    "id": "char_349_chiave",
+    "name": "Chiave",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_349_chiave_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_349_chiave.png"
+  },
+  {
+    "id": "char_356_broca",
+    "name": "Broca",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "centurion",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_356_broca_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_356_broca.png"
+  },
+  {
+    "id": "char_363_toddi",
+    "name": "Toddifons",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "siegesniper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_363_toddi_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_363_toddi.png"
+  },
+  {
+    "id": "char_365_aprl",
+    "name": "April",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_365_aprl_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_365_aprl.png"
+  },
+  {
+    "id": "char_367_swllow",
+    "name": "GreyThroat",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_367_swllow_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_367_swllow.png"
+  },
+  {
+    "id": "char_369_bena",
+    "name": "Bena",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "dollkeeper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_369_bena_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_369_bena.png"
+  },
+  {
+    "id": "char_373_lionhd",
+    "name": "Leonhardt",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "splashcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_373_lionhd_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_373_lionhd.png"
+  },
+  {
+    "id": "char_378_asbest",
+    "name": "Asbestos",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "artsprotector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_378_asbest_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_378_asbest.png"
+  },
+  {
+    "id": "char_379_sesa",
+    "name": "Sesa",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "aoesniper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_379_sesa_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_379_sesa.png"
+  },
+  {
+    "id": "char_383_snsant",
+    "name": "Snowsant",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "hookmaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_383_snsant_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_383_snsant.png"
+  },
+  {
+    "id": "char_388_mint",
+    "name": "Mint",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "phalanx",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_388_mint_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_388_mint.png"
+  },
+  {
+    "id": "char_4006_melnte",
+    "name": "Melanite",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "closerange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4006_melnte_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4006_melnte.png"
+  },
+  {
+    "id": "char_401_elysm",
+    "name": "Elysium",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "bearer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_401_elysm_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_401_elysm.png"
+  },
+  {
+    "id": "char_4013_kjera",
+    "name": "Kjera",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "funnel",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4013_kjera_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4013_kjera.png"
+  },
+  {
+    "id": "char_4014_lunacu",
+    "name": "Lunacub",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "longrange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4014_lunacu_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4014_lunacu.png"
+  },
+  {
+    "id": "char_4015_spuria",
+    "name": "Spuria",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "geek",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4015_spuria_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4015_spuria.png"
+  },
+  {
+    "id": "char_4016_kazema",
+    "name": "Kazemaru",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "dollkeeper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4016_kazema_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4016_kazema.png"
+  },
+  {
+    "id": "char_4017_puzzle",
+    "name": "Puzzle",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "agent",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4017_puzzle_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4017_puzzle.png"
+  },
+  {
+    "id": "char_4019_ncdeer",
+    "name": "Nine-Colored Deer",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "blessing",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4019_ncdeer_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4019_ncdeer.png"
+  },
+  {
+    "id": "char_402_tuye",
+    "name": "Tuye",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "physician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_402_tuye_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_402_tuye.png"
+  },
+  {
+    "id": "char_4023_rfalcn",
+    "name": "Kestrel",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4023_rfalcn_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4023_rfalcn.png"
+  },
+  {
+    "id": "char_4025_aprot2",
+    "name": "Shalem",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "artsprotector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4025_aprot2_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4025_aprot2.png"
+  },
+  {
+    "id": "char_4032_provs",
+    "name": "Proviso",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "slower",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4032_provs_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4032_provs.png"
+  },
+  {
+    "id": "char_4036_forcer",
+    "name": "Enforcer",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "pusher",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4036_forcer_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4036_forcer.png"
+  },
+  {
+    "id": "char_4040_rockr",
+    "name": "Rockrock",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "funnel",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4040_rockr_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4040_rockr.png"
+  },
+  {
+    "id": "char_4043_erato",
+    "name": "Erato",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "siegesniper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4043_erato_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4043_erato.png"
+  },
+  {
+    "id": "char_4045_heidi",
+    "name": "Heidi",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "bard",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4045_heidi_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4045_heidi.png"
+  },
+  {
+    "id": "char_4047_pianst",
+    "name": "Czerny",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "artsprotector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4047_pianst_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4047_pianst.png"
+  },
+  {
+    "id": "char_405_absin",
+    "name": "Absinthe",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "corecaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_405_absin_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_405_absin.png"
+  },
+  {
+    "id": "char_4052_surfer",
+    "name": "Surfer",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "agent",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4052_surfer_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4052_surfer.png"
+  },
+  {
+    "id": "char_4054_malist",
+    "name": "Minimalist",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "funnel",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4054_malist_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4054_malist.png"
+  },
+  {
+    "id": "char_4066_highmo",
+    "name": "Highmore",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "reaper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4066_highmo_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4066_highmo.png"
+  },
+  {
+    "id": "char_4071_peper",
+    "name": "Paprika",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "chainhealer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4071_peper_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4071_peper.png"
+  },
+  {
+    "id": "char_4078_bdhkgt",
+    "name": "Jieyun",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "aoesniper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4078_bdhkgt_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4078_bdhkgt.png"
+  },
+  {
+    "id": "char_4079_haini",
+    "name": "Lucilla",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "underminer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4079_haini_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4079_haini.png"
+  },
+  {
+    "id": "char_4081_warmy",
+    "name": "Warmy",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "primcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4081_warmy_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4081_warmy.png"
+  },
+  {
+    "id": "char_4083_chimes",
+    "name": "Wind Chimes",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "crusher",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4083_chimes_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4083_chimes.png"
+  },
+  {
+    "id": "char_4102_threye",
+    "name": "Valarqvin",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "ritualist",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4102_threye_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4102_threye.png"
+  },
+  {
+    "id": "char_4104_coldst",
+    "name": "Coldshot",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "hunter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4104_coldst_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4104_coldst.png"
+  },
+  {
+    "id": "char_4105_almond",
+    "name": "Almond",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "hookmaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4105_almond_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4105_almond.png"
+  },
+  {
+    "id": "char_4106_bryota",
+    "name": "Bryophyta",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "instructor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4106_bryota_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4106_bryota.png"
+  },
+  {
+    "id": "char_4109_baslin",
+    "name": "Bassline",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "guardian",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4109_baslin_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4109_baslin.png"
+  },
+  {
+    "id": "char_411_tomimi",
+    "name": "Tomimi",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "corecaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_411_tomimi_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_411_tomimi.png"
+  },
+  {
+    "id": "char_4110_delphn",
+    "name": "Delphine",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "mystic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4110_delphn_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4110_delphn.png"
+  },
+  {
+    "id": "char_4114_harold",
+    "name": "Harold",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "wandermedic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4114_harold_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4114_harold.png"
+  },
+  {
+    "id": "char_4119_wanqin",
+    "name": "Wanqing",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "bearer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4119_wanqin_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4119_wanqin.png"
+  },
+  {
+    "id": "char_4122_grabds",
+    "name": "Grain Buds",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "slower",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4122_grabds_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4122_grabds.png"
+  },
+  {
+    "id": "char_4124_iana",
+    "name": "Iana",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "dollkeeper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4124_iana_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4124_iana.png"
+  },
+  {
+    "id": "char_4125_rdoc",
+    "name": "Doc",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "instructor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4125_rdoc_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4125_rdoc.png"
+  },
+  {
+    "id": "char_4126_fuze",
+    "name": "Fuze",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "centurion",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4126_fuze_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4126_fuze.png"
+  },
+  {
+    "id": "char_4131_odda",
+    "name": "Odda",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "hammer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4131_odda_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4131_odda.png"
+  },
+  {
+    "id": "char_4137_udflow",
+    "name": "Underflow",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "shotprotector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4137_udflow_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4137_udflow.png"
+  },
+  {
+    "id": "char_4139_papyrs",
+    "name": "Papyrus",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "chainhealer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4139_papyrs_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4139_papyrs.png"
+  },
+  {
+    "id": "char_4140_lasher",
+    "name": "Sand Reckoner",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "summoner",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4140_lasher_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4140_lasher.png"
+  },
+  {
+    "id": "char_4142_laios",
+    "name": "Laios",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fearless",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4142_laios_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4142_laios.png"
+  },
+  {
+    "id": "char_4143_sensi",
+    "name": "Senshi",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "guardian",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4143_sensi_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4143_sensi.png"
+  },
+  {
+    "id": "char_4144_chilc",
+    "name": "Chilchuck",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "agent",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4144_chilc_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4144_chilc.png"
+  },
+  {
+    "id": "char_4147_mitm",
+    "name": "Mitm",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "tactician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4147_mitm_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4147_mitm.png"
+  },
+  {
+    "id": "char_4148_philae",
+    "name": "Philae",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "primprotector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4148_philae_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4148_philae.png"
+  },
+  {
+    "id": "char_415_flint",
+    "name": "Flint",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fighter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_415_flint_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_415_flint.png"
+  },
+  {
+    "id": "char_4151_tinman",
+    "name": "Tin Man",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "alchemist",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4151_tinman_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4151_tinman.png"
+  },
+  {
+    "id": "char_4155_talr",
+    "name": "Figurino",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "merchant",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4155_talr_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4155_talr.png"
+  },
+  {
+    "id": "char_4162_cathy",
+    "name": "Catherine",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "craftsman",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4162_cathy_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4162_cathy.png"
+  },
+  {
+    "id": "char_4163_rosesa",
+    "name": "Rose Salt",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "ringhealer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4163_rosesa_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4163_rosesa.png"
+  },
+  {
+    "id": "char_4164_tecno",
+    "name": "Tecno",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "soulcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4164_tecno_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4164_tecno.png"
+  },
+  {
+    "id": "char_4171_wulfen",
+    "name": "Wulfenite",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "traper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4171_wulfen_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4171_wulfen.png"
+  },
+  {
+    "id": "char_4172_xingzh",
+    "name": "Xingzhu",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "blessing",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4172_xingzh_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4172_xingzh.png"
+  },
+  {
+    "id": "char_4173_nowell",
+    "name": "Nowell",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "healer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4173_nowell_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4173_nowell.png"
+  },
+  {
+    "id": "char_4177_brigid",
+    "name": "Brigid",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "loopshooter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4177_brigid_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4177_brigid.png"
+  },
+  {
+    "id": "char_4178_alanna",
+    "name": "Alanna",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "craftsman",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4178_alanna_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4178_alanna.png"
+  },
+  {
+    "id": "char_4187_graceb",
+    "name": "Gracebearer",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "primguard",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4187_graceb_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4187_graceb.png"
+  },
+  {
+    "id": "char_4191_tippi",
+    "name": "Tippi",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "skywalker",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4191_tippi_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4191_tippi.png"
+  },
+  {
+    "id": "char_4198_christ",
+    "name": "Miss.Christine",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "primcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4198_christ_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4198_christ.png"
+  },
+  {
+    "id": "char_421_crow",
+    "name": "La Pluma",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "reaper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_421_crow_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_421_crow.png"
+  },
+  {
+    "id": "char_422_aurora",
+    "name": "Aurora",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "duelist",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_422_aurora_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_422_aurora.png"
+  },
+  {
+    "id": "char_431_ashlok",
+    "name": "Ashlock",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "fortress",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_431_ashlok_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_431_ashlok.png"
+  },
+  {
+    "id": "char_433_windft",
+    "name": "Windflit",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "craftsman",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_433_windft_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_433_windft.png"
+  },
+  {
+    "id": "char_436_whispr",
+    "name": "Whisperain",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "healer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_436_whispr_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_436_whispr.png"
+  },
+  {
+    "id": "char_446_aroma",
+    "name": "Aroma",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "blastcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_446_aroma_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_446_aroma.png"
+  },
+  {
+    "id": "char_449_glider",
+    "name": "Honeyberry",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "wandermedic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_449_glider_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_449_glider.png"
+  },
+  {
+    "id": "char_451_robin",
+    "name": "Robin",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "traper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_451_robin_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_451_robin.png"
+  },
+  {
+    "id": "char_455_nothin",
+    "name": "Mr. Nothing",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "merchant",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_455_nothin_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_455_nothin.png"
+  },
+  {
+    "id": "char_457_blitz",
+    "name": "Blitz",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "shotprotector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_457_blitz_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_457_blitz.png"
+  },
+  {
+    "id": "char_458_rfrost",
+    "name": "Frost",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "traper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_458_rfrost_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_458_rfrost.png"
+  },
+  {
+    "id": "char_459_tachak",
+    "name": "Tachanka",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "sword",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_459_tachak_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_459_tachak.png"
+  },
+  {
+    "id": "char_464_cement",
+    "name": "Cement",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "duelist",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_464_cement_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_464_cement.png"
+  },
+  {
+    "id": "char_466_qanik",
+    "name": "Qanipalaat",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "corecaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_466_qanik_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_466_qanik.png"
+  },
+  {
+    "id": "char_473_mberry",
+    "name": "Mulberry",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "wandermedic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_473_mberry_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_473_mberry.png"
+  },
+  {
+    "id": "char_475_akafyu",
+    "name": "Akafuyu",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "musha",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_475_akafyu_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_475_akafyu.png"
+  },
+  {
+    "id": "char_476_blkngt",
+    "name": "Blacknight",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "tactician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_476_blkngt_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_476_blkngt.png"
+  },
+  {
+    "id": "char_478_kirara",
+    "name": "Kirara",
+    "rarity": 5,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "stalker",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_478_kirara_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_478_kirara.png"
+  },
+  {
+    "id": "char_486_takila",
+    "name": "Tequila",
+    "rarity": 5,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "librator",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_486_takila_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_486_takila.png"
+  },
+  {
+    "id": "char_487_bobb",
+    "name": "Bobbing",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "ritualist",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_487_bobb_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_487_bobb.png"
+  },
+  {
+    "id": "char_488_buildr",
+    "name": "Poncirus",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_488_buildr_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_488_buildr.png"
+  },
+  {
+    "id": "char_489_serum",
+    "name": "Corroserum",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "blastcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_489_serum_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_489_serum.png"
+  },
+  {
+    "id": "char_492_quercu",
+    "name": "Quercus",
+    "rarity": 5,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "blessing",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_492_quercu_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_492_quercu.png"
+  },
+  {
+    "id": "char_493_firwhl",
+    "name": "Firewhistle",
+    "rarity": 5,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "fortress",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_493_firwhl_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_493_firwhl.png"
+  },
+  {
+    "id": "char_494_vendla",
+    "name": "Vendela",
+    "rarity": 5,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "incantationmedic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_494_vendla_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_494_vendla.png"
+  },
+  {
+    "id": "char_496_wildmn",
+    "name": "Wild Mane",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "charger",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_496_wildmn_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_496_wildmn.png"
+  },
+  {
+    "id": "char_497_ctable",
+    "name": "Cantabile",
+    "rarity": 5,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "agent",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_497_ctable_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_497_ctable.png"
+  },
+  {
+    "id": "char_498_inside",
+    "name": "Insider",
+    "rarity": 5,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_498_inside_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_498_inside.png"
+  },
+  {
+    "id": "char_499_kaitou",
+    "name": "Diamante",
+    "rarity": 5,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "primcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_499_kaitou_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_499_kaitou.png"
+  },
+  {
+    "id": "char_109_fmout",
+    "name": "Gitano",
+    "rarity": 4,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "splashcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_109_fmout_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_109_fmout.png"
+  },
+  {
+    "id": "char_110_deepcl",
+    "name": "Deepcolor",
+    "rarity": 4,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "summoner",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_110_deepcl_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_110_deepcl.png"
+  },
+  {
+    "id": "char_117_myrrh",
+    "name": "Myrrh",
+    "rarity": 4,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "physician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_117_myrrh_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_117_myrrh.png"
+  },
+  {
+    "id": "char_118_yuki",
+    "name": "Shirayuki",
+    "rarity": 4,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "aoesniper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_118_yuki_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_118_yuki.png"
+  },
+  {
+    "id": "char_126_shotst",
+    "name": "Meteor",
+    "rarity": 4,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_126_shotst_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_126_shotst.png"
+  },
+  {
+    "id": "char_127_estell",
+    "name": "Estelle",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "centurion",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_127_estell_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_127_estell.png"
+  },
+  {
+    "id": "char_130_doberm",
+    "name": "Dobermann",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "instructor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_130_doberm_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_130_doberm.png"
+  },
+  {
+    "id": "char_133_mm",
+    "name": "May",
+    "rarity": 4,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_133_mm_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_133_mm.png"
+  },
+  {
+    "id": "char_137_brownb",
+    "name": "Beehunter",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fighter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_137_brownb_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_137_brownb.png"
+  },
+  {
+    "id": "char_141_nights",
+    "name": "Haze",
+    "rarity": 4,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "corecaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_141_nights_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_141_nights.png"
+  },
+  {
+    "id": "char_149_scave",
+    "name": "Scavenger",
+    "rarity": 4,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_149_scave_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_149_scave.png"
+  },
+  {
+    "id": "char_150_snakek",
+    "name": "Cuora",
+    "rarity": 4,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "protector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_150_snakek_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_150_snakek.png"
+  },
+  {
+    "id": "char_151_myrtle",
+    "name": "Myrtle",
+    "rarity": 4,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "bearer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_151_myrtle_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_151_myrtle.png"
+  },
+  {
+    "id": "char_159_peacok",
+    "name": "Conviction",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fearless",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_159_peacok_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_159_peacok.png"
+  },
+  {
+    "id": "char_181_flower",
+    "name": "Perfumer",
+    "rarity": 4,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "ringhealer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_181_flower_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_181_flower.png"
+  },
+  {
+    "id": "char_183_skgoat",
+    "name": "Earthspirit",
+    "rarity": 4,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "slower",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_183_skgoat_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_183_skgoat.png"
+  },
+  {
+    "id": "char_185_frncat",
+    "name": "Mousse",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "artsfghter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_185_frncat_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_185_frncat.png"
+  },
+  {
+    "id": "char_187_ccheal",
+    "name": "Gavial",
+    "rarity": 4,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "physician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_187_ccheal_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_187_ccheal.png"
+  },
+  {
+    "id": "char_190_clour",
+    "name": "Vermeil",
+    "rarity": 4,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_190_clour_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_190_clour.png"
+  },
+  {
+    "id": "char_193_frostl",
+    "name": "Frostleaf",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "lord",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_193_frostl_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_193_frostl.png"
+  },
+  {
+    "id": "char_196_sunbr",
+    "name": "Gummy",
+    "rarity": 4,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "guardian",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_196_sunbr_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_196_sunbr.png"
+  },
+  {
+    "id": "char_198_blackd",
+    "name": "Courier",
+    "rarity": 4,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_198_blackd_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_198_blackd.png"
+  },
+  {
+    "id": "char_199_yak",
+    "name": "Matterhorn",
+    "rarity": 4,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "protector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_199_yak_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_199_yak.png"
+  },
+  {
+    "id": "char_235_jesica",
+    "name": "Jessica",
+    "rarity": 4,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_235_jesica_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_235_jesica.png"
+  },
+  {
+    "id": "char_236_rope",
+    "name": "Rope",
+    "rarity": 4,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "hookmaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_236_rope_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_236_rope.png"
+  },
+  {
+    "id": "char_237_gravel",
+    "name": "Gravel",
+    "rarity": 4,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "executor",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_237_gravel_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_237_gravel.png"
+  },
+  {
+    "id": "char_253_greyy",
+    "name": "Greyy",
+    "rarity": 4,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "splashcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_253_greyy_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_253_greyy.png"
+  },
+  {
+    "id": "char_258_podego",
+    "name": "Podenco",
+    "rarity": 4,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "slower",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_258_podego_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_258_podego.png"
+  },
+  {
+    "id": "char_260_durnar",
+    "name": "Dur-nar",
+    "rarity": 4,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "artsprotector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_260_durnar_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_260_durnar.png"
+  },
+  {
+    "id": "char_271_spikes",
+    "name": "Arene",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "lord",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_271_spikes_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_271_spikes.png"
+  },
+  {
+    "id": "char_272_strong",
+    "name": "Jaye",
+    "rarity": 4,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "merchant",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_272_strong_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_272_strong.png"
+  },
+  {
+    "id": "char_277_sqrrel",
+    "name": "Shaw",
+    "rarity": 4,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "pusher",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_277_sqrrel_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_277_sqrrel.png"
+  },
+  {
+    "id": "char_289_gyuki",
+    "name": "Matoimaru",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fearless",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_289_gyuki_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_289_gyuki.png"
+  },
+  {
+    "id": "char_290_vigna",
+    "name": "Vigna",
+    "rarity": 4,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "charger",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_290_vigna_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_290_vigna.png"
+  },
+  {
+    "id": "char_298_susuro",
+    "name": "Sussurro",
+    "rarity": 4,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "physician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_298_susuro_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_298_susuro.png"
+  },
+  {
+    "id": "char_301_cutter",
+    "name": "Cutter",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "sword",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_301_cutter_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_301_cutter.png"
+  },
+  {
+    "id": "char_302_glaze",
+    "name": "Ambriel",
+    "rarity": 4,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "longrange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_302_glaze_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_302_glaze.png"
+  },
+  {
+    "id": "char_328_cammou",
+    "name": "Click",
+    "rarity": 4,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "funnel",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_328_cammou_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_328_cammou.png"
+  },
+  {
+    "id": "char_337_utage",
+    "name": "Utage",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "musha",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_337_utage_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_337_utage.png"
+  },
+  {
+    "id": "char_347_jaksel",
+    "name": "Jackie",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fighter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_347_jaksel_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_347_jaksel.png"
+  },
+  {
+    "id": "char_355_ethan",
+    "name": "Ethan",
+    "rarity": 4,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "stalker",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_355_ethan_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_355_ethan.png"
+  },
+  {
+    "id": "char_366_acdrop",
+    "name": "Aciddrop",
+    "rarity": 4,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "closerange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_366_acdrop_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_366_acdrop.png"
+  },
+  {
+    "id": "char_381_bubble",
+    "name": "Bubble",
+    "rarity": 4,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "protector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_381_bubble_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_381_bubble.png"
+  },
+  {
+    "id": "char_385_finlpp",
+    "name": "Purestream",
+    "rarity": 4,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "healer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_385_finlpp_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_385_finlpp.png"
+  },
+  {
+    "id": "char_4004_pudd",
+    "name": "Pudding",
+    "rarity": 4,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "chain",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4004_pudd_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4004_pudd.png"
+  },
+  {
+    "id": "char_4041_chnut",
+    "name": "Chestnut",
+    "rarity": 4,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "wandermedic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4041_chnut_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4041_chnut.png"
+  },
+  {
+    "id": "char_4062_totter",
+    "name": "Totter",
+    "rarity": 4,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "siegesniper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4062_totter_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4062_totter.png"
+  },
+  {
+    "id": "char_4063_quartz",
+    "name": "Quartz",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "crusher",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4063_quartz_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4063_quartz.png"
+  },
+  {
+    "id": "char_4067_lolxh",
+    "name": "Luo Xiaohei",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "lord",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4067_lolxh_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4067_lolxh.png"
+  },
+  {
+    "id": "char_4100_caper",
+    "name": "Caper",
+    "rarity": 4,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "loopshooter",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4100_caper_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4100_caper.png"
+  },
+  {
+    "id": "char_4107_vrdant",
+    "name": "Verdant",
+    "rarity": 4,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "dollkeeper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4107_vrdant_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4107_vrdant.png"
+  },
+  {
+    "id": "char_4130_luton",
+    "name": "Lutonada",
+    "rarity": 4,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "unyield",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4130_luton_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4130_luton.png"
+  },
+  {
+    "id": "char_4165_ctrail",
+    "name": "Contrail",
+    "rarity": 4,
+    "role": "Specialist",
+    "roleId": "SPECIAL",
+    "subRoleId": "skywalker",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_4165_ctrail_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_4165_ctrail.png"
+  },
+  {
+    "id": "char_440_pinecn",
+    "name": "Pinecone",
+    "rarity": 4,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "reaperrange",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_440_pinecn_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_440_pinecn.png"
+  },
+  {
+    "id": "char_445_wscoot",
+    "name": "Windscoot",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "librator",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_445_wscoot_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_445_wscoot.png"
+  },
+  {
+    "id": "char_452_bstalk",
+    "name": "Beanstalk",
+    "rarity": 4,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "tactician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_452_bstalk_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_452_bstalk.png"
+  },
+  {
+    "id": "char_469_indigo",
+    "name": "Indigo",
+    "rarity": 4,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "mystic",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_469_indigo_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_469_indigo.png"
+  },
+  {
+    "id": "char_484_robrta",
+    "name": "Roberta",
+    "rarity": 4,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "craftsman",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_484_robrta_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_484_robrta.png"
+  },
+  {
+    "id": "char_491_humus",
+    "name": "Humus",
+    "rarity": 4,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "reaper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_491_humus_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_491_humus.png"
+  },
+  {
+    "id": "char_120_hibisc",
+    "name": "Hibiscus",
+    "rarity": 3,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "physician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_120_hibisc_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_120_hibisc.png"
+  },
+  {
+    "id": "char_121_lava",
+    "name": "Lava",
+    "rarity": 3,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "splashcaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_121_lava_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_121_lava.png"
+  },
+  {
+    "id": "char_122_beagle",
+    "name": "Beagle",
+    "rarity": 3,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "protector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_122_beagle_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_122_beagle.png"
+  },
+  {
+    "id": "char_123_fang",
+    "name": "Fang",
+    "rarity": 3,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_123_fang_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_123_fang.png"
+  },
+  {
+    "id": "char_124_kroos",
+    "name": "Kroos",
+    "rarity": 3,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_124_kroos_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_124_kroos.png"
+  },
+  {
+    "id": "char_192_falco",
+    "name": "Plume",
+    "rarity": 3,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "charger",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_192_falco_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_192_falco.png"
+  },
+  {
+    "id": "char_208_melan",
+    "name": "Melantha",
+    "rarity": 3,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "fearless",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_208_melan_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_208_melan.png"
+  },
+  {
+    "id": "char_209_ardign",
+    "name": "Cardigan",
+    "rarity": 3,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "protector",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_209_ardign_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_209_ardign.png"
+  },
+  {
+    "id": "char_210_stward",
+    "name": "Steward",
+    "rarity": 3,
+    "role": "Caster",
+    "roleId": "CASTER",
+    "subRoleId": "corecaster",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_210_stward_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_210_stward.png"
+  },
+  {
+    "id": "char_211_adnach",
+    "name": "Adnachiel",
+    "rarity": 3,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "fastshot",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_211_adnach_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_211_adnach.png"
+  },
+  {
+    "id": "char_212_ansel",
+    "name": "Ansel",
+    "rarity": 3,
+    "role": "Medic",
+    "roleId": "MEDIC",
+    "subRoleId": "physician",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_212_ansel_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_212_ansel.png"
+  },
+  {
+    "id": "char_240_wyvern",
+    "name": "Vanilla",
+    "rarity": 3,
+    "role": "Vanguard",
+    "roleId": "PIONEER",
+    "subRoleId": "pioneer",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_240_wyvern_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_240_wyvern.png"
+  },
+  {
+    "id": "char_278_orchid",
+    "name": "Orchid",
+    "rarity": 3,
+    "role": "Supporter",
+    "roleId": "SUPPORT",
+    "subRoleId": "slower",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_278_orchid_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_278_orchid.png"
+  },
+  {
+    "id": "char_281_popka",
+    "name": "Popukar",
+    "rarity": 3,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "centurion",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_281_popka_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_281_popka.png"
+  },
+  {
+    "id": "char_282_catap",
+    "name": "Catapult",
+    "rarity": 3,
+    "role": "Sniper",
+    "roleId": "SNIPER",
+    "subRoleId": "aoesniper",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_282_catap_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_282_catap.png"
+  },
+  {
+    "id": "char_283_midn",
+    "name": "Midnight",
+    "rarity": 3,
+    "role": "Guard",
+    "roleId": "WARRIOR",
+    "subRoleId": "lord",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_283_midn_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_283_midn.png"
+  },
+  {
+    "id": "char_284_spot",
+    "name": "Spot",
+    "rarity": 3,
+    "role": "Defender",
+    "roleId": "TANK",
+    "subRoleId": "guardian",
+    "artUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/characters/char_284_spot_1.png",
+    "avatarUrl": "https://cdn.jsdelivr.net/gh/Aceship/Arknight-Images@master/avatars/char_284_spot.png"
+  }
+]
