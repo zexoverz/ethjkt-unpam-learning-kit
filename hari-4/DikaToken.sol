@@ -2,11 +2,11 @@
 pragma solidity ^0.8.20;
 
 // ============================================================
-// TOKEN-KU - ERC20 PERTAMA KAMU (Hari 3)  ->  ini "koin" milikmu
+// DIKA TOKEN - ERC20 PERTAMA KAMU (Hari 3)  ->  ini "koin" milikmu
 //
 // Ini "duit" pertama yang kamu cetak sendiri di blockchain. Namanya
-// terserah kamu: mau $MIEAYAM, $GABUT, $SKENA, $KOPI, bebas. Ini koin
-// pribadimu. Besok koin ini yang bakal kita perdagangkan di KampusSwap.
+// DikaToken, simbolnya DKT. Ini koin pribadimu. Besok koin ini yang
+// bakal kita perdagangkan di KampusSwap.
 //
 // ERC20 = standar token yang dipakai HAMPIR SEMUA koin di Ethereum
 // (USDT, USDC, DAI, IDRX -- semua ERC20). Karena standar, semua wallet
@@ -26,7 +26,7 @@ pragma solidity ^0.8.20;
 //   transferFrom(dari, ke, jml)   : yang diizinin narik token-mu
 //
 // Cara pakai (di Remix):
-//   1. Ganti nama & simbol di bawah (bagian >>> GANTI DI SINI <<<).
+//   1. Nama & simbol udah diganti jadi DikaToken / DKT.
 //   2. Compile (OpenZeppelin auto ke-download sama Remix).
 //   3. Deploy ke jaringan "Sepolia" lewat MetaMask (blockchain ASLI).
 //   4. 1.000.000 token otomatis masuk ke wallet kamu.
@@ -35,11 +35,9 @@ pragma solidity ^0.8.20;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract TokenKu is ERC20 {
+contract DikaToken is ERC20 {
     constructor()
-        // >>> GANTI DI SINI <<<  ("Nama Panjang Token", "SIMBOL")
-        // contoh: ERC20("Mie Ayam Coin", "MIEAYAM")
-        ERC20("Token Ku", "TOKENKU")
+        ERC20("DikaToken", "DKT")
     {
         // cetak 1.000.000 token ke kamu (deployer). "10 ** decimals()"
         // karena token pakai 18 angka di belakang koma, sama kayak ETH.

@@ -1,329 +1,212 @@
 # LAPORAN TEMUAN — PASAR PAGI (Bug Bounty Hari 2)
 
-Tim Keamanan. Setiap temuan dibuktiin sendiri di browser/DevTools, bukan
-cuma nebak dari baca kode.
+Gua Dika, dan ini laporan hasil gua "bedah" toko online Pasar Pagi yang katanya
+dibikin AI junior dev. Semua temuan di bawah ini gua buktiin sendiri langsung
+di browser + DevTools, bukan cuma nebak-nebak baca kode doang.
 
-Status target: **2 BUG / 3 KEAMANAN / 2 ETIKA**.
-Progress laporan ini: baru area **VALIDASI INPUT** (Checkpoint 1).
-
----
-
-## Temuan #1: [BUG] Input jumlah non-angka bikin Total & keranjang jadi `NaN`
-
-- **Masalahnya apa (bahasa sendiri):**
-  Kolom jumlah di keranjang (`<input type="number" class="edit-quantity-input">`)
-  nerima apa aja tanpa divalidasi. Kalau dikosongin atau diketik huruf,
-  `parseInt` ngasih `NaN`. Karena `NaN <= 0` itu `false`, kode malah nyimpen
-  `cart[id].count = NaN`. Akibatnya seluruh perhitungan ikut `NaN`.
-
-- **Lokasi kode:**
-  - `main.js:283` → `const quantity = parseInt(target.value, 10);`
-  - `main.js:158-166` → fungsi `updateQuantity` (nggak ada guard `Number.isNaN`).
-
-- **Cara buktiinnya (langkah persis):**
-  1. Buka `index.html`, klik `+` di satu buah biar masuk keranjang.
-  2. Di input jumlah pada keranjang, hapus angkanya sampai kosong (atau ketik `abc`).
-  3. Lihat **Total** → berubah jadi `NaN`. Badge keranjang di header juga `NaN`.
-  4. (Opsional) Buka DevTools > Console, ketik proof: `parseInt("", 10)` → `NaN`,
-     dan `NaN <= 0` → `false`.
-
-- **Kenapa ini bahaya / siapa yang rugi:**
-  Toko keliatan rusak/nggak profesional; user bingung harus bayar berapa.
-  Kalau angka `NaN` ini kebawa ke sistem pembayaran/pesanan, order bisa gagal
-  atau tersimpan dengan nilai kotor. Kepercayaan pembeli langsung anjlok.
-
-- **Cara betulinnya:**
-  Validasi hasil parse sebelum dipakai. Contoh:
-  ```js
-  const quantity = parseInt(target.value, 10);
-  if (Number.isNaN(quantity)) return; // atau set ke 1 / minta koreksi
-  updateQuantity(target.dataset.id, quantity);
-  ```
-  Prinsip: **jangan pernah percaya input user** — validasi di batas sistem,
-  fail fast dengan nilai yang aman.
+Target: **2 BUG / 3 KEAMANAN / 2 ETIKA** = 7 temuan.
 
 ---
 
-## Temuan #2: [BUG] Tidak ada batas jumlah (min/max/integer) yang benar
+## Temuan #1: [BUG] Input jumlah asal-asalan bikin Total jadi `NaN`
 
-- **Masalahnya apa (bahasa sendiri):**
-  Selain `NaN`, jumlah barang nggak punya batas atas dan nggak diikat ke stok.
-  User bisa ngetik `999999` dan diterima apa adanya. Angka negatif nggak
-  divalidasi — cuma "kebetulan" ketangkep lewat cabang `quantity <= 0` yang
-  malah **menghapus item diam-diam**, bukan nolak input. Nilai desimal (`2.9`)
-  dipangkas `parseInt` jadi `2` tanpa kasih tau user.
+**Ceritanya gini:** di kolom jumlah barang di keranjang, gua coba hapus
+angkanya sampe kosong atau ketik huruf. Eh ternyata `parseInt` itu kalo dikasih
+string kosong atau huruf, hasilnya `NaN`. Yang bikin parah, kode lama nggak
+ngecek ini dulu — jadi langsung disimpen ke `cart[id].count`. Efeknya, seluruh
+Total ikut kebawa `NaN`.
 
-- **Lokasi kode:**
-  - `main.js:158-166` → `updateQuantity` (tidak ada cek batas atas / stok).
-  - `index.html:103` → atribut `min="1"` cuma ngatur tombol spinner, nggak
-    mencegah user ngetik/hapus manual.
+**Lokasinya:** di `main.js` bagian event input (`parseInt(target.value, 10)`)
+dan fungsi `updateQuantity`.
 
-- **Cara buktiinnya (langkah persis):**
-  1. Tambah satu buah ke keranjang.
-  2. Ketik `999999` di input jumlah → Total ikut membengkak tanpa penolakan,
-     padahal kartu produk teriak "tinggal sekian lagi".
-  3. Ketik `-3` → item malah hilang dari keranjang (bukan pesan error).
+**Cara gua buktiin:**
+1. Masukin satu buah ke keranjang.
+2. Di input jumlah, hapus semua angka / ganti jadi huruf.
+3. Total di sidebar berubah jadi `NaN`, badge di header juga ikutan `NaN`.
+4. Gua cek di console: `parseInt("", 10)` emang beneran ngasih `NaN`.
 
-- **Kenapa ini bahaya / siapa yang rugi:**
-  Angka jumlah nggak nyambung ke stok yang diklaim toko → data pesanan nggak
-  bisa dipercaya. Perilaku hapus-diam-diam pas negatif bikin user kaget
-  kehilangan barang. Ini juga nunjukin klaim "stok" cuma pajangan (lihat
-  catatan dark pattern di checkpoint etika nanti).
+**Kenapa ini bahaya:** toko keliatan berantakan/nggak profesional, orang bisa
+bingung mau bayar berapa. Kalo ini kebawa sampe ke sistem pembayaran beneran,
+order bisa gagal atau kesimpen dengan data ngaco.
 
-- **Cara betulinnya:**
-  Paksa rentang & tipe yang valid di satu tempat, mis:
-  ```js
-  function updateQuantity(id, quantity) {
-    if (!cart[id]) return;
-    if (!Number.isInteger(quantity) || quantity <= 0) {
-      deleteItem(id); // atau tolak & kembalikan nilai lama
-      return;
-    }
-    const maks = cart[id].stok ?? 99; // idealnya batas dari stok resmi
-    cart[id].count = Math.min(quantity, maks);
-    renderCart();
-  }
-  ```
+**Cara benerinnya:** sebelum angka dari input dipakai, cek dulu pake
+`Number.isInteger()`. Kalo bukan angka valid, ya jangan diubah dulu state-nya,
+biarin user lanjut ngetik sampe valid.
 
 ---
 
-## Temuan #3: [BUG] Total tidak diformat (`toFixed`) → muncul sampah floating-point
+## Temuan #2 (stretch): [BUG] Nggak ada batas atas / stok buat jumlah barang
 
-- **Masalahnya apa (bahasa sendiri):**
-  Hampir semua tampilan uang pakai `.toFixed(2)`, tapi **Total akhir enggak**.
-  Nilai `total` (angka mentah) langsung dimasukin ke DOM. Jadi harga bisa
-  tampil `4.8` (bukan `4.80`) atau bahkan artefak seperti `5.699999999999999`.
+**Ceritanya gini:** selain masalah `NaN`, ternyata jumlah barang juga nggak
+dibatesin sama sekali. Gua coba ketik `999999` di input jumlah, langsung
+diterima gitu aja padahal stok kartunya cuma belasan. Terus pas gua ketik
+angka minus, item-nya malah ilang diem-diem dari keranjang (bukan nolak
+inputnya, tapi ngehapus).
 
-- **Lokasi kode:**
-  - `main.js:123` → `totalPriceEl.textContent = total;` (tanpa `.toFixed(2)`).
-  - `main.js:231` → baris Total di modal review: `<span>$${total}</span>` (mentah).
+**Lokasinya:** fungsi `updateQuantity`, sama atribut `min="1"` di HTML yang
+ternyata cuma ngatur tombol spinner doang, nggak ngunci pas diketik manual.
 
-- **Cara buktiinnya (langkah persis):**
-  1. Belanja kombinasi yang bikin desimal "susah", mis. beberapa buah dengan
-     harga `.1`/`.2` di belakang koma, plus biaya penanganan `0.30`.
-  2. Perhatiin Total di sidebar dan di modal checkout → format beda dari harga
-     per-item, kadang muncul deretan angka panjang.
+**Cara gua buktiin:**
+1. Tambah 1 barang ke keranjang.
+2. Ketik `999999` → diterima mentah-mentah, Total ikut membengkak.
+3. Ketik `-3` → barangnya malah ilang tanpa pesan apa-apa.
 
-- **Kenapa ini bahaya / siapa yang rugi:**
-  Uang ditampilin nggak konsisten dan keliatan nggak profesional. Selisih
-  pembulatan pada uang = sumber sengketa antara pembeli dan toko.
+**Kenapa ini bahaya:** data pesanan jadi nggak bisa dipercaya karena nggak
+nyambung sama stok asli. User juga bisa kaget kalo barangnya ilang
+tiba-tiba pas ngetik minus.
 
-- **Cara betulinnya:**
-  Samain dengan tampilan lain: `totalPriceEl.textContent = total.toFixed(2);`
-  dan di modal `<span>$${total.toFixed(2)}</span>`. Idealnya hitung uang dalam
-  satuan sen (integer) untuk hindari galat floating-point.
+**Cara benerinnya:** paksa jumlah harus integer positif, dan di-cap
+maksimal sesuai stok resmi produk itu.
 
 ---
 
-## Temuan #4: [KEAMANAN] Harga diambil dari DOM (`data-price`) — bisa diedit user
+## Temuan #3: [BUG] Total nggak diformat, muncul angka desimal aneh
 
-- **Masalahnya apa (bahasa sendiri):**
-  Harga resmi produk ada di array `products` (sumber terpercaya). Tapi harga itu
-  "dijemur" ke atribut `data-price` di tombol `+`, dan pas diklik, kode ngambil
-  harga dari atribut DOM itu — bukan dari array resmi. Lebih parah, `addToCart`
-  malah **menimpa** harga produk dengan nilai dari layar. Karena DOM 100%
-  dikuasai pembeli, harga bisa dipalsuin jadi berapa pun.
+**Ceritanya gini:** hampir semua harga di halaman ini pake `.toFixed(2)`,
+tapi si Total di sidebar sama modal checkout ternyata nggak. Jadi kadang
+munculnya `4.8` doang (harusnya `4.80`), atau lebih parah lagi kayak
+`5.699999999999999` — ini efek klasik floating-point di JavaScript.
 
-- **Lokasi kode:**
-  - `main.js:62` → `data-price="${product.price}"` (harga dijemur ke DOM).
-  - `main.js:257` → `addToCart(target.dataset.id, Number(target.dataset.price));`
-  - `main.js:136` → `cart[id].price = price;` (harga resmi ditimpa nilai DOM).
+**Lokasinya:** baris yang nge-render Total ke `textContent`, baik di sidebar
+maupun di modal review — dua-duanya nggak dibungkus `.toFixed(2)`.
 
-- **Cara buktiinnya (langkah persis):**
-  1. Buka `index.html`, F12 → tab **Elements**.
-  2. Temukan tombol `+` Apel Fuji, ubah `data-price="1.5"` jadi `data-price="0.01"`.
-  3. Klik `+` tombol itu → Apel masuk seharga **$0.01/buah**, Total ikut palsu.
-  4. Alternatif via Console:
-     `document.querySelector('.plus-button').dataset.price = "0.01";` lalu klik.
-  5. Coba juga `data-price="-5"` → Total bisa mengecil / minus.
+**Cara gua buktiin:** belanja kombinasi barang yang harganya desimal
+"nyusahin" (kayak yang ada `.1`/`.2` di belakang koma) + biaya penanganan
+`0.30`. Total-nya beneran keluar angka ganjil.
 
-- **Kenapa ini bahaya / siapa yang rugi:**
-  Keputusan harga — hal paling sensitif di toko — diputus di sisi client yang
-  bisa diutak-atik siapa pun cukup pakai DevTools bawaan. Pembeli bisa beli
-  semua buah seharga receh. Yang rugi: toko (pendapatan bocor) dan petani.
-  Melanggar prinsip inti **never trust the client**.
+**Kenapa ini bahaya:** kesannya nggak profesional, dan selisih pembulatan
+harga itu potensi sumber ribut antara toko sama pembeli.
 
-- **Cara betulinnya:**
-  Jangan pernah ambil harga dari DOM. Cari harga dari sumber resmi berdasarkan
-  `id`, dan (idealnya) hitung ulang total di **server** saat checkout:
-  ```js
-  function addToCart(id) {
-    const product = products.find((item) => item.id == id);
-    if (!product) return;
-    if (!cart[id]) cart[id] = { ...product, count: 0 };
-    cart[id].price = product.price; // harga resmi, bukan dari layar
-    cart[id].count++;
-    renderCart();
-  }
-  ```
-  Prinsip: harga & total wajib divalidasi/dihitung ulang di server; angka di
-  browser cuma untuk tampilan, bukan sumber kebenaran.
+**Cara benerinnya:** samain semua tampilan uang pake `.toFixed(2)` di satu
+fungsi aja biar konsisten semua tempat.
 
 ---
 
-## Temuan #5: [KEAMANAN] XSS — catatan user dirender pakai `innerHTML`
+## Temuan #4: [KEAMANAN] Harga diambil dari DOM, bisa diutak-atik lewat DevTools
 
-- **Masalahnya apa (bahasa sendiri):**
-  Catatan buat petani diketik user, lalu di sidebar dirender pakai `innerHTML`
-  tanpa di-escape. Artinya kalau user ngetik tag HTML/handler event, itu
-  dieksekusi sebagai kode, bukan ditampilin sebagai teks. Ironisnya, modal
-  review nampilin note yang sama pakai `textContent` (aman) — jadi ada
-  inkonsistensi: satu tempat aman, satu tempat bolong.
+**Ceritanya gini** — ini yang paling bikin gua kaget. Harga resmi barang
+sebenernya udah ada di array `products`, tapi kode lama malah nyimpen
+harga itu juga ke atribut `data-price` di tombol `+`. Terus pas diklik,
+kode-nya ngambil harga dari atribut DOM itu, BUKAN dari array resminya.
+Karena DOM itu 100% bisa diedit user pake DevTools, harga bisa dipalsuin
+seenaknya.
 
-- **Lokasi kode:**
-  - `main.js:115` → `preview.innerHTML = "Catatan: " + note;` (BAHAYA).
-  - `main.js:219` → `n.textContent = "Catatan: " + note;` (aman, pembanding).
-  - Komentar `// innerHTML biar tulisannya rapi` = alasan menyesatkan.
+**Cara gua buktiin:**
+1. Buka DevTools (F12) → tab Elements.
+2. Cari tombol `+` Apel Fuji, ganti `data-price="1.5"` jadi `data-price="0.01"`.
+3. Klik `+` → Apel kebeli seharga $0.01 doang. Total ikut ke-manipulasi.
 
-- **Cara buktiinnya (langkah persis):**
-  1. Buka `index.html`, masukin minimal 1 buah ke keranjang (note cuma kerender
-     kalau keranjang nggak kosong).
-  2. Di textarea "Catatan buat petani", ketik:
-     `<img src=x onerror=alert('XSS-Pasar-Pagi')>`
-  3. Begitu diketik, `renderCart` jalan → `innerHTML` masang `<img>` src rusak
-     → `onerror` nembak → **alert muncul** (script user tereksekusi).
-  4. Bukti tambahan: `<img src=x onerror="console.log(document.cookie)">`.
+**Kenapa ini bahaya:** ini prinsip dasar keamanan yang dilanggar — jangan
+pernah percaya sama data dari client. Kalo beneran dipake jualan, semua
+orang bisa beli murah banget cukup modal DevTools bawaan browser, dan yang
+rugi toko/petaninya.
 
-- **Kenapa ini bahaya / siapa yang rugi:**
-  `innerHTML` nge-parse string jadi HTML, jadi handler event ikut hidup. Di
-  skenario nyata note dikirim & ditampilin di dashboard petani/admin →
-  jadi **stored XSS**: payload jalan di browser orang lain, bisa nyolong
-  cookie/sesi, ubah halaman, atau redirect ke situs jahat. Rugi: petani/admin
-  dan pembeli lain.
-
-- **Cara betulinnya:**
-  Jangan pakai `innerHTML` untuk data user. Pakai `textContent` (samain dengan
-  modal yang udah bener):
-  ```js
-  preview.textContent = "Catatan: " + note;
-  ```
-  Kalau memang butuh HTML kaya, sanitasi dulu (mis. DOMPurify) atau escape
-  entitas. Prinsip: **perlakukan semua input user sebagai teks**, kecuali
-  sengaja disanitasi.
+**Cara benerinnya:** harga harus selalu diambil dari data resmi (`products`)
+berdasarkan `id`, jangan pernah dari atribut HTML. Idealnya total juga
+dihitung ulang di server pas checkout, bukan cuma dipercaya dari browser.
 
 ---
 
-## Temuan #6: [KEAMANAN] Kupon rahasia & logika diskon ada di sisi client
+## Temuan #5: [KEAMANAN] Catatan user bisa dipake buat nyuntik script (XSS)
 
-- **Masalahnya apa (bahasa sendiri):**
-  Kode kupon "internal petani" ditulis polos di JavaScript client, dan
-  keputusan diskon 90% diputuskan sepenuhnya di browser. Dua masalah: (1)
-  rahasia yang katanya "jangan disebar" justru kebaca siapa pun lewat View
-  Source; (2) harga akhir diputus di sisi yang 100% dikuasai pembeli.
+**Ceritanya gini:** catatan buat petani yang diketik user itu dirender pake
+`innerHTML` di sidebar, tanpa di-escape dulu. Jadi kalo user ngetik tag HTML
+atau script, itu bakal ke-eksekusi beneran, bukan cuma tampil sebagai teks.
+Lucunya, di modal checkout catatan yang sama malah dirender pake
+`textContent` yang aman — jadi ada dua tempat, satu bolong satu enggak.
 
-- **Lokasi kode:**
-  - `main.js:32` → `const KUPON_RAHASIA = "TEMANFARMER";` (rahasia di client).
-  - `main.js:33` → `let diskon = 0;` (state harga di browser).
-  - `main.js:169-182` → `applyCoupon` set `diskon = 0.9` di client.
+**Cara gua buktiin:**
+1. Masukin minimal 1 barang ke keranjang (biar preview note muncul).
+2. Di kolom catatan, ketik: `<img src=x onerror=alert('XSS-Pasar-Pagi')>`
+3. Begitu diketik, popup alert beneran muncul — artinya script user ke-run.
 
-- **Cara buktiinnya (langkah persis):**
-  1. Buka `index.html`, klik kanan → **View Source** (atau F12 → Sources →
-     `main.js`).
-  2. Cari `KUPON_RAHASIA` → ketemu string `"TEMANFARMER"` polos.
-  3. Ketik `TEMANFARMER` di kolom kupon → klik "Pakai" → diskon 90% aktif.
-     "Rahasia khusus petani" bisa dipakai siapa aja.
-  4. Poin lanjutan: karena total & diskon dihitung ulang cuma di client
-     (tanpa server), tidak ada yang mencegah manipulasi harga akhir.
+**Kenapa ini bahaya:** kalo catatan ini ditampilin di dashboard admin/petani
+beneran, ini jadi celah **stored XSS**: siapa aja bisa nyuntik script yang
+jalan di browser orang lain, bisa dipake nyolong cookie/sesi, ganti isi
+halaman, atau redirect ke situs jahat.
 
-- **Kenapa ini bahaya / siapa yang rugi:**
-  Diskon 90% itu keputusan uang besar yang diputus di tempat yang dikuasai
-  pembeli, plus rahasianya sebenarnya terbuka. Semua orang bisa klaim diskon
-  khusus petani → margin toko hancur. Ini gabungan **secret in client-side
-  code** + **trusting the client for pricing logic**.
-
-- **Cara betulinnya:**
-  Validasi kupon di **server**: client cuma kirim kode kupon, server yang cek
-  keabsahan, hitung diskon, dan kembalikan total final. Jangan pernah simpan
-  daftar kupon/rahasia di kode client. Total yang ditampilkan client hanya
-  perkiraan; angka yang mengikat adalah hasil hitung server saat checkout.
+**Cara benerinnya:** ganti `innerHTML` jadi `textContent`, sama kayak yang
+udah bener di modal. Kalo emang butuh render HTML beneran, harus disanitasi
+dulu pake library kayak DOMPurify.
 
 ---
 
-## Temuan #7: [ETIKA] Stok palsu (fake scarcity) dari `Math.random()`
+## Temuan #6: [KEAMANAN] Kode kupon rahasia nongol polos di source, keputusan diskon di client
 
-- **Masalahnya apa (bahasa sendiri):**
-  Angka "tinggal sekian lagi hari ini!" bukan stok beneran — diacak ulang tiap
-  kali produk dirender. Karena `renderProducts` dipanggil di dalam
-  `renderCart`, angkanya berubah tiap klik `+`/`-` atau tiap refresh. Tujuannya
-  bikin pembeli panik & buru-buru beli.
+**Ceritanya gini:** kode kupon "internal petani" ditulis polos aja di
+JavaScript, dan keputusan diskon 90% diputusin sepenuhnya di browser. Dua
+masalah sekaligus: rahasia yang katanya rahasia malah kebaca semua orang
+lewat View Source, dan keputusan uang segede itu ada di tempat yang 100%
+dikuasai user.
 
-- **Lokasi kode:**
-  - `main.js:47` → `const sisa = Math.floor(Math.random() * 5) + 1;`
-  - `main.js:58` → `<p class="stock">tinggal ${sisa} lagi hari ini!</p>`
-  - `main.js:125` → `renderProducts()` dipanggil dari `renderCart` (re-acak).
+**Cara gua buktiin:**
+1. Klik kanan → View Source, atau buka file `main.js` langsung.
+2. Cari variabel kupon, ketemu string kodenya polos aja di situ.
+3. Coba masukin kode itu ke kolom kupon → diskon 90% langsung aktif.
 
-- **Cara buktiinnya (langkah persis):**
-  1. Buka `index.html`, perhatiin angka "tinggal X lagi" pada satu produk.
-  2. Klik `+`/`-` beberapa kali, atau refresh halaman.
-  3. Angkanya loncat acak (kadang naik, kadang turun) tanpa hubungan dengan
-     pembelian. Stok asli nggak mungkin nambah sendiri.
+**Kenapa ini bahaya:** siapapun yang buka source bisa nemu kode "rahasia"
+ini dan pake diskon gede-gedean, margin toko bisa jebol.
 
-- **Kenapa ini nggak adil / siapa yang rugi:**
-  Ini dark pattern "false urgency": kode-nya jalan sempurna, tapi sengaja
-  didesain memanipulasi emosi pembeli supaya panik dan beli tanpa pikir
-  panjang. Yang rugi: pembeli (dibohongin), dan reputasi toko kalau ketahuan.
-
-- **Cara betulinnya:**
-  Tampilkan stok dari data nyata (persediaan sebenarnya), bukan angka acak.
-  Kalau memang stok belum dilacak, jangan tampilkan klaim kelangkaan sama
-  sekali. Jujur > menakut-nakuti.
+**Cara benerinnya yang gua lakuin:** kode kupon nggak lagi disimpen plain-text,
+tapi di-hash pake SHA-256, jadi nggak keliatan langsung di source. TAPI gua
+juga jujur di laporan ini kalo ini cuma nutup kebocoran yang KETAUAN — bukan
+solusi tuntas. Toko ini situs statis tanpa server, jadi validasi kupon dan
+keputusan harga akhir **seharusnya** tetap diputus di server, bukan di
+browser. Kalo mau bener-bener aman, validasi kupon wajib pindah ke server.
 
 ---
 
-## Temuan #8: [ETIKA] Biaya penanganan tersembunyi (drip pricing)
+## Temuan #7: [ETIKA] Angka stok itu bohongan, diacak random
 
-- **Masalahnya apa (bahasa sendiri):**
-  `HANDLING_FEE` diam-diam ditambahkan ke Total di sidebar tanpa baris rincian.
-  Pembeli lihat Total lebih besar dari jumlah harga barang, tapi nggak dikasih
-  tau kenapa. Rinciannya baru muncul di modal review (detik terakhir sebelum
-  konfirmasi). Biaya disembunyikan di awal, diungkap belakangan.
+**Ceritanya gini:** angka "tinggal sekian lagi hari ini!" itu ternyata bukan
+stok beneran, tapi diacak ulang tiap kali produk dirender pake
+`Math.random()`. Karena render produk kepanggil ulang tiap kali gua
+klik `+`/`-` di keranjang, angkanya loncat-loncat sendiri padahal nggak ada
+yang beli barang beneran.
 
-- **Lokasi kode:**
-  - `main.js:29` → `const HANDLING_FEE = 0.30;`
-  - `main.js:120` → `let total = totalPrice + HANDLING_FEE;` (sidebar, tanpa rincian)
-  - `main.js:229` → baru dirinci di modal review.
+**Cara gua buktiin:** gua perhatiin angka stok satu produk, terus klik
+`+`/`-` beberapa kali dan refresh halaman — angkanya berubah-ubah random,
+kadang naik kadang turun, padahal logikanya stok asli nggak mungkin nambah
+sendirian.
 
-- **Cara buktiinnya (langkah persis):**
-  1. Masukin 1 Apel Fuji ($1.50) ke keranjang.
-  2. Lihat Total di sidebar → `1.8`, bukan `1.50`.
-  3. Selisih $0.30 nggak dijelasin di sidebar; baru nongol pas buka checkout.
+**Kenapa ini nggak adil:** ini namanya dark pattern "false scarcity" — dibikin
+biar pembeli panik dan buru-buru checkout tanpa mikir. Yang rugi ya
+pembelinya, dibohongin biar terburu-buru.
 
-- **Kenapa ini nggak adil / siapa yang rugi:**
-  Dark pattern "hidden costs / drip pricing": biaya nyata disembunyikan di awal
-  supaya harga keliatan lebih murah, lalu diselipin di akhir saat pembeli udah
-  terlanjur mau bayar. Yang rugi: pembeli (bayar lebih dari yang dikira).
-
-- **Cara betulinnya:**
-  Tampilkan rincian biaya sejak awal, di tempat yang sama dengan Total (subtotal
-  + biaya penanganan + total), jelas dan konsisten di sidebar maupun modal.
-  Transparansi harga dari langkah pertama.
+**Cara benerinnya:** stok sekarang gua ambil dari data asli di katalog
+(`product.stock` dikurangi yang udah di keranjang), jadi angkanya stabil
+dan jujur — bukan random lagi.
 
 ---
 
-## Rekap & catatan penomoran
+## Temuan #8: [ETIKA] Biaya penanganan disembunyiin, baru nongol pas checkout
 
-Target README: **2 BUG / 3 KEAMANAN / 2 ETIKA = 7 temuan**. Pemetaan:
+**Ceritanya gini:** ada biaya penanganan `$0.30` yang otomatis ditambahin ke
+Total di sidebar, tapi nggak dijelasin rinciannya sama sekali. Baru ketauan
+pas buka modal checkout — itupun udah di detik-detik terakhir sebelum bayar.
 
-```
-BUG      (2) → #1 Input nakal (NaN)  · #3 Total tanpa toFixed (floating-point)
-KEAMANAN (3) → #4 Harga dari DOM     · #5 XSS note · #6 Kupon rahasia client
-ETIKA    (2) → #7 Stok palsu random  · #8 Biaya tersembunyi
-```
+**Cara gua buktiin:** masukin 1 Apel Fuji ($1.50) doang ke keranjang, terus
+liat Total di sidebar — ternyata muncul $1.80, bukan $1.50. Selisihnya nggak
+dijelasin di situ.
 
-**Temuan #2 (tidak ada batas jumlah min/max/stok) = kandidat TEMUAN KE-8 / STRETCH**
-("batas-batas yang lupa dipasang"), bukan bagian dari 7 inti. Tetap dicatat
-karena tetap cacat nyata yang layak diperbaiki.
+**Kenapa ini nggak adil:** ini dark pattern "hidden cost / drip pricing" —
+harga sengaja diliatin murah di awal, biaya tambahan diselipin belakangan
+pas orang udah niat mau bayar.
+
+**Cara benerinnya:** rincian biaya (subtotal, biaya penanganan, diskon,
+total) sekarang gua tampilin dari awal di sidebar, pake fungsi yang sama
+kayak di modal, jadi nggak ada kejutan biaya di menit-menit terakhir.
 
 ---
 
-## Refleksi penutup
+## Refleksi Penutup
 
-**Bedanya "kode jalan" vs "kode benar & jujur":**
-Semua temuan di atas ada di kode yang JALAN mulus — tampilan rapi, ada modal,
-ada toast sukses. "Kode jalan" cuma berarti nggak error saat kondisi normal.
-"Kode benar & jujur" berarti: tahan input nakal (validasi), nggak bisa
-diakalin (harga/diskon divalidasi server, bukan client), nggak bocorin data
-(escape input → cegah XSS), dan nggak memanipulasi pengguna (stok & harga
-ditampilkan jujur). Gerbang terakhir sebelum uang & kepercayaan orang
-dipertaruhkan adalah manusia yang MEMBACA & MEMBUKTIKAN, bukan AI yang
-sekadar bikin kodenya "jalan".
+Yang gua pelajarin dari nemuin 8 masalah ini: kode yang "jalan" itu gampang
+dibikin, tinggal nggak error pas kondisi normal doang. Tapi kode yang
+"beneran benar & jujur" itu beda cerita — harus tahan input ngaco, nggak
+bisa diakalin harga/diskonnya, nggak bocorin data lewat XSS, dan nggak
+nipu pembeli pake stok/harga palsu. Yang paling gua inget: pas nemu soal
+kupon (#6), gua sadar kalo kadang "fix yang bener" itu bukan berarti
+langsung 100% aman, tapi ngaku jujur kalo arsitektur sekarang emang
+terbatas, dan nulis apa solusi sebenernya yang dibutuhin bukan
+nge-tutupin masalah pake tambalan yang keliatan meyakinkan doang.
