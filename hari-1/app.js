@@ -188,6 +188,7 @@ const el = {
   ssrCount: document.getElementById("ssrCount"),
   pityText: document.getElementById("pityText"),
   pityFill: document.getElementById("pityFill"),
+  pityStatus: document.getElementById("pityStatus"),
   history: document.getElementById("history"),
   err: document.getElementById("err"),
   tarik1: document.getElementById("tarik1"),
@@ -206,10 +207,11 @@ const el = {
 function decideRarity() {
   const acak = Math.random();
   // "+1" karena tarikan ini belum masuk hitungan pity.
-  if (pity + 1 >= PITY_MAX || acak < RATE_SSR) return "ssr";
-  if (acak < RATE_EPIC) return "epic";
-  if (acak < RATE_RARE) return "rare";
-  return "common";
+  if (pity + 1 >= PITY_MAX) return { kelas: "ssr", pityTriggered: true };
+  if (acak < RATE_SSR) return { kelas: "ssr", pityTriggered: false };
+  if (acak < RATE_EPIC) return { kelas: "epic", pityTriggered: false };
+  if (acak < RATE_RARE) return { kelas: "rare", pityTriggered: false };
+  return { kelas: "common", pityTriggered: false };
 }
 
 // Baru dicatat setelah tarikan benar-benar berhasil.
@@ -225,6 +227,18 @@ function updateStats() {
   el.ssrCount.textContent = ssrCount;
   el.pityText.textContent = pity + " / " + PITY_MAX;
   el.pityFill.style.width = (pity / PITY_MAX) * 100 + "%";
+}
+
+// Beri penjelasan singkat setelah hasil random sudah benar-benar tampil.
+function updatePityStatus(result) {
+  if (result.pityTriggered) {
+    el.pityStatus.textContent = "Pity aktif! Legendary ini dijamin pada tarikan ke-" + PITY_MAX + ".";
+    el.pityStatus.className = "pity-status guaranteed";
+    return;
+  }
+  el.pityStatus.textContent = "Hasil acak: " + result.kelas.toUpperCase() + ". " +
+    (pity ? "" + (PITY_MAX - pity) + " tarikan lagi menuju Legendary gratis." : "Pity direset setelah Legendary.");
+  el.pityStatus.className = "pity-status";
 }
 
 // ---------- Status loading & error ----------
@@ -319,15 +333,17 @@ function addHistory(result) {
 
 // ---------- Satu tarikan (async: ambil data dulu, baru tampil) ----------
 async function pull() {
-  const kelas = decideRarity();
+  const roll = decideRarity();
+  const kelas = roll.kelas;
   const id = pickId(kelas);
   try {
     const mon = await getPokemon(id);
     const shiny = Math.random() < SHINY_RATE && !!mon.shinyArtwork;
-    const result = { ...mon, kelas, shiny };
+    const result = { ...mon, kelas, shiny, pityTriggered: roll.pityTriggered };
     commitCounters(kelas); // hanya dihitung kalau fetch sukses
     recordCatch(result);   // masukkan ke koleksi Pokédex
     updateStats();
+    updatePityStatus(result);
     render(result);
     addHistory(result);
     checkNewBadges();      // rayakan kalau ada badge baru

@@ -11,6 +11,21 @@ Versi baru mengambil data nyata dari **PokeAPI** (https://pokeapi.co) —
 database Pokémon gratis untuk umum. Jadi tiap tarikan memunculkan Pokémon
 sungguhan dengan artwork resminya.
 
+## Update pull & pity (11 Juli 2026)
+
+Sekarang setelah menekan **PULL**, aplikasi menampilkan penjelasan hasil
+randomnya tepat di bawah bar pity:
+
+- Jika hasilnya COMMON, RARE, EPIC, atau SSR karena keberuntungan, teks akan
+  menyebut rarity yang didapat dan sisa tarikan menuju jaminan Legendary.
+- Jika tarikan ke-10 memicu jaminan, teks emas akan menyatakan bahwa
+  **pity aktif** dan Legendary tersebut diperoleh dari jaminan.
+- Setelah mendapat Legendary, hitungan pity kembali ke nol. Hasil rarity tetap
+  diacak untuk setiap tarikan sebelum jaminan aktif.
+
+Dengan begitu, pemain bisa langsung membedakan Legendary yang didapat karena
+hoki dari Legendary yang didapat melalui aturan pity.
+
 ## Cara kerjanya (bahasa gampang)
 
 1. **Roll rarity dulu (pakai pity)** — sama seperti gacha beneran:
@@ -67,3 +82,4 @@ pity penuh untuk dapat Legendary gratis, dan semoga hoki dapat **shiny**! ✨
 2. `feat: fetch real Pokémon from PokeAPI with caching + async pulls`
 3. `feat: add type badges, base-stat bars, and shiny variants`
 4. `docs: update LOG.md for Pokémon gacha`
+5. `feat: show randomized pull and pity results`
