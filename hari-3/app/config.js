@@ -14,17 +14,18 @@ const CONFIG = {
   RPC_URL: "https://ethereum-sepolia-rpc.publicnode.com",
 
   // >>> GANTI 3 ALAMAT INI (dari Remix) <<<
-  AMM_ADDRESS: "0xISI_ALAMAT_SIMPLEAMM_KAMU",
+  AMM_ADDRESS: "0x60a19Da3F8CFA6F64a35a374CE0e5a7bC2d695c3",
+  
 
   // TOKEN A = KOIN KAMU (harus SAMA dengan tokenA di SimpleAMM).
   TOKEN_A: {
-    address: "0xISI_ALAMAT_TOKENKU_KAMU",
+    address: "0x8cfd81e42052a502da01a0884F4De804d0C1Eb4B",
     logo: "zexoverz.webp", // ganti dengan logo koinmu (taruh file di app/)
   },
 
   // TOKEN B = ETHJKT (token bersama dari pengajar -> alamat dari pengajar).
   TOKEN_B: {
-    address: "0xISI_ALAMAT_ETHJKT",
+    address: "0x7E96fed902B0A26b62DA78e8112253920Fc55936",
     logo: "ethjkt-logo.png",
   },
 
