@@ -1,10 +1,32 @@
-# ETHJKT x UNPAM — Learning Kit: AI & Blockchain
+# 🏆 CAPSTONE PROJECT: XevoSwap (AMM DEX)
+**Oleh: Lystanta (lystanta-day4)**
 
-Short Course "AI & Blockchain" | Universitas Pamulang (UNPAM)
-Pengajar: Faisal "Zexo" — Founder ETHJKT (Ethereum Jakarta)
-Mulai 6 Juli 2026 | Hari 1-4 sesi live (2 jam) · demo + GitHub + karier = take-home
+## 🌟 Informasi Proyek & Token
+- **Nama Koin / Token**: XevoToken (XEVO)
+- **Alamat Token A (Koin Saya - XEVO)**: `0x65AA185B443aF0319e149B23d54fA3241D94e1cA`
+- **Alamat Token B (Token Bersama - ETHJKT)**: `0x7E96fed902B0A26b62DA78e8112253920Fc55936`
+- **Alamat Smart Contract AMM**: `0xbFf9341A5d0010d07869f005FE53Db55D17e6Aa5`
 
 ---
+
+## 🚀 Cara Menjalankan Aplikasi Interface (React + Vite)
+1. Pindah ke direktori aplikasi frontend:
+   ```bash
+   cd hari-4/app
+   ```
+2. Install dependensi package:
+   ```bash
+   npm install
+   ```
+3. Jalankan server dev lokal:
+   ```bash
+   npm run dev
+   ```
+4. Buka tautan lokal di browser Anda: **http://localhost:5173**
+
+---
+
+# ETHJKT x UNPAM — Learning Kit: AI & Blockchain
 
 ## BACA INI H-1 (Sehari Sebelum Kelas)
 

@@ -1,39 +1,64 @@
 // ============================================================
-// KONFIG KAMPUSSWAP  —  >>> MURID CUKUP EDIT FILE INI SAJA <<<
-//
-// Ganti alamat contract + logo token jadi punyamu sendiri.
-// Logo: taruh file gambar di folder "public/", lalu tulis path-nya
-// "/namafile.png" (awali garis miring) di "logo".
+// KONFIG XEVOSWAP — Multi-Pool
+// Tambah pool baru di POOLS[], otomatis masuk ke router & UI.
 // ============================================================
 
 export const CONFIG = {
-  // Sepolia testnet.
   SEPOLIA_CHAIN_ID: 11155111,
-
-  // RPC publik Sepolia -> dipakai buat BACA data pool tanpa perlu wallet.
   RPC_URL: "https://ethereum-sepolia-rpc.publicnode.com",
-
-  // WalletConnect projectId (buat RainbowKit). GRATIS: bikin di
-  // https://cloud.reown.com -> New Project -> copy Project ID.
-  // Kalau kosong, connect MetaMask masih jalan, tapi QR WalletConnect nggak.
   WALLETCONNECT_PROJECT_ID: "GANTI_DENGAN_PROJECT_ID_KAMU",
 
-  // Alamat pool AMM kamu (hasil deploy SimpleAMM di Remix).
-  AMM_ADDRESS: "0x60a19Da3F8CFA6F64a35a374CE0e5a7bC2d695c3",
-
-  // TOKEN A = KOIN KAMU (harus SAMA dengan tokenA di SimpleAMM).
-  TOKEN_A: {
-    address: "0x8cfd81e42052a502da01a0884F4De804d0C1Eb4B",
-    logo: "/zexoverz.webp", // ganti dengan logo koinmu (file di public/)
+  // ── DAFTAR TOKEN ────────────────────────────────────────────
+  TOKENS: {
+    XEVO: {
+      symbol: "XEVO",
+      address: "0x65AA185B443aF0319e149B23d54fA3241D94e1cA" as `0x${string}`,
+      logo: "/xevo.png",
+      decimals: 18,
+    },
+    ETHJKT: {
+      symbol: "ETHJKT",
+      address: "0x7E96fed902B0A26b62DA78e8112253920Fc55936" as `0x${string}`,
+      logo: "/ethjkt-logo.png",
+      decimals: 18,
+    },
+    // Contoh token tambahan (mock untuk demo routing):
+    // Uncomment & isi address kalau kamu deploy token baru
+    // USDC: {
+    //   symbol: "USDC",
+    //   address: "0xYOUR_USDC_ADDRESS" as `0x${string}`,
+    //   logo: "/usdc.png",
+    //   decimals: 6,
+    // },
   },
 
-  // TOKEN B = ETHJKT (token bersama dari pengajar).
-  TOKEN_B: {
-    address: "0x7E96fed902B0A26b62DA78e8112253920Fc55936",
-    logo: "/ethjkt-logo.png",
-  },
+  // ── DAFTAR POOL ─────────────────────────────────────────────
+  // Setiap pool = satu SimpleAMM contract yang udah di-deploy di Remix.
+  // tokenA & tokenB HARUS sama persis dengan yang di-set waktu deploy.
+  POOLS: [
+    {
+      id: "xevo-ethjkt",
+      label: "XEVO / ETHJKT",
+      ammAddress: "0xbFf9341A5d0010d07869f005FE53Db55D17e6Aa5" as `0x${string}`,
+      tokenA: "XEVO",
+      tokenB: "ETHJKT",
+    },
+    // Tambah pool baru di sini:
+    // {
+    //   id: "usdc-ethjkt",
+    //   label: "USDC / ETHJKT",
+    //   ammAddress: "0xYOUR_SECOND_AMM" as `0x${string}`,
+    //   tokenA: "USDC",
+    //   tokenB: "ETHJKT",
+    // },
+  ],
 
-  // Branding header.
+  // ── BRANDING ────────────────────────────────────────────────
   BRAND_LOGO: "/ethjkt-logo.png",
   TITLE_IMG: "/ai-blockhain-title.png",
-};
+} as const;
+
+// Helper types
+export type TokenSymbol = keyof typeof CONFIG.TOKENS;
+export type PoolConfig = (typeof CONFIG.POOLS)[number];
+export type TokenConfig = (typeof CONFIG.TOKENS)[TokenSymbol];
