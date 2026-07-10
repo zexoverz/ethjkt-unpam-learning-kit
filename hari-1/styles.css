@@ -25,7 +25,7 @@ body {
 
 /* ---------- Perangkat Pokédex ---------- */
 .pokedex {
-  width: 100%; max-width: 470px;
+  width: 100%; max-width: 980px;
   background: linear-gradient(180deg, var(--red) 0%, var(--red-dark) 100%);
   border-radius: 22px; padding: 14px;
   box-shadow: 0 18px 46px rgba(180,31,0,.35), inset 0 2px 0 rgba(255,255,255,.25);
@@ -73,6 +73,11 @@ h1 {
 .tab:hover { border-color: #cdd5e3; }
 .tab.active { background: var(--red); color: #fff; border-color: var(--red); box-shadow: 0 3px 0 var(--red-dark); }
 .tab-panel[hidden] { display: none; }
+
+/* ---------- Gacha: layout lanskap ---------- */
+.gacha-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr); gap: 22px; align-items: start; text-align: left; }
+.gacha-main { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 20px; align-items: center; min-width: 0; }
+.gacha-sidebar { min-width: 0; border-left: 1px solid var(--line); padding-left: 22px; }
 
 /* ---------- Koleksi (Pokédex) ---------- */
 .collection-empty { color: var(--muted); font-size: 13px; padding: 30px 10px; }
@@ -150,7 +155,7 @@ h1 {
 }
 
 /* ---------- Panggung / kartu Pokémon ---------- */
-.stage { display: flex; justify-content: center; margin-bottom: 14px; }
+.stage { display: flex; justify-content: center; margin-bottom: 0; }
 .card {
   width: 220px; height: 250px; border-radius: 18px;
   background: linear-gradient(180deg, #fbfdff 0%, #eef3fb 100%);
@@ -206,7 +211,7 @@ h1 {
 .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
 
 /* ---------- Info Pokémon di bawah kartu ---------- */
-.poke-info { min-height: 92px; margin-bottom: 8px; }
+.poke-info { min-height: 92px; margin-bottom: 0; text-align: center; }
 .poke-name { font-size: 19px; font-weight: 800; color: var(--ink); }
 .poke-name .dex { font-size: 13px; color: var(--muted); font-weight: 700; font-family: "Courier New", monospace; }
 .rar { font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
@@ -259,3 +264,14 @@ h1 {
 .chip.shiny { box-shadow: 0 0 9px rgba(255,196,0,.9); }
 
 .err { color: var(--red); font-size: 12px; min-height: 16px; margin-top: 6px; }
+.daily-limit { color: var(--muted); font-size: 12px; line-height: 1.4; min-height: 18px; }
+
+@media (max-width: 720px) {
+  body { padding: 14px 10px; }
+  .pokedex { max-width: 470px; padding: 10px; }
+  .screen { padding: 18px 14px 20px; }
+  .gacha-layout, .gacha-main { grid-template-columns: 1fr; }
+  .gacha-sidebar { border-left: 0; border-top: 1px solid var(--line); padding: 18px 0 0; }
+  .stage { margin-bottom: 14px; }
+  .poke-info { min-height: 92px; }
+}

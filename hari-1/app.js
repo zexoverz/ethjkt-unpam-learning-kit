@@ -10,6 +10,7 @@
 
 // ---------- Konfigurasi rarity & pity ----------
 const PITY_MAX = 10; // tarikan ke-10 dijamin Legendary (SSR) kalau belum dapat
+const DAILY_PULL_LIMIT = 100;
 
 // Peluang tiap tier (dicek berurutan): SSR 3%, EPIC 10%, RARE 30%, sisanya COMMON.
 const RATE_SSR = 0.03;
@@ -121,6 +122,9 @@ async function getPokemon(id) {
 let pity = 0;      // tarikan sejak Legendary terakhir
 let total = 0;     // total tarikan
 let ssrCount = 0;  // total Legendary/Mythical didapat
+let dailyPulls = 0;       // tarikan yang berhasil pada tanggal lokal saat ini
+let dailyPullDate = "";   // format YYYY-MM-DD dari browser pemain
+let isLoading = false;
 
 // Koleksi Pokédex: id -> data Pokémon yang pernah didapat (+ jumlahnya).
 let collection = {};
@@ -129,9 +133,30 @@ let collection = {};
 // Semua progres bertahan walau browser ditutup / halaman di-refresh.
 const STORAGE_KEY = "pokegacha_state_v1";
 
+function getLocalDate() {
+  const now = new Date();
+  const offset = now.getTimezoneOffset() * 60_000;
+  return new Date(now.getTime() - offset).toISOString().slice(0, 10);
+}
+
+function refreshDailyLimit() {
+  const today = getLocalDate();
+  if (dailyPullDate !== today) {
+    dailyPullDate = today;
+    dailyPulls = 0;
+  }
+}
+
+function pullsRemaining() {
+  refreshDailyLimit();
+  return Math.max(0, DAILY_PULL_LIMIT - dailyPulls);
+}
+
 function saveState() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ total, pity, ssrCount, collection }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      total, pity, ssrCount, collection, dailyPulls, dailyPullDate,
+    }));
   } catch (e) {
     // localStorage bisa penuh atau diblokir — abaikan, game tetap jalan.
   }
@@ -146,6 +171,9 @@ function loadState() {
     pity = s.pity || 0;
     ssrCount = s.ssrCount || 0;
     collection = s.collection || {};
+    dailyPulls = Math.max(0, s.dailyPulls || 0);
+    dailyPullDate = s.dailyPullDate || "";
+    refreshDailyLimit();
   } catch (e) {
     // Data rusak -> mulai dari nol saja.
     collection = {};
@@ -185,6 +213,8 @@ const el = {
   rarity: document.getElementById("rarity"),
   statsPanel: document.getElementById("statsPanel"),
   total: document.getElementById("total"),
+  dailyPulls: document.getElementById("dailyPulls"),
+  dailyLimit: document.getElementById("dailyLimit"),
   ssrCount: document.getElementById("ssrCount"),
   pityText: document.getElementById("pityText"),
   pityFill: document.getElementById("pityFill"),
@@ -215,27 +245,40 @@ function decideRarity() {
 // Baru dicatat setelah tarikan benar-benar berhasil.
 function commitCounters(kelas) {
   total += 1;
+  dailyPulls += 1;
   pity += 1;
   if (kelas === "ssr") { pity = 0; ssrCount += 1; }
 }
 
 // ---------- Update panel statistik & pity bar ----------
 function updateStats() {
+  const remaining = pullsRemaining();
   el.total.textContent = total;
   el.ssrCount.textContent = ssrCount;
+  el.dailyPulls.textContent = dailyPulls + " / " + DAILY_PULL_LIMIT;
+  el.dailyLimit.textContent = remaining > 0
+    ? remaining + " tarikan tersedia hari ini."
+    : "Batas 100 tarikan hari ini sudah tercapai. Kembali lagi besok.";
   el.pityText.textContent = pity + " / " + PITY_MAX;
   el.pityFill.style.width = (pity / PITY_MAX) * 100 + "%";
+  updatePullButtons();
 }
 
 // ---------- Status loading & error ----------
 function setLoading(on) {
+  isLoading = on;
   el.spinner.style.display = on ? "block" : "none";
   if (on) {
     el.placeholder.style.display = "none";
     el.sprite.style.display = "none";
   }
-  el.tarik1.disabled = on;
-  el.tarik10.disabled = on;
+  updatePullButtons();
+}
+
+function updatePullButtons() {
+  const noPullsLeft = pullsRemaining() === 0;
+  el.tarik1.disabled = isLoading || noPullsLeft;
+  el.tarik10.disabled = isLoading || noPullsLeft;
 }
 
 function showError(msg) {
@@ -319,6 +362,7 @@ function addHistory(result) {
 
 // ---------- Satu tarikan (async: ambil data dulu, baru tampil) ----------
 async function pull() {
+  if (pullsRemaining() === 0) return null;
   const kelas = decideRarity();
   const id = pickId(kelas);
   try {
@@ -342,6 +386,7 @@ async function pull() {
 // ---------- Tombol ----------
 el.tarik1.addEventListener("click", async () => {
   showError("");
+  if (pullsRemaining() === 0) return;
   setLoading(true);
   await pull();
   setLoading(false);
@@ -349,8 +394,10 @@ el.tarik1.addEventListener("click", async () => {
 
 el.tarik10.addEventListener("click", async () => {
   showError("");
+  const amount = Math.min(10, pullsRemaining());
+  if (amount === 0) return;
   setLoading(true);
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < amount; i++) {
     await pull(); // berurutan biar sopan ke API & animasi enak dilihat
   }
   setLoading(false);
