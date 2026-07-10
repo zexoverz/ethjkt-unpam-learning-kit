@@ -71,3 +71,9 @@ di-PR ke repo mentor.
 - Paham trik reset CSS animation pakai `offsetWidth`
 - Sempet struggle banyak di setup tools (VS Code, Codex, Antigravity) karena laptop 
   lama — banyak belajar troubleshooting juga hari ini, bukan cuma coding.
+
+  ## Redesign — UI & Gambar
+Ganti seluruh desain visual (font, warna, layout) biar nggak keliatan 
+generic/AI-default. Ganti emoji jadi gambar asli pakai DiceBear API — 
+tiap karakter dapet avatar unik berdasarkan nama mereka lewat 
+api.dicebear.com, bukan emoji statis.

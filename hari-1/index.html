@@ -3,102 +3,115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gacha ETHJKT</title>
+<title>Astral Express Wish</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
   body {
-    font-family: "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #1b2140 0%, #0a0d1c 70%);
-    color: #eaeaf0; min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
-  }
-  .app {
-    width: 100%; max-width: 460px; text-align: center;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px; padding: 24px 22px 28px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-  h1 {
-    font-size: 26px; letter-spacing: 1px; margin-bottom: 4px;
-    background: linear-gradient(90deg,#ffd86b,#ff7eb3,#7ee8ff);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .subtitle { font-size: 12px; color: #8b90b0; margin-bottom: 18px; }
-
-  .stats { display: flex; gap: 10px; margin-bottom: 12px; }
-  .stat {
-    flex: 1; background: rgba(255,255,255,0.05); border-radius: 12px;
-    padding: 10px 6px;
-  }
-  .stat .num { font-size: 22px; font-weight: 700; }
-  .stat .lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; }
-
-  .pity { margin-bottom: 18px; text-align: left; }
-  .pity-top { display: flex; justify-content: space-between; font-size: 12px; color: #b9bdd8; margin-bottom: 6px; }
-  .pity-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
-  .pity-fill {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg,#ffd86b,#ffb347);
-    transition: width 0.35s ease;
-  }
-
-  .stage { display: flex; justify-content: center; margin-bottom: 20px; }
-  .card {
-    width: 180px; height: 230px; border-radius: 18px;
-    background: #171b30; border: 3px solid #2a2f4a;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; position: relative;
-  }
-  .card .emoji { font-size: 74px; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
-  .card .name { font-size: 17px; font-weight: 700; padding: 0 8px; }
-  .card .rar { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
-
-  /* warna per rarity */
-  .card.common { border-color: #6b7280; }
-  .card.common .rar { color: #9aa3b2; }
-  .card.rare   { border-color: #4da6ff; box-shadow: 0 0 22px rgba(77,166,255,.45); }
-  .card.rare   .rar { color: #4da6ff; }
-  .card.epic   { border-color: #b06bff; box-shadow: 0 0 26px rgba(176,107,255,.55); }
-  .card.epic   .rar { color: #c88bff; }
-  .card.ssr    { border-color: #ffd24a; box-shadow: 0 0 40px rgba(255,210,74,.8); }
-  .card.ssr    .rar { color: #ffd24a; }
-  .card.ssr    .name { color: #ffe89a; }
-
-  /* animasi reveal */
-  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-  @keyframes glowpulse { 0%,100%{box-shadow:0 0 30px rgba(255,210,74,.7)} 50%{box-shadow:0 0 55px rgba(255,210,74,1)} }
-  .card.reveal { animation: pop .4s ease; }
-  .card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
-
-  .buttons { display: flex; gap: 12px; margin-bottom: 22px; }
-  .btn {
-    flex: 1; padding: 15px 0; border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer;
-    color: #0a0d1c; background: linear-gradient(180deg,#8fd3ff,#4da6ff);
-    transition: transform .08s ease, filter .15s ease;
-  }
-  .btn:hover { filter: brightness(1.08); }
-  .btn:active { transform: scale(.95); }
-  .btn.gold { background: linear-gradient(180deg,#ffe58a,#ffb347); }
-
-  .hist-lbl { font-size: 11px; color: #8b90b0; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
-  .history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
-  .chip {
-    font-size: 20px; width: 34px; height: 34px; border-radius: 9px;
+    font-family: 'Space Grotesk', sans-serif;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(120,90,220,0.25), transparent),
+      linear-gradient(180deg, #0b0a14 0%, #05050a 100%);
+    color: #e8e6f0;
+    min-height: 100vh;
     display: flex; align-items: center; justify-content: center;
-    background: #171b30; border: 2px solid #2a2f4a;
+    padding: 24px;
   }
-  .chip.rare { border-color: #4da6ff; }
-  .chip.epic { border-color: #b06bff; }
-  .chip.ssr  { border-color: #ffd24a; box-shadow: 0 0 10px rgba(255,210,74,.6); }
+
+  .app {
+    width: 100%; max-width: 420px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 28px 24px 26px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  .brand { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+  .brand-dot { width: 8px; height: 8px; border-radius: 50%; background: #b98fff; box-shadow: 0 0 12px #b98fff; }
+  .brand-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 3px; color: #7a7690; text-transform: uppercase; }
+
+  h1 {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin: 4px 0 20px;
+    color: #f4f2fb;
+  }
+
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .stat {
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; padding: 12px 14px;
+  }
+  .stat .num { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 500; color: #f4f2fb; }
+  .stat .lbl { font-size: 10px; color: #8a86a0; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+
+  .pity { margin-bottom: 20px; }
+  .pity-top { display: flex; justify-content: space-between; font-size: 11px; color: #a29dbb; margin-bottom: 7px; font-family: 'JetBrains Mono', monospace; }
+  .pity-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+  .pity-fill { height: 100%; width: 0%; background: linear-gradient(90deg,#b98fff,#ff9ecf); transition: width .4s cubic-bezier(.4,0,.2,1); }
+
+  .stage { display: flex; justify-content: center; margin-bottom: 22px; perspective: 800px; }
+  .card {
+    width: 200px; height: 260px; border-radius: 20px;
+    background: linear-gradient(160deg, #14121f, #0c0b14);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px; position: relative; overflow: hidden;
+  }
+  .card-img {
+    width: 96px; height: 96px; border-radius: 50%;
+    object-fit: cover; background: #1d1b2b;
+    border: 2px solid rgba(255,255,255,0.12);
+  }
+  .card .name { font-size: 16px; font-weight: 600; padding: 0 10px; text-align: center; color: #f4f2fb; }
+  .card .rar { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; opacity: .85; }
+
+  .card.common { border-color: rgba(140,145,165,0.35); }
+  .card.common .rar { color: #9aa3b2; }
+  .card.rare   { border-color: rgba(90,160,255,0.5); box-shadow: 0 0 30px -8px rgba(90,160,255,.5); }
+  .card.rare   .rar { color: #6db4ff; }
+  .card.epic   { border-color: rgba(180,110,255,0.55); box-shadow: 0 0 34px -6px rgba(180,110,255,.6); }
+  .card.epic   .rar { color: #c88bff; }
+  .card.ssr    { border-color: rgba(255,205,90,0.7); box-shadow: 0 0 50px -6px rgba(255,205,90,.85); }
+  .card.ssr    .rar { color: #ffd25a; }
+  .card.ssr    .name { color: #fff0c2; }
+
+  @keyframes pop { 0% { transform: scale(.55) rotateY(20deg); opacity: 0; } 60% { transform: scale(1.06); } 100% { transform: scale(1) rotateY(0); opacity: 1; } }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-3px)} 80%{transform:translateX(3px)} }
+  @keyframes glowpulse { 0%,100%{box-shadow:0 0 34px -6px rgba(255,205,90,.6)} 50%{box-shadow:0 0 60px -4px rgba(255,205,90,1)} }
+  .card.reveal { animation: pop .45s cubic-bezier(.2,.8,.3,1.2); }
+  .card.ssr.reveal { animation: pop .45s cubic-bezier(.2,.8,.3,1.2), shake .5s ease .45s, glowpulse 1.3s ease-in-out .45s 2; }
+
+  .buttons { display: flex; gap: 10px; margin-bottom: 22px; }
+  .btn {
+    flex: 1; padding: 14px 0; border: none; border-radius: 14px;
+    font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .3px; cursor: pointer;
+    color: #0b0a14; background: linear-gradient(180deg,#c9a8ff,#9b6fe8);
+    transition: transform .1s ease, filter .15s ease;
+  }
+  .btn:hover { filter: brightness(1.1); }
+  .btn:active { transform: scale(.96); }
+  .btn.gold { background: linear-gradient(180deg,#ffe19a,#ffb84d); }
+
+  .hist-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #7a7690; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+  .history { display: flex; flex-wrap: wrap; gap: 7px; min-height: 38px; }
+  .chip {
+    width: 38px; height: 38px; border-radius: 10px; overflow: hidden;
+    background: #14121f; border: 1.5px solid rgba(255,255,255,0.1);
+  }
+  .chip img { width: 100%; height: 100%; object-fit: cover; }
+  .chip.rare  { border-color: #6db4ff; }
+  .chip.epic  { border-color: #c88bff; }
+  .chip.ssr   { border-color: #ffd25a; box-shadow: 0 0 10px rgba(255,210,90,.55); }
 </style>
 </head>
 <body>
   <div class="app">
-    <h1>GACHA ETHJKT</h1>
-    <div class="subtitle">tarik hokimu, pamerin ke temen sebelah</div>
+    <div class="brand"><div class="brand-dot"></div><div class="brand-label">Astral Express</div></div>
+    <h1>Stellar Wish</h1>
 
     <div class="stats">
       <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
@@ -106,141 +119,143 @@
     </div>
 
     <div class="pity">
-      <div class="pity-top"><span>Pity ke SSR gratis</span><span id="pityText">0 / 10</span></div>
+      <div class="pity-top"><span>PITY</span><span id="pityText">0 / 10</span></div>
       <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
     </div>
 
     <div class="stage">
       <div class="card" id="card">
-        <div class="emoji" id="cardEmoji">?</div>
-        <div class="name" id="cardName">Tekan TARIK</div>
+        <img class="card-img" id="cardImg" src="" alt="" style="display:none">
+        <div class="name" id="cardName">Tekan Wish</div>
         <div class="rar" id="cardRarity"></div>
       </div>
     </div>
 
     <div class="buttons">
-      <button class="btn" id="tarik1">TARIK 1x</button>
-      <button class="btn gold" id="tarik10">TARIK 10x</button>
+      <button class="btn" id="tarik1">WISH x1</button>
+      <button class="btn gold" id="tarik10">WISH x10</button>
     </div>
 
-    <div class="hist-lbl">Riwayat Terakhir</div>
+    <div class="hist-lbl">Riwayat</div>
     <div class="history" id="history"></div>
   </div>
 
 <script>
   // ==========================================================
-  // MISI HARI 1 - GACHA SIMULATOR (STARTER)
-  //
-  // Tampilan (HTML + CSS) udah jadi. TUGAS kamu: bikin LOGIKA-nya.
-  // JANGAN ketik manual. SURUH Codex yang nulis tiap CHECKPOINT,
-  // kamu BACA & VERIFIKASI. Save file -> refresh browser buat lihat.
-  //
-  // Ikutin urutan checkpoint di README.md. Contoh prompt ada di sana.
+  // GACHA SIMULATOR - Astral Express Wish
+  // Gambar pakai DiceBear API (avatar unik per nama karakter,
+  // bukan emoji) -> https://www.dicebear.com/
   // ==========================================================
 
   // CHECKPOINT 1 - Data & acak
-const hadiah = {
-  ssr: [
-    { n: "Kafka", e: "🌸" },
-    { n: "Acheron", e: "⚔️" },
-    { n: "Robin", e: "🎤" }
-  ],
-  epic: [
-    { n: "Tingyun", e: "🔔" },
-    { n: "Luocha", e: "🌿" }
-  ],
-  rare: [
-    { n: "Natasha", e: "💊" },
-    { n: "Herta", e: "🔧" }
-  ],
-  common: [
-    { n: "Trailblazer", e: "🚂" },
-    { n: "Dan Heng", e: "🐉" }
-  ]
-};
+  function gambarUntuk(nama) {
+    return "https://api.dicebear.com/9.x/bottts/svg?seed=" + encodeURIComponent(nama) + "&backgroundColor=1a1830";
+  }
 
-let pity = 0;
-let total = 0;
-let ssrCount = 0;
+  const hadiah = {
+    ssr: [
+      { n: "Kafka" },
+      { n: "Acheron" },
+      { n: "Robin" }
+    ],
+    epic: [
+      { n: "Tingyun" },
+      { n: "Luocha" }
+    ],
+    rare: [
+      { n: "Natasha" },
+      { n: "Herta" }
+    ],
+    common: [
+      { n: "Trailblazer" },
+      { n: "Dan Heng" }
+    ]
+  };
 
-function pilihAcak(arr) {
-  const index = Math.floor(Math.random() * arr.length);
-  return arr[index];
-}
+  let pity = 0;
+  let total = 0;
+  let ssrCount = 0;
+
+  function pilihAcak(arr) {
+    const index = Math.floor(Math.random() * arr.length);
+    return arr[index];
+  }
 
   // CHECKPOINT 2 - Logika tarikan
   function rollSatu() {
-  total++;
-  pity++;
+    total++;
+    pity++;
 
-  const acak = Math.random();
-  let kelas, item;
+    const acak = Math.random();
+    let kelas, item;
 
-  if (pity >= 10 || acak < 0.03) {
-    kelas = "ssr";
-    item = pilihAcak(hadiah.ssr);
-    pity = 0;
-    ssrCount++;
-  } else if (acak < 0.10) {
-    kelas = "epic";
-    item = pilihAcak(hadiah.epic);
-  } else if (acak < 0.30) {
-    kelas = "rare";
-    item = pilihAcak(hadiah.rare);
-  } else {
-    kelas = "common";
-    item = pilihAcak(hadiah.common);
+    if (pity >= 10 || acak < 0.03) {
+      kelas = "ssr";
+      item = pilihAcak(hadiah.ssr);
+      pity = 0;
+      ssrCount++;
+    } else if (acak < 0.10) {
+      kelas = "epic";
+      item = pilihAcak(hadiah.epic);
+    } else if (acak < 0.30) {
+      kelas = "rare";
+      item = pilihAcak(hadiah.rare);
+    } else {
+      kelas = "common";
+      item = pilihAcak(hadiah.common);
+    }
+
+    return { kelas: kelas, nama: item.n, gambar: gambarUntuk(item.n) };
   }
-
-  return { kelas: kelas, nama: item.n, emoji: item.e };
-}
 
   // CHECKPOINT 3 - Tampilkan + animasi
- function tampilkan(hasil) {
-  const card = document.getElementById("card");
-  document.getElementById("cardEmoji").textContent = hasil.emoji;
-  document.getElementById("cardName").textContent = hasil.nama;
-  document.getElementById("cardRarity").textContent = hasil.kelas.toUpperCase();
+  function tampilkan(hasil) {
+    const card = document.getElementById("card");
+    const img = document.getElementById("cardImg");
 
-  card.className = "card";
-  void card.offsetWidth;
-  card.className = "card " + hasil.kelas + " reveal";
+    img.src = hasil.gambar;
+    img.style.display = "block";
+    document.getElementById("cardName").textContent = hasil.nama;
+    document.getElementById("cardRarity").textContent = hasil.kelas.toUpperCase();
 
-  document.getElementById("total").textContent = total;
-  document.getElementById("ssrCount").textContent = ssrCount;
-  document.getElementById("pityText").textContent = pity + " / 10";
-  document.getElementById("pityFill").style.width = (pity / 10 * 100) + "%";
-}
+    card.className = "card";
+    void card.offsetWidth;
+    card.className = "card " + hasil.kelas + " reveal";
+
+    document.getElementById("total").textContent = total;
+    document.getElementById("ssrCount").textContent = ssrCount;
+    document.getElementById("pityText").textContent = pity + " / 10";
+    document.getElementById("pityFill").style.width = (pity / 10 * 100) + "%";
+  }
 
   // CHECKPOINT 4 - Riwayat + tombol
-function tambahRiwayat(hasil) {
-  const history = document.getElementById("history");
-  const chip = document.createElement("div");
-  chip.className = "chip " + hasil.kelas;
-  chip.textContent = hasil.emoji;
-  history.insertBefore(chip, history.firstChild);
+  function tambahRiwayat(hasil) {
+    const history = document.getElementById("history");
+    const chip = document.createElement("div");
+    chip.className = "chip " + hasil.kelas;
+    const img = document.createElement("img");
+    img.src = hasil.gambar;
+    chip.appendChild(img);
+    history.insertBefore(chip, history.firstChild);
 
-  while (history.children.length > 12) {
-    history.removeChild(history.lastChild);
+    while (history.children.length > 12) {
+      history.removeChild(history.lastChild);
+    }
   }
-}
 
-document.getElementById("tarik1").addEventListener("click", function() {
-  const hasil = rollSatu();
-  tampilkan(hasil);
-  tambahRiwayat(hasil);
-});
-
-document.getElementById("tarik10").addEventListener("click", function() {
-  for (let i = 0; i < 10; i++) {
+  document.getElementById("tarik1").addEventListener("click", function() {
     const hasil = rollSatu();
     tampilkan(hasil);
     tambahRiwayat(hasil);
-  }
-});
+  });
 
-  // >> Buka Codex, kerjain checkpoint SATU PER SATU. Baca hasilnya.
-  // >> Kamu PILOT-nya, bukan penonton.
+  document.getElementById("tarik10").addEventListener("click", function() {
+    for (let i = 0; i < 10; i++) {
+      const hasil = rollSatu();
+      tampilkan(hasil);
+      tambahRiwayat(hasil);
+    }
+  });
 </script>
 </body>
 </html>
