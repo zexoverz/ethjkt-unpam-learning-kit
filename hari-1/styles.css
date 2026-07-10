@@ -5,20 +5,23 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --red: #e3350d;        /* merah khas FireRed */
-  --red-dark: #b81f00;
-  --blue: #2a75bb;       /* biru lensa Pokédex */
-  --yellow: #ffcb05;     /* kuning Pokémon */
-  --ink: #2b2f3a;        /* teks utama */
-  --muted: #7c8598;      /* teks samar */
-  --screen: #ffffff;     /* warna layar */
-  --panel: #f1f4f9;      /* panel/tile di dalam layar */
-  --line: #dfe4ee;       /* garis pembatas */
+  --red: #8b5cf6;
+  --red-dark: #4c1d95;
+  --blue: #38bdf8;
+  --yellow: #facc15;
+  --ink: #f6f2ff;
+  --muted: #a99bc8;
+  --screen: #12091f;
+  --panel: #1e1230;
+  --line: #3f2a62;
 }
 
 body {
   font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
-  background: radial-gradient(circle at 50% 0%, #f7f9fd 0%, #e5eaf3 70%);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(139,92,246,.42) 0%, transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(56,189,248,.18) 0%, transparent 28%),
+    linear-gradient(145deg, #05030a 0%, #10081c 46%, #1d0b36 100%);
   color: var(--ink); min-height: 100vh;
   display: flex; align-items: flex-start; justify-content: center; padding: 24px 16px;
 }
@@ -26,24 +29,27 @@ body {
 /* ---------- Perangkat Pokédex ---------- */
 .pokedex {
   width: 100%; max-width: 470px;
-  background: linear-gradient(180deg, var(--red) 0%, var(--red-dark) 100%);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0)),
+    linear-gradient(160deg, #221136 0%, #12091f 48%, #05030a 100%);
   border-radius: 22px; padding: 14px;
-  box-shadow: 0 18px 46px rgba(180,31,0,.35), inset 0 2px 0 rgba(255,255,255,.25);
+  border: 1px solid rgba(167,139,250,.28);
+  box-shadow: 0 24px 70px rgba(0,0,0,.62), 0 0 46px rgba(109,40,217,.28), inset 0 1px 0 rgba(255,255,255,.12);
 }
 
 /* Bagian atas: lensa + lampu indikator + brand */
 .pokedex-top { display: flex; align-items: center; gap: 12px; padding: 6px 8px 14px; }
 .lens {
   width: 46px; height: 46px; border-radius: 50%;
-  background: radial-gradient(circle at 32% 30%, #bfe3ff 0%, var(--blue) 55%, #14508f 100%);
-  border: 4px solid #eaf3ff;
-  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  background: radial-gradient(circle at 32% 30%, #d8ccff 0%, #a78bfa 35%, var(--blue) 72%, #0f172a 100%);
+  border: 4px solid #24143a;
+  box-shadow: 0 0 18px rgba(139,92,246,.58), 0 2px 8px rgba(0,0,0,.45);
 }
 .lights { display: flex; gap: 7px; }
 .light { width: 13px; height: 13px; border-radius: 50%; border: 2px solid rgba(255,255,255,.7); }
-.light.red { background: #ff5b5b; }
+.light.red { background: #c084fc; }
 .light.yellow { background: var(--yellow); }
-.light.green { background: #57d977; }
+.light.green { background: #22d3ee; }
 .brand {
   margin-left: auto; font-weight: 800; letter-spacing: 2px;
   color: #fff; font-size: 14px; text-shadow: 0 1px 2px rgba(0,0,0,.3);
@@ -53,12 +59,13 @@ body {
 .screen {
   background: var(--screen); border-radius: 16px;
   padding: 20px 18px 24px; text-align: center;
-  border: 3px solid rgba(0,0,0,.06);
-  box-shadow: inset 0 2px 10px rgba(0,0,0,.06);
+  border: 1px solid rgba(167,139,250,.22);
+  box-shadow: inset 0 2px 18px rgba(0,0,0,.46), 0 0 0 1px rgba(255,255,255,.04);
 }
 h1 {
   font-size: 26px; letter-spacing: 1px; margin-bottom: 4px; color: var(--red);
   text-transform: uppercase; font-weight: 800;
+  text-shadow: 0 0 18px rgba(167,139,250,.34);
 }
 .subtitle { font-size: 12px; color: var(--muted); margin-bottom: 18px; }
 
@@ -70,8 +77,12 @@ h1 {
   font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
   transition: all .15s ease;
 }
-.tab:hover { border-color: #cdd5e3; }
-.tab.active { background: var(--red); color: #fff; border-color: var(--red); box-shadow: 0 3px 0 var(--red-dark); }
+.tab:hover { border-color: #a78bfa; color: #e9ddff; }
+.tab.active {
+  background: linear-gradient(180deg, #8b5cf6, #5b21b6);
+  color: #fff; border-color: #a78bfa;
+  box-shadow: 0 3px 0 #2e1065, 0 0 18px rgba(139,92,246,.34);
+}
 .tab-panel[hidden] { display: none; }
 
 /* ---------- Koleksi (Pokédex) ---------- */
@@ -96,9 +107,9 @@ h1 {
 .badge-intro { font-size: 12px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
 .champion {
   margin-bottom: 14px; padding: 12px; border-radius: 12px;
-  background: linear-gradient(180deg,#fff4c2,#ffe27a); color: #6a5200;
+  background: linear-gradient(180deg,#3b2364,#1e1230); color: #f8e9a1;
   font-weight: 800; font-size: 14px; border: 2px solid var(--yellow);
-  box-shadow: 0 0 18px rgba(255,203,5,.6);
+  box-shadow: 0 0 18px rgba(250,204,21,.32);
 }
 .badge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .badge-cell {
@@ -110,12 +121,12 @@ h1 {
 .badge-cell .badge-icon {
   font-size: 30px; line-height: 1; width: 54px; height: 54px; margin: 0 auto 6px;
   display: flex; align-items: center; justify-content: center;
-  border-radius: 50%; background: #fff; border: 2px solid var(--line);
+  border-radius: 50%; background: #10081c; border: 2px solid var(--line);
 }
-.badge-cell.earned .badge-icon { border-color: var(--gym, var(--red)); background: var(--gym-soft, #fff); }
+.badge-cell.earned .badge-icon { border-color: var(--gym, var(--red)); background: var(--gym-soft, #1e1230); }
 .badge-cell .badge-name { font-size: 13px; font-weight: 800; color: var(--ink); }
 .badge-cell .badge-gym { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
-.badge-cell .badge-prog-track { height: 6px; background: #e3e8f0; border-radius: 4px; overflow: hidden; }
+.badge-cell .badge-prog-track { height: 6px; background: #12091f; border-radius: 4px; overflow: hidden; }
 .badge-cell .badge-prog-fill { height: 100%; border-radius: 4px; background: var(--gym, var(--red)); transition: width .4s ease; }
 .badge-cell .badge-prog-txt { font-size: 10px; color: var(--muted); margin-top: 4px; font-weight: 700; }
 .badge-cell .badge-check { position: absolute; top: 8px; right: 10px; font-size: 14px; color: #2fae5a; }
@@ -123,8 +134,9 @@ h1 {
 /* ---------- Toast (notifikasi badge baru) ---------- */
 .toast {
   position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%);
-  background: #1a1a1a; color: #fff; padding: 12px 18px; border-radius: 12px;
+  background: #12091f; color: #fff; padding: 12px 18px; border-radius: 12px;
   font-size: 13px; font-weight: 700; box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  border: 1px solid rgba(167,139,250,.28);
   z-index: 50; animation: toastIn .3s ease;
 }
 .toast[hidden] { display: none; }
@@ -145,7 +157,7 @@ h1 {
 .pity-track { height: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
 .pity-fill {
   height: 100%; width: 0%;
-  background: linear-gradient(90deg, var(--yellow), var(--red));
+  background: linear-gradient(90deg, var(--blue), #a78bfa, var(--yellow));
   transition: width 0.35s ease;
 }
 
@@ -153,10 +165,11 @@ h1 {
 .stage { display: flex; justify-content: center; margin-bottom: 14px; }
 .card {
   width: 220px; height: 250px; border-radius: 18px;
-  background: linear-gradient(180deg, #fbfdff 0%, #eef3fb 100%);
-  border: 3px solid #cdd5e3;
+  background: linear-gradient(180deg, #211431 0%, #0b0612 100%);
+  border: 3px solid #3f2a62;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 8px; position: relative; overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07);
 }
 .card .sprite {
   width: 190px; height: 190px; object-fit: contain;
@@ -167,20 +180,20 @@ h1 {
 .card .placeholder { display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .pokeball {
   width: 68px; height: 68px; border-radius: 50%; position: relative;
-  background: linear-gradient(#ee1515 0 49%, #1a1a1a 49% 51%, #fff 51% 100%);
-  border: 3px solid #1a1a1a; box-shadow: 0 3px 8px rgba(0,0,0,.18);
+  background: linear-gradient(#8b5cf6 0 49%, #05030a 49% 51%, #1e1230 51% 100%);
+  border: 3px solid #05030a; box-shadow: 0 3px 12px rgba(139,92,246,.28);
 }
 .pokeball::after {
   content: ""; position: absolute; top: 50%; left: 50%;
   width: 22px; height: 22px; border-radius: 50%;
-  background: #fff; border: 3px solid #1a1a1a; transform: translate(-50%,-50%);
+  background: #d8ccff; border: 3px solid #05030a; transform: translate(-50%,-50%);
 }
 .card .placeholder .ph-text { font-size: 14px; color: var(--muted); letter-spacing: 1px; }
 
 /* spinner loading */
 .spinner {
   width: 44px; height: 44px; border-radius: 50%;
-  border: 4px solid rgba(0,0,0,.1); border-top-color: var(--red);
+  border: 4px solid rgba(255,255,255,.12); border-top-color: #a78bfa;
   animation: spin 0.8s linear infinite; display: none;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -235,11 +248,11 @@ h1 {
 .btn {
   flex: 1; padding: 15px 0; border: none; border-radius: 14px;
   font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer;
-  color: #fff; background: linear-gradient(180deg,#ff5a3c,var(--red));
-  box-shadow: 0 4px 0 var(--red-dark); transition: transform .08s ease, box-shadow .08s ease, filter .15s ease;
+  color: #fff; background: linear-gradient(180deg,#a78bfa,#6d28d9);
+  box-shadow: 0 4px 0 #3b0764, 0 0 18px rgba(139,92,246,.26); transition: transform .08s ease, box-shadow .08s ease, filter .15s ease;
 }
 .btn:hover { filter: brightness(1.05); }
-.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--red-dark); }
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #3b0764; }
 .btn.gold { color: #6a5200; background: linear-gradient(180deg,#ffe27a,var(--yellow)); box-shadow: 0 4px 0 #c99a00; }
 .btn.gold:active { box-shadow: 0 1px 0 #c99a00; }
 .btn:disabled { opacity: .5; cursor: not-allowed; filter: grayscale(.3); transform: none; }
@@ -250,7 +263,7 @@ h1 {
 .chip {
   width: 40px; height: 40px; border-radius: 9px; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
-  background: #fff; border: 2px solid var(--line);
+  background: #10081c; border: 2px solid var(--line);
 }
 .chip img { width: 100%; height: 100%; object-fit: contain; }
 .chip.rare { border-color: var(--blue); }
