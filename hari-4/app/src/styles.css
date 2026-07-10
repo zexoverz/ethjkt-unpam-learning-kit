@@ -573,3 +573,314 @@ body {
     gap: 0.6rem;
   }
 }
+
+/* ============================================================
+   CHARTS ROW (PriceChart + XYKCurve always visible)
+   ============================================================ */
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 860px) {
+  .charts-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.chart-card {
+  min-height: 0;
+}
+.chart-card__title {
+  margin: 0 0 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+/* ============================================================
+   PRICE CHART (BarChart)
+   ============================================================ */
+.price-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.chart-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+@media (max-width: 520px) {
+  .chart-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.chart-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.chart-stat__label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.65;
+}
+.chart-stat__value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+.chart-stat--up {
+  color: #7ef0c2;
+}
+.chart-stat--down {
+  color: #ff7b7b;
+}
+.chart-pair-label {
+  margin: 0;
+  font-size: 0.82rem;
+  opacity: 0.75;
+  text-align: center;
+}
+.chart-canvas {
+  border-radius: 0.8rem;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+.chart-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+.chart-legend__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.chart-legend__dot--up {
+  background: #7ef0c2;
+}
+.chart-legend__dot--down {
+  background: #ff7b7b;
+}
+.chart-legend__line {
+  width: 16px;
+  height: 2px;
+  background: rgba(143, 194, 255, 0.6);
+  border-top: 2px dashed rgba(143, 194, 255, 0.6);
+  background: none;
+  display: inline-block;
+}
+.chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 2.5rem 1rem;
+  text-align: center;
+}
+.chart-empty__icon {
+  font-size: 2.5rem;
+  opacity: 0.5;
+}
+.chart-empty__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+.chart-empty__hint {
+  margin: 0;
+  font-size: 0.82rem;
+  opacity: 0.55;
+  max-width: 260px;
+}
+
+/* ============================================================
+   SLIPPAGE GAUGE
+   ============================================================ */
+.slippage-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: border-color 0.3s ease;
+}
+.slippage-panel--warn {
+  border-color: rgba(255, 214, 102, 0.4);
+  background: rgba(255, 214, 102, 0.06);
+}
+.slippage-panel--danger {
+  border-color: rgba(255, 107, 107, 0.4);
+  background: rgba(255, 107, 107, 0.06);
+}
+.slippage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.slippage-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+.slippage-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.slippage-gauge-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.slippage-gauge-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+.slippage-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.slippage-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+.slippage-row span:first-child {
+  opacity: 0.65;
+}
+.slippage-row .mono {
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+.slippage-warning {
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.7rem;
+  background: rgba(255, 169, 77, 0.12);
+  border: 1px solid rgba(255, 169, 77, 0.3);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+.slippage-warning--danger {
+  background: rgba(255, 107, 107, 0.12);
+  border-color: rgba(255, 107, 107, 0.3);
+}
+.slippage-warning__sub {
+  margin-top: 0.3rem;
+  opacity: 0.7;
+  font-size: 0.72rem;
+}
+
+/* ============================================================
+   XYK CURVE (SVG)
+   ============================================================ */
+.xyk-canvas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.xyk-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.xyk-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.xyk-k-values {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  opacity: 0.8;
+}
+.xyk-k--up {
+  color: #7ef0c2;
+}
+.xyk-k--down {
+  color: #ff7b7b;
+}
+.xyk-svg {
+  width: 100%;
+  height: auto;
+  border-radius: 0.8rem;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.xyk-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+.xyk-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+.xyk-legend__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.xyk-legend__dot--curr {
+  background: #8fc2ff;
+}
+.xyk-legend__dot--new {
+  background: #7ef0c2;
+}
+.xyk-legend__arrow {
+  font-size: 0.9rem;
+  color: #ffd666;
+}
+.xyk-proof {
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.7rem;
+  background: rgba(126, 240, 194, 0.08);
+  border: 1px solid rgba(126, 240, 194, 0.2);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.xyk-proof small {
+  opacity: 0.6;
+}
+
+/* hint text */
+.hint {
+  margin: 0.3rem 0 0;
+  font-size: 0.78rem;
+  opacity: 0.6;
+  line-height: 1.4;
+}
