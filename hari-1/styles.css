@@ -1,0 +1,274 @@
+/* ==========================================================
+   POKÉ GACHA — tema terang ala Pokédex FireRed
+   Palet: merah Pokédex + layar putih + aksen warna-warni.
+   ========================================================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red: #8b5cf6;
+  --red-dark: #4c1d95;
+  --blue: #38bdf8;
+  --yellow: #facc15;
+  --ink: #f6f2ff;
+  --muted: #a99bc8;
+  --screen: #12091f;
+  --panel: #1e1230;
+  --line: #3f2a62;
+}
+
+body {
+  font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(139,92,246,.42) 0%, transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(56,189,248,.18) 0%, transparent 28%),
+    linear-gradient(145deg, #05030a 0%, #10081c 46%, #1d0b36 100%);
+  color: var(--ink); min-height: 100vh;
+  display: flex; align-items: flex-start; justify-content: center; padding: 24px 16px;
+}
+
+/* ---------- Perangkat Pokédex ---------- */
+.pokedex {
+  width: 100%; max-width: 470px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0)),
+    linear-gradient(160deg, #221136 0%, #12091f 48%, #05030a 100%);
+  border-radius: 22px; padding: 14px;
+  border: 1px solid rgba(167,139,250,.28);
+  box-shadow: 0 24px 70px rgba(0,0,0,.62), 0 0 46px rgba(109,40,217,.28), inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+/* Bagian atas: lensa + lampu indikator + brand */
+.pokedex-top { display: flex; align-items: center; gap: 12px; padding: 6px 8px 14px; }
+.lens {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, #d8ccff 0%, #a78bfa 35%, var(--blue) 72%, #0f172a 100%);
+  border: 4px solid #24143a;
+  box-shadow: 0 0 18px rgba(139,92,246,.58), 0 2px 8px rgba(0,0,0,.45);
+}
+.lights { display: flex; gap: 7px; }
+.light { width: 13px; height: 13px; border-radius: 50%; border: 2px solid rgba(255,255,255,.7); }
+.light.red { background: #c084fc; }
+.light.yellow { background: var(--yellow); }
+.light.green { background: #22d3ee; }
+.brand {
+  margin-left: auto; font-weight: 800; letter-spacing: 2px;
+  color: #fff; font-size: 14px; text-shadow: 0 1px 2px rgba(0,0,0,.3);
+}
+
+/* ---------- Layar ---------- */
+.screen {
+  background: var(--screen); border-radius: 16px;
+  padding: 20px 18px 24px; text-align: center;
+  border: 1px solid rgba(167,139,250,.22);
+  box-shadow: inset 0 2px 18px rgba(0,0,0,.46), 0 0 0 1px rgba(255,255,255,.04);
+}
+h1 {
+  font-size: 26px; letter-spacing: 1px; margin-bottom: 4px; color: var(--red);
+  text-transform: uppercase; font-weight: 800;
+  text-shadow: 0 0 18px rgba(167,139,250,.34);
+}
+.subtitle { font-size: 12px; color: var(--muted); margin-bottom: 18px; }
+
+/* ---------- Navigasi tab ---------- */
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.tab {
+  flex: 1; padding: 9px 0; border: 2px solid var(--line); border-radius: 10px;
+  background: var(--panel); color: var(--muted); cursor: pointer;
+  font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+  transition: all .15s ease;
+}
+.tab:hover { border-color: #a78bfa; color: #e9ddff; }
+.tab.active {
+  background: linear-gradient(180deg, #8b5cf6, #5b21b6);
+  color: #fff; border-color: #a78bfa;
+  box-shadow: 0 3px 0 #2e1065, 0 0 18px rgba(139,92,246,.34);
+}
+.tab-panel[hidden] { display: none; }
+
+/* ---------- Koleksi (Pokédex) ---------- */
+.collection-empty { color: var(--muted); font-size: 13px; padding: 30px 10px; }
+.collection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.dex-cell {
+  background: var(--panel); border: 2px solid var(--line); border-radius: 12px;
+  padding: 8px 6px 10px; position: relative; text-align: center;
+}
+.dex-cell img { width: 68px; height: 68px; object-fit: contain; }
+.dex-cell .dex-no { font-size: 10px; color: var(--muted); font-family: "Courier New", monospace; font-weight: 700; }
+.dex-cell .dex-name { font-size: 11px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dex-cell .dex-count {
+  position: absolute; top: 6px; right: 6px;
+  font-size: 10px; font-weight: 800; color: #fff; background: var(--red);
+  border-radius: 10px; padding: 1px 7px; min-width: 20px;
+}
+.dex-cell.shiny { border-color: var(--yellow); box-shadow: 0 0 10px rgba(255,203,5,.55); }
+.dex-cell .shiny-star { position: absolute; top: 5px; left: 6px; font-size: 12px; }
+
+/* ---------- Badge (gym Kanto) ---------- */
+.badge-intro { font-size: 12px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+.champion {
+  margin-bottom: 14px; padding: 12px; border-radius: 12px;
+  background: linear-gradient(180deg,#3b2364,#1e1230); color: #f8e9a1;
+  font-weight: 800; font-size: 14px; border: 2px solid var(--yellow);
+  box-shadow: 0 0 18px rgba(250,204,21,.32);
+}
+.badge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.badge-cell {
+  background: var(--panel); border: 2px solid var(--line); border-radius: 12px;
+  padding: 12px 10px; text-align: center; position: relative; opacity: .6;
+  filter: grayscale(1); transition: all .2s ease;
+}
+.badge-cell.earned { opacity: 1; filter: none; border-color: var(--gym, var(--red)); box-shadow: 0 0 14px var(--gym-glow, rgba(227,53,13,.4)); }
+.badge-cell .badge-icon {
+  font-size: 30px; line-height: 1; width: 54px; height: 54px; margin: 0 auto 6px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: #10081c; border: 2px solid var(--line);
+}
+.badge-cell.earned .badge-icon { border-color: var(--gym, var(--red)); background: var(--gym-soft, #1e1230); }
+.badge-cell .badge-name { font-size: 13px; font-weight: 800; color: var(--ink); }
+.badge-cell .badge-gym { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+.badge-cell .badge-prog-track { height: 6px; background: #12091f; border-radius: 4px; overflow: hidden; }
+.badge-cell .badge-prog-fill { height: 100%; border-radius: 4px; background: var(--gym, var(--red)); transition: width .4s ease; }
+.badge-cell .badge-prog-txt { font-size: 10px; color: var(--muted); margin-top: 4px; font-weight: 700; }
+.badge-cell .badge-check { position: absolute; top: 8px; right: 10px; font-size: 14px; color: #2fae5a; }
+
+/* ---------- Toast (notifikasi badge baru) ---------- */
+.toast {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%);
+  background: #12091f; color: #fff; padding: 12px 18px; border-radius: 12px;
+  font-size: 13px; font-weight: 700; box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  border: 1px solid rgba(167,139,250,.28);
+  z-index: 50; animation: toastIn .3s ease;
+}
+.toast[hidden] { display: none; }
+@keyframes toastIn { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* ---------- Kartu statistik ---------- */
+.stats { display: flex; gap: 10px; margin-bottom: 12px; }
+.stat {
+  flex: 1; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 12px; padding: 10px 6px;
+}
+.stat .num { font-size: 22px; font-weight: 800; color: var(--ink); }
+.stat .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+/* ---------- Pity bar ---------- */
+.pity { margin-bottom: 18px; text-align: left; }
+.pity-top { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.pity-track { height: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.pity-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--blue), #a78bfa, var(--yellow));
+  transition: width 0.35s ease;
+}
+
+/* ---------- Panggung / kartu Pokémon ---------- */
+.stage { display: flex; justify-content: center; margin-bottom: 14px; }
+.card {
+  width: 220px; height: 250px; border-radius: 18px;
+  background: linear-gradient(180deg, #211431 0%, #0b0612 100%);
+  border: 3px solid #3f2a62;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; position: relative; overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07);
+}
+.card .sprite {
+  width: 190px; height: 190px; object-fit: contain;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.22)); display: none;
+}
+
+/* Placeholder: Pokéball mini dari CSS */
+.card .placeholder { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.pokeball {
+  width: 68px; height: 68px; border-radius: 50%; position: relative;
+  background: linear-gradient(#8b5cf6 0 49%, #05030a 49% 51%, #1e1230 51% 100%);
+  border: 3px solid #05030a; box-shadow: 0 3px 12px rgba(139,92,246,.28);
+}
+.pokeball::after {
+  content: ""; position: absolute; top: 50%; left: 50%;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #d8ccff; border: 3px solid #05030a; transform: translate(-50%,-50%);
+}
+.card .placeholder .ph-text { font-size: 14px; color: var(--muted); letter-spacing: 1px; }
+
+/* spinner loading */
+.spinner {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 4px solid rgba(255,255,255,.12); border-top-color: #a78bfa;
+  animation: spin 0.8s linear infinite; display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.shiny-badge {
+  position: absolute; top: 10px; right: 10px; display: none;
+  font-size: 11px; font-weight: 800; letter-spacing: 1px;
+  background: linear-gradient(90deg,#ffe58a,#ffc400); color: #6a5200;
+  padding: 3px 8px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+
+/* warna per rarity (border kartu) */
+.card.common { border-color: #b8c0cf; }
+.card.rare   { border-color: var(--blue);   box-shadow: 0 0 20px rgba(42,117,187,.35); }
+.card.epic   { border-color: #8b3ff0;       box-shadow: 0 0 22px rgba(139,63,240,.35); }
+.card.ssr    { border-color: var(--yellow); box-shadow: 0 0 34px rgba(255,203,5,.6); }
+
+/* animasi reveal */
+@keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+@keyframes glowpulse { 0%,100%{box-shadow:0 0 26px rgba(255,203,5,.55)} 50%{box-shadow:0 0 48px rgba(255,203,5,.95)} }
+.card.reveal { animation: pop .4s ease; }
+.card.ssr.reveal { animation: pop .4s ease, shake .5s ease .4s, glowpulse 1.2s ease-in-out .4s 2; }
+
+/* ---------- Info Pokémon di bawah kartu ---------- */
+.poke-info { min-height: 92px; margin-bottom: 8px; }
+.poke-name { font-size: 19px; font-weight: 800; color: var(--ink); }
+.poke-name .dex { font-size: 13px; color: var(--muted); font-weight: 700; font-family: "Courier New", monospace; }
+.rar { font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+.rar.common { color: #8a94a6; }
+.rar.rare   { color: var(--blue); }
+.rar.epic   { color: #8b3ff0; }
+.rar.ssr    { color: #d99e00; }
+
+.types { display: flex; gap: 6px; justify-content: center; margin: 8px 0 4px; min-height: 22px; }
+.type-badge {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  padding: 3px 10px; border-radius: 20px; color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.35);
+}
+
+/* ---------- Panel stat dasar ---------- */
+.stats-panel { display: grid; gap: 4px; margin-top: 8px; text-align: left; }
+.stat-row { display: grid; grid-template-columns: 42px 30px 1fr; align-items: center; gap: 8px; font-size: 11px; }
+.stat-row .s-lbl { color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+.stat-row .s-val { color: var(--ink); font-weight: 800; text-align: right; }
+.stat-bar { height: 7px; background: var(--panel); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.stat-bar > span { display: block; height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--blue), #58b0ef); transition: width .4s ease; }
+
+/* ---------- Tombol PULL ala Pokédex ---------- */
+.buttons { display: flex; gap: 12px; margin: 14px 0 22px; }
+.btn {
+  flex: 1; padding: 15px 0; border: none; border-radius: 14px;
+  font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer;
+  color: #fff; background: linear-gradient(180deg,#a78bfa,#6d28d9);
+  box-shadow: 0 4px 0 #3b0764, 0 0 18px rgba(139,92,246,.26); transition: transform .08s ease, box-shadow .08s ease, filter .15s ease;
+}
+.btn:hover { filter: brightness(1.05); }
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #3b0764; }
+.btn.gold { color: #6a5200; background: linear-gradient(180deg,#ffe27a,var(--yellow)); box-shadow: 0 4px 0 #c99a00; }
+.btn.gold:active { box-shadow: 0 1px 0 #c99a00; }
+.btn:disabled { opacity: .5; cursor: not-allowed; filter: grayscale(.3); transform: none; }
+
+/* ---------- Riwayat ---------- */
+.hist-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 8px; }
+.history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 40px; }
+.chip {
+  width: 40px; height: 40px; border-radius: 9px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: #10081c; border: 2px solid var(--line);
+}
+.chip img { width: 100%; height: 100%; object-fit: contain; }
+.chip.rare { border-color: var(--blue); }
+.chip.epic { border-color: #8b3ff0; }
+.chip.ssr  { border-color: var(--yellow); box-shadow: 0 0 8px rgba(255,203,5,.6); }
+.chip.shiny { box-shadow: 0 0 9px rgba(255,196,0,.9); }
+
+.err { color: var(--red); font-size: 12px; min-height: 16px; margin-top: 6px; }
