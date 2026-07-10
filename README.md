@@ -334,10 +334,13 @@ file: KARIER.md (di repo ini).
 Capstone kita: "KampusSwap" — tiap orang cetak KOIN sendiri di blockchain,
 bikin pasar mini buat nuker-nya, dan ngerti sendiri gimana harga & DeFi
 bekerja. Dibantu AI, diverifikasi otak sendiri. Sampai ketemu di hari-H.
+<<<<<<< HEAD
 
 > **Rekap langkah Hari 4 (step-by-step + screenshot):** panduan lengkap
 > interaksi dApp KampusSwap — mint token, deploy AMM, konfigurasi app, tambah
 > likuiditas, sampai swap — ada di [`hari-4/rekap-hari-4.md`](hari-4/rekap-hari-4.md).
+=======
+>>>>>>> b6ea75349b35d6878ea64f0c703e349f3cc07e3e
 
 ---
 

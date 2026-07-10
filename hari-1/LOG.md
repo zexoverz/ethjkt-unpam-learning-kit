@@ -11,14 +11,13 @@ Versi baru mengambil data nyata dari **PokeAPI** (https://pokeapi.co) —
 database Pokémon gratis untuk umum. Jadi tiap tarikan memunculkan Pokémon
 sungguhan dengan artwork resminya.
 
-## Cara kerjanya (bahasa gampang)
-
 ### Batas pull harian dan layout lanskap
 
 - Setiap pemain bisa melakukan maksimal **100 tarikan per hari**. Kuotanya tersimpan di browser dan otomatis reset ketika tanggal lokal browser berganti.
 - Tombol **PULL 10x** hanya memakai kuota yang tersisa. Contoh: jika sisa 5, tombol tersebut menarik 5 kali; setelah kuota habis kedua tombol nonaktif sampai besok.
 - Tab Gacha kini memakai susunan **lanskap**: hasil di kiri, statistik, kuota, tombol, dan riwayat di kanan. Di ponsel tampilannya otomatis kembali satu kolom.
 
+## Cara kerjanya (bahasa gampang)
 1. **Roll rarity dulu (pakai pity)** — sama seperti gacha beneran:
    - **SSR 3%**, **EPIC 10%**, **RARE 30%**, sisanya **COMMON**.
    - **Pity:** kalau sampai tarikan ke-10 belum dapat SSR, tarikan ke-10

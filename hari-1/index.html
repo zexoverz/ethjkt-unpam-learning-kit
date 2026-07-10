@@ -33,52 +33,44 @@
 
       <!-- ============ TAB: GACHA ============ -->
       <div class="tab-panel" id="panel-gacha">
-        <div class="gacha-layout">
-          <section class="gacha-main" aria-label="Hasil gacha">
-
-            <div class="stage">
-              <div class="card" id="card">
-                <div class="spinner" id="spinner"></div>
-                <img class="sprite" id="sprite" alt="">
-                <div class="shiny-badge" id="shinyBadge">✨ SHINY</div>
-                <div class="placeholder" id="placeholder">
-                  <div class="pokeball"></div>
-                  <div class="ph-text">Tekan PULL</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="poke-info">
-              <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
-              <div class="types" id="types"></div>
-              <div class="rar" id="rarity"></div>
-              <div class="stats-panel" id="statsPanel"></div>
-            </div>
-
-          </section>
-
-          <aside class="gacha-sidebar" aria-label="Kontrol gacha">
-            <div class="stats">
-              <div class="stat"><div class="num" id="dailyPulls">0 / 100</div><div class="lbl">Tarik Hari Ini</div></div>
-              <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
-              <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-            </div>
-            <div class="pity">
-              <div class="pity-top"><span>Pity ke Legendary gratis</span><span id="pityText">0 / 10</span></div>
-              <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-            </div>
-            <p class="daily-limit" id="dailyLimit" aria-live="polite">100 tarikan tersedia hari ini.</p>
-            <div class="err" id="err" role="alert"></div>
-
-            <div class="buttons">
-              <button class="btn" id="tarik1">PULL 1x</button>
-              <button class="btn gold" id="tarik10">PULL 10x</button>
-            </div>
-
-            <div class="hist-lbl">Riwayat Terakhir</div>
-            <div class="history" id="history"></div>
-          </aside>
+        <div class="stats">
+          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
+          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
         </div>
+
+        <div class="pity">
+          <div class="pity-top"><span>Pity ke Legendary gratis</span><span id="pityText">0 / 10</span></div>
+          <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
+        </div>
+
+        <div class="stage">
+          <div class="card" id="card">
+            <div class="spinner" id="spinner"></div>
+            <img class="sprite" id="sprite" alt="">
+            <div class="shiny-badge" id="shinyBadge">✨ SHINY</div>
+            <div class="placeholder" id="placeholder">
+              <div class="pokeball"></div>
+              <div class="ph-text">Tekan PULL</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="poke-info">
+          <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
+          <div class="types" id="types"></div>
+          <div class="rar" id="rarity"></div>
+          <div class="stats-panel" id="statsPanel"></div>
+        </div>
+
+        <div class="err" id="err"></div>
+
+        <div class="buttons">
+          <button class="btn" id="tarik1">PULL 1x</button>
+          <button class="btn gold" id="tarik10">PULL 10x</button>
+        </div>
+
+        <div class="hist-lbl">Riwayat Terakhir</div>
+        <div class="history" id="history"></div>
       </div>
 
       <!-- ============ TAB: KOLEKSI ============ -->

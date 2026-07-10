@@ -18,6 +18,7 @@ const RATE_EPIC = 0.10;
 const RATE_RARE = 0.30;
 
 const SHINY_RATE = 1 / 40; // peluang setiap Pokémon keluar versi shiny (langka & mengkilap)
+const DAILY_PULL_LIMIT = 100; // batas tarikan per hari di browser yang sama
 
 // ---------- Sumber data: PokeAPI ----------
 const API = "https://pokeapi.co/api/v2";
@@ -122,9 +123,15 @@ async function getPokemon(id) {
 let pity = 0;      // tarikan sejak Legendary terakhir
 let total = 0;     // total tarikan
 let ssrCount = 0;  // total Legendary/Mythical didapat
+<<<<<<< HEAD
 let dailyPulls = 0;       // tarikan yang berhasil pada tanggal lokal saat ini
 let dailyPullDate = "";   // format YYYY-MM-DD dari browser pemain
 let isLoading = false;
+=======
+let pullsToday = 0; // jumlah tarikan hari ini
+let pullDate = todayKey(); // tanggal kuota harian terakhir dipakai
+let isPulling = false;
+>>>>>>> b6ea75349b35d6878ea64f0c703e349f3cc07e3e
 
 // Koleksi Pokédex: id -> data Pokémon yang pernah didapat (+ jumlahnya).
 let collection = {};
@@ -133,6 +140,7 @@ let collection = {};
 // Semua progres bertahan walau browser ditutup / halaman di-refresh.
 const STORAGE_KEY = "pokegacha_state_v1";
 
+<<<<<<< HEAD
 function getLocalDate() {
   const now = new Date();
   const offset = now.getTimezoneOffset() * 60_000;
@@ -150,13 +158,38 @@ function refreshDailyLimit() {
 function pullsRemaining() {
   refreshDailyLimit();
   return Math.max(0, DAILY_PULL_LIMIT - dailyPulls);
+=======
+function todayKey() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return year + "-" + month + "-" + day;
+}
+
+function resetDailyPullsIfNeeded() {
+  const currentDate = todayKey();
+  if (pullDate !== currentDate) {
+    pullDate = currentDate;
+    pullsToday = 0;
+  }
+}
+
+function remainingPullsToday() {
+  resetDailyPullsIfNeeded();
+  return Math.max(0, DAILY_PULL_LIMIT - pullsToday);
+>>>>>>> b6ea75349b35d6878ea64f0c703e349f3cc07e3e
 }
 
 function saveState() {
   try {
+<<<<<<< HEAD
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       total, pity, ssrCount, collection, dailyPulls, dailyPullDate,
     }));
+=======
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ total, pity, ssrCount, collection, pullsToday, pullDate }));
+>>>>>>> b6ea75349b35d6878ea64f0c703e349f3cc07e3e
   } catch (e) {
     // localStorage bisa penuh atau diblokir — abaikan, game tetap jalan.
   }
@@ -171,12 +204,20 @@ function loadState() {
     pity = s.pity || 0;
     ssrCount = s.ssrCount || 0;
     collection = s.collection || {};
+<<<<<<< HEAD
     dailyPulls = Math.max(0, s.dailyPulls || 0);
     dailyPullDate = s.dailyPullDate || "";
     refreshDailyLimit();
+=======
+    pullsToday = s.pullsToday || 0;
+    pullDate = s.pullDate || todayKey();
+    resetDailyPullsIfNeeded();
+>>>>>>> b6ea75349b35d6878ea64f0c703e349f3cc07e3e
   } catch (e) {
     // Data rusak -> mulai dari nol saja.
     collection = {};
+    pullsToday = 0;
+    pullDate = todayKey();
   }
 }
 
@@ -216,6 +257,7 @@ const el = {
   dailyPulls: document.getElementById("dailyPulls"),
   dailyLimit: document.getElementById("dailyLimit"),
   ssrCount: document.getElementById("ssrCount"),
+  dailyLeft: document.getElementById("dailyLeft"),
   pityText: document.getElementById("pityText"),
   pityFill: document.getElementById("pityFill"),
   history: document.getElementById("history"),
@@ -245,13 +287,22 @@ function decideRarity() {
 // Baru dicatat setelah tarikan benar-benar berhasil.
 function commitCounters(kelas) {
   total += 1;
+<<<<<<< HEAD
   dailyPulls += 1;
+=======
+  pullsToday += 1;
+>>>>>>> b6ea75349b35d6878ea64f0c703e349f3cc07e3e
   pity += 1;
   if (kelas === "ssr") { pity = 0; ssrCount += 1; }
 }
 
+function canPull(count) {
+  return remainingPullsToday() >= count;
+}
+
 // ---------- Update panel statistik & pity bar ----------
 function updateStats() {
+<<<<<<< HEAD
   const remaining = pullsRemaining();
   el.total.textContent = total;
   el.ssrCount.textContent = ssrCount;
@@ -259,26 +310,45 @@ function updateStats() {
   el.dailyLimit.textContent = remaining > 0
     ? remaining + " tarikan tersedia hari ini."
     : "Batas 100 tarikan hari ini sudah tercapai. Kembali lagi besok.";
+=======
+  const dailyLeft = remainingPullsToday();
+  el.total.textContent = total;
+  el.ssrCount.textContent = ssrCount;
+  el.dailyLeft.textContent = dailyLeft;
+>>>>>>> b6ea75349b35d6878ea64f0c703e349f3cc07e3e
   el.pityText.textContent = pity + " / " + PITY_MAX;
   el.pityFill.style.width = (pity / PITY_MAX) * 100 + "%";
   updatePullButtons();
 }
 
 // ---------- Status loading & error ----------
+function updatePullButtons() {
+  const hasQuota = remainingPullsToday() > 0;
+  el.tarik1.disabled = isPulling || !hasQuota;
+  el.tarik10.disabled = isPulling || !hasQuota;
+}
+
 function setLoading(on) {
+<<<<<<< HEAD
   isLoading = on;
+=======
+  isPulling = on;
+>>>>>>> b6ea75349b35d6878ea64f0c703e349f3cc07e3e
   el.spinner.style.display = on ? "block" : "none";
   if (on) {
     el.placeholder.style.display = "none";
     el.sprite.style.display = "none";
   }
   updatePullButtons();
+<<<<<<< HEAD
 }
 
 function updatePullButtons() {
   const noPullsLeft = pullsRemaining() === 0;
   el.tarik1.disabled = isLoading || noPullsLeft;
   el.tarik10.disabled = isLoading || noPullsLeft;
+=======
+>>>>>>> b6ea75349b35d6878ea64f0c703e349f3cc07e3e
 }
 
 function showError(msg) {
@@ -362,7 +432,17 @@ function addHistory(result) {
 
 // ---------- Satu tarikan (async: ambil data dulu, baru tampil) ----------
 async function pull() {
+<<<<<<< HEAD
   if (pullsRemaining() === 0) return null;
+=======
+  if (!canPull(1)) {
+    showError("Limit harian 100 pull sudah habis. Coba lagi besok.");
+    updateStats();
+    saveState();
+    return null;
+  }
+
+>>>>>>> b6ea75349b35d6878ea64f0c703e349f3cc07e3e
   const kelas = decideRarity();
   const id = pickId(kelas);
   try {
@@ -386,7 +466,16 @@ async function pull() {
 // ---------- Tombol ----------
 el.tarik1.addEventListener("click", async () => {
   showError("");
+<<<<<<< HEAD
   if (pullsRemaining() === 0) return;
+=======
+  if (!canPull(1)) {
+    showError("Limit harian 100 pull sudah habis. Coba lagi besok.");
+    updateStats();
+    saveState();
+    return;
+  }
+>>>>>>> b6ea75349b35d6878ea64f0c703e349f3cc07e3e
   setLoading(true);
   await pull();
   setLoading(false);
@@ -394,10 +483,25 @@ el.tarik1.addEventListener("click", async () => {
 
 el.tarik10.addEventListener("click", async () => {
   showError("");
+<<<<<<< HEAD
   const amount = Math.min(10, pullsRemaining());
   if (amount === 0) return;
   setLoading(true);
   for (let i = 0; i < amount; i++) {
+=======
+  const pullCount = Math.min(10, remainingPullsToday());
+  if (pullCount <= 0) {
+    showError("Limit harian 100 pull sudah habis. Coba lagi besok.");
+    updateStats();
+    saveState();
+    return;
+  }
+  if (pullCount < 10) {
+    showError("Sisa pull hari ini tinggal " + pullCount + ", jadi ditarik " + pullCount + " kali.");
+  }
+  setLoading(true);
+  for (let i = 0; i < pullCount; i++) {
+>>>>>>> b6ea75349b35d6878ea64f0c703e349f3cc07e3e
     await pull(); // berurutan biar sopan ke API & animasi enak dilihat
   }
   setLoading(false);
