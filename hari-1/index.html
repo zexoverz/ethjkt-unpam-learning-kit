@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<<<<<<< HEAD
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poke Gacha ETHJKT</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="pokedex">
+=======
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poké Gacha ETHJKT</title>
@@ -9,12 +18,15 @@
 <body>
   <div class="pokedex">
     <!-- Bagian atas ala perangkat Pokédex: lensa biru + 3 lampu indikator -->
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
     <div class="pokedex-top">
       <div class="lens"></div>
       <div class="lights">
         <span class="light red"></span>
         <span class="light yellow"></span>
         <span class="light green"></span>
+<<<<<<< HEAD
+=======
       </div>
       <div class="brand">POKÉDEX</div>
     </div>
@@ -88,13 +100,108 @@
         <p class="badge-intro">Kumpulkan Pokémon tiap tipe untuk menguasai gym Kanto dan meraih 8 badge-nya!</p>
         <div class="champion" id="champion" hidden>👑 CHAMPION! Kamu menguasai semua 8 gym Kanto!</div>
         <div class="badge-grid" id="badgeGrid"></div>
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
       </div>
+      <div class="brand">POKEDEX</div>
     </div>
+<<<<<<< HEAD
+
+    <main class="screen">
+      <h1>POKE GACHA</h1>
+      <div class="subtitle">tarik Pokemon asli dari PokeAPI</div>
+
+      <div class="tabs" aria-label="Navigasi aplikasi">
+        <button class="tab active" type="button" data-tab="gacha">Gacha</button>
+        <button class="tab" type="button" data-tab="koleksi">Koleksi</button>
+        <button class="tab" type="button" data-tab="badge">Badge</button>
+      </div>
+
+      <section class="tab-panel" id="panel-gacha">
+        <div class="stats">
+          <div class="stat">
+            <div class="num" id="total">0</div>
+            <div class="lbl">Total Tarik</div>
+          </div>
+          <div class="stat">
+            <div class="num" id="ssrCount">0</div>
+            <div class="lbl">Legendary</div>
+          </div>
+        </div>
+
+        <div class="pity">
+          <div class="pity-top">
+            <span>Pity ke Legendary gratis</span>
+            <span id="pityText">0 / 10</span>
+          </div>
+          <div class="pity-track">
+            <div class="pity-fill" id="pityFill"></div>
+          </div>
+        </div>
+
+        <div class="stage">
+          <div class="card" id="card">
+            <div class="spinner" id="spinner"></div>
+            <img class="sprite" id="sprite" alt="">
+            <div class="shiny-badge" id="shinyBadge">SHINY</div>
+            <div class="placeholder" id="placeholder">
+              <div class="pokeball"></div>
+              <div class="ph-text">Tekan PULL</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="poke-info">
+          <div class="poke-name">
+            <span id="pokeName">-</span>
+            <span class="dex" id="dexNum"></span>
+          </div>
+          <div class="types" id="types"></div>
+          <div class="rar" id="rarity"></div>
+          <div class="stats-panel" id="statsPanel"></div>
+        </div>
+
+        <div class="err" id="err"></div>
+
+        <div class="buttons">
+          <button class="btn" id="tarik1" type="button">PULL 1x</button>
+          <button class="btn gold" id="tarik10" type="button">PULL 10x</button>
+        </div>
+
+        <div class="hist-lbl">Riwayat Terakhir</div>
+        <div class="history" id="history"></div>
+      </section>
+
+      <section class="tab-panel" id="panel-koleksi" hidden>
+        <div class="stats">
+          <div class="stat">
+            <div class="num" id="uniqueCount">0</div>
+            <div class="lbl">Jenis Terkumpul</div>
+          </div>
+          <div class="stat">
+            <div class="num" id="shinyCount">0</div>
+            <div class="lbl">Shiny</div>
+          </div>
+        </div>
+        <div class="collection-empty" id="collectionEmpty">Belum ada Pokemon. Tarik dulu di tab Gacha.</div>
+        <div class="collection-grid" id="collectionGrid"></div>
+      </section>
+
+      <section class="tab-panel" id="panel-badge" hidden>
+        <p class="badge-intro">Kumpulkan Pokemon tiap tipe untuk menguasai gym Kanto dan meraih 8 badge-nya.</p>
+        <div class="champion" id="champion" hidden>CHAMPION! Kamu menguasai semua 8 gym Kanto.</div>
+        <div class="badge-grid" id="badgeGrid"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+=======
   </div>
 
   <!-- Notifikasi kecil saat dapat badge baru -->
   <div class="toast" id="toast" hidden></div>
 
+>>>>>>> 7a45f552484dbeb5299d95567aa74ff8d0e48375
   <script src="app.js"></script>
 </body>
 </html>
