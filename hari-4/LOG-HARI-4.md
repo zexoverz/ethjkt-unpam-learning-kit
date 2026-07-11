@@ -95,3 +95,11 @@ Ringkasan tiga kalimat dan disclaimer telah ditempelkan ke log.
 4. AI hanya memberi perkiraan berdasarkan data yang diberikan, sedangkan hasil yang benar-benar dipakai saat transaksi adalah hasil perhitungan smart contract di blockchain. Sebelum bertransaksi, saya harus selalu mengecek hasil dari contract.
 
 5. Slippage adalah selisih antara jumlah token yang diperkirakan akan diterima dengan jumlah yang benar-benar diterima saat transaksi berhasil diproses. Slippage merugikan jika selisihnya terlalu besar, sehingga token yang diterima lebih sedikit daripada yang diharapkan.
+
+## Screenshot
+
+### KampusSwap
+![KampusSwap](screenshots/kampusswap.png)
+
+### Deploy Remix
+![Deploy](screenshots/remix-deploy.png)
