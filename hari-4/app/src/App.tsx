@@ -76,9 +76,9 @@ export default function App() {
   });
 
   const d = pool.data;
-  const symA = d?.[0]?.result ?? "TOKEN A";
+  const symA = CONFIG.TOKEN_A.symbol || (d?.[0]?.result ?? "TOKEN A");
   const decA = d?.[1]?.result;
-  const symB = d?.[2]?.result ?? "TOKEN B";
+  const symB = CONFIG.TOKEN_B.symbol || (d?.[2]?.result ?? "TOKEN B");
   const decB = d?.[3]?.result;
   const reserveA = d?.[4]?.result ?? 0n;
   const reserveB = d?.[5]?.result ?? 0n;

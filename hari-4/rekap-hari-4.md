@@ -410,7 +410,7 @@ Sebelum bisa swap, pool HARUS ada isinya. Di tutorial ini kamu nyetor 2 token
 Kalau pool udah pernah diisi/dipakai (kayak di screenshot bawah), harganya
 UDAH nggak 1:1 lagi. Kamu **cukup isi SALAH SATU kolom**, kolom satunya
 **otomatis ngisi ngikut rasio pool sekarang** — biar setoranmu nggak ngerusak
-harga. Jadi wajar kalau kamu ketik `1` ZXT, ETHJKT-nya jadi angka ganjil
+harga. Jadi wajar kalau kamu ketik `1` AST, ETHJKT-nya jadi angka ganjil
 (misal `1.434768`), bukan `1`.
 
 ---
@@ -420,17 +420,17 @@ harga. Jadi wajar kalau kamu ketik `1` ZXT, ETHJKT-nya jadi angka ganjil
 Tab **Liquidity → Tambah** di app. Di sini pool sudah punya likuiditas awal &
 sudah dipakai swap, jadi rasionya nggak 1:1 lagi:
 
-![Tab Liquidity KampusSwap: setor 1 ZXT otomatis jadi 1.434768 ETHJKT ngikut rasio pool, approve pending](assets/add-liquidity-app.png)
+![Tab Liquidity KampusSwap: setor 1 AST otomatis jadi 1.434768 ETHJKT ngikut rasio pool, approve pending](assets/add-liquidity-app.png)
 
 Perhatikan:
 - Tab **Liquidity** aktif, mode **Tambah**.
-- **SETOR** = `1` ZXT (token kamu) → kolom bawah **otomatis** `1.434768` ETHJKT.
+- **SETOR** = `1` AST (token kamu) → kolom bawah **otomatis** `1.434768` ETHJKT.
   Ini bukti "isi salah satu, satunya ngikut rasio pool".
-- Panel kanan: **Pool ZXT** `835,24`, **Pool ETHJKT** `1.198,37` → pool memang
+- Panel kanan: **Pool AST** `835,24`, **Pool ETHJKT** `1.198,37` → pool memang
   udah keisi (makanya rasio bukan 1:1).
 - **Share kamu / total** `0 / 1.000,2` → total shares pool, punyamu belum masuk
   sampai transaksi selesai.
-- Tombol lagi proses **"Approve ZXT terkirim, nunggu..."** → tinggal Confirm &
+- Tombol lagi proses **"Approve AST terkirim, nunggu..."** → tinggal Confirm &
   tunggu, lalu lanjut tambah likuiditas.
 
 ---
@@ -460,7 +460,7 @@ token, dapet token satunya. Harga ditentuin otomatis sama rumus `x * y = k`.
 ### Syarat
 
 ```
-[ ] Pool sudah ada isinya (reserve ZXT & ETHJKT > 0).
+[ ] Pool sudah ada isinya (reserve AST & ETHJKT > 0).
 [ ] Wallet ke-connect di Sepolia + punya saldo token yang mau dikasih.
 ```
 
@@ -481,26 +481,26 @@ token, dapet token satunya. Harga ditentuin otomatis sama rumus `x * y = k`.
        transaksi nongol di "History".
 ```
 
-> **KENAPA 1 ETHJKT cuma dapet ~0,7 ZXT, bukan 1:1?** Karena (a) fee 0.3%
-> ketinggal di pool, dan (b) **slippage** — pool ZXT lebih sedikit (`835,93`)
-> dibanding ETHJKT (`1.197,37`), jadi ZXT lebih "mahal". Makin gede swap-mu,
+> **KENAPA 1 ETHJKT cuma dapet ~0,7 AST, bukan 1:1?** Karena (a) fee 0.3%
+> ketinggal di pool, dan (b) **slippage** — pool AST lebih sedikit (`835,93`)
+> dibanding ETHJKT (`1.197,37`), jadi AST lebih "mahal". Makin gede swap-mu,
 > makin jelek kursnya. Ini murni matematika `x*y=k`, bukan admin yang set harga.
 
 ---
 
 ## Bukti (Screenshot)
 
-Tab **Swap** di app, nuker 1 ETHJKT jadi ZXT:
+Tab **Swap** di app, nuker 1 ETHJKT jadi AST:
 
-![Tab Swap KampusSwap: KAMU BAYAR 1 ETHJKT, KAMU TERIMA perkiraan 0,7 ZXT, status Menukar nunggu blok](assets/swap-app.png)
+![Tab Swap KampusSwap: KAMU BAYAR 1 ETHJKT, KAMU TERIMA perkiraan 0,7 AST, status Menukar nunggu blok](assets/swap-app.png)
 
 Perhatikan:
-- **KAMU BAYAR** = `1` ETHJKT → **KAMU TERIMA (PERKIRAAN)** = `0,7` ZXT.
-- Panel kanan: **Pool ZXT** `835,93`, **Pool ETHJKT** `1.197,37` → ETHJKT lebih
-  banyak, jadi 1 ETHJKT wajar dapet ZXT lebih dikit.
+- **KAMU BAYAR** = `1` ETHJKT → **KAMU TERIMA (PERKIRAAN)** = `0,7` AST.
+- Panel kanan: **Pool AST** `835,93`, **Pool ETHJKT** `1.197,37` → ETHJKT lebih
+  banyak, jadi 1 ETHJKT wajar dapet AST lebih dikit.
 - Status tombol **"Menukar... (nunggu blok)"** → transaksi udah dikirim, tinggal
   nunggu masuk blok Sepolia.
-- Setelah beres, reserve pool bakal berubah (ETHJKT naik, ZXT turun) & swap
+- Setelah beres, reserve pool bakal berubah (ETHJKT naik, AST turun) & swap
   masuk ke tab **History**.
 
 ---
@@ -510,9 +510,9 @@ Perhatikan:
 Jadilah HAKIM, jangan asal percaya angka:
 
 ```
-[ ] Catat reserve SEBELUM swap: k_sebelum = PoolZXT * PoolETHJKT.
+[ ] Catat reserve SEBELUM swap: k_sebelum = PoolAST * PoolETHJKT.
 [ ] Lakuin swap kecil.
-[ ] Catat reserve SESUDAH: k_sesudah = PoolZXT * PoolETHJKT.
+[ ] Catat reserve SESUDAH: k_sesudah = PoolAST * PoolETHJKT.
 [ ] Bandingin: k_sesudah harus >= k_sebelum (naik dikit gara-gara fee 0.3%).
 ```
 
