@@ -39,7 +39,7 @@ pun, termasuk AI. Kita cuma main di SEPOLIA — jangan pernah pakai uang asli.
 # BABAK 1 — LENGKAPI PASARNYA (build yang ketunda)
 ===============================================================
 
-Butuh 2 token buat ditukar: **KOINMU** (dari Hari 3) + **ETHJKT** (dari pengajar).
+Butuh 2 token buat ditukar: **TOKENKU** (dari Hari 3) + **ETHJKT** (dari pengajar).
 
 ### >> JEBAKAN ANGKA (18 desimal) — baca dulu <<
 Token pakai 18 angka di belakang koma. "1000 token" BUKAN `1000`, tapi 1000 + 18 nol:
@@ -91,7 +91,7 @@ Salah alamat / kebalik = pool nunjuk token salah, PERMANEN → deploy ulang.
 Pasar NGGAK BOLEH narik token dari dompetmu tanpa izin. Ganti `<PASAR>` dengan
 alamat SimpleAMM tadi:
 ```
-[ ] Di KOINMU (TokenKu) -> approve(<PASAR>, 1000000000000000000000000) -> Confirm.
+[ ] Di KOINMU (TOKENKU) -> approve(<PASAR>, 1000000000000000000000000) -> Confirm.
 [ ] Di ETHJKT           -> approve(<PASAR>, 1000000000000000000000000) -> Confirm.
     (angka = 1.000.000 token, sekali approve cukup buat banyak aksi.)
 ```
@@ -216,3 +216,67 @@ Selamat. Kalau kamu bisa lengkapi pasarmu + jelasin cara kerjanya + nangkep AI
 meleset, kamu udah jadi builder, bukan cuma user. Sampai ketemu di ETHJKT.
 
 -- Zexo, ETHJKT
+
+
+
+# ETHJKT Short Course - Hari 3 & Hari 4
+
+## Nama Token
+
+SGM
+
+---
+
+## Smart Contract
+
+### Token SGM
+
+0xFCb838664BD83641C9eE74eeE18117eB8Fac2E18
+
+### ETHJKT Token
+
+0x7E96fed902B0A26b62DA78e8112253920Fc55936
+
+### SimpleAMM
+
+0x4178Be82d3b1193588fDf19ab02cAca7D06318Fe
+
+---
+
+## Cara Menjalankan React App
+
+Masuk ke folder:
+
+```bash
+cd hari-4/app
+```
+
+Install dependency:
+
+```bash
+npm install
+```
+
+Jalankan project:
+
+```bash
+npm run dev
+```
+
+Buka browser:
+
+```
+http://localhost:5173
+```
+
+Connect MetaMask ke jaringan Sepolia.
+
+---
+
+## Isi Repository
+
+- Hari 3 ERC20 Token
+- Hari 4 Simple AMM
+- LOG Hari 3
+- LOG Hari 4
+- React KampusSwap

@@ -134,3 +134,9 @@ kalian mau masuk lebih dalam atau nggak.
 Sampai ketemu di komunitas.
 
 -- Zexo, ETHJKT
+
+---
+
+## Langkah Lanjut Saya
+
+Setelah menyelesaikan short course ini saya ingin memperdalam pengembangan smart contract menggunakan Solidity serta mempelajari framework Hardhat dan Foundry agar dapat membuat, menguji, dan melakukan deploy aplikasi blockchain yang lebih kompleks. Saya juga ingin belajar membuat aplikasi Web3 yang terhubung dengan React dan wallet seperti MetaMask.InsyaAllah.
