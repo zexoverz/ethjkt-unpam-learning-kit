@@ -2,8 +2,9 @@
 
 Dokumen ini menjelaskan **apa yang diperbaiki**, **solusi yang dipakai**, dan
 yang paling penting: **kenapa solusi itu yang dipilih** (bukan tambal cepat).
-Semua perbaikan sudah **diuji langsung di browser** (Playwright) — bukti ada di
-bagian akhir.
+Implementasi final sekarang memakai `index.html` sebagai entry point yang
+memuat `main.js`; logika aman dan hardening ada di sana. Semua perbaikan sudah
+**diuji langsung di browser** (Playwright) — bukti ada di bagian akhir.
 
 File yang diubah: `main.js`, `index.html`, `style.css`.
 

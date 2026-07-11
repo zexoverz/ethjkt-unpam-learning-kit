@@ -24,12 +24,14 @@ export const CONFIG = {
   // TOKEN A = KOIN KAMU (harus SAMA dengan tokenA di SimpleAMM).
   TOKEN_A: {
     address: "0x8cfd81e42052a502da01a0884F4De804d0C1Eb4B",
-    logo: "/zexoverz.webp", // ganti dengan logo koinmu (file di public/)
+    symbol: "ASEPTOKEN",
+    logo: "/goku.jpg", // ganti dengan logo koinmu (file di public/)
   },
 
   // TOKEN B = ETHJKT (token bersama dari pengajar).
   TOKEN_B: {
     address: "0x7E96fed902B0A26b62DA78e8112253920Fc55936",
+    symbol: "ETHJKT",
     logo: "/ethjkt-logo.png",
   },
 

@@ -42,7 +42,7 @@ pragma solidity ^0.8.20;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract SimpleAMM {
-    IERC20 public tokenA; // TokenKu (koin kamu)
+    IERC20 public tokenA; // AsepToken (koin kamu)
     IERC20 public tokenB; // ETHJKT (mata uang kampus)
 
     // "reserve" = catatan berapa token yang ADA di pool sekarang.
