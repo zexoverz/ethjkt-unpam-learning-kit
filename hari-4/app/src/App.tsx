@@ -1,8 +1,16 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount, useChainId, useReadContracts } from "wagmi";
 import { readContract, writeContract, waitForTransactionReceipt } from "@wagmi/core";
 import { formatUnits, parseUnits } from "viem";
+import {
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import { CONFIG } from "../config";
 import { ERC20_ABI, AMM_ABI } from "./abi";
@@ -286,28 +294,27 @@ export default function App() {
 
   return (
     <div className="page">
-      <img className="hero-title" src={CONFIG.TITLE_IMG} alt="AI & BLOCKCHAIN" />
-
       <header className="head">
         <div className="brand">
           <img className="brand-logo" src={CONFIG.BRAND_LOGO} alt="ETHJKT" />
           <div>
             <p className="eyebrow">ETHJKT x UNPAM</p>
-            <h1>KampusSwap</h1>
+            <h1>SenSwap</h1>
           </div>
         </div>
         <ConnectButton chainStatus="icon" showBalance={false} />
       </header>
 
-      <div className="cols">
-        {/* ===== MAIN ===== */}
-        <div className="col col-main">
+      <PriceChart reserveA={reserveA} reserveB={reserveB} decA={decA} decB={decB} symA={symA} symB={symB} />
+
+      <main className="dex-stack">
+        <section className="swap-focus">
           <Glass className="pill tabs" inner="tabs-row">
             <button className={`tab ${tab === "swap" ? "tab--active" : ""}`} onClick={() => setTab("swap")}>Swap</button>
             <button className={`tab ${tab === "liquidity" ? "tab--active" : ""}`} onClick={() => setTab("liquidity")}>Liquidity</button>
           </Glass>
 
-          <Glass className="card main">
+          <Glass className="card main swap-card">
             {tab === "swap" ? (
               <div className="view">
                 <div className="box">
@@ -387,11 +394,15 @@ export default function App() {
               </div>
             )}
           </Glass>
-        </div>
+        </section>
 
-        {/* ===== SIDE ===== */}
-        <div className="col col-side">
-          <Glass className="card info">
+        {/* ===== POOL STATISTICS ===== */}
+        <section className="pool-section">
+          <Glass className="card info pool-stats">
+            <div className="section-head">
+              <p className="eyebrow">Pool Statistics</p>
+              <h2>{symA}/{symB}</h2>
+            </div>
             <Row k="Akun" v={address ? address.slice(0, 6) + "…" + address.slice(-4) : "belum connect"} />
             <Row k="Jaringan" v={!isConnected ? "-" : chainOk ? "Sepolia" : `chainId ${chainId} (bukan Sepolia)`} />
             <div className="hr" />
@@ -402,11 +413,15 @@ export default function App() {
             <Row k={<>Pool <b>{symB}</b></>} v={fmt(reserveB, decB)} />
             <Row k="Share kamu / total" v={`${fmt(myShares, 18)} / ${fmt(totalShares, 18)}`} />
           </Glass>
-        </div>
-      </div>
+        </section>
+      </main>
 
       {/* ===== LOG + HISTORY ===== */}
-      <Glass className="card">
+      <Glass className="card activity-card">
+        <div className="section-head">
+          <p className="eyebrow">Activity Log</p>
+          <h2>Transaksi</h2>
+        </div>
         <div className="subtabs logtabs">
           <button className={`subtab ${logTab === "log" ? "subtab--active" : ""}`} onClick={() => setLogTab("log")}>Log</button>
           <button className={`subtab ${logTab === "history" ? "subtab--active" : ""}`} onClick={() => setLogTab("history")}>History</button>
@@ -428,6 +443,97 @@ export default function App() {
 }
 
 // ---------- small components ----------
+type PricePoint = { time: string; price: number };
+type PriceChartProps = {
+  reserveA: bigint;
+  reserveB: bigint;
+  decA?: number;
+  decB?: number;
+  symA: ReactNode;
+  symB: ReactNode;
+};
+
+function PriceChart({ reserveA, reserveB, decA, decB, symA, symB }: PriceChartProps) {
+  const [points, setPoints] = useState<PricePoint[]>([]);
+
+  useEffect(() => {
+    if (reserveA <= 0n || reserveB <= 0n || decA == null || decB == null) return;
+
+    const amountA = Number(formatUnits(reserveA, decA));
+    const amountB = Number(formatUnits(reserveB, decB));
+    if (!Number.isFinite(amountA) || !Number.isFinite(amountB) || amountA <= 0) return;
+
+    const price = amountB / amountA;
+    const now = new Date();
+
+    setPoints((prev) => [
+      ...prev,
+      {
+        time: now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+        price,
+      },
+    ].slice(-50));
+  }, [reserveA, reserveB, decA, decB]);
+
+  const chartData = points.length
+    ? points
+    : Array.from({ length: 12 }, (_, i) => ({
+        time: `${String(i + 1).padStart(2, "0")}:00`,
+        price: 1 + Math.sin(i / 1.7) * 0.05 + i * 0.006,
+      }));
+
+  const prices = chartData.map((p) => p.price);
+  const current = prices[prices.length - 1] ?? 0;
+  const high = Math.max(...prices);
+  const low = Math.min(...prices);
+
+  return (
+    <section className="market-section">
+      <Glass className="card price-card">
+        <div className="chart-head">
+          <div>
+            <p className="eyebrow">Price Chart</p>
+            <h2>{symB} per {symA}</h2>
+          </div>
+          <span className="pair-badge">{symA}/{symB}</span>
+        </div>
+        <div className="chart-shell">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData} margin={{ top: 12, right: 16, bottom: 8, left: 0 }}>
+              <XAxis dataKey="time" tick={{ fill: "rgba(255,255,255,0.58)", fontSize: 11 }} axisLine={false} tickLine={false} minTickGap={28} />
+              <YAxis tick={{ fill: "rgba(255,255,255,0.58)", fontSize: 11 }} axisLine={false} tickLine={false} width={58} domain={["auto", "auto"]} />
+              <Tooltip
+                contentStyle={{
+                  background: "rgba(10, 14, 28, 0.92)",
+                  border: "1px solid rgba(255,255,255,0.18)",
+                  borderRadius: "14px",
+                  color: "#fff",
+                }}
+                formatter={(value: unknown) => [fmtNum(value), "Price"]}
+              />
+              <Line type="monotone" dataKey="price" stroke="#f5ff6b" strokeWidth={4} dot={false} activeDot={{ r: 6, fill: "#ff4ecd", stroke: "#10131f", strokeWidth: 3 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </Glass>
+
+      <div className="market-stats">
+        <Glass className="card stat-card">
+          <span className="stat-label">Current Price</span>
+          <strong>{fmtNum(current)}</strong>
+        </Glass>
+        <Glass className="card stat-card">
+          <span className="stat-label">24h High</span>
+          <strong>{fmtNum(high)}</strong>
+        </Glass>
+        <Glass className="card stat-card">
+          <span className="stat-label">24h Low</span>
+          <strong>{fmtNum(low)}</strong>
+        </Glass>
+      </div>
+    </section>
+  );
+}
 function Glass({ className = "", inner = "col-inner", children }: { className?: string; inner?: string; children: ReactNode }) {
   return (
     <section className={`glass ${className}`}>
@@ -454,7 +560,7 @@ function HistRow({ h }) {
       <span className="hist-token"><img className="hist-logo" src={h.aLogo} alt="" /><span className="hist-amt">{h.aAmt} {h.aSym}</span></span>
       <span className="hist-arrow">{mid}</span>
       <span className="hist-token"><img className="hist-logo" src={h.bLogo} alt="" /><span className="hist-amt">{h.bAmt} {h.bSym}</span></span>
-      <span className="hist-via"><span className="hist-via-top">via <b>KampusSwap</b></span><span className="hist-sub2">{via}</span></span>
+      <span className="hist-via"><span className="hist-via-top">via <b>SenSwap</b></span><span className="hist-sub2">{via}</span></span>
       <a className="hist-date" href={url} target="_blank" rel="noopener noreferrer">
         <span className="hist-d">{date} ↗</span>
         <span className="hist-t">{time}</span>
