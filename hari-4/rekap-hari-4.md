@@ -207,7 +207,7 @@ lengkap dengan urutan token yang benar:
 ![Panel Deploy Remix: _tokenA diisi alamat token kamu (day-3), _tokenB diisi alamat ETHJKT, siap klik Deploy](assets/deploy-simpleamm-remix.png)
 
 Perhatikan (sesuai panah di gambar):
-- **`_tokenA`** = `0x8cfd81e42052a502da01a0884F4De804d0C1Eb4B`
+- **`_tokenA`** = `0x54081934A1CF2643a272118502fd333a5DC2019B`
   → ini **TOKEN KAMU** yang kamu deploy di Hari 3.
 - **`_tokenB`** = `0x7E96fed902B0A26b62DA78e8112253920Fc55936`
   → ini **TOKEN ETHJKT** (mata uang kampus).
@@ -293,12 +293,12 @@ export const CONFIG = {
   // ...
 
   // Alamat pool AMM kamu (hasil deploy SimpleAMM di Tutorial 2).
-  AMM_ADDRESS: "0x60a19Da3F8CFA6F64a35a374CE0e5a7bC2d695c3",   // <- GANTI
+  AMM_ADDRESS: "0x5307925df061398795c75850d74F5a9E1D31E015",   // <- GANTI
 
   // TOKEN A = KOIN KAMU (harus SAMA dengan tokenA di SimpleAMM).
   TOKEN_A: {
-    address: "0x8cfd81e42052a502da01a0884F4De804d0C1Eb4B",     // <- GANTI
-    logo: "/zexoverz.webp",
+    address: "0x54081934A1CF2643a272118502fd333a5DC2019B",     // <- GANTI
+    logo: "/bubu.jpg",
   },
 
   // TOKEN B = ETHJKT (token bersama dari pengajar).
@@ -424,9 +424,9 @@ sudah dipakai swap, jadi rasionya nggak 1:1 lagi:
 
 Perhatikan:
 - Tab **Liquidity** aktif, mode **Tambah**.
-- **SETOR** = `1` ZXT (token kamu) → kolom bawah **otomatis** `1.434768` ETHJKT.
+- **SETOR** = `1` SINDI (token kamu) → kolom bawah **otomatis** `1.434768` ETHJKT.
   Ini bukti "isi salah satu, satunya ngikut rasio pool".
-- Panel kanan: **Pool ZXT** `835,24`, **Pool ETHJKT** `1.198,37` → pool memang
+- Panel kanan: **Pool SINDI** `835,24`, **Pool ETHJKT** `1.198,37` → pool memang
   udah keisi (makanya rasio bukan 1:1).
 - **Share kamu / total** `0 / 1.000,2` → total shares pool, punyamu belum masuk
   sampai transaksi selesai.
