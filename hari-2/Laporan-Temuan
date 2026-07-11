@@ -1,0 +1,146 @@
+Temuan 1: [BUG]
+
+  - Masalahnya apa:
+    Total harga tidak diformat dengan benar. Angka uang bisa
+    muncul terlalu panjang atau tidak rapi karena hasil
+    perhitungan desimal JavaScript.
+
+  - Cara buktiinnya:
+    Tambahkan buah ke keranjang, lalu lihat bagian Total. Pada
+    beberapa kombinasi harga, total bisa tampil sebagai angka
+    desimal panjang, bukan format uang seperti $1.80.
+
+  - Kenapa bahaya:
+    Pembeli bisa bingung karena nominal pembayaran terlihat tidak
+    jelas. Untuk toko online, tampilan harga yang tidak rapi bisa
+    menurunkan kepercayaan user.
+
+  - Cara betulinnya:
+    Semua angka uang diformat dengan 2 angka di belakang koma
+    menggunakan fungsi seperti money(value) yang menjalankan
+    value.toFixed(2).
+
+
+  Temuan 2: [BUG]
+
+  - Masalahnya apa:
+    Input jumlah barang bisa diisi nilai tidak valid, misalnya
+    kosong, bukan angka, angka minus, atau melebihi stok.
+
+  - Cara buktiinnya:
+    Tambahkan barang ke keranjang, lalu ubah angka quantity di
+    input keranjang menjadi kosong atau nilai aneh. Aplikasi bisa
+    menghitung total secara salah.
+
+  - Kenapa bahaya:
+    Keranjang bisa rusak, total harga bisa salah, dan transaksi
+    menjadi tidak valid.
+
+  - Cara betulinnya:
+    Validasi quantity sebelum dipakai. Jumlah harus angka bulat,
+    minimal 1, dan tidak boleh melebihi stok produk.
+
+
+  Temuan 3: [KEAMANAN]
+
+  - Masalahnya apa:
+    Catatan dari user ditampilkan menggunakan innerHTML,
+    sehingga rawan XSS.
+
+  - Cara buktiinnya:
+    Isi kolom catatan dengan kode seperti:
+    <img src=x onerror=alert("xss")>
+    Jika kode dijalankan oleh browser, berarti input user tidak
+    aman.
+
+  - Kenapa bahaya:
+    Penyerang bisa menyisipkan script berbahaya ke halaman. Ini
+    bisa dipakai untuk mencuri data, mengubah tampilan, atau
+    mengganggu user lain.
+
+  - Cara betulinnya:
+    Jangan tampilkan input user dengan innerHTML. Gunakan
+    textContent agar input dianggap sebagai teks biasa, bukan
+    HTML.
+
+
+  Temuan 4: [KEAMANAN]
+
+  - Masalahnya apa:
+    Kupon rahasia disimpan langsung di file JavaScript frontend.
+
+  - Cara buktiinnya:
+    Buka DevTools atau file main.js, lalu cari variabel kupon.
+    Kode kupon bisa terlihat langsung oleh siapa pun.
+
+  - Kenapa bahaya:
+    Semua user bisa mengetahui dan memakai kupon rahasia. Kalau
+    ini toko sungguhan, diskon bisa disalahgunakan dan merugikan
+    toko.
+
+  - Cara betulinnya:
+    Jangan simpan data rahasia di frontend. Validasi kupon
+    seharusnya dilakukan di server. Untuk versi latihan ini,
+    kupon diubah menjadi kupon publik demo.
+
+
+  Temuan 5: [KEAMANAN]
+
+  - Masalahnya apa:
+    Harga barang diambil dari atribut HTML data-price, bukan
+    dari data resmi produk.
+
+  - Cara buktiinnya:
+    Buka DevTools, inspect tombol tambah +, ubah nilai `data-
+    price` menjadi 0.01, lalu klik tombol tambah. Barang bisa
+    masuk keranjang dengan harga yang sudah dimanipulasi.
+
+  - Kenapa bahaya:
+    User bisa mengubah harga sendiri dari browser dan membayar
+    lebih murah dari harga asli.
+
+  - Cara betulinnya:
+    Jangan percaya data harga dari DOM/browser. Saat menambah
+    barang, harga harus selalu diambil dari katalog resmi
+    products.
+
+
+  Temuan 6: [ETIKA]
+
+  - Masalahnya apa:
+    Stok “tinggal X lagi” dibuat secara random, bukan berdasarkan
+    stok asli.
+
+  - Cara buktiinnya:
+    Refresh halaman atau klik tambah/kurang barang beberapa kali.
+    Angka stok bisa berubah-ubah tanpa alasan yang jelas.
+
+  - Kenapa bahaya:
+    Ini termasuk fake scarcity, yaitu membuat pembeli merasa
+    barang hampir habis padahal informasinya palsu. Ini tidak
+    jujur dan bisa memanipulasi keputusan pembeli.
+
+  - Cara betulinnya:
+    Gunakan data stok yang benar dan stabil. Tampilkan sisa stok
+    berdasarkan data produk dan jumlah barang yang ada di
+    keranjang.
+
+
+  Temuan 7: [ETIKA]
+
+  - Masalahnya apa:
+    Biaya penanganan ditambahkan ke total, tetapi awalnya tidak
+    dijelaskan secara jelas di keranjang.
+
+  - Cara buktiinnya:
+    Tambahkan barang seharga $1.50. Total langsung menjadi $1.80
+    karena ada biaya penanganan $0.30, tapi user tidak langsung
+    melihat rincian biaya tersebut.
+
+  - Kenapa bahaya:
+    User bisa merasa ditipu karena ada biaya tambahan yang muncul
+    tanpa penjelasan yang transparan.
+
+  - Cara betulinnya:
+    Tampilkan breakdown biaya sejak awal di keranjang: subtotal,
+    biaya penanganan, diskon/kupon, dan total akhir.

@@ -9,8 +9,8 @@ Fitur AI opsional buat KampusSwap. Kamu kumpulin daftar swap terakhir
 Berikut daftar swap terakhir di KampusSwap (token masuk -> token keluar,
 jumlah):
 [
-  "5000 MIEAYAM -> 4820 ETHJKT",
-  "1200 ETHJKT -> 1180 MIEAYAM",
+  "10 MaxWinToken -> 9.066 ETHJKT",
+  "1 MaxWinToken -> 0.823 ETHJKT",
   "..."
 ]
 Buat ringkasan "vibe pasar hari ini" 3 kalimat, bahasa santai anak muda.

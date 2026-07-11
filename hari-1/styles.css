@@ -242,6 +242,8 @@ h1 {
 .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--red-dark); }
 .btn.gold { color: #6a5200; background: linear-gradient(180deg,#ffe27a,var(--yellow)); box-shadow: 0 4px 0 #c99a00; }
 .btn.gold:active { box-shadow: 0 1px 0 #c99a00; }
+.btn.reset { color: var(--ink); background: linear-gradient(180deg,#f7f9fd,#dfe4ee); box-shadow: 0 4px 0 #aab4c5; }
+.btn.reset:active { box-shadow: 0 1px 0 #aab4c5; }
 .btn:disabled { opacity: .5; cursor: not-allowed; filter: grayscale(.3); transform: none; }
 
 /* ---------- Riwayat ---------- */

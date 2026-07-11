@@ -192,6 +192,7 @@ const el = {
   err: document.getElementById("err"),
   tarik1: document.getElementById("tarik1"),
   tarik10: document.getElementById("tarik10"),
+  resetProgress: document.getElementById("resetProgress"),
   uniqueCount: document.getElementById("uniqueCount"),
   shinyCount: document.getElementById("shinyCount"),
   collectionGrid: document.getElementById("collectionGrid"),
@@ -227,6 +228,47 @@ function updateStats() {
   el.pityFill.style.width = (pity / PITY_MAX) * 100 + "%";
 }
 
+function resetCardView() {
+  el.card.className = "card";
+  el.spinner.style.display = "none";
+  el.sprite.style.display = "none";
+  el.sprite.removeAttribute("src");
+  el.sprite.alt = "";
+  el.shinyBadge.style.display = "none";
+  el.placeholder.style.display = "flex";
+  el.pokeName.textContent = "—";
+  el.dexNum.textContent = "";
+  el.types.innerHTML = "";
+  el.rarity.textContent = "";
+  el.rarity.className = "rar";
+  el.statsPanel.innerHTML = "";
+  el.history.innerHTML = "";
+}
+
+function resetProgress() {
+  const yakin = confirm("Reset semua progres Poké Gacha? Koleksi, pity, dan badge akan kembali kosong.");
+  if (!yakin) return;
+
+  total = 0;
+  pity = 0;
+  ssrCount = 0;
+  collection = {};
+  shownBadges = new Set();
+
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (e) {
+    // Kalau localStorage diblokir, reset di layar tetap jalan.
+  }
+
+  showError("");
+  updateStats();
+  resetCardView();
+  renderCollection();
+  renderBadges();
+  showToast("Progress di-reset. Mulai gacha dari nol lagi!");
+}
+
 // ---------- Status loading & error ----------
 function setLoading(on) {
   el.spinner.style.display = on ? "block" : "none";
@@ -236,6 +278,7 @@ function setLoading(on) {
   }
   el.tarik1.disabled = on;
   el.tarik10.disabled = on;
+  el.resetProgress.disabled = on;
 }
 
 function showError(msg) {
@@ -355,6 +398,8 @@ el.tarik10.addEventListener("click", async () => {
   }
   setLoading(false);
 });
+
+el.resetProgress.addEventListener("click", resetProgress);
 
 // ---------- Render koleksi (Pokédex) ----------
 function renderCollection() {
