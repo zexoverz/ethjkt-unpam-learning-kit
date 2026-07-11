@@ -16,7 +16,6 @@ const CONFIG = {
   // >>> GANTI 3 ALAMAT INI (dari Remix) <<<
   AMM_ADDRESS: "0x5307925df061398795c75850d74F5a9E1D31E015",
   
-
   // TOKEN A = KOIN KAMU (harus SAMA dengan tokenA di SimpleAMM).
   TOKEN_A: {
     address: "0x54081934A1CF2643a272118502fd333a5DC2019B",

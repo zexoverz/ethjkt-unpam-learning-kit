@@ -33,7 +33,15 @@ Transaksi on-chain yang sudah dikonfirmasi umumnya tidak dapat dibatalkan atau d
 | ETHJKT / Token B | `0x7E96fed902B0A26b62DA78e8112253920Fc55936` |
 | SimpleAMM | `0x5307925df061398795c75850d74F5a9E1D31E015` |
 
-## Bukti transaksi
+# Bukti Praktik & Alamat Contract
 
-- Screenshot token di MetaMask: belum dilampirkan pada repository ini.
-- Link transaksi swap di Etherscan: belum tersedia karena hash transaksi swap tidak tercantum di file proyek. Setelah swap dilakukan, tambahkan link `https://sepolia.etherscan.io/tx/<HASH_SWAP>` di bagian ini.
+TxHash Deploy = https://sepolia.etherscan.io/tx/0x540d2caa5c5d512803881d8854b966596784319144bd4f48178bb87522313dde
+
+SindiToken Address (SINDI) = 0x54081934A1CF2643a272118502fd333a5DC2019B
+
+## Bukti Transfer Ke Zexo:
+Link transaksi swap ke Zexo 
+ https://sepolia.etherscan.io/tx/0x88f7b726aa47c5a25a8a39353f83fbedd03cff258b713c663bb631e3564e6322 di bagian ini.
+
+Jumlah: 1,000
+Ke Alamat: 0x9ebdC8ACc879a8284Ae5B3CecfbD280ec307aFA3
