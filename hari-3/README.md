@@ -16,6 +16,12 @@ SimpleAMM.sol     -> mesin pasar/swap (x*y=k).
 app/              -> interface web (Stretch): index.html, main.js, config.js, styles.css
 ```
 
+//ini punya aku-aisyah
+Token Contract  = 0x2736A7708a6b44A61e4054F1C0EeB0B226AB40E0	(*diambil dari contract creation yang pertama)
+TxHash Deploy  = https://sepolia.etherscan.io/token/0x2736a7708a6b44a61e4054f1c0eeb0b226ab40e0  (*diambil dari https browser nya)
+
+
+//ini punya kaka nya
 TxHash Deploy = https://sepolia.etherscan.io/tx/0x10a65998f8c736fdd54f43f9fa89650fe5ed08d181b8aa32510b6668965896c2
 Tokenku Address (ZXT) = 0xaf6b337440ffea63c47f077eee2663987aeec33f
 
