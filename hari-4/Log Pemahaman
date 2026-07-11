@@ -1,0 +1,45 @@
+# LOG PEMAHAMAN
+
+### 1. DeFi itu apa, bedanya sama bank?
+DeFi itu kayak "bank" tapi nggak ada bank-nya — nggak ada orang atau
+lembaga yang megang duit kita. Semua aturan (nabung, tuker, pinjem) udah
+ditulis di kode contract, dan siapa aja bisa liat & jalanin sendiri lewat
+wallet. Bedanya sama bank: kalau di bank ada pihak ketiga yang approve
+transaksi kita, di DeFi kode yang jalanin otomatis, transparan, dan nggak
+bisa diubah semaunya sama satu pihak.
+
+### 2. ERC20 kasih fungsi apa aja? Kenapa swap butuh approve dulu?
+ERC20 itu standar token yang kasih fungsi kayak transfer (kirim token
+ke orang lain), balanceOf (cek saldo), dan approve (ngizinin alamat
+lain buat narik token dari dompet kita, sejumlah tertentu).
+Swap butuh approve dulu karena AMM (SimpleAMM) perlu NARIK token dari
+dompet kita buat ditukar — dan token nggak boleh diambil siapa aja tanpa
+izin. Approve itu kayak kasih "kunci terbatas" ke pool, biar dia boleh
+ambil token kita sejumlah yang kita izinin, bukan sak-enaknya sendiri.
+
+### 3. Bukti x*y=k
+[ISI DI SINI — reserveA & reserveB sebelum swap, terus sesudah swap,
+kaliin, bandingin]
+Sebelum: reserveA = ..., reserveB = ..., k_sebelum = ...
+Sesudah: reserveA = ..., reserveB = ..., k_sesudah = ...
+k_sesudah lebih gede dikit dari k_sebelum, karena ada fee 0.3% yang
+"ketinggal" di pool tiap swap — jadi k nggak tetep persis, tapi naik dikit.
+
+### 4. Seberapa meleset AI Swap Advisor vs getAmountOut?
+[ISI DI SINI — angka AI vs angka contract, hitung % bedanya]
+Angka AI: ...
+Angka contract (getAmountOut): ...
+Beda: ... (%)
+Artinya: AI itu cuma nebak/ngitung kira-kira, bisa salah rumus atau nggak
+update reserve real-time. Yang bener-bener valid ya harus dicek ke contract
+langsung, nggak bisa cuma percaya omongan AI.
+
+### 5. Slippage itu apa, kapan bikin rugi?
+Slippage itu selisih antara harga yang kita "harapin" pas mau swap, sama
+harga aktual yang kita dapet pas transaksi bener-bener jalan. Ini kejadian
+karena pool berubah komposisinya tiap ada swap (kayak yang keliatan di
+data gw: swap 10 MaxWinToken dapet rate lebih bagus daripada swap 1
+MaxWinToken belakangan). Slippage bikin rugi kalau kita swap jumlah gede
+di pool yang likuiditasnya kecil — makin gede swap-nya dibanding reserve
+pool, makin jauh harga akhir dari harga awal, jadi kita bisa dapet token
+keluar lebih dikit dari yang dikira.
