@@ -16,8 +16,13 @@ SimpleAMM.sol     -> mesin pasar/swap (x*y=k).
 app/              -> interface web (Stretch): index.html, main.js, config.js, styles.css
 ```
 
+<<<<<<< HEAD
 TxHash Deploy = https://sepolia.etherscan.io/tx/0x540d2caa5c5d512803881d8854b966596784319144bd4f48178bb87522313
 Tokenku Address (SINDI) = 0x54081934A1CF2643a272118502fd333a5DC2019B
+=======
+TxHash Deploy = https://sepolia.etherscan.io/tx/0x75855dd6d11246b94dd8fa659aae397d9bb2aca0b7bd3d6406b0059b5820e90f
+nanashitoken Address (NASH) = 0x67B3395641d2f22D3f9149813f2698681A445882
+>>>>>>> 76ef097a2c43af3eecf67d2f142e67df996c85fd
 
 
 Transfer token nya ke address zexo : 0x9ebdC8ACc879a8284Ae5B3CecfbD280ec307aFA3
