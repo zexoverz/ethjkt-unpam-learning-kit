@@ -106,6 +106,8 @@ Lupa/kurang approve = error `insufficient allowance` (itu FITUR, bukan bug).
     (setor 1000 KOINMU + 1000 ETHJKT) -> Confirm.
 [ ] Cek reserveA & reserveB -> dua-duanya 1000000000000000000000. Harga awal 1 : 1.
 ```
+1000000000000000000000
+1000000000000000000000
 Gagal `insufficient allowance` -> balik Checkpoint 3. Gagal `jumlah nol` -> modal
 ETHJKT/KOIN kurang (mint lagi / cek 18 desimal).
 
