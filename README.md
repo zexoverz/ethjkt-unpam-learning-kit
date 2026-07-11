@@ -335,6 +335,10 @@ Capstone kita: "KampusSwap" — tiap orang cetak KOIN sendiri di blockchain,
 bikin pasar mini buat nuker-nya, dan ngerti sendiri gimana harga & DeFi
 bekerja. Dibantu AI, diverifikasi otak sendiri. Sampai ketemu di hari-H.
 
+> **Rekap langkah Hari 4 (step-by-step + screenshot):** panduan lengkap
+> interaksi dApp KampusSwap — mint token, deploy AMM, konfigurasi app, tambah
+> likuiditas, sampai swap — ada di [`hari-4/rekap-hari-4.md`](hari-4/rekap-hari-4.md).
+
 ---
 
 ## SUMBER INFO (biar transparan)
