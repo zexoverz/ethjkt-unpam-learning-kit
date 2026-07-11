@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pasar Pagi</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #2f332b;
+      background: #f6f2e9;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      background: #ffffff;
+      border-bottom: 1px solid #ded8ca;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    #product-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 16px;
+    }
+
+    .product,
+    aside,
+    .review-panel {
+      background: #ffffff;
+      border: 1px solid #ded8ca;
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .product-image {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #eee;
+    }
+
+    .produce-id,
+    .stock,
+    .price,
+    .cart-item-price,
+    .empty-cart,
+    #coupon-msg {
+      color: #6f7568;
+      font-size: 14px;
+    }
+
+    .item-meta,
+    .cart-item-top,
+    .row,
+    .review-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0 0 10px;
+    }
+
+    h2 {
+      font-size: 18px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 9px 12px;
+      cursor: pointer;
+      background: #6e7b61;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .quantity-controls,
+    .cart-item-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quantity-button {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      font-size: 18px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #cfc8b8;
+      border-radius: 6px;
+      padding: 9px;
+      font: inherit;
+      background: #fffdf8;
+    }
+
+    textarea {
+      min-height: 76px;
+      resize: vertical;
+    }
+
+    .cart-item,
+    .note-preview,
+    .review-note {
+      border-top: 1px solid #eee6d8;
+      padding-top: 12px;
+      margin-top: 12px;
+    }
+
+    .edit-quantity-input {
+      max-width: 86px;
+    }
+
+    .delete-icon {
+      color: #b96f5c;
+      cursor: pointer;
+      font-style: normal;
+    }
+
+    .delete-icon::before {
+      content: "Hapus";
+    }
+
+    .row {
+      padding: 7px 0;
+    }
+
+    .grand {
+      border-top: 1px solid #ded8ca;
+      margin-top: 6px;
+      padding-top: 12px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .cart-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    #review-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      place-items: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.38);
+    }
+
+    #review-modal.open {
+      display: grid;
+    }
+
+    .review-panel {
+      width: min(520px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+    }
+
+    .review-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    #toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%);
+      padding: 10px 14px;
+      border-radius: 6px;
+      background: #2f332b;
+      color: #ffffff;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    #toast.show {
+      opacity: 1;
+    }
+
+    @media (max-width: 820px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pasar Pagi</h1>
+    <strong>Keranjang: <span id="cart-count">0</span></strong>
+  </header>
+
+  <main>
+    <section id="product-section" aria-label="Produk"></section>
+
+    <aside>
+      <h3>Keranjang</h3>
+      <div id="cart-details"></div>
+
+      <div class="cart-actions">
+        <label>
+          Catatan untuk petani
+          <textarea id="note" placeholder="Contoh: pilih yang belum terlalu matang"></textarea>
+        </label>
+
+        <label>
+          Kupon
+          <input id="coupon" type="text" autocomplete="off">
+        </label>
+        <button id="apply-coupon" type="button">Pakai Kupon</button>
+        <p id="coupon-msg"></p>
+      </div>
+
+      <div id="cart-summary-breakdown"></div>
+      <button id="checkout-button" type="button">Checkout</button>
+    </aside>
+  </main>
+
+  <div id="review-modal" role="dialog" aria-modal="true" aria-labelledby="review-title">
+    <div class="review-panel">
+      <h3 id="review-title">Review Pesanan</h3>
+      <div id="review-items"></div>
+      <div id="review-note-wrap"></div>
+      <div id="review-breakdown"></div>
+      <div class="review-actions">
+        <button id="review-back" type="button">Kembali</button>
+        <button id="review-confirm" type="button">Pesan</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="PASAR PAGI.js"></script>
+</body>
+</html>
