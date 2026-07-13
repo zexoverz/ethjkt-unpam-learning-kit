@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 // ============================================================
-// TOKEN-KU - ERC20 PERTAMA KAMU (Hari 3)  ->  ini "koin" milikmu
+// ADEL TOKEN - ERC20 PERTAMA KAMU (Hari 3)  ->  ini "koin" milikmu
 //
 // Ini "duit" pertama yang kamu cetak sendiri di blockchain. Namanya
 // terserah kamu: mau $MIEAYAM, $GABUT, $SKENA, $KOPI, bebas. Ini koin
@@ -35,11 +35,11 @@ pragma solidity ^0.8.20;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract TokenKu is ERC20 {
+contract AdelToken is ERC20 {
     constructor()
         // >>> GANTI DI SINI <<<  ("Nama Panjang Token", "SIMBOL")
         // contoh: ERC20("Mie Ayam Coin", "MIEAYAM")
-        ERC20("Token Ku", "TOKENKU")
+        ERC20("Adel Token", "ADT")
     {
         // cetak 1.000.000 token ke kamu (deployer). "10 ** decimals()"
         // karena token pakai 18 angka di belakang koma, sama kayak ETH.
