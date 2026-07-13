@@ -1,69 +1,106 @@
-# Log Hari 1 — Poké Gacha (Simulator Gacha Pokémon)
+# Log Hari 1 — Pokémon Gacha Simulator (Versi Sendiri)
 
-Penjelasan santai soal isi `index.html`. Sekarang gacha-nya menarik
-**Pokémon asli** langsung dari internet (PokeAPI), lengkap dengan gambar,
-tipe, dan statistik betulan.
+Nama: Ghani
+Tanggal: 7 Juli 2026
+Misi: Hari 1 - Pokémon Gacha Simulator
 
-## Apa yang berubah dari versi sebelumnya?
+---
 
-Versi lama cuma emoji buatan sendiri (kelihatan "AI banget").
-Versi baru mengambil data nyata dari **PokeAPI** (https://pokeapi.co) —
-database Pokémon gratis untuk umum. Jadi tiap tarikan memunculkan Pokémon
-sungguhan dengan artwork resminya.
+## Ringkasan
 
-## Cara kerjanya (bahasa gampang)
+Single-file Pokémon Gacha Simulator dengan UI modern, sistem rarity, dan integrasi PokeAPI. Mengambil data Pokémon asli dari PokeAPI dengan sistem gacha lengkap (rarity, shiny, koleksi, persistence).
 
-1. **Roll rarity dulu (pakai pity)** — sama seperti gacha beneran:
-   - **SSR 3%**, **EPIC 10%**, **RARE 30%**, sisanya **COMMON**.
-   - **Pity:** kalau sampai tarikan ke-10 belum dapat SSR, tarikan ke-10
-     itu **dijamin SSR**. Bar kuning menunjukkan progresnya.
+---
 
-2. **Baru ambil Pokémon yang cocok** dengan tier hasil roll:
-   - **SSR** → Pokémon **Legendary / Mythical** asli (Mewtwo, Mew, Rayquaza, dll).
-     Daftar ID-nya sudah diverifikasi lewat data `is_legendary` / `is_mythical`.
-   - **EPIC** → Pokémon "pseudo-legendary" super kuat (Dragonite, Garchomp, dll).
-   - **RARE & COMMON** → Pokémon acak dari National Dex (nomor 1–1025).
+## Fitur Utama
 
-3. **Ambil + gabung data** dari dua alamat API:
-   - `/pokemon/{id}` → gambar artwork, tipe, base stat.
-   - `/pokemon-species/{id}` → status legendary/mythical.
-   Keduanya diambil **barengan** (Promise.all) biar cepat.
+### 1. Sistem Gacha dengan Rarity
+- **Common (50%)** - Pokémon biasa
+- **Uncommon (30%)** - Pokémon langka
+- **Rare (15%)** - Pokémon jarang
+- **Epic (4%)** - Pokémon epik
+- **Legendary (0.9%)** - Pokémon legendaris
+- **Mythic (0.1%)** - Pokémon mitik
+- **Shiny (5%)** - Versi shiny dengan efek visual khusus
 
-4. **Shiny!** — tiap Pokémon punya peluang **1/40** keluar versi *shiny*
-   (warna langka & mengkilap). Kalau hoki, muncul badge "✨ SHINY" dan
-   gambar shiny-nya yang dipakai.
+### 2. Integrasi PokeAPI
+- Mengambil data Pokémon asli dari PokeAPI (https://pokeapi.co)
+- Menampilkan sprite resmi Pokémon
+- Fallback sprite jika gambar gagal dimuat
+- Fetch paralel untuk pull multiple (Promise.all)
 
-5. **Tampilan kartu** menunjukkan:
-   - Artwork resmi + nomor Pokédex + nama.
-   - Badge **tipe** dengan warna resminya (contoh: grass hijau, fire oranye).
-   - **6 bar base stat** (HP, ATK, DEF, SpA, SpD, SPD).
-   - Border kartu berubah warna sesuai rarity, SSR ada efek getar + kilau emas.
+### 3. Sistem Koleksi
+- Koleksi tersimpan di localStorage
+- Tracking jumlah per Pokémon (normal & shiny)
+- Grid display untuk koleksi
+- Opsi hapus koleksi
 
-6. **Hemat internet (cache)** — Pokémon yang sudah pernah ditarik disimpan
-   di memori, jadi tidak minta ke server berulang-ulang. Ini juga mematuhi
-   aturan *fair use* PokeAPI.
+### 4. Statistik Real-time
+- Total Pull
+- Pokémon Unik terkumpul
+- Jumlah Shiny
+- Jumlah Legendary/Mythic
 
-7. **Tombol** — **PULL 1x** menarik sekali, **PULL 10x** menarik 10 kali
-   beruntun. Selama mengambil data, tombol dikunci + muncul spinner loading.
+### 5. UI Modern
+- Gradient background (purple theme)
+- Glassmorphism effect pada stat boxes
+- Animasi kartu dengan fade-in
+- Efek khusus untuk shiny (pulse animation)
+- Warna kartu berbeda per rarity
+- Responsive design
 
-## Sudah dites? Ya, beneran. ✅
+### 6. Tombol Pull
+- **1 Pull** - Tarik 1 Pokémon
+- **5 Pull** - Tarik 5 Pokémon beruntun
+- **10 Pull** - Tarik 10 Pokémon beruntun
+- Loading spinner saat fetch data
 
-Selain cek logika, saya jalankan tes **end-to-end pakai browser sungguhan
-(Chrome headless)**:
-- Klik PULL 1x → muncul Pokémon asli (gambar tampil, 2 tipe, 6 bar stat). ✔
-- Klik PULL 10x → total jadi 11, pity ter-update, riwayat terisi. ✔
-- **0 error JavaScript** di console. ✔
-- Data fetch + cache + pity + anti-tabrakan pool sudah diuji terpisah juga. ✔
+---
 
-## Cara lihat hasilnya
+## Cara Kerja
 
-Dobel-klik `hari-1/index.html` di browser (butuh koneksi internet karena
-gambar & data diambil online), lalu pencet **PULL**. Tarik terus sampai bar
-pity penuh untuk dapat Legendary gratis, dan semoga hoki dapat **shiny**! ✨
+1. **User klik tombol pull** → JavaScript meng-generate random Pokémon ID (1-898)
+2. **Fetch data dari PokeAPI** → Menggunakan Promise.all untuk fetch paralel
+3. **Roll rarity** → Menggunakan Math.random() dengan cumulative probability
+4. **Roll shiny** → 5% chance untuk dapat versi shiny
+5. **Tampilkan hasil** → Kartu dengan animasi fade-in, warna sesuai rarity
+6. **Simpan ke koleksi** → localStorage untuk persistence
+7. **Update statistik** → Real-time update di UI
 
-## Riwayat commit (kecil-kecil, sesuai aturan)
+---
 
-1. `feat: redesign gacha UI shell + local rarity/pity engine`
-2. `feat: fetch real Pokémon from PokeAPI with caching + async pulls`
-3. `feat: add type badges, base-stat bars, and shiny variants`
-4. `docs: update LOG.md for Pokémon gacha`
+## Teknologi
+
+- **HTML5** - Struktur halaman
+- **CSS3** - Styling dengan gradient, glassmorphism, animations
+- **Vanilla JavaScript** - Logic gacha, fetch API, localStorage
+- **PokeAPI** - Data Pokémon asli
+- **localStorage** - Persistence koleksi dan statistik
+
+---
+
+## Struktur File
+
+Single-file structure:
+- HTML structure (lines 1-320)
+- Inline CSS (lines 7-319)
+- JavaScript logic (lines 395-555)
+
+---
+
+## Testing
+
+- ✅ Pull 1x berhasil menampilkan Pokémon
+- ✅ Pull 5x dan 10x berhasil menampilkan multiple Pokémon
+- ✅ Rarity distribution berfungsi sesuai persentase
+- ✅ Shiny chance berfungsi (5%)
+- ✅ Koleksi tersimpan di localStorage
+- ✅ Statistik update real-time
+- ✅ Clear collection berfungsi
+- ✅ Fallback sprite jika gambar gagal dimuat
+
+---
+
+## Perbedaan dengan Versi Faisal-Dev
+
+Versi ini menggunakan single-file structure dengan inline CSS/JS, sedangkan versi faisal-dev menggunakan struktur terpisah (index.html, styles.css, app.js). Fitur core sama-sama menggunakan PokeAPI dan sistem gacha, tapi implementasi UI dan struktur kode berbeda.

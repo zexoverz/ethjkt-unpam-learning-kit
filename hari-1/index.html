@@ -1,100 +1,557 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poké Gacha ETHJKT</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Gacha Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .gacha-area {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .gacha-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .gacha-btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .gacha-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .gacha-btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-single {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-multi {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-ten {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        .result-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .pokemon-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .pokemon-card.shiny {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            animation: shinyPulse 1s ease;
+        }
+
+        @keyframes shinyPulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(255, 215, 0, 1);
+            }
+        }
+
+        .pokemon-card.legendary {
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+        }
+
+        .pokemon-card.mythic {
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        }
+
+        .pokemon-card.common {
+            background: linear-gradient(135deg, #a8a8a8 0%, #d4d4d4 100%);
+        }
+
+        .pokemon-card.uncommon {
+            background: linear-gradient(135deg, #22c55e 0%, #86efac 100%);
+        }
+
+        .pokemon-card.rare {
+            background: linear-gradient(135deg, #3b82f6 0%, #93c5fd 100%);
+        }
+
+        .pokemon-card.epic {
+            background: linear-gradient(135deg, #8b5cf6 0%, #c4b5fd 100%);
+        }
+
+        .pokemon-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .pokemon-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+            text-transform: capitalize;
+        }
+
+        .pokemon-rarity {
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.8);
+            display: inline-block;
+        }
+
+        .pokemon-id {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .collection {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .collection h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .collection-item {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        .collection-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .collection-count {
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            margin-left: 5px;
+        }
+
+        .clear-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .clear-btn:hover {
+            background: #dc2626;
+        }
+
+        .rarity-legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .rarity-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+        }
+
+        .rarity-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-  <div class="pokedex">
-    <!-- Bagian atas ala perangkat Pokédex: lensa biru + 3 lampu indikator -->
-    <div class="pokedex-top">
-      <div class="lens"></div>
-      <div class="lights">
-        <span class="light red"></span>
-        <span class="light yellow"></span>
-        <span class="light green"></span>
-      </div>
-      <div class="brand">POKÉDEX</div>
-    </div>
+    <div class="container">
+        <h1>🎮 Pokemon Gacha Simulator</h1>
+        <p class="subtitle">Pull gacha dan koleksi Pokemon-mu!</p>
 
-    <!-- Layar putih tempat semua konten tampil -->
-    <div class="screen">
-      <h1>POKÉ GACHA</h1>
-      <div class="subtitle">tarik Pokémon asli — data langsung dari PokeAPI</div>
-
-      <!-- Navigasi tab -->
-      <div class="tabs">
-        <button class="tab active" data-tab="gacha">Gacha</button>
-        <button class="tab" data-tab="koleksi">Koleksi</button>
-        <button class="tab" data-tab="badge">Badge</button>
-      </div>
-
-      <!-- ============ TAB: GACHA ============ -->
-      <div class="tab-panel" id="panel-gacha">
         <div class="stats">
-          <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total Tarik</div></div>
-          <div class="stat"><div class="num" id="ssrCount">0</div><div class="lbl">Legendary</div></div>
-        </div>
-
-        <div class="pity">
-          <div class="pity-top"><span>Pity ke Legendary gratis</span><span id="pityText">0 / 10</span></div>
-          <div class="pity-track"><div class="pity-fill" id="pityFill"></div></div>
-        </div>
-
-        <div class="stage">
-          <div class="card" id="card">
-            <div class="spinner" id="spinner"></div>
-            <img class="sprite" id="sprite" alt="">
-            <div class="shiny-badge" id="shinyBadge">✨ SHINY</div>
-            <div class="placeholder" id="placeholder">
-              <div class="pokeball"></div>
-              <div class="ph-text">Tekan PULL</div>
+            <div class="stat-box">
+                <div class="stat-value" id="totalPulls">0</div>
+                <div class="stat-label">Total Pull</div>
             </div>
-          </div>
+            <div class="stat-box">
+                <div class="stat-value" id="uniquePokemon">0</div>
+                <div class="stat-label">Pokemon Unik</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="shinyCount">0</div>
+                <div class="stat-label">Shiny</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="legendaryCount">0</div>
+                <div class="stat-label">Legendary</div>
+            </div>
         </div>
 
-        <div class="poke-info">
-          <div class="poke-name"><span id="pokeName">—</span> <span class="dex" id="dexNum"></span></div>
-          <div class="types" id="types"></div>
-          <div class="rar" id="rarity"></div>
-          <div class="stats-panel" id="statsPanel"></div>
+        <div class="gacha-area">
+            <div class="gacha-controls">
+                <button class="gacha-btn btn-single" onclick="pullGacha(1)">1 Pull</button>
+                <button class="gacha-btn btn-multi" onclick="pullGacha(5)">5 Pull</button>
+                <button class="gacha-btn btn-ten" onclick="pullGacha(10)">10 Pull</button>
+            </div>
+
+            <div id="resultArea" class="result-area"></div>
         </div>
 
-        <div class="err" id="err"></div>
-
-        <div class="buttons">
-          <button class="btn" id="tarik1">PULL 1x</button>
-          <button class="btn gold" id="tarik10">PULL 10x</button>
+        <div class="collection">
+            <h2>📚 Koleksi Kamu</h2>
+            <div id="collectionGrid" class="collection-grid"></div>
+            <div style="text-align: center;">
+                <button class="clear-btn" onclick="clearCollection()">Hapus Koleksi</button>
+            </div>
         </div>
 
-        <div class="hist-lbl">Riwayat Terakhir</div>
-        <div class="history" id="history"></div>
-      </div>
-
-      <!-- ============ TAB: KOLEKSI ============ -->
-      <div class="tab-panel" id="panel-koleksi" hidden>
-        <div class="stats">
-          <div class="stat"><div class="num" id="uniqueCount">0</div><div class="lbl">Jenis Terkumpul</div></div>
-          <div class="stat"><div class="num" id="shinyCount">0</div><div class="lbl">Shiny</div></div>
+        <div class="rarity-legend">
+            <div class="rarity-item">
+                <div class="rarity-color" style="background: linear-gradient(135deg, #a8a8a8 0%, #d4d4d4 100%);"></div>
+                <span>Common (50%)</span>
+            </div>
+            <div class="rarity-item">
+                <div class="rarity-color" style="background: linear-gradient(135deg, #22c55e 0%, #86efac 100%);"></div>
+                <span>Uncommon (30%)</span>
+            </div>
+            <div class="rarity-item">
+                <div class="rarity-color" style="background: linear-gradient(135deg, #3b82f6 0%, #93c5fd 100%);"></div>
+                <span>Rare (15%)</span>
+            </div>
+            <div class="rarity-item">
+                <div class="rarity-color" style="background: linear-gradient(135deg, #8b5cf6 0%, #c4b5fd 100%);"></div>
+                <span>Epic (4%)</span>
+            </div>
+            <div class="rarity-item">
+                <div class="rarity-color" style="background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);"></div>
+                <span>Legendary (0.9%)</span>
+            </div>
+            <div class="rarity-item">
+                <div class="rarity-color" style="background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);"></div>
+                <span>Mythic (0.1%)</span>
+            </div>
+            <div class="rarity-item">
+                <div class="rarity-color" style="background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);"></div>
+                <span>Shiny (5%)</span>
+            </div>
         </div>
-        <div class="collection-empty" id="collectionEmpty">Belum ada Pokémon. Tarik dulu di tab Gacha! 🎣</div>
-        <div class="collection-grid" id="collectionGrid"></div>
-      </div>
-
-      <!-- ============ TAB: BADGE ============ -->
-      <div class="tab-panel" id="panel-badge" hidden>
-        <p class="badge-intro">Kumpulkan Pokémon tiap tipe untuk menguasai gym Kanto dan meraih 8 badge-nya!</p>
-        <div class="champion" id="champion" hidden>👑 CHAMPION! Kamu menguasai semua 8 gym Kanto!</div>
-        <div class="badge-grid" id="badgeGrid"></div>
-      </div>
     </div>
-  </div>
 
-  <!-- Notifikasi kecil saat dapat badge baru -->
-  <div class="toast" id="toast" hidden></div>
+    <script>
+        let totalPulls = 0;
+        let collection = JSON.parse(localStorage.getItem('pokemonCollection')) || {};
+        let shinyCount = parseInt(localStorage.getItem('shinyCount')) || 0;
+        let legendaryCount = parseInt(localStorage.getItem('legendaryCount')) || 0;
 
-  <script src="app.js"></script>
+        const RARITY_CHANCES = {
+            common: 0.50,
+            uncommon: 0.30,
+            rare: 0.15,
+            epic: 0.04,
+            legendary: 0.009,
+            mythic: 0.001
+        };
+
+        const SHINY_CHANCE = 0.05;
+
+        function getRandomRarity() {
+            const rand = Math.random();
+            let cumulative = 0;
+            
+            for (const [rarity, chance] of Object.entries(RARITY_CHANCES)) {
+                cumulative += chance;
+                if (rand < cumulative) {
+                    return rarity;
+                }
+            }
+            return 'common';
+        }
+
+        async function fetchPokemon(id) {
+            try {
+                const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+                if (!response.ok) throw new Error('Pokemon not found');
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching Pokemon:', error);
+                return null;
+            }
+        }
+
+        async function pullGacha(count) {
+            const resultArea = document.getElementById('resultArea');
+            resultArea.innerHTML = '<div class="loading"><div class="spinner"></div>Mengambil Pokemon...</div>';
+
+            const results = [];
+            const pokemonIds = [];
+
+            for (let i = 0; i < count; i++) {
+                const randomId = Math.floor(Math.random() * 898) + 1;
+                pokemonIds.push(randomId);
+            }
+
+            const pokemonPromises = pokemonIds.map(id => fetchPokemon(id));
+            const pokemonData = await Promise.all(pokemonPromises);
+
+            for (const pokemon of pokemonData) {
+                if (!pokemon) continue;
+
+                const rarity = getRandomRarity();
+                const isShiny = Math.random() < SHINY_CHANCE;
+                
+                if (isShiny) shinyCount++;
+                if (rarity === 'legendary' || rarity === 'mythic') legendaryCount++;
+
+                const result = {
+                    id: pokemon.id,
+                    name: pokemon.name,
+                    sprite: isShiny ? (pokemon.sprites.front_shiny || pokemon.sprites.front_default || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`) : (pokemon.sprites.front_default || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`),
+                    rarity: rarity,
+                    isShiny: isShiny
+                };
+
+                results.push(result);
+
+                // Add to collection
+                const key = `${pokemon.id}-${isShiny ? 'shiny' : 'normal'}`;
+                if (!collection[key]) {
+                    collection[key] = {
+                        ...result,
+                        count: 0
+                    };
+                }
+                collection[key].count++;
+            }
+
+            totalPulls += count;
+            saveData();
+            updateStats();
+            displayResults(results);
+            updateCollection();
+        }
+
+        function displayResults(results) {
+            const resultArea = document.getElementById('resultArea');
+            resultArea.innerHTML = '';
+
+            results.forEach((result, index) => {
+                const card = document.createElement('div');
+                card.className = `pokemon-card ${result.rarity} ${result.isShiny ? 'shiny' : ''}`;
+                card.style.animationDelay = `${index * 0.1}s`;
+
+                card.innerHTML = `
+                    <img src="${result.sprite}" alt="${result.name}" class="pokemon-img" onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${result.id}.png'">
+                    <div class="pokemon-name">${result.name}</div>
+                    <div class="pokemon-rarity">${result.rarity.toUpperCase()} ${result.isShiny ? '✨' : ''}</div>
+                    <div class="pokemon-id">#${result.id}</div>
+                `;
+
+                resultArea.appendChild(card);
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('totalPulls').textContent = totalPulls;
+            document.getElementById('uniquePokemon').textContent = Object.keys(collection).length;
+            document.getElementById('shinyCount').textContent = shinyCount;
+            document.getElementById('legendaryCount').textContent = legendaryCount;
+        }
+
+        function updateCollection() {
+            const collectionGrid = document.getElementById('collectionGrid');
+            collectionGrid.innerHTML = '';
+
+            Object.values(collection).forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'collection-item';
+                const fallbackSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${item.id}.png`;
+                const sprite = item.sprite || fallbackSprite;
+                div.innerHTML = `
+                    <img src="${sprite}" alt="${item.name}" onerror="this.src='${fallbackSprite}'">
+                    <div>${item.name}</div>
+                    <span class="collection-count">${item.count}</span>
+                `;
+                collectionGrid.appendChild(div);
+            });
+        }
+
+        function saveData() {
+            localStorage.setItem('pokemonCollection', JSON.stringify(collection));
+            localStorage.setItem('shinyCount', shinyCount);
+            localStorage.setItem('legendaryCount', legendaryCount);
+        }
+
+        function clearCollection() {
+            if (confirm('Apakah kamu yakin ingin menghapus semua koleksi?')) {
+                collection = {};
+                totalPulls = 0;
+                shinyCount = 0;
+                legendaryCount = 0;
+                saveData();
+                updateStats();
+                updateCollection();
+                document.getElementById('resultArea').innerHTML = '';
+            }
+        }
+
+        // Initialize
+        updateStats();
+        updateCollection();
+    </script>
 </body>
 </html>
